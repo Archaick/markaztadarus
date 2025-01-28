@@ -1,0 +1,100 @@
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.05); /* Transparent */
+  padding: 16px 24px;
+  transition: all 0.3s ease-in-out;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logoImage {
+  height: 30px;
+}
+
+/* Navigation Links */
+.navLinks {
+  display: flex;
+  gap: 24px;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: #ffd700;
+}
+
+.contactBtn {
+  background-color: #ffd700 !important;
+  color: black !important;
+  border-radius: 25px;
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  background: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  color: white;
+  padding: 0 !important;
+}
+
+/* Custom Drawer Header */
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+/* Custom Close Button */
+.closeButton {
+  color: white !important;
+  background: rgba(255, 255, 255, 0) !important;
+  border-radius: 50%;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.closeButton:hover {
+  opacity: 0.7;
+}
+
+/* Mobile Navigation */
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Mantine Drawer Overlay */
+.mantine-Drawer-root {
+  backdrop-filter: blur(10px) !important;
+}
+
+/* Hamburger Menu Visibility */
+.burger {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .burger {
+    display: block;
+  }
+}
