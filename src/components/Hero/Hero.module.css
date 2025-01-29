@@ -51,12 +51,15 @@
 
 @media (max-width: 768px) {
   .title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
   .subtitle {
     font-size: 1rem;
   }
   .button {
     font-size: 1rem;
+  }
+  .content {
+    margin-left: clamp(3%, 7vw, 10%);
   }
 }

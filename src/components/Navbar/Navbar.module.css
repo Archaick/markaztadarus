@@ -28,30 +28,58 @@
 }
 
 .navLink {
+  position: relative;
   color: white;
   text-decoration: none;
-  transition: color 0.3s ease;
+  padding-bottom: 4px;
+  transition: color 0.3s ease-in-out;
 }
 
-.navLink:hover {
-  color: #ffd700;
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #ffd700;
+  transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
 }
 
+.navLink:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Contact Button */
 .contactBtn {
   background-color: #ffd700 !important;
   color: black !important;
   border-radius: 25px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.contactBtn:hover {
+  background-color: #007bff !important; /* Modern blue */
+  color: white !important;
 }
 
 /* Mobile Menu */
 .mobileMenu {
   background: rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border-radius: 0 !important;
   border: none !important;
   color: white;
   padding: 0 !important;
+}
+
+/* Mobile Navigation */
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+  margin-top: 15px;
 }
 
 /* Custom Drawer Header */
@@ -65,27 +93,13 @@
 /* Custom Close Button */
 .closeButton {
   color: white !important;
-  background: rgba(255, 255, 255, 0) !important;
+  background: transparent !important;
   border-radius: 50%;
   transition: opacity 0.3s ease-in-out;
 }
 
 .closeButton:hover {
   opacity: 0.7;
-}
-
-/* Mobile Navigation */
-.mobileNav {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: center;
-  margin-top: 15px;
-}
-
-/* Mantine Drawer Overlay */
-.mantine-Drawer-root {
-  backdrop-filter: blur(10px) !important;
 }
 
 /* Hamburger Menu Visibility */
