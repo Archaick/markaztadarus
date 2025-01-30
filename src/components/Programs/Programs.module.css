@@ -1,0 +1,175 @@
+.embla {
+  margin-top: 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+.embla__container {
+  display: flex;
+  position: relative;
+}
+
+.embla__slide {
+  position: relative;
+  min-width: 100%;
+  height: 550px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Align content to the left */
+  overflow: hidden;
+}
+
+/* Text Content */
+.textContent {
+  position: absolute;
+  left: 10%;
+  z-index: 2;
+  color: white;
+  max-width: 40%;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.description {
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.button {
+  background-color: #ffcc00;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+}
+
+.button:hover {
+  background-color: #007bff; /* Modern Blue */
+  color: white; /* Change text color to white on hover */
+}
+
+/* Image */
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  user-select: none; /* Prevent selection */
+}
+
+/* Overlays with Gradient */
+.goldOverlay::before,
+.greenOverlay::before,
+.purpleOverlay::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  opacity: 0.8; /* Adjust overall opacity */
+}
+
+/* Gold Overlay */
+.goldOverlay::before {
+  background: linear-gradient(
+    120deg,
+    rgb(0, 0, 0) 10%,
+    rgba(86, 66, 22, 0.8) 90%
+  );
+}
+
+/* Green Overlay */
+.greenOverlay::before {
+  background: linear-gradient(
+    120deg,
+    rgb(0, 0, 0) 10%,
+    rgba(13, 77, 13, 0.8) 90%
+  );
+}
+
+/* Purple Overlay */
+.purpleOverlay::before {
+  background: linear-gradient(
+    120deg,
+    rgb(0, 0, 0) 10%,
+    rgba(67, 5, 67, 0.8) 90%
+  );
+}
+
+.embla__dots {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  margin-bottom: 600px;
+}
+
+.embla__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid rgb(255, 255, 255);
+  background-color: #b5b5b5;
+}
+
+.embla__dotSelected {
+  width: 76px; /* Stretch the selected dot */
+  height: 14px;
+  border-radius: 12px; /* Makes it oval */
+  border: 1px solid #ffcc00;
+  background-color: #ffcc00;
+}
+
+/* Mini Cards */
+.miniCardsContainer {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 3;
+}
+
+.miniCard {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.miniCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Hide mini cards on small screens */
+@media (max-width: 768px) {
+  .miniCardsContainer {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .textContent {
+    max-width: 80%;
+  }
+}

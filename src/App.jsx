@@ -4,6 +4,7 @@ import { MantineProvider } from "@mantine/core";
 import Navbar from "./components/Navbar/Navbar";
 import Hero from "./components/Hero/Hero"
 import ProgramHighlights from "./components/ProgramHighlights/ProgramHighlights";
+import Programs from "./components/Programs/Programs";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Navbar />
       <Hero />
       <ProgramHighlights />
+      <Programs />
     </MantineProvider>
   );
 };
