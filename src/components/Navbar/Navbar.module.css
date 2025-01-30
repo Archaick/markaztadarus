@@ -11,6 +11,15 @@
   transition: all 0.3s ease-in-out;
 }
 
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.9); /* White background after scroll */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better contrast */
+}
+
+.navbar.scrolled .navLink {
+  color: black; /* Change link color to black after scrolling */
+}
+
 .container {
   display: flex;
   justify-content: space-between;
@@ -19,6 +28,7 @@
 
 .logoImage {
   height: 30px;
+  transition: all 0.3s ease-in-out;
 }
 
 /* Navigation Links */

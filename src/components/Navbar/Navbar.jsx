@@ -1,18 +1,39 @@
+import { useState, useEffect } from "react";
 import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconX } from "@tabler/icons-react";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
+import whiteLogo from "../../assets/imgs/MT-logo-white.svg"; // New white logo for scrolled state
 
 const navItems = ["Beranda", "Program", "Tentang Kami", "Galeri"];
 
 export default function Navbar() {
   const [opened, { toggle, close }] = useDisclosure(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll event
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > window.innerHeight) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className={styles.navbar}>
+    <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.container}>
-        <img src={logo} alt="Markaz Tadarus" className={styles.logoImage} />
+        <img
+          src={scrolled ? whiteLogo : logo}
+          alt="Markaz Tadarus"
+          className={styles.logoImage}
+        />
 
         <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
           {navItems.map((item) => (
@@ -32,7 +53,7 @@ export default function Navbar() {
           onClick={toggle}
           className={styles.burger}
           hiddenFrom="sm"
-          color="white"
+          color={scrolled ? "black" : "white"}
         />
 
         <Drawer
@@ -45,7 +66,11 @@ export default function Navbar() {
           withCloseButton={false}
         >
           <div className={styles.drawerHeader}>
-            <img src={logo} alt="Markaz Tadarus" className={styles.logoImage} />
+            <img
+              src={scrolled ? whiteLogo : logo}
+              alt="Markaz Tadarus"
+              className={styles.logoImage}
+            />
             <ActionIcon onClick={close} className={styles.closeButton}>
               <IconX stroke={2} />
             </ActionIcon>
