@@ -9,6 +9,7 @@
   background: rgba(0, 0, 0, 0.05); /* Transparent */
   padding: 16px 24px;
   transition: all 0.3s ease-in-out;
+  font-weight: 500;
 }
 
 .navbar.scrolled {
@@ -18,6 +19,7 @@
 
 .navbar.scrolled .navLink {
   color: black; /* Change link color to black after scrolling */
+  font-weight: 500;
 }
 
 .container {
