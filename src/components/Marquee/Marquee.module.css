@@ -19,5 +19,5 @@
 .partnerLogo {
   height: 60px; /* Adjust height for responsiveness */
   width: auto;
-  margin: 0 4%; /* Space between logos */
+  margin: 0 40px; /* Space between logos */
 }
