@@ -1,0 +1,23 @@
+.marqueeSection {
+  margin: 40px;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.heading {
+  font-size: 1.7rem;
+  font-weight: 800;
+  padding-bottom: 25px;
+  color: #112a42;
+}
+
+.marquee {
+  display: flex;
+  align-items: center;
+}
+
+.partnerLogo {
+  height: 60px; /* Adjust height for responsiveness */
+  width: auto;
+  margin: 0 4%; /* Space between logos */
+}

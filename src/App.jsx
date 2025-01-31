@@ -7,6 +7,7 @@ import ProgramHighlights from "./components/ProgramHighlights/ProgramHighlights"
 import Programs from "./components/Programs/Programs";
 import Leaders from "./components/Leaders/Leaders";
 import Quote from "./components/Quote/Quote";
+import Marquee from "./components/Marquee/Marquee";
 
 const App = () => {
   return (
@@ -14,9 +15,10 @@ const App = () => {
       <Navbar />
       <Hero />
       <ProgramHighlights />
-      <Programs />
+      {/* <Programs /> */}
       <Leaders />
       <Quote />
+      <Marquee />
     </MantineProvider>
   );
 };
