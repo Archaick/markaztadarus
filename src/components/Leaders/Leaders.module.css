@@ -1,0 +1,12 @@
+.card {
+  height: 420px;
+  transition: all 0.3s ease;
+}
+
+/* Optional: Add a slight hover effect */
+.card:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
+}
+
+

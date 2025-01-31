@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar/Navbar";
 import Hero from "./components/Hero/Hero"
 import ProgramHighlights from "./components/ProgramHighlights/ProgramHighlights";
 import Programs from "./components/Programs/Programs";
+import Leaders from "./components/Leaders/Leaders";
+import Quote from "./components/Quote/Quote";
 
 const App = () => {
   return (
@@ -13,6 +15,8 @@ const App = () => {
       <Hero />
       <ProgramHighlights />
       <Programs />
+      <Leaders />
+      <Quote />
     </MantineProvider>
   );
 };
