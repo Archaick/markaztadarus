@@ -19,7 +19,7 @@
 }
 
 .link {
-  color: rgb(200, 200, 200);
+  color: #c8c8c8;
   text-decoration: none; /* Removes underline */
   transition: color 0.3s ease-in-out;
 }

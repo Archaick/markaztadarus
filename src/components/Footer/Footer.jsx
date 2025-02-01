@@ -28,7 +28,7 @@ const Footer = () => {
           <div className={styles.column}>
             <Stack spacing="sm">
               <Image src={whiteLogo} alt="Logo" width={100} />
-              <Text size="sm">Belajar al-Qur’an dan Bahasa Arab di Mekah</Text>
+              <Text size="sm" mb={20}>Belajar al-Qur’an dan Bahasa Arab di Mekah</Text>
               <Text size="lg" weight={600} mt="md">
                 Hubungi Kami
               </Text>
@@ -80,7 +80,7 @@ const Footer = () => {
               </Text>
               <Group spacing="sm">
                 <IconMapPin size={20} />
-                <Text>
+                <Text color="#c8c8c8">
                   Jl. Belimbing 1 No.32 2, RT.2/RW.1, Srengseng, Kec. Kembangan,
                   Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11630
                 </Text>
