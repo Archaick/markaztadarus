@@ -21,3 +21,9 @@
   width: auto;
   margin: 0 40px; /* Space between logos */
 }
+
+@media (max-width: 480px) {
+  .partnerLogo {
+    height: 35px;
+  }
+}

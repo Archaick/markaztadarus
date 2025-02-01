@@ -9,7 +9,7 @@ const PartnersMarquee = () => {
   return (
     <section className={styles.marqueeSection} aria-label="Our Partners">
       <h2 className={styles.heading}>Our Partners</h2>
-      <Marquee speed={150} className={styles.marquee}>
+      <Marquee speed={100} className={styles.marquee}>
         <img
           src={Naba}
           alt="Naba Saudi Partner Logo"

@@ -44,9 +44,9 @@ const Footer = () => {
               </Group>
               <Divider my="sm" color="#ffd700" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
-                <IconBrandWhatsapp size={24} />
-                <IconBrandInstagram size={24} />
-                <IconBrandYoutube size={24} />
+                <IconBrandWhatsapp size={30} />
+                <IconBrandInstagram size={30} />
+                <IconBrandYoutube size={30} />
               </Group>
             </Stack>
           </div>
