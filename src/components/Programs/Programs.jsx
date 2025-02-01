@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Fade from "embla-carousel-fade";
+import 'keen-slider/keen-slider.min.css';
+import { useKeenSlider } from 'keen-slider/react';
 import styles from "./Programs.module.css";
 import UT from "../../assets/imgs/UT.png";
 import DS from "../../assets/imgs/DS.png";
 import DQ from "../../assets/imgs/DQ.png";
-import { DotButton, useDotButton } from "./EmblaCarouselDotButton";
 
 const programs = [
   {
@@ -32,52 +31,9 @@ const programs = [
 ];
 
 const Programs = () => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Fade()]);
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (emblaApi) emblaApi.scrollNext();
-    }, 6000);
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [emblaApi]);
-
   return (
-    <div className={styles.programsSection}>
-      <div className={styles.embla} ref={emblaRef}>
-        <div className={styles.embla__container}>
-          {programs.map(({ src, title, description, overlay }, index) => (
-            <div className={`${styles.embla__slide} ${overlay}`} key={index}>
-              <img src={src} alt={title} className={styles.image} />
-              <div className={styles.textContent}>
-                <h2 className={styles.title}>{title}</h2>
-                <p className={styles.description}>{description}</p>
-                <button className={styles.button}>Pelajari Lebih Lanjut</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Dots Outside the Carousel */}
-      <div className={styles.embla__dots}>
-        {scrollSnaps.map((_, index) => (
-          <DotButton
-            key={index}
-            onClick={() => onDotButtonClick(index)}
-            className={
-              index === selectedIndex
-                ? styles.embla__dotSelected
-                : styles.embla__dot
-            }
-          />
-        ))}
-      </div>
-    </div>
-  );
+    <div></div>
+  )
 };
 
 export default Programs;

@@ -8,6 +8,7 @@ import Programs from "./components/Programs/Programs";
 import Leaders from "./components/Leaders/Leaders";
 import Quote from "./components/Quote/Quote";
 import Marquee from "./components/Marquee/Marquee";
+import Footer from "./components/Footer/Footer";
 
 const App = () => {
   return (
@@ -15,10 +16,11 @@ const App = () => {
       <Navbar />
       <Hero />
       <ProgramHighlights />
-      {/* <Programs /> */}
+      <Programs />
       <Leaders />
       <Quote />
       <Marquee />
+      <Footer />
     </MantineProvider>
   );
 };
