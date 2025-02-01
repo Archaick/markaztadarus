@@ -3,6 +3,8 @@ import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
 
 const Hero = () => {
+  const whatsappUrl =
+    "https://wa.me/000000000?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
   return (
     <div className={classes.hero}>
       <video autoPlay loop muted className={classes.videoBg}>
@@ -24,7 +26,14 @@ const Hero = () => {
         <Text size="lg" className={classes.subtitle}>
           “Menyatukan hati dengan al-Qur’an”
         </Text>
-        <Button size="lg" className={classes.button}>
+        <Button
+          size="lg"
+          className={classes.button}
+          component="a"
+          // href={whatsappUrl}
+          target="_blank" // Open in a new tab
+          rel="noopener noreferrer" // Security best practice
+        >
           Konsultasi dengan kami
         </Button>
       </Container>
