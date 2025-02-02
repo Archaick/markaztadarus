@@ -1,0 +1,126 @@
+/* Programs.module.css */
+.carouselItem {
+  position: relative;
+  height: 500px; /* Adjust height as needed */
+  background-size: cover;
+  background-position: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  color: white;
+}
+
+.textColumn {
+  width: 60%; /* Take 60% of the container width */
+  max-width: 800px; /* Optional: Set a max-width for larger screens */
+  margin-left: 30px;
+}
+
+.goldOverlay {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9),
+    rgba(212, 175, 55, 0.3)
+  );
+}
+
+.greenOverlay {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 128, 0, 0.3)
+  );
+}
+
+.purpleOverlay {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.9),
+    rgba(128, 0, 128, 0.4)
+  );
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.detailButton {
+  background-color: #ffd700 !important; /* Gold color */
+  color: black !important;
+  border-radius: 25px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.detailButton:hover {
+  background-color: #007bff !important; /* Modern blue */
+  color: white !important;
+}
+
+/* Customize the carousel indicators */
+.carousel-indicators {
+  bottom: 20px; /* Adjust position as needed */
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 10px; /* Adjust size */
+  height: 10px; /* Adjust size */
+  border-radius: 50%; /* Make them circular */
+  background-color: rgba(255, 255, 255, 0.5); /* Default color */
+  border: none;
+  margin: 0 5px; /* Adjust spacing */
+}
+
+.carousel-indicators .active {
+  background-color: #d4af37; /* Active indicator color (gold) */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .textColumn {
+    width: 80%; /* Increase width on smaller screens */
+  }
+
+  .title {
+    font-size: 2rem; /* Reduce title size on smaller screens */
+  }
+
+  .description {
+    font-size: 1rem; /* Reduce description size on smaller screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .textColumn {
+    width: 90%; /* Further increase width on very small screens */
+  }
+
+  .title {
+    font-size: 1.5rem; /* Further reduce title size */
+  }
+
+  .description {
+    font-size: 0.9rem; /* Further reduce description size */
+  }
+}

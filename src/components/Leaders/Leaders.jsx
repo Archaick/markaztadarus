@@ -36,10 +36,10 @@ const cardVariants = {
 const Leaders = () => {
   return (
     <Container mt={100} mb={100}>
-      <Text align="center" size="xl" weight={700} mt={20}>
+      <Text align="center" size="1.8rem" mt={20} color="#112A42" fw={700} mb={10}>
         Tentang Belajar al-Qur’an dan Bahasa Arab di Mekah
       </Text>
-      <Text align="center" size="md" color="gray" mb={20}>
+      <Text align="center" size="1.2rem" color="gray" mb={10}>
         Disampaikan oleh Pengurus Markaz Tadarus Indonesia
       </Text>
       <Grid gutter="lg" mt={50}>

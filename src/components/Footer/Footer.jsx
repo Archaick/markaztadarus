@@ -27,7 +27,7 @@ const Footer = () => {
           {/* First Column */}
           <div className={styles.column}>
             <Stack spacing="sm">
-              <Image src={whiteLogo} alt="Logo" width={100} />
+              <Image src={whiteLogo} alt="Logo" width={100} className={styles.footerLogo} />
               <Text size="sm" mb={20}>Belajar al-Qur’an dan Bahasa Arab di Mekah</Text>
               <Text size="lg" weight={600} mt="md">
                 Hubungi Kami

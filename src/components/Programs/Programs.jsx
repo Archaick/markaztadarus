@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import 'keen-slider/keen-slider.min.css';
-import { useKeenSlider } from 'keen-slider/react';
+import React from "react";
+import Carousel from "react-bootstrap/Carousel";
+import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./Programs.module.css";
 import UT from "../../assets/imgs/UT.png";
 import DS from "../../assets/imgs/DS.png";
@@ -32,8 +32,25 @@ const programs = [
 
 const Programs = () => {
   return (
-    <div></div>
-  )
+    <Carousel fade indicators={true} controls={false}>
+      {programs.map((program, index) => (
+        <Carousel.Item key={index}>
+          <div
+            className={styles.carouselItem}
+            style={{ backgroundImage: `url(${program.src})` }}
+          >
+            <div className={`${styles.overlay} ${program.overlay}`}>
+              <div className={styles.textColumn}>
+                <h2 className={styles.title}>{program.title}</h2>
+                <p className={styles.description}>{program.description}</p>
+                <button className={styles.detailButton}>Lebih Detail</button>
+              </div>
+            </div>
+          </div>
+        </Carousel.Item>
+      ))}
+    </Carousel>
+  );
 };
 
 export default Programs;

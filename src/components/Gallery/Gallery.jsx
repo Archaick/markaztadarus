@@ -26,10 +26,10 @@ const Gallery = () => {
     >
       {/* Heading */}
       <div style={{ marginBottom: "20px" }}>
-        <h2 id="gallery-heading" style={{ fontSize: "2rem", color: "#112a42", marginBottom: "8px" }}>
+        <h2 id="gallery-heading" style={{ fontSize: "2rem", color: "#112a42", marginBottom: "8px", fontWeight: "700" }}>
           Galeri Program
         </h2>
-        <p style={{ fontSize: "1rem", color: "#6c757d" }}>
+        <p style={{ fontSize: "1.2rem", color: "#6c757d", marginBottom: "50px" }}>
           Program terlaksana tahun 1446 H / 2024 M
         </p>
       </div>

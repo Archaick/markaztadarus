@@ -26,7 +26,7 @@
 
 .link:hover {
   text-decoration: none;
-  color: #ffd700; 
+  color: #ffd700;
 }
 
 @media (min-width: 768px) {
@@ -40,4 +40,11 @@
   color: #888;
   font-size: 0.875rem;
   margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .footerLogo {
+    width: 240px;
+    margin-bottom: 10px; 
+  }
 }
