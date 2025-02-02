@@ -9,6 +9,7 @@ import Leaders from "./components/Leaders/Leaders";
 import Quote from "./components/Quote/Quote";
 import Marquee from "./components/Marquee/Marquee";
 import Footer from "./components/Footer/Footer";
+import Gallery from "./components/Gallery/Gallery";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
       <Programs />
       <Leaders />
       <Quote />
+      <Gallery />
       <Marquee />
       <Footer />
     </MantineProvider>

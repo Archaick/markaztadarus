@@ -1,0 +1,22 @@
+/* Gallery.module.css */
+.carouselIndicators {
+    bottom: 20px; /* Adjust positioning */
+    display: flex;
+    gap: 8px; /* Space between indicators */
+  }
+  
+  .carouselIndicator {
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .carouselIndicator[data-active] {
+    width: 48px; /* Wider oval shape */
+    height: 10px;
+    background-color: #ffd700; /* Change to primary color */
+    border-radius: 50px; /* Make it oval */
+  }
+  
