@@ -32,7 +32,7 @@ const programs = [
 
 const Programs = () => {
   return (
-    <Carousel fade indicators={true} controls={false}>
+    <Carousel fade indicators={true} controls={true}>
       {programs.map((program, index) => (
         <Carousel.Item key={index}>
           <div

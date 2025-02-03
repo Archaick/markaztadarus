@@ -5,7 +5,7 @@ import Autoplay from "embla-carousel-autoplay";
 import SlideOne from "../../assets/imgs/gallery/slide1.png";
 import SlideTwo from "../../assets/imgs/gallery/slide2.png";
 import SlideThree from "../../assets/imgs/gallery/slide3.png";
-import SlideFour from "../../assets/imgs/gallery/slide4.png";
+import SlideFour from "../../assets/imgs/gallery/slide4.jpg";
 import SlideFive from "../../assets/imgs/gallery/slide5.png";
 import styles from "./Gallery.module.css"; // Import CSS module
 
@@ -37,7 +37,7 @@ const Gallery = () => {
       {/* Full-Width Carousel */}
       <Carousel
         withIndicators
-        height={460}
+        height={500}
         plugins={[autoplay.current]}
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}

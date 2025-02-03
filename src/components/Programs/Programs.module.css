@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   padding: 20px;
   color: white;
 }
@@ -23,7 +23,6 @@
 .textColumn {
   width: 60%; /* Take 60% of the container width */
   max-width: 800px; /* Optional: Set a max-width for larger screens */
-  margin-left: 30px;
 }
 
 .goldOverlay {
@@ -100,6 +99,7 @@
 @media (max-width: 768px) {
   .textColumn {
     width: 80%; /* Increase width on smaller screens */
+    text-align: center;
   }
 
   .title {
