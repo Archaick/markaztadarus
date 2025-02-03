@@ -11,6 +11,8 @@ const navItems = ["Beranda", "Program", "Tentang Kami", "Galeri"];
 export default function Navbar() {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [scrolled, setScrolled] = useState(false);
+  const whatsappUrl =
+    "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
 
   // Handle scroll event
   useEffect(() => {
@@ -45,7 +47,15 @@ export default function Navbar() {
               {item}
             </a>
           ))}
-          <Button className={styles.contactBtn}>Hubungi Kami</Button>
+          <Button
+            className={styles.contactBtn}
+            component="a"
+            href={whatsappUrl}
+            target="_blank" // Open in a new tab
+            rel="noopener noreferrer" // Security best practice
+          >
+            Hubungi Kami
+          </Button>
         </Group>
 
         <Burger
@@ -87,7 +97,14 @@ export default function Navbar() {
                 {item}
               </a>
             ))}
-            <Button fullWidth className={styles.contactBtn}>
+            <Button
+              fullWidth
+              className={styles.contactBtn}
+              component="a"
+              href={whatsappUrl}
+              target="_blank" // Open in a new tab
+              rel="noopener noreferrer" // Security best practice
+            >
               Hubungi Kami
             </Button>
           </nav>

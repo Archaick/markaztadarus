@@ -20,6 +20,9 @@ import styles from "./Footer.module.css";
 import whiteLogo from "../../assets/imgs/MT-logo.svg";
 
 const Footer = () => {
+  const whatsappUrl =
+    "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
+
   return (
     <footer className={styles.footer}>
       <Container>
@@ -27,14 +30,25 @@ const Footer = () => {
           {/* First Column */}
           <div className={styles.column}>
             <Stack spacing="sm">
-              <Image src={whiteLogo} alt="Logo" width={100} className={styles.footerLogo} />
-              <Text size="sm" mb={20}>Belajar al-Qur’an dan Bahasa Arab di Mekah</Text>
+              <Image
+                src={whiteLogo}
+                alt="Logo"
+                width={100}
+                className={styles.footerLogo}
+              />
+              <Text size="sm" mb={20}>
+                Belajar al-Qur’an dan Bahasa Arab di Mekah
+              </Text>
               <Text size="lg" weight={600} mt="md">
                 Hubungi Kami
               </Text>
               <Group spacing="sm">
                 <IconMail size={20} />
-                <Anchor href="mailto:example@markaztadarus.com" color="white">
+                <Anchor
+                  href="mailto:example@markaztadarus.com"
+                  color="white"
+                  className="email"
+                >
                   example@markaztadarus.com
                 </Anchor>
               </Group>
@@ -44,9 +58,21 @@ const Footer = () => {
               </Group>
               <Divider my="sm" color="#ffd700" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
-                <IconBrandWhatsapp size={30} />
-                <IconBrandInstagram size={30} />
-                <IconBrandYoutube size={30} />
+                <Anchor
+                  className={styles.socialIcon}
+                  component="a"
+                  href={whatsappUrl}
+                  target="_blank" // Open in a new tab
+                  rel="noopener noreferrer" // Security best practice
+                >
+                  <IconBrandWhatsapp size={30} />
+                </Anchor>
+                <Anchor href="#" target="_blank" className={styles.socialIcon}>
+                  <IconBrandInstagram size={30} />
+                </Anchor>
+                <Anchor href="#" target="_blank" className={styles.socialIcon}>
+                  <IconBrandYoutube size={30} />
+                </Anchor>
               </Group>
             </Stack>
           </div>
