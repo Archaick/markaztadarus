@@ -6,7 +6,7 @@ const Hero = () => {
   const whatsappUrl =
     "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
   return (
-    <div className={classes.hero}>
+    <div className={classes.hero} id="home">
       <video autoPlay loop muted className={classes.videoBg}>
         <source src={heroVideo} type="video/mp4" />
         Your browser does not support the video tag.

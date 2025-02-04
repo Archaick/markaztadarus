@@ -3,9 +3,11 @@
   width: 100%;
   height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  padding-top: 180px;
+  justify-content: center;
   overflow: hidden;
+  /* testing line */
+  align-items: flex-start;
 }
 
 .videoBg {
@@ -24,6 +26,7 @@
   color: white;
   margin-left: clamp(5%, 10vw, 15%); /* Ensures responsiveness */
   max-width: 600px;
+  /* testing lines */
 }
 
 .title {
@@ -50,6 +53,9 @@
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding-top: 120px;
+  }
   .title {
     font-size: 1.8rem;
   }

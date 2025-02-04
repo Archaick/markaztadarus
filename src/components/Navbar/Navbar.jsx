@@ -6,7 +6,13 @@ import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg"; // New white logo for scrolled state
 
-const navItems = ["Beranda", "Program", "Tentang Kami", "Galeri"];
+// Add IDs for each navigation item
+const navItems = [
+  { name: "Beranda", id: "home" },
+  { name: "Program", id: "program" },
+  { name: "Tentang Kami", id: "about" },
+  { name: "Galeri", id: "gallery" },
+];
 
 export default function Navbar() {
   const [opened, { toggle, close }] = useDisclosure(false);
@@ -40,11 +46,11 @@ export default function Navbar() {
         <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
           {navItems.map((item) => (
             <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+              key={item.id}
+              href={`#${item.id}`} // Use the ID for navigation
               className={styles.navLink}
             >
-              {item}
+              {item.name}
             </a>
           ))}
           <Button
@@ -89,12 +95,12 @@ export default function Navbar() {
           <nav className={styles.mobileNav}>
             {navItems.map((item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.id}
+                href={`#${item.id}`} // Use the ID for navigation
                 onClick={close}
                 className={styles.navLink}
               >
-                {item}
+                {item.name}
               </a>
             ))}
             <Button

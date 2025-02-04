@@ -35,7 +35,7 @@ const cardVariants = {
 
 const Leaders = () => {
   return (
-    <Container mt={100} mb={100}>
+    <Container mt={100} mb={100} id="about">
       <Text align="center" size="1.8rem" mt={20} color="#112A42" fw={700} mb={10}>
         Tentang Belajar al-Qur’an dan Bahasa Arab di Mekah
       </Text>

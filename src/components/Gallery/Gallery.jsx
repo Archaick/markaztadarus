@@ -23,6 +23,7 @@ const Gallery = () => {
         margin: "40px 0 40px 0"
       }}
       aria-labelledby="gallery-heading"
+      id="gallery"
     >
       {/* Heading */}
       <div style={{ marginBottom: "20px" }}>

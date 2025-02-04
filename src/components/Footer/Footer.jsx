@@ -45,16 +45,15 @@ const Footer = () => {
               <Group spacing="sm">
                 <IconMail size={20} />
                 <Anchor
-                  href="mailto:example@markaztadarus.com"
-                  color="white"
-                  className="email"
+                  href="mailto:markaztadarus@gmail.com"
+                  className={styles.email}
                 >
-                  example@markaztadarus.com
+                  markaztadarus@gmail.com
                 </Anchor>
               </Group>
               <Group spacing="sm">
                 <IconPhoneFilled size={20} />
-                <Text>0812-0000-0000</Text>
+                <Text className={styles.phone}>0812-1001-0733</Text>
               </Group>
               <Divider my="sm" color="#ffd700" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
@@ -67,10 +66,10 @@ const Footer = () => {
                 >
                   <IconBrandWhatsapp size={30} />
                 </Anchor>
-                <Anchor href="#" target="_blank" className={styles.socialIcon}>
+                <Anchor href="https://www.instagram.com/markaz_tadarus.id/#" target="_blank" className={styles.socialIcon}>
                   <IconBrandInstagram size={30} />
                 </Anchor>
-                <Anchor href="#" target="_blank" className={styles.socialIcon}>
+                <Anchor href="https://www.youtube.com/@markaztadarusindonesia" target="_blank" className={styles.socialIcon}>
                   <IconBrandYoutube size={30} />
                 </Anchor>
               </Group>
@@ -83,16 +82,16 @@ const Footer = () => {
               <Text size="lg" weight={600}>
                 Informasi
               </Text>
-              <Anchor href="#" className={styles.link}>
+              <Anchor href="#home" className={styles.link}>
                 Beranda
               </Anchor>
-              <Anchor href="#" className={styles.link}>
+              <Anchor href="#program" className={styles.link}>
                 Program
               </Anchor>
-              <Anchor href="#" className={styles.link}>
+              <Anchor href="#about" className={styles.link}>
                 Tentang Kami
               </Anchor>
-              <Anchor href="#" className={styles.link}>
+              <Anchor href="#gallery" className={styles.link}>
                 Galeri
               </Anchor>
             </Stack>

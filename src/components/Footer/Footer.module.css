@@ -39,6 +39,18 @@
   transform: scale(1.1); 
 }
 
+.email, .phone {
+  color: #c8c8c8;
+  text-decoration: none; /* Removes underline */
+  transition: color 0.3s ease-in-out;
+}
+
+.email:hover {
+  text-decoration: none;
+  color: #ffd700;
+}
+
+
 @media (min-width: 768px) {
   .column {
     flex: 1 1 calc(30% - 20px); /* First column takes 30% of the width */
