@@ -7,7 +7,7 @@ const highlights = [
   { icon: IconSchool, title: "Pengajar", description: "Diajarkan oleh Masyayikh atau Asatidz yang profesional di bidangnya" },
   { icon: IconCertificate, title: "Pembekalan", description: "Dibekali dengan buku materi dan pembekalan intensif sebelum keberangkatan" }
 ];
-
+// Init backup before changes
 export default function ProgramHighlights() {
   return (
     <section className={styles.section}>
