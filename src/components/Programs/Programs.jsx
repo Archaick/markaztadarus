@@ -35,7 +35,10 @@ const programs = [
 ];
 
 const Programs = () => {
-  const autoplay = useRef(Autoplay({ delay: 3000 }));
+  // Configure Autoplay to resume after user interaction
+  const autoplay = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: false }) // Add stopOnInteraction: false
+  );
   const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen is smaller than 768px
 
   return (
@@ -51,7 +54,7 @@ const Programs = () => {
           slideGap="md"
           loop
           align="start"
-          plugins={[autoplay.current]}
+          plugins={[autoplay.current]} // Use the Autoplay plugin
           withControls={false}
           withIndicators={false}
         >
