@@ -40,8 +40,8 @@ const Gallery = () => {
         withIndicators
         height={500}
         plugins={[autoplay.current]}
-        onMouseEnter={autoplay.current.stop}
-        onMouseLeave={autoplay.current.reset}
+        // onMouseEnter={autoplay.current.stop}
+        // onMouseLeave={autoplay.current.reset}
         loop
         align="center"
         classNames={{

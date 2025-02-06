@@ -1,13 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap");
+
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh; /* Ensure full viewport height */
   display: flex;
-  padding-top: 180px;
   justify-content: center;
   overflow: hidden;
-  /* testing line */
-  align-items: flex-start;
+  align-items: center;
+  position: relative; /* Add relative positioning */
 }
 
 .videoBg {
@@ -20,19 +21,78 @@
   z-index: -1;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .content {
   position: relative;
   z-index: 2;
   color: white;
-  margin-left: clamp(5%, 10vw, 15%); /* Ensures responsiveness */
+  margin-left: clamp(5%, 10vw, 15%);
   max-width: 600px;
-  /* testing lines */
+  font-family: "Poppins", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.bold {
+  color: #ffffff;
+  font-weight: 900;
+  text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.typewriter {
+  /* color: #ffd700; */
+  color: #ffd700;
+  font-weight: 700;
+  display: inline-block;
+  text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.typewriter .Typewriter__wrapper span:nth-child(1) {
+  color: #ffd700; /* Target "Umrah" */
+}
+
+.typewriter .Typewriter__wrapper span:nth-child(2) {
+  color: #ffd700; /* Target "Arab" */
+}
+
+.typewriter .Typewriter__wrapper span:nth-child(3) {
+  color: #ffd700; /* Target "Qur'an" */
+}
+
+.whatsappButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #128c7e;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.whatsappButton:hover {
+  background-color: #12695f;
+  transform: scale(1.1);
 }
 
 .title {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  font-weight: 900;
+  margin-bottom: 30px;
 }
 
 .subtitle {
@@ -40,29 +100,11 @@
   margin-bottom: 20px;
 }
 
-.button {
-  background-color: #ffd700;
-  color: black;
-  border-radius: 25px;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.button:hover {
-  background-color: #007bff !important; /* Modern blue */
-  color: white !important;
-}
-
 @media (max-width: 768px) {
-  .hero {
-    padding-top: 120px;
-  }
   .title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
   .subtitle {
-    font-size: 1rem;
-  }
-  .button {
     font-size: 1rem;
   }
   .content {

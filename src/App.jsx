@@ -16,7 +16,7 @@ const App = () => {
     <MantineProvider>
       <Navbar />
       <Hero />
-      <ProgramHighlights />
+      {/* <ProgramHighlights /> */}
       <Programs />
       <Leaders />
       <Quote />

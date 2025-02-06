@@ -15,7 +15,7 @@
     "@mantine/hooks": "^7.16.2",
     "@tabler/icons-react": "^3.29.0",
     "bootstrap": "^5.3.3",
-    "embla-carousel-autoplay": "^8.5.2",
+    "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
     "firebase": "^11.2.0",
     "framer-motion": "^12.0.6",
@@ -23,7 +23,8 @@
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^18.3.1",
-    "react-fast-marquee": "^1.6.5"
+    "react-fast-marquee": "^1.6.5",
+    "react-simple-typewriter": "^5.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

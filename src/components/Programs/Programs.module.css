@@ -1,126 +1,181 @@
-/* Programs.module.css */
-.carouselItem {
-  position: relative;
-  height: 500px; /* Adjust height as needed */
-  background-size: cover;
-  background-position: center;
+.programsSection {
+  padding: 50px 10px; /* Reduce side padding */
+  text-align: center;
+  overflow: hidden;
+  background-color: #f9f9f9; /* Light background for the section */
 }
 
-.overlay {
+.header {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #1a1a2e;
+  font-weight: 800;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px; /* Increased gap for a modern look */
+  padding: 0 20px; /* Add padding to the grid container */
+}
+
+.card {
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Lift the card on hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Add a stronger shadow on hover */
+}
+
+.cardImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 240px; /* Fixed height for consistency */
+  overflow: hidden;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cardImageWrapper:hover .cardImage {
+  transform: scale(1.1); /* Zoom effect on hover */
+}
+
+/* Overlay for each card */
+.cardImageWrapper::after {
+  content: "";
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.cardImageWrapper:hover::after {
+  opacity: 1; /* Show overlay on hover */
+}
+
+/* Unique overlay colors for each card */
+.card:nth-child(1) .cardImageWrapper::after {
+  background: linear-gradient(
+    to top,
+    rgba(37, 41, 95, 0.7),
+    rgba(37, 41, 95, 0.3)
+  ); /* Dark blue */
+}
+
+.card:nth-child(2) .cardImageWrapper::after {
+  background: linear-gradient(
+    to top,
+    rgba(37, 41, 95, 0.7),
+    rgba(37, 41, 95, 0.3)
+  ); /* Purple */
+}
+
+.card:nth-child(3) .cardImageWrapper::after {
+  background: linear-gradient(
+    to top,
+    rgba(37, 41, 95, 0.7),
+    rgba(37, 41, 95, 0.3)
+  ); /* Navy blue */
+}
+
+.cardImageWrapper::before {
+  content: attr(data-title);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center on both axes */
+  font-size: 1.5rem;
+  font-weight: bold;
   color: white;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
 }
 
-.textColumn {
-  width: 60%; /* Take 60% of the container width */
-  max-width: 800px; /* Optional: Set a max-width for larger screens */
+.cardImageWrapper:hover::before {
+  opacity: 1;
 }
 
-.goldOverlay {
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9),
-    rgba(212, 175, 55, 0.3)
-  );
+.cardContent {
+  padding: 20px;
+  flex-grow: 1; /* Ensure content takes up remaining space */
 }
 
-.greenOverlay {
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9),
-    rgba(0, 128, 0, 0.3)
-  );
-}
-
-.purpleOverlay {
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.9),
-    rgba(128, 0, 128, 0.4)
-  );
-}
-
-.title {
-  font-size: 2.5rem;
+.cardTitle {
+  font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 10px;
+  color: #1a1a2e; /* Dark text color */
+  text-align: center; /* Center title */
 }
 
-.description {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-
-.detailButton {
-  background-color: #ffd700 !important; /* Gold color */
-  color: black !important;
-  border-radius: 25px;
-  padding: 10px 20px;
+.cardDescription {
   font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  color: #666;
+  margin-bottom: 20px;
+  text-align: center; /* Center description */
 }
 
-.detailButton:hover {
-  background-color: #007bff !important; /* Modern blue */
-  color: white !important;
+.cardIcons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
 }
 
-/* Customize the carousel indicators */
-.carousel-indicators {
-  bottom: 20px; /* Adjust position as needed */
+.cardIcons svg {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #1a1a2e;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.carousel-indicators [data-bs-target] {
-  width: 10px; /* Adjust size */
-  height: 10px; /* Adjust size */
-  border-radius: 50%; /* Make them circular */
-  background-color: rgba(255, 255, 255, 0.5); /* Default color */
-  border: none;
-  margin: 0 5px; /* Adjust spacing */
+.cardIcons svg:hover {
+  background-color: #032f64; /* Darker color on hover */
+  transform: scale(1.1); /* Slightly enlarge on hover */
 }
 
-.carousel-indicators .active {
-  background-color: #d4af37; /* Active indicator color (gold) */
-}
-
-/* Responsive Styles */
+/* Mobile-specific styles */
 @media (max-width: 768px) {
-  .textColumn {
-    width: 80%; /* Increase width on smaller screens */
-    text-align: center;
+  .card {
+    margin: 0 10px; /* Add margin for better spacing */
   }
 
-  .title {
-    font-size: 2rem; /* Reduce title size on smaller screens */
+  .cardImageWrapper {
+    height: 200px; /* Slightly smaller height for mobile */
   }
 
-  .description {
-    font-size: 1rem; /* Reduce description size on smaller screens */
-  }
-}
-
-@media (max-width: 576px) {
-  .textColumn {
-    width: 90%; /* Further increase width on very small screens */
+  .cardTitle {
+    font-size: 1.3rem; /* Smaller font size for mobile */
   }
 
-  .title {
-    font-size: 1.5rem; /* Further reduce title size */
+  .cardDescription {
+    font-size: 0.9rem; /* Smaller font size for mobile */
   }
 
-  .description {
-    font-size: 0.9rem; /* Further reduce description size */
+  .cardIcons svg {
+    width: 36px; /* Smaller icons for mobile */
+    height: 36px;
   }
 }

@@ -1,55 +1,119 @@
 import React from "react";
-import Carousel from "react-bootstrap/Carousel";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Carousel } from "@mantine/carousel";
 import styles from "./Programs.module.css";
 import UT from "../../assets/imgs/UT.png";
 import DS from "../../assets/imgs/DS.png";
 import DQ from "../../assets/imgs/DQ.png";
+import { useRef } from "react";
+import Autoplay from "embla-carousel-autoplay";
+import {
+  IconBuilding, // For hotel
+  IconPlane, // For airplane
+  IconToolsKitchen, // For meal
+  IconCar, // For car
+} from "@tabler/icons-react";
+import { useMediaQuery } from "@mantine/hooks"; // For responsive behavior
 
 const programs = [
   {
     src: UT,
     title: "Umrah Tadabburiyah",
-    description:
-      "Program umrah khusus untuk masyarakat umum yang disertai pembelajaran tadabbur al-Qur’an di tempat turunnya, yaitu Mekah dan Madinah, disertai program i’tikaf di Masjid Nabawi dan Masjidil Haram.",
-    overlay: styles.goldOverlay,
+    description: "Tadabbur al-Qur'an untuk masyarakat umum plus Umrah",
   },
   {
     src: DS,
     title: "Daurah Santri",
-    description:
-      "Program pembelajaran singkat untuk Santri dan Mahasantri yang dirancang khusus untuk memperdalam ilmu pengetahuan di kota Mekah al-Mukarramah dalam bidang bahasa Arab dan al-Qur’an, sekaligus melaksanakan ibadah umrah dan kunjungan tempat-tempat bersejarah dan berbudaya Arab.",
-    overlay: styles.greenOverlay,
+    description: "Pelatihan bahasa Arab dan al-Qur'an untuk Santri plus Umrah",
   },
   {
     src: DQ,
     title: "Duta Qur’an",
     description:
-      "Program pelatihan khusus Da’i dan Asatidz atau Kader-kader pilihan di Mekah al-Mukarramah seputar keahlian tadabbur, memetik nilai-nilai al-Qur’an dan mengaitkannya dengan realita kehidupan, juga memahami langkah-langkah pelaksanaan majelis tadarus al-Qur’an.",
-    overlay: styles.purpleOverlay,
+      "Pelatihan tadabbur al-Qur'an untuk Da’i dan Asatidz plus Umrah",
   },
 ];
 
 const Programs = () => {
+  const autoplay = useRef(Autoplay({ delay: 3000 }));
+  const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen is smaller than 768px
+
   return (
-    <Carousel fade indicators={true} controls={true} id="program">
-      {programs.map((program, index) => (
-        <Carousel.Item key={index}>
-          <div
-            className={styles.carouselItem}
-            style={{ backgroundImage: `url(${program.src})` }}
-          >
-            <div className={`${styles.overlay} ${program.overlay}`}>
-              <div className={styles.textColumn}>
-                <h2 className={styles.title}>{program.title}</h2>
-                <p className={styles.description}>{program.description}</p>
-                <button className={styles.detailButton}>Lebih Detail</button>
+    <section className={styles.programsSection}>
+      <h2 className={styles.header}>Program Kami</h2>
+      {isMobile ? (
+        // Carousel for smaller screens
+        <Carousel
+          slideSize="100%"
+          slideGap="md"
+          loop
+          align="start"
+          plugins={[autoplay.current]}
+          withControls={false}
+          withIndicators
+        >
+          {programs.map((program, index) => (
+            <Carousel.Slide key={index} className={styles.slide}>
+              <div className={styles.card}>
+                <div
+                  className={styles.cardImageWrapper}
+                  data-title={program.title}
+                >
+                  <img
+                    src={program.src}
+                    alt={program.title}
+                    className={styles.cardImage}
+                  />
+                </div>
+
+                <div className={styles.cardContent}>
+                  <div className={styles.cardTitle}>{program.title}</div>
+                  <div className={styles.cardDescription}>
+                    {program.description}
+                  </div>
+                  <div className={styles.cardIcons}>
+                    <IconBuilding size={24} /> {/* Hotel */}
+                    <IconPlane size={24} /> {/* Airplane */}
+                    <IconToolsKitchen size={24} /> {/* Meal */}
+                    <IconCar size={24} /> {/* Car */}
+                  </div>
+                </div>
+              </div>
+            </Carousel.Slide>
+          ))}
+        </Carousel>
+      ) : (
+        // Grid layout for larger screens
+        <div className={styles.gridContainer}>
+          {programs.map((program, index) => (
+            <div key={index} className={styles.card}>
+              <div
+                className={styles.cardImageWrapper}
+                data-title={program.title}
+              >
+                <img
+                  src={program.src}
+                  alt={program.title}
+                  className={styles.cardImage}
+                />
+              </div>
+
+              <div className={styles.cardContent}>
+                <div className={styles.cardTitle}>{program.title}</div>
+                <div className={styles.cardDescription}>
+                  {program.description}
+                </div>
+                <div className={styles.cardIcons}>
+                  <IconBuilding size={24} /> {/* Hotel */}
+                  <IconPlane size={24} /> {/* Airplane */}
+                  <IconToolsKitchen size={24} /> {/* Meal */}
+                  <IconCar size={24} /> {/* Car */}
+                </div>
               </div>
             </div>
-          </div>
-        </Carousel.Item>
-      ))}
-    </Carousel>
+          ))}
+        </div>
+      )}
+    </section>
   );
 };
 

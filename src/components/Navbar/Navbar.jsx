@@ -53,7 +53,7 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
-          <Button
+          {/* <Button
             className={styles.contactBtn}
             component="a"
             href={whatsappUrl}
@@ -61,7 +61,7 @@ export default function Navbar() {
             rel="noopener noreferrer" // Security best practice
           >
             Hubungi Kami
-          </Button>
+          </Button> */}
         </Group>
 
         <Burger
@@ -103,7 +103,7 @@ export default function Navbar() {
                 {item.name}
               </a>
             ))}
-            <Button
+            {/* <Button
               fullWidth
               className={styles.contactBtn}
               component="a"
@@ -112,7 +112,7 @@ export default function Navbar() {
               rel="noopener noreferrer" // Security best practice
             >
               Hubungi Kami
-            </Button>
+            </Button> */}
           </nav>
         </Drawer>
       </div>
