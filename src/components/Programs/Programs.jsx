@@ -53,7 +53,7 @@ const Programs = () => {
           align="start"
           plugins={[autoplay.current]}
           withControls={false}
-          withIndicators
+          withIndicators={false}
         >
           {programs.map((program, index) => (
             <Carousel.Slide key={index} className={styles.slide}>
