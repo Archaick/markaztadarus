@@ -1,5 +1,6 @@
 import React from "react";
 import { Carousel } from "@mantine/carousel";
+import { Text } from "@mantine/core";
 import styles from "./Programs.module.css";
 import UT from "../../assets/imgs/UT.png";
 import DS from "../../assets/imgs/DS.png";
@@ -40,6 +41,9 @@ const Programs = () => {
   return (
     <section className={styles.programsSection}>
       <h2 className={styles.header}>Program Kami</h2>
+      <Text align="center" size="1.2rem" color="gray" mb={40}>
+        "Menyatukan hati dengan al-Qur’an"
+      </Text>
       {isMobile ? (
         // Carousel for smaller screens
         <Carousel
