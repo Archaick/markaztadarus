@@ -3,8 +3,6 @@
     bottom: 20px; /* Adjust positioning */
     display: flex;
     gap: 8px; /* Space between indicators */
-    background-color: #1a1a2e82;
-    padding: 8px;
   }
   
   .carouselIndicator {
