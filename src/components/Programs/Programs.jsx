@@ -37,7 +37,7 @@ const programs = [
 const Programs = () => {
   // Configure Autoplay to resume after user interaction
   const autoplay = useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false }) // Add stopOnInteraction: false
+    Autoplay({ delay: 2500, stopOnInteraction: false }) // Add stopOnInteraction: false
   );
   const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen is smaller than 768px
 
@@ -60,28 +60,24 @@ const Programs = () => {
         >
           {programs.map((program, index) => (
             <Carousel.Slide key={index} className={styles.slide}>
-              <div className={styles.card}>
-                <div
-                  className={styles.cardImageWrapper}
-                  data-title={program.title}
-                >
+              <div key={index} className={styles.card}>
+                <div className={styles.cardImageWrapper}>
                   <img
                     src={program.src}
                     alt={program.title}
                     className={styles.cardImage}
                   />
+                  <div className={styles.titleOverlay}>{program.title}</div>
                 </div>
-
                 <div className={styles.cardContent}>
-                  <div className={styles.cardTitle}>{program.title}</div>
                   <div className={styles.cardDescription}>
                     {program.description}
                   </div>
                   <div className={styles.cardIcons}>
-                    <IconBuilding size={24} /> {/* Hotel */}
-                    <IconPlane size={24} /> {/* Airplane */}
-                    <IconToolsKitchen size={24} /> {/* Meal */}
-                    <IconCar size={24} /> {/* Car */}
+                    <IconBuilding size={24} />
+                    <IconPlane size={24} />
+                    <IconToolsKitchen size={24} />
+                    <IconCar size={24} />
                   </div>
                 </div>
               </div>
@@ -93,27 +89,23 @@ const Programs = () => {
         <div className={styles.gridContainer}>
           {programs.map((program, index) => (
             <div key={index} className={styles.card}>
-              <div
-                className={styles.cardImageWrapper}
-                data-title={program.title}
-              >
+              <div className={styles.cardImageWrapper}>
                 <img
                   src={program.src}
                   alt={program.title}
                   className={styles.cardImage}
                 />
+                <div className={styles.titleOverlay}>{program.title}</div>
               </div>
-
               <div className={styles.cardContent}>
-                <div className={styles.cardTitle}>{program.title}</div>
                 <div className={styles.cardDescription}>
                   {program.description}
                 </div>
                 <div className={styles.cardIcons}>
-                  <IconBuilding size={24} /> {/* Hotel */}
-                  <IconPlane size={24} /> {/* Airplane */}
-                  <IconToolsKitchen size={24} /> {/* Meal */}
-                  <IconCar size={24} /> {/* Car */}
+                  <IconBuilding size={24} />
+                  <IconPlane size={24} />
+                  <IconToolsKitchen size={24} />
+                  <IconCar size={24} />
                 </div>
               </div>
             </div>

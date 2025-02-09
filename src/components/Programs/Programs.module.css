@@ -37,8 +37,11 @@
 .cardImageWrapper {
   position: relative;
   width: 100%;
-  height: 240px; /* Fixed height for consistency */
+  height: 240px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .cardImage {
@@ -49,112 +52,65 @@
 }
 
 .cardImageWrapper:hover .cardImage {
-  transform: scale(1.1); /* Zoom effect on hover */
+  transform: scale(1.05);
 }
 
-/* Overlay for each card */
-.cardImageWrapper::after {
-  content: "";
+.titleOverlay {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
-  transition: opacity 0.3s ease;
-  opacity: 0;
-}
-
-.cardImageWrapper:hover::after {
-  opacity: 1; /* Show overlay on hover */
-}
-
-/* Unique overlay colors for each card */
-.card:nth-child(1) .cardImageWrapper::after {
-  background: linear-gradient(
-    to top,
-    rgba(37, 41, 95, 0.7),
-    rgba(37, 41, 95, 0.3)
-  ); /* Dark blue */
-}
-
-.card:nth-child(2) .cardImageWrapper::after {
-  background: linear-gradient(
-    to top,
-    rgba(37, 41, 95, 0.7),
-    rgba(37, 41, 95, 0.3)
-  ); /* Purple */
-}
-
-.card:nth-child(3) .cardImageWrapper::after {
-  background: linear-gradient(
-    to top,
-    rgba(37, 41, 95, 0.7),
-    rgba(37, 41, 95, 0.3)
-  ); /* Navy blue */
-}
-
-.cardImageWrapper::before {
-  content: attr(data-title);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Center on both axes */
+  padding: 20px;
+  background: rgba(40, 64, 101, 0.6); /* Dark overlay */
+  color: white;
+  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
   font-size: 1.5rem;
   font-weight: bold;
-  color: white;
   text-align: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
   z-index: 2;
+  transition: background 0.3s ease;
 }
 
-.cardImageWrapper:hover::before {
-  opacity: 1;
+.cardImageWrapper:hover .titleOverlay {
+  background: rgba(40, 64, 101, 0.8); /* Dark overlay */
 }
 
 .cardContent {
   padding: 20px;
-  flex-grow: 1; /* Ensure content takes up remaining space */
-}
-
-.cardTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #1a1a2e; /* Dark text color */
-  text-align: center; /* Center title */
+  flex-grow: 1;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
 }
 
 .cardDescription {
   font-size: 1rem;
   color: #666;
   margin-bottom: 20px;
-  text-align: center; /* Center description */
+  text-align: center;
 }
 
 .cardIcons {
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin-top: 10px;
 }
 
 .cardIcons svg {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   padding: 8px;
   border-radius: 50%;
   background-color: rgb(200, 178, 108);
-  ;
   color: white;
   transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cardIcons svg:hover {
-  background-color: #032f64; /* Darker color on hover */
-  transform: scale(1.1); /* Slightly enlarge on hover */
+  background-color: #032f64;
+  transform: scale(1.1);
 }
 
 /* Mobile-specific styles */
@@ -167,7 +123,7 @@
     height: 200px; /* Slightly smaller height for mobile */
   }
 
-  .cardTitle {
+  .cardTitleOverlay {
     font-size: 1.3rem; /* Smaller font size for mobile */
   }
 

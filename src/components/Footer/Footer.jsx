@@ -55,7 +55,10 @@ const Footer = () => {
                 <IconPhoneFilled size={20} />
                 <Text className={styles.phone}>0812-1001-0733</Text>
               </Group>
-              <Divider my="sm" color="#ffd700" />
+              <Divider
+                my="sm"
+                color="#c8b26c"
+              />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
                 <Anchor
                   className={styles.socialIcon}
@@ -66,10 +69,18 @@ const Footer = () => {
                 >
                   <IconBrandWhatsapp size={30} />
                 </Anchor>
-                <Anchor href="https://www.instagram.com/markaz_tadarus.id/#" target="_blank" className={styles.socialIcon}>
+                <Anchor
+                  href="https://www.instagram.com/markaz_tadarus.id/#"
+                  target="_blank"
+                  className={styles.socialIcon}
+                >
                   <IconBrandInstagram size={30} />
                 </Anchor>
-                <Anchor href="https://www.youtube.com/@markaztadarusindonesia" target="_blank" className={styles.socialIcon}>
+                <Anchor
+                  href="https://www.youtube.com/@markaztadarusindonesia"
+                  target="_blank"
+                  className={styles.socialIcon}
+                >
                   <IconBrandYoutube size={30} />
                 </Anchor>
               </Group>
@@ -123,7 +134,7 @@ const Footer = () => {
         </div>
 
         {/* Subfooter */}
-        <Divider my="md" color="#ffd700" mt={50} />
+        <Divider my="md" color="#c8b26c" mt={50} />
         <Text className={styles.subfooter}>
           © 2025 Markaz Tadarus. All rights reserved
         </Text>

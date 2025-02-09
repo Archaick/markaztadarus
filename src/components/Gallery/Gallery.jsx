@@ -11,7 +11,12 @@ import styles from "./Gallery.module.css"; // Import CSS module
 
 const Gallery = () => {
   const images = [SlideOne, SlideTwo, SlideThree, SlideFour, SlideFive];
-  const autoplay = useRef(Autoplay({ delay: 3000 }));
+  const autoplay = useRef(
+    Autoplay({ 
+      delay: 3000, 
+      stopOnInteraction: false // Keeps autoplay running even if the user interacts remove if needed
+    })
+  );
 
   return (
     <section
@@ -20,17 +25,28 @@ const Gallery = () => {
         textAlign: "center",
         position: "relative",
         overflow: "hidden",
-        margin: "40px 0 40px 0"
+        paddingTop: "100px",
+        backgroundColor: "#f9f9f9",
       }}
       aria-labelledby="gallery-heading"
       id="gallery"
     >
       {/* Heading */}
       <div style={{ marginBottom: "20px" }}>
-        <h2 id="gallery-heading" style={{ fontSize: "2rem", color: "#112a42", marginBottom: "8px", fontWeight: "700" }}>
+        <h2
+          id="gallery-heading"
+          style={{
+            fontSize: "2rem",
+            color: "#112a42",
+            marginBottom: "8px",
+            fontWeight: "700",
+          }}
+        >
           Galeri Program
         </h2>
-        <p style={{ fontSize: "1.2rem", color: "#6c757d", marginBottom: "50px" }}>
+        <p
+          style={{ fontSize: "1.2rem", color: "#6c757d", marginBottom: "50px" }}
+        >
           Program terlaksana tahun 1446 H / 2024 M
         </p>
       </div>
@@ -40,10 +56,11 @@ const Gallery = () => {
         withIndicators
         height={500}
         plugins={[autoplay.current]}
-        // onMouseEnter={autoplay.current.stop}
-        // onMouseLeave={autoplay.current.reset}
         loop
         align="center"
+        slideSize="70%" // Adjust slide size to show hints of adjacent slides
+        slideGap="md" // Add gap between slides
+        slidesToScroll={1} // Scroll one slide at a time
         classNames={{
           indicators: styles.carouselIndicators,
           indicator: styles.carouselIndicator,
