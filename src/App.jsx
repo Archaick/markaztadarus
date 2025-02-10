@@ -1,6 +1,8 @@
 import React from "react";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
+import { BrowserRouter as Router, Routes, Route} from "react-router-dom"
+// Router when in app we want different apps.
 import Navbar from "./components/Navbar/Navbar";
 import Hero from "./components/Hero/Hero"
 import Programs from "./components/Programs/Programs";
