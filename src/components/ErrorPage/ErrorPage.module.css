@@ -1,0 +1,37 @@
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 60%, #c8b26c 100%);
+  color: white;
+}
+
+.errorTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #c8b26c;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.errorText {
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+}
+
+.backButton {
+  text-decoration: none;
+}
+
+.errorButton {
+  border: 2px solid #c8b26c;
+  color: #c8b26c;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.errorButton:hover {
+  background: #c8b26c;
+  color: #1a1a2e;
+}

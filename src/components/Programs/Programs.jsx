@@ -37,12 +37,12 @@ const programs = [
 const Programs = () => {
   // Configure Autoplay to resume after user interaction
   const autoplay = useRef(
-    Autoplay({ delay: 2500, stopOnInteraction: false }) // Add stopOnInteraction: false
+    Autoplay({ delay: 3000, stopOnInteraction: false }) // Add stopOnInteraction: false
   );
   const isMobile = useMediaQuery("(max-width: 768px)"); // Check if screen is smaller than 768px
 
   return (
-    <section className={styles.programsSection}>
+    <section className={styles.programsSection} id="program">
       <h2 className={styles.header}>Program Kami</h2>
       <Text align="center" size="1.2rem" color="gray" mb={40}>
         "Menyatukan hati dengan al-Qur’an"

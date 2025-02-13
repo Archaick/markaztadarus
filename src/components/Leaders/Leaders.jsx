@@ -4,7 +4,7 @@ import { IconQuote } from "@tabler/icons-react";
 import Rahmat from "../../assets/imgs/leaders/rahmat.png";
 import Adnan from "../../assets/imgs/leaders/adnan.png";
 import Agus from "../../assets/imgs/leaders/agus.png";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import styles from "./Leaders.module.css";
 
 const leaders = [
@@ -29,8 +29,12 @@ const leaders = [
 ];
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
 };
 
 const Leaders = () => {
@@ -43,66 +47,44 @@ const Leaders = () => {
         Disampaikan oleh Pengurus Markaz Tadarus Indonesia
       </Text>
       <Grid gutter="lg" mt={50}>
-        {leaders.map((leader, index) => {
-          const ref = useRef(null);
-          const isInView = useInView(ref, { once: false, margin: "-100px" });
-
-          return (
-            <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4 }}>
-              <motion.div
-                ref={ref}
-                initial="hidden"
-                animate={isInView ? "visible" : "hidden"}
-                variants={cardVariants}
-              >
-                <Card
-                  className={styles.card}
-                  shadow="sm"
-                  padding="lg"
-                  radius="md"
-                  withBorder
-                >
-                  <div
+        {leaders.map((leader, index) => (
+          <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4 }}>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ amount: 0.2 }}
+              variants={cardVariants}
+            >
+              <Card className={styles.card} shadow="sm" padding="lg" radius="md" withBorder>
+                <div style={{ position: "relative", paddingTop: "30px", marginBottom: "60px" }}>
+                  <img
+                    src={leader.image}
+                    alt={leader.name}
+                    width={100}
+                    height={100}
                     style={{
-                      position: "relative",
-                      paddingTop: "30px",
-                      marginBottom: "60px",
+                      position: "absolute",
+                      top: "10px",
+                      right: "10px",
+                      objectFit: "cover",
                     }}
-                  >
-                    <img
-                      src={leader.image}
-                      alt={leader.name}
-                      width={100}
-                      height={100}
-                      style={{
-                        position: "absolute",
-                        top: "10px",
-                        right: "10px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  </div>
-                  <IconQuote
-                    size={40}
-                    color="#ccc"
-                    style={{ marginBottom: 10 }}
                   />
-                  <Text size="sm" style={{ minHeight: "80px" }}>
-                    {leader.text}
-                  </Text>
-                  <Text weight={900} mt={50}>
-                    {leader.name}
-                  </Text>
-                  <Text size="xs" color="gray">
-                    {leader.role}
-                  </Text>
-                </Card>
-              </motion.div>
-            </Grid.Col>
-          );
-        })}
+                </div>
+                <IconQuote size={40} color="#c8b26c" style={{ marginBottom: 10 }} />
+                <Text size="sm" style={{ minHeight: "80px" }}>
+                  {leader.text}
+                </Text>
+                <Text weight={900} mt={50}>
+                  {leader.name}
+                </Text>
+                <Text size="xs" color="gray">
+                  {leader.role}
+                </Text>
+              </Card>
+            </motion.div>
+          </Grid.Col>
+        ))}
       </Grid>
-
     </Container>
   );
 };

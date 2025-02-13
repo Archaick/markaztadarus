@@ -61,14 +61,47 @@
   left: 0;
   width: 100%;
   padding: 20px;
-  background: rgba(40, 64, 101, 0.6); /* Dark overlay */
+  background: linear-gradient(
+    135deg,
+    #1a1a2eb9,
+    #1a1a2e
+  ); /* Modern gradient colors */
   color: white;
-  text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
   z-index: 2;
-  transition: background 0.3s ease;
+  overflow: hidden;
+}
+
+.titleOverlay::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.15); /* Soft shine effect */
+  filter: blur(10px);
+  animation: shine 5s infinite linear;
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+
+@keyframes shine {
+  0% {
+    top: -100%;
+    left: -100%;
+  }
+  50% {
+    top: 0;
+    left: 0;
+  }
+  100% {
+    top: 100%;
+    left: 100%;
+  }
 }
 
 .cardImageWrapper:hover .titleOverlay {
