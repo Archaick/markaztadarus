@@ -29,11 +29,6 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover {
-  transform: translateY(-5px); /* Lift the card on hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Add a stronger shadow on hover */
-}
-
 .cardImageWrapper {
   position: relative;
   width: 100%;
@@ -60,7 +55,7 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 20px;
+  padding: 12px;
   background: linear-gradient(
     135deg,
     #1a1a2eb9,
@@ -79,15 +74,14 @@
   position: absolute;
   top: -100%;
   left: -100%;
-  width: 200%;
-  height: 200%;
-  background: rgba(255, 255, 255, 0.15); /* Soft shine effect */
-  filter: blur(10px);
+  width: 120%;
+  height: 120%;
+  background: rgba(255, 255, 255, 0.35); /* Soft shine effect */
+  filter: blur(15px);
   animation: shine 5s infinite linear;
   transform: rotate(45deg);
   z-index: 1;
 }
-
 
 @keyframes shine {
   0% {
@@ -142,8 +136,33 @@
 }
 
 .cardIcons svg:hover {
-  background-color: #032f64;
+  background-color: #021c3c;
   transform: scale(1.1);
+}
+
+.cardButton {
+  display: block;
+  margin: 20px auto 0;
+  background: #032f64; /* Primary green color */
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 8px;
+  box-shadow: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+  text-align: center;
+  width: 240px;
+  cursor: pointer;
+  border: none;
+}
+
+.cardButton:hover {
+  background: #021c3c; /* Slightly darker green for hover */
+  transform: translateY(5px);
+}
+
+.cardButton:active {
+  transform: translateY(0);
 }
 
 /* Mobile-specific styles */

@@ -11,6 +11,7 @@ import Quote from "./components/Quote/Quote";
 import Gallery from "./components/Gallery/Gallery";
 import Marquee from "./components/Marquee/Marquee";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
+import UT from "./components/Programs/UT";
 
 const MainPage = () => (
   <>
@@ -30,20 +31,16 @@ const App = () => {
     <MantineProvider>
       <Router>
         <Routes>
-          {/* Main page with all sections */}
           <Route path="/" element={<MainPage />} />
-          
-          {/* Dedicated program pages without navbar and footer */}
-          {/* <Route path="/program1" element={<div>Program 1 Details</div>} />
-          <Route path="/program2" element={<div>Program 2 Details</div>} />
-          <Route path="/program3" element={<div>Program 3 Details</div>} /> */}
-          
-          {/* 404 Error page */}
+          <Route path="/program1" element={<UT />} />
+          {/* <Route path="/program2" element={<DS />} />
+          <Route path="/program3" element={<DQ />} /> */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>
     </MantineProvider>
   );
 };
+
 
 export default App;
