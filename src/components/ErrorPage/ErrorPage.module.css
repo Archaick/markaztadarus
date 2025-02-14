@@ -6,6 +6,8 @@
   height: 100vh;
   background: linear-gradient(135deg, #1a1a2e 60%, #c8b26c 100%);
   color: white;
+  padding: 8px;
+  text-align: center;
 }
 
 .errorTitle {
@@ -34,4 +36,13 @@
 .errorButton:hover {
   background: #c8b26c;
   color: #1a1a2e;
+}
+
+@media (max-width: 768px) {
+  .errorTitle {
+    font-size: 2.5rem;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
 }

@@ -20,20 +20,20 @@ const programs = [
     src: UT,
     title: "Umrah Tadabburiyah",
     description: "Tadabbur al-Qur'an untuk masyarakat umum plus Umrah",
-    link: "/program1",
+    link: "/ut",
   },
   {
     src: DS,
     title: "Daurah Santri",
     description: "Pelatihan bahasa Arab dan al-Qur'an untuk Santri plus Umrah",
-    link: "/program2",
+    link: "/ds",
   },
   {
     src: DQ,
     title: "Duta Qur’an",
     description:
       "Pelatihan tadabbur al-Qur'an untuk Da’i dan Asatidz plus Umrah",
-    link: "/program3",
+    link: "/dq",
   },
 ];
 
