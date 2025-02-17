@@ -1,6 +1,6 @@
 .utPage {
   min-height: 100vh;
-  background: url("../../assets/imgs/UT.png") center/cover no-repeat fixed;
+  background: url("../../assets/imgs/programs/UT.jpg") center/cover no-repeat fixed;
   display: flex;
   justify-content: center;
   position: relative;
@@ -16,9 +16,9 @@
   height: 100%;
   background: linear-gradient(
     to bottom,
-    rgba(15, 15, 15, 0.8),
-    rgba(15, 15, 15, 0.4),
-    rgba(63, 63, 63, 0.3)
+    rgba(15, 15, 15, 0.9), /* Dark overlay at the top */
+    rgba(120, 90, 40, 0.6), /* Gold-dark blend in the middle */
+    rgba(200, 160, 80, 0.3) /* Lighter gold at the bottom */
   );
   z-index: 0;
 }
@@ -26,7 +26,7 @@
 .contentWrapper {
   background: #f7f7f7c6;
   padding: 2.5rem;
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -48,7 +48,7 @@
 }
 
 .homeButton {
-  background: #c8b26c;
+  background: #1a1a2e;
   color: white;
   font-weight: bold;
   padding: 0.4rem 0.8rem; /* Less padding */
@@ -61,24 +61,138 @@
 }
 
 .homeButton:hover {
-  background: #b59c5f;
+  background: #262643;
 }
 
 .title {
   font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 900;
+  margin-bottom: 10px;
+  font-weight: 800;
   color: #1a1a2e;
   text-align: center;
 }
 
+.subtitle {
+  text-align: center;
+  font-weight: 900;
+  color: #1a1a2ed4;
+  margin-bottom: 15px;
+}
+
 .textContent {
   font-size: 1.25rem;
-  line-height: 1.8;
+  text-align: center;
+  line-height: 1.5;
   color: #1a1a2e;
   margin-bottom: 2rem;
 }
 
+/* Cards Container */
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* Card Styling */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #153a5f;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Styling */
+.card img {
+  padding: 12px;
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 2rem;
+  }
+  .logo {
+    width: 165px;
+  }
+
+  .homeButton {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+  .textContent {
+    font-size: 1.1rem;
+  }
+
+  /* Ensure cards stack vertically on small screens */
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .cardsContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* KEUNGGULAN PROGRAM Container */
+.advantagesContainer {
+  background-color: #0a3867;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+/* Advantage Item Styling */
+.advantageItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .advantagesContainer {
+    padding: 1.5rem;
+  }
+
+  .advantageItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .advantageItem svg {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .advantagesContainer {
+    padding: 1rem;
+  }
+
+  .advantageItem {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* footer */
 .whatsappButton {
   margin: 0 auto;
   display: flex;
