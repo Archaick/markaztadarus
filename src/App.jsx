@@ -11,7 +11,10 @@ import Quote from "./components/Quote/Quote";
 import Gallery from "./components/Gallery/Gallery";
 import Marquee from "./components/Marquee/Marquee";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
+// Programs
 import UT from "./components/Programs/UT";
+import DS from "./components/Programs/DS";
+import DQ from "./components/Programs/DQ";
 
 const MainPage = () => (
   <>
@@ -33,8 +36,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/ut" element={<UT />} />
-          {/* <Route path="/program2" element={<DS />} />
-          <Route path="/program3" element={<DQ />} /> */}
+          <Route path="/ds" element={<DS />} />
+          <Route path="/dq" element={<DQ />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>

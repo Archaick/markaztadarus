@@ -29,12 +29,12 @@ const Hero = () => {
           <span className={classes.typewriter}>
             <span className="typewriter">
               <Typewriter
-                words={["Umrah", "Belajar Bahasa Arab", "Master the Qur'an"]}
+                words={["Umrah Daurah", "Umrah Tadabburiyah"]}
                 loop={0}
                 cursor
                 cursorStyle="|"
-                typeSpeed={100}
-                deleteSpeed={50}
+                typeSpeed={200}
+                deleteSpeed={100}
                 delaySpeed={1500}
               />
             </span>

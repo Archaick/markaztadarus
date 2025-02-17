@@ -20,7 +20,7 @@
 }
 
 .card {
-  border-radius: 16px;
+  /* border-radius: 16px; */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
@@ -107,8 +107,8 @@
   flex-grow: 1;
   background: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+  /* border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px; */
 }
 
 .cardDescription {
