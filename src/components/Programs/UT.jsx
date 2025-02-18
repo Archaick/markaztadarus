@@ -1,9 +1,20 @@
 import React from "react";
-import { Button, Text, Container, Card, Image, Grid } from "@mantine/core";
+import {
+  Button,
+  Text,
+  Container,
+  Card,
+  Image,
+  Grid,
+  Accordion,
+  Box,
+  List,
+} from "@mantine/core";
 import {
   IconBrandWhatsapp,
   IconHomeFilled,
   IconCheckbox,
+  IconOctagon,
 } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
 import styles from "./UT.module.css";
@@ -13,6 +24,16 @@ import kaaba from "../../assets/imgs/cards/kaaba.png";
 import hajj from "../../assets/imgs/cards/hajj.png";
 import ownership from "../../assets/imgs/cards/ownership.png";
 import quran from "../../assets/imgs/cards/quran.png";
+// facilities
+import food from "../../assets/imgs/facilities/food.png";
+import learn from "../../assets/imgs/facilities/learn.png";
+import prov from "../../assets/imgs/facilities/prov.png";
+import room from "../../assets/imgs/facilities/room.png";
+import ticket from "../../assets/imgs/facilities/ticket.png";
+import tour from "../../assets/imgs/facilities/tour.png";
+import transport from "../../assets/imgs/facilities/transport.png";
+import visa from "../../assets/imgs/facilities/visa.png";
+import visits from "../../assets/imgs/facilities/visits.png";
 
 const UT = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Umrah Tadabburiyah.`;
@@ -58,6 +79,19 @@ const UT = () => {
     },
   ];
 
+  const facilities = [
+    { text: "Pembekalan sebelum keberangkatan.", icon: learn },
+    { text: "Tiket Pesawat PP.", icon: ticket },
+    { text: "Visa dan Bis selama di Saudi.", icon: visa },
+    { text: "Tour Leader.", icon: tour },
+    { text: "Transportasi Jedah-Mekah-Madinah", icon: transport },
+    { text: "Tempat tinggal Mekah selama 8 malam.", icon: room },
+    { text: "Tempat tinggal Madinah selama 2 malam.", icon: room },
+    { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
+    { text: "Kunjungan-kunjungan.", icon: visits },
+    { text: "Modul Pembelajaran.", icon: prov },
+  ];
+
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
 
   return (
@@ -90,7 +124,11 @@ const UT = () => {
         </Text>
 
         {/* Program Cards Section */}
-        <Text className={styles.subtitle} style={{ marginTop: "2rem", fontSize: "1.7rem" }} mt={70}>
+        <Text
+          className={styles.subtitle}
+          style={{ marginTop: "2rem", fontSize: "1.7rem" }}
+          mt={70}
+        >
           TUJUAN PROGRAM
         </Text>
         <div className={styles.cardsContainer}>
@@ -112,27 +150,176 @@ const UT = () => {
           ))}
         </div>
 
-        <Text className={styles.subtitle} style={{ marginTop: "2rem", fontSize: "1.7rem" }} mt={70}>
-          KEUNGGULAN PROGRAM
+        {/* Accordion Section */}
+        <Text
+          className={styles.subtitle}
+          style={{ marginTop: "2rem", fontSize: "1.7rem" }}
+          mt={70}
+        >
+          CAKUPAN PROGRAM
         </Text>
-        <div className={styles.advantagesContainer}>
-          <Grid gutter="lg">
-            {advantages.map((advantage, index) => (
-              <Grid.Col key={index} span={isSmallScreen ? 12 : 6}>
-                <div className={styles.advantageItem}>
-                  <IconCheckbox 
-                    size={24}
-                    color="white"
-                    style={{ marginRight: "4px" }}
-                  />
-                  <Text size="md" color="white">
-                    {advantage.text}
-                  </Text>
-                </div>
-              </Grid.Col>
+        <Accordion
+          variant="contained"
+          mt={20}
+          styles={{
+            control: {
+              backgroundColor: "#ffffff", // White background for the control
+              color: "#0A3867", // Dark blue text color
+            },
+            item: {
+              border: "1px solid #e0e0e0", // Light border for each item
+              borderRadius: "8px", // Rounded corners
+            },
+            content: {
+              backgroundColor: "#f7f7f7", // Light gray background for the content
+              padding: "1rem", // Padding inside the content
+            },
+          }}
+        >
+          <Accordion.Item value="pembekalan">
+            <Accordion.Control>
+              <Text fw={600}>Pembekalan Pra Keberangkatan</Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <ol>
+                <li>Kisah Umrah Nabi dan Sahabat</li>
+                <li>Keutamaan Mekah dan Madinah</li>
+                <li>Kunci-Kunci Tadabbur al-Qur'an</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="madinah">
+            <Accordion.Control>
+              <Text fw={600}>Madinah</Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <ol>
+                <li>Tadabbur al-Qur'an</li>
+                <li>I'tikaf di Masjid Nabawi</li>
+                <li>Shalat Jum'at di Masjid Nabawi</li>
+                <li>Berjalan kaki ke Masjid Quba</li>
+                <li>Kunjungan ke tempat bersejarah</li>
+                <li>Manasik Umrah</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="mekah">
+            <Accordion.Control>
+              <Text fw={600}>Mekah</Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <ol>
+                <li>Umrah</li>
+                <li>Tadabbur al-Qur'an</li>
+                <li>I'tikaf di Masjidil Haram</li>
+                <li>Nasehat Qur'Aniyah Bersama syeikh dari Lembaga an-Naba</li>
+                <li>Kunjungan ke museum wahyu</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="pasca">
+            <Accordion.Control>
+              <Text fw={600}>Pasca Program</Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <ol>
+                <li>Lebih Mencintai al-Qur'an</li>
+                <li>Mentadabburi ayat-ayat al-Qur'an secara mandiri</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+
+        {/* Facilities Section */}
+        <Box className={styles.facilitiesSection} mt={40} mb={40}>
+          {/* Header */}
+          <Box className={styles.facilitiesHeader}>
+            <Text fw={900} className={styles.facilitiesHeaderTitle}>
+              FASILITAS
+            </Text>
+          </Box>
+
+          {/* Content */}
+          <Box className={styles.facilitiesContent}>
+            {facilities.map((facility, index) => (
+              <Box key={index} className={styles.facilityItem}>
+                <Image
+                  src={facility.icon}
+                  alt={facility.text}
+                  className={styles.facilityIcon}
+                />
+                <Text>{facility.text}</Text>
+              </Box>
             ))}
-          </Grid>
-        </div>
+          </Box>
+        </Box>
+
+        <Box
+          style={{
+            backgroundColor: "#152D46",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT DOKUMEN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {["Paspor", "KTP", "Foto Background putih"].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* requirements */}
+        <Box
+          style={{
+            backgroundColor: "#F7F7F7",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "#152D46",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
+            SYARAT PERJALANAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Menyiapkan paspor pribadi.",
+              "Menyiapkan ihram pribadi.",
+              "Menyiapkan koper pribadi.",
+              "Mengurus vaksin miningitis pribadi.",
+              "Membawa seragam baju putih dan celana hitam.",
+              "Membeli kuota internet umrah sebelum perjalanan.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{ color: "#152D46" }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
 
         {/* WhatsApp Button */}
         <Button
@@ -142,7 +329,7 @@ const UT = () => {
           rel="noopener noreferrer"
           className={styles.whatsappButton}
           style={{ marginTop: "2rem" }}
-          mt={200}
+          mt={80}
         >
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami

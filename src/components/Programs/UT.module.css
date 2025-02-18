@@ -1,6 +1,7 @@
 .utPage {
   min-height: 100vh;
-  background: url("../../assets/imgs/programs/UT.jpg") center/cover no-repeat fixed;
+  background: url("../../assets/imgs/programs/UT.jpg") center/cover no-repeat
+    fixed;
   display: flex;
   justify-content: center;
   position: relative;
@@ -16,9 +17,11 @@
   height: 100%;
   background: linear-gradient(
     to bottom,
-    rgba(15, 15, 15, 0.9), /* Dark overlay at the top */
-    rgba(120, 90, 40, 0.6), /* Gold-dark blend in the middle */
-    rgba(200, 160, 80, 0.3) /* Lighter gold at the bottom */
+    rgba(15, 15, 15, 0.9),
+    /* Dark overlay at the top */ rgba(120, 90, 40, 0.6),
+    /* Gold-dark blend in the middle */
+      /* rgba(200, 160, 80, 0.3) Lighter gold at the bottom */
+      rgba(15, 15, 15, 0.9) /* Dark overlay at the bottom */
   );
   z-index: 0;
 }
@@ -61,21 +64,22 @@
 }
 
 .homeButton:hover {
-  background: #262643;
+  background: #0a3867;
 }
 
 .title {
   font-size: 2.5rem;
+  margin-top: 50px;
   margin-bottom: 10px;
   font-weight: 800;
-  color: #1a1a2e;
+  color: #0a3867;
   text-align: center;
 }
 
 .subtitle {
   text-align: center;
-  font-weight: 900;
-  color: #1a1a2ed4;
+  font-weight: 800;
+  color: #0a3867;
   margin-bottom: 15px;
 }
 
@@ -83,12 +87,13 @@
   font-size: 1.25rem;
   text-align: center;
   line-height: 1.5;
-  color: #1a1a2e;
+  color: #0a3867;
   margin-bottom: 2rem;
 }
 
 /* Cards Container */
 .cardsContainer {
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
@@ -192,26 +197,92 @@
   }
 }
 
+/* Accordion */
+.accordTitle {
+  color: #0a3867;
+  font-size: 1.2rem;
+  font-weight: 700 !important; /* Ensures the weight is applied */
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Facilities */
+.facilitiesSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem; /* Space between header and content */
+}
+
+.facilitiesHeader {
+  background-color: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  color: #0a3867 !important;
+  width: 100%;
+  max-width: 800px;
+}
+
+.facilitiesHeaderTitle {
+  font-size: 1.4rem;
+}
+
+.facilitiesContent {
+  background-color: #f7f7f7;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.facilityItem {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.facilityIcon {
+  width: 32px;
+  height: 32px;
+}
+
+@media (max-width: 768px) {
+  .facilityIcon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .facilitiesHeader {
+    font-size: 1.2rem;
+  }
+}
+
 /* footer */
 .whatsappButton {
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
-  padding: 6px 16px; /* Menyesuaikan padding agar lebih proporsional */
+  width: 240px;
   background-color: #25d366;
   color: white;
   border-radius: 6px;
   transition: background 0.2s ease, transform 0.1s ease;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
 }
 
 .whatsappButton:hover {
-  background-color: #1ebe5d;
+  background-color: #27be63;
   transform: scale(1.05);
 }
 
