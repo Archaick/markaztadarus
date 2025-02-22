@@ -13,7 +13,6 @@ import {
 import {
   IconBrandWhatsapp,
   IconHomeFilled,
-  IconCheckbox,
   IconOctagon,
 } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
@@ -96,7 +95,7 @@ const UT = () => {
 
   return (
     <div className={styles.utPage}>
-      <Container className={styles.contentWrapper}>
+      <Container className={styles.topWrapper}>
         <div className={styles.header}>
           <img src={logo} alt="MT Logo" className={styles.logo} />
           <Button
@@ -122,7 +121,9 @@ const UT = () => {
           tadabbur al-Qur’an di tempat turunnya, yaitu Mekah dan Madinah,
           disertai program i’tikaf di Masjid Nabawi dan Masjidil Haram.
         </Text>
+      </Container>
 
+      <Container className={styles.contentWrapper}>
         {/* Program Cards Section */}
         <Text
           className={styles.subtitle}
@@ -173,6 +174,7 @@ const UT = () => {
             content: {
               backgroundColor: "#f7f7f7", // Light gray background for the content
               padding: "1rem", // Padding inside the content
+              fontWeight: "500",
             },
           }}
         >
@@ -248,7 +250,7 @@ const UT = () => {
                   alt={facility.text}
                   className={styles.facilityIcon}
                 />
-                <Text>{facility.text}</Text>
+                <Text className={styles.facilitiesText}>{facility.text}</Text>
               </Box>
             ))}
           </Box>
@@ -276,6 +278,9 @@ const UT = () => {
               <List.Item
                 key={index}
                 icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
               >
                 {item}
               </List.Item>
@@ -313,7 +318,7 @@ const UT = () => {
               <List.Item
                 key={index}
                 icon={<IconOctagon size={18} color="#FFD700" />}
-                style={{ color: "#152D46" }}
+                style={{ color: "#152D46", fontWeight: "650" }}
               >
                 {item}
               </List.Item>
