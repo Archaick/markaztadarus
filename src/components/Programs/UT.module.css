@@ -67,8 +67,8 @@
   background: #1a1a2e;
   color: white;
   font-weight: bold;
-  padding: 0.4rem 0.8rem; /* Less padding */
-  font-size: 0.85rem; /* Smaller text */
+  padding: 0.2rem 0.4rem; 
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;

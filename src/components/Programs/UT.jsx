@@ -15,7 +15,6 @@ import {
   IconHomeFilled,
   IconOctagon,
 } from "@tabler/icons-react";
-import { useMediaQuery } from "@mantine/hooks";
 import styles from "./UT.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 // program cards
@@ -90,8 +89,6 @@ const UT = () => {
     { text: "Kunjungan-kunjungan.", icon: visits },
     { text: "Modul Pembelajaran.", icon: prov },
   ];
-
-  const isSmallScreen = useMediaQuery("(max-width: 768px)");
 
   return (
     <div className={styles.utPage}>

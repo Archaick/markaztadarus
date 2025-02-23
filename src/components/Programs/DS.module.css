@@ -1,8 +1,11 @@
 .dsPage {
   min-height: 100vh;
-  background: url("../../assets/imgs/DS.png") center/cover no-repeat fixed;
+  background: url("../../assets/imgs/programs/ds.jpg") center/cover no-repeat
+    fixed;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  gap: 64px;
   position: relative;
   padding: 2rem 1rem;
 }
@@ -16,17 +19,28 @@
   height: 100%;
   background: linear-gradient(
     to bottom,
-    rgba(7, 40, 7, 0.8),
-    rgba(8, 49, 8, 0.4),
-    rgba(40, 96, 40, 0.3)
+    rgba(10, 25, 10, 0.9),
+    rgba(50, 130, 70, 0.6),
+    rgba(10, 25, 10, 0.9)
   );
   z-index: 0;
 }
 
-.contentWrapper {
-  background: rgba(27, 27, 27, 0.5);
+.topWrapper {
+  background: #f7f7f7c6;
   padding: 2.5rem;
-  max-width: 800px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.contentWrapper {
+  background: #f7f7f7c6;
+  padding: 2.5rem;
+  max-width: 1000px;
   width: 100%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -48,11 +62,11 @@
 }
 
 .homeButton {
-  background: #c8b26c;
+  background: #1a1a2e;
   color: white;
   font-weight: bold;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem; /* Less padding */
+  font-size: 0.75rem; /* Smaller text */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,63 +75,27 @@
 }
 
 .homeButton:hover {
-  background: #b59c5f;
+  background: #0a3867;
 }
 
-.title {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 900;
-  color: #efefef;
-  text-align: center;
-}
-
-.textContent {
-  font-size: 1.25rem;
-  line-height: 1.8;
-  color: rgb(210, 210, 210);
-  margin-bottom: 2rem;
-}
-
+/* Whatsapp button */
 .whatsappButton {
   margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
-  padding: 6px 16px;
+  width: 240px;
   background-color: #25d366;
   color: white;
   border-radius: 6px;
   transition: background 0.2s ease, transform 0.1s ease;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
 }
 
 .whatsappButton:hover {
-  background-color: #1ebe5d;
+  background-color: #27be63;
   transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-  .contentWrapper {
-    padding: 2rem;
-  }
-  .logo {
-    width: 165px;
-  }
-
-  .homeButton {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-  .textContent {
-    font-size: 1.1rem;
-  }
 }
