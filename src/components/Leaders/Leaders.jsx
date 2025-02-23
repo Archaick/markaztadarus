@@ -56,7 +56,7 @@ const Leaders = () => {
               variants={cardVariants}
             >
               <Card className={styles.card} shadow="sm" padding="lg" radius="md" withBorder>
-                <div style={{ position: "relative", paddingTop: "30px", marginBottom: "60px" }}>
+                <div className={styles.imageWrap}>
                   <img
                     src={leader.image}
                     alt={leader.name}

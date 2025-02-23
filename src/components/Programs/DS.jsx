@@ -1,4 +1,4 @@
-import { Container, Button } from "@mantine/core";
+import { Container, Button, Text } from "@mantine/core";
 import React from "react";
 import styles from "./DS.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
@@ -23,13 +23,18 @@ const DS = () => {
             variant="filled"
             size="md"
             component="a"
-            href="/"
+            href="/#program"
             className={styles.homeButton}
           >
             <IconHomeFilled size={14} style={{ marginRight: "3px" }} />
             Beranda
           </Button>
         </div>
+        <h2 className={styles.title}>Daurah Santri</h2>
+        <Text className={styles.subtitle}>GAMBARAN SINGKAT PROGRAM</Text>
+        <Text className={styles.textContent} mt={50} p={6}>
+          Placeholder
+        </Text>
       </Container>
 
       <Container className={styles.contentWrapper}>

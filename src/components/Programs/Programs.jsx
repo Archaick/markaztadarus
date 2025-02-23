@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Carousel } from "@mantine/carousel";
 import { Button, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -40,6 +41,17 @@ const programs = [
 const Programs = () => {
   const autoplay = useRef(Autoplay({ delay: 3000, stopOnInteraction: false }));
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#program") {
+      const element = document.getElementById("program");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
   return (
     <section className={styles.programsSection} id="program">

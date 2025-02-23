@@ -99,7 +99,7 @@ const UT = () => {
             variant="filled"
             size="md"
             component="a"
-            href="/"
+            href="/#program"
             className={styles.homeButton}
           >
             <IconHomeFilled
