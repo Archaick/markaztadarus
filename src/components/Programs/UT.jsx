@@ -179,7 +179,7 @@ const UT = () => {
             <Accordion.Control>
               <Text fw={600}>Pembekalan Pra Keberangkatan</Text>
             </Accordion.Control>
-            <Accordion.Panel>
+            <Accordion.Panel ml={20}>
               <ol>
                 <li>Kisah Umrah Nabi dan Sahabat</li>
                 <li>Keutamaan Mekah dan Madinah</li>
@@ -191,7 +191,7 @@ const UT = () => {
             <Accordion.Control>
               <Text fw={600}>Madinah</Text>
             </Accordion.Control>
-            <Accordion.Panel>
+            <Accordion.Panel ml={20}>
               <ol>
                 <li>Tadabbur al-Qur'an</li>
                 <li>I'tikaf di Masjid Nabawi</li>
@@ -206,7 +206,7 @@ const UT = () => {
             <Accordion.Control>
               <Text fw={600}>Mekah</Text>
             </Accordion.Control>
-            <Accordion.Panel>
+            <Accordion.Panel ml={20}>
               <ol>
                 <li>Umrah</li>
                 <li>Tadabbur al-Qur'an</li>
@@ -220,7 +220,7 @@ const UT = () => {
             <Accordion.Control>
               <Text fw={600}>Pasca Program</Text>
             </Accordion.Control>
-            <Accordion.Panel>
+            <Accordion.Panel ml={20}> 
               <ol>
                 <li>Lebih Mencintai al-Qur'an</li>
                 <li>Mentadabburi ayat-ayat al-Qur'an secara mandiri</li>

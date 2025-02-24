@@ -68,7 +68,7 @@
   color: white;
   font-weight: bold;
   padding: 0.2rem 0.4rem; 
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,7 +136,6 @@
   border-radius: 8px 8px 0 0;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .contentWrapper {
     padding: 2rem;
@@ -301,11 +300,6 @@
   }
   .logo {
     width: 165px;
-  }
-
-  .homeButton {
-    font-size: 0.75rem; /* Reduce button font */
-    padding: 0.3rem 0.6rem; /* Adjust padding */
   }
 
   .title {
