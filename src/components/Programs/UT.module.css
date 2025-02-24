@@ -67,7 +67,7 @@
   background: #1a1a2e;
   color: white;
   font-weight: bold;
-  padding: 0.2rem 0.4rem; 
+  padding: 0.2rem 0.4rem;
   font-size: 0.75rem;
   display: flex;
   align-items: center;
@@ -168,6 +168,13 @@
   }
 }
 
+/* KEUNGGULAN PROGRAM */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
 /* KEUNGGULAN PROGRAM Container */
 .advantagesContainer {
   background-color: #0a3867;
@@ -206,6 +213,10 @@
 
   .advantageItem {
     margin-bottom: 0.5rem;
+  }
+  /*  KEUNGGULAN PROGRAM */
+  .gridContainer {
+    grid-template-columns: 1fr;
   }
 }
 

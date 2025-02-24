@@ -5,15 +5,18 @@ import {
   Container,
   Card,
   Image,
-  Grid,
   Accordion,
   Box,
   List,
+  Paper,
+  SimpleGrid,
+  Group,
 } from "@mantine/core";
 import {
   IconBrandWhatsapp,
   IconHomeFilled,
   IconOctagon,
+  IconCircleCheck
 } from "@tabler/icons-react";
 import styles from "./UT.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
@@ -148,6 +151,48 @@ const UT = () => {
           ))}
         </div>
 
+        <Text
+          style={{
+            fontSize: "1.7rem",
+            textAlign: "center",
+            marginTop: "4rem",
+          }}
+          className={styles.subtitle}
+        >
+          KEUNGGULAN PROGRAM
+        </Text>
+        <Paper
+          p="lg"
+          style={{
+            backgroundColor: "#0A3867",
+            borderRadius: "8px",
+            marginTop: "1rem",
+          }}
+        >
+          <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
+            {[
+              "Mempelajari ayat suci al-Qur’an di tempat turunnya.",
+              "Melaksanakan ibadah Umrah.",
+              "Mempelajari kunci-kunci mentadabburi al-Qur’an.",
+              "Beri’tikaf di Masjidil Haram dan Masjid Nabawi.",
+            ].map((item, index) => (
+              <Group key={index} spacing="sm" align="center" wrap="nowrap">
+                <IconCircleCheck size={20} color="#BAF6AD" />
+                <Text
+                  style={{
+                    color: "#F7F7F7",
+                    fontSize: "1.1rem",
+                    fontWeight: 500,
+                    flex: 1,
+                  }}
+                >
+                  {item}
+                </Text>
+              </Group>
+            ))}
+          </SimpleGrid>
+        </Paper>
+
         {/* Accordion Section */}
         <Text
           className={styles.subtitle}
@@ -174,6 +219,7 @@ const UT = () => {
               fontWeight: "500",
             },
           }}
+          transitionDuration={1000}
         >
           <Accordion.Item value="pembekalan">
             <Accordion.Control>
@@ -220,7 +266,7 @@ const UT = () => {
             <Accordion.Control>
               <Text fw={600}>Pasca Program</Text>
             </Accordion.Control>
-            <Accordion.Panel ml={20}> 
+            <Accordion.Panel ml={20}>
               <ol>
                 <li>Lebih Mencintai al-Qur'an</li>
                 <li>Mentadabburi ayat-ayat al-Qur'an secara mandiri</li>

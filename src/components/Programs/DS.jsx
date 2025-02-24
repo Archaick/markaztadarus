@@ -8,9 +8,11 @@ import {
   Accordion,
   Box,
   Image,
+  List,
+  Table,
 } from "@mantine/core";
-import React from "react";
-import { IconCircleCheck } from "@tabler/icons-react";
+import React, { useState } from "react";
+import { IconCircleCheck, IconChevronDown } from "@tabler/icons-react";
 import styles from "./DS.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import {
@@ -19,6 +21,7 @@ import {
   IconOctagon,
 } from "@tabler/icons-react";
 
+import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 // facilities
 import food from "../../assets/imgs/facilities/food.png";
 import learn from "../../assets/imgs/facilities/learn.png";
@@ -47,6 +50,47 @@ const DS = () => {
     { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
     { text: "Kunjungan-kunjungan.", icon: visits },
     { text: "Modul Pembelajaran.", icon: prov },
+    { text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.", icon: "" },
+    {
+      text: "Pendalaman bahasa non klasikal di hari Jum’at dan Sabtu.",
+      icon: "",
+    },
+    {
+      text: "Durasi belajar 5 jam terbagi menjadi waktu pagi dan sore.",
+      icon: "",
+    },
+    { text: "Sertifikat.", icon: "" },
+    {
+      text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.",
+      icon: "",
+    },
+    { text: "Berteman dengan santri Mekah.", icon: "" },
+  ];
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleAccordionToggle = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const activitiesData = [
+    {
+      time: "05:00",
+      activity: "Shalat Subuh",
+      location: "Masjidil Haram",
+    },
+    { time: "06.30", activity: "Sarapan dan bersiap", location: "Restoran hotel" },
+    { time: "08.30", activity: "Bahasa Arab Sesi 1", location: "Ruang kelas hotel" },
+    { time: "09.45", activity: "Istirahat", location: "Ruang kelas hotel" },
+    { time: "10.00", activity: "Bahasa Arab Sesi 2", location: "Ruang kelas hotel" },
+    { time: "11.30", activity: "Shalat Zuhur, makan siang dan istirahat", location: "Masjid Sekitar Hotel" },
+    { time: "15.00", activity: "Shalat Ashar", location: "Masjid Hotel" },
+    { time: "16.00", activity: "Kelas Tajwid dan Tadabbur", location: "Ruang kelas hotel" },
+    { time: "17.00", activity: "Shalat Maghrib", location: "Masjidil Haram" },
+    { time: "18.30", activity: "I’tikaf dan menghafal al-Qur’an", location: "Masjidil Haram" },
+    { time: "19.30", activity: "Shalat Isya", location: "Masjidil Haram" },
+    { time: "20.00", activity: "Makan malam", location: "Restoran hotel" },
+    { time: "21.30", activity: "Istirahat", location: "Kamar Hotel" },
   ];
 
   return (
@@ -182,6 +226,7 @@ const DS = () => {
               fontWeight: "500",
             },
           }}
+          transitionDuration={1000}
         >
           <Accordion.Item value="pembekalan">
             <Accordion.Control>
@@ -262,6 +307,122 @@ const DS = () => {
             ))}
           </Box>
         </Box>
+
+        {/* SYARAT KEIKUTSERTAAN */}
+        <Box
+          style={{
+            backgroundColor: "#362C06",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT KEIKUTSERTAAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Siswa siswi kelas 3 SMP dan SMA",
+              "Sehat jasamani dan rohani",
+              "Izin orangtua atau wali",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* SYARAT DOKUMEN */}
+        <Box
+          style={{
+            backgroundColor: "#152D46",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT DOKUMEN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Rekomendasi Lembaga",
+              "Paspor",
+              "KTP",
+              "Foto Background putih",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* SYARAT PERJALANAN */}
+        <Box
+          style={{
+            backgroundColor: "#F7F7F7",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "#152D46",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
+            SYARAT PERJALANAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Menyiapkan paspor pribadi.",
+              "Menyiapkan ihram pribadi.",
+              "Menyiapkan koper pribadi.",
+              "Mengurus vaksin miningitis pribadi.",
+              "Membawa seragam baju putih dan celana hitam.",
+              "Membeli kuota internet umrah sebelum perjalanan.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{ color: "#152D46", fontWeight: "650" }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* Table */}
+        <DailyActivitiesAccordion data={activitiesData} />
 
         {/* Whatsapp */}
         <Button
