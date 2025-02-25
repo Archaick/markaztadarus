@@ -7,20 +7,55 @@ import {
   SimpleGrid,
   Group,
   Accordion,
+  Box,
+  Image,
+  List,
 } from "@mantine/core";
 import {
   IconBrandWhatsapp,
   IconHomeFilled,
   IconCircleCheck,
+  IconOctagon,
 } from "@tabler/icons-react";
 import styles from "./DQ.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
+
+// Facilities import
+import food from "../../assets/imgs/facilities/food.png";
+import learn from "../../assets/imgs/facilities/learn.png";
+import learning from "../../assets/imgs/facilities/learning.png";
+import prov from "../../assets/imgs/facilities/prov.png";
+import room from "../../assets/imgs/facilities/room.png";
+import ticket from "../../assets/imgs/facilities/ticket.png";
+import tour from "../../assets/imgs/facilities/tour.png";
+import transport from "../../assets/imgs/facilities/transport.png";
+import visa from "../../assets/imgs/facilities/visa.png";
+import visits from "../../assets/imgs/facilities/visits.png";
+import certificate from "../../assets/imgs/facilities/certificate.png";
 
 const DQ = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Duta Qur'an.`;
   const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
     whatsappMessage
   )}`;
+
+  const facilities = [
+    { text: "Pembekalan sebelum keberangkatan.", icon: prov },
+    { text: "Tiket Pesawat PP.", icon: ticket },
+    { text: "Visa dan Bis selama di Saudi.", icon: visa },
+    { text: "Tour Leader.", icon: tour },
+    { text: "Transportasi Jedah-Mekah-Madinah", icon: transport },
+    { text: "Tempat tinggal Mekah selama 8 malam.", icon: room },
+    { text: "Tempat tinggal Madinah selama 2 malam.", icon: room },
+    { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
+    { text: "Kunjungan-kunjungan.", icon: visits },
+    { text: "Buku paket daurah.", icon: learn },
+    {
+      text: "Daurah bersama Akademi An-Naba’ al-‘Azhim di Mekah.",
+      icon: learning,
+    },
+    { text: "Sertifikat pelatihan.", icon: certificate },
+  ];
 
   return (
     <div className={styles.dqPage}>
@@ -203,12 +238,154 @@ const DQ = () => {
           </Accordion.Item>
         </Accordion>
 
+        {/* Facilities */}
+        <Box className={styles.facilitiesSection} mt={40} mb={40}>
+          <Box className={styles.facilitiesHeader}>
+            <Text fw={900} className={styles.facilitiesHeaderTitle}>
+              FASILITAS
+            </Text>
+          </Box>
+
+          {/* Content */}
+          <Box className={styles.facilitiesContent}>
+            {facilities.map((facility, index) => (
+              <Box key={index} className={styles.facilityItem}>
+                <Image
+                  src={facility.icon}
+                  alt={facility.text}
+                  className={styles.facilityIcon}
+                />
+                <Text className={styles.facilitiesText}>{facility.text}</Text>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        <Box
+          style={{
+            backgroundColor: "#362C06",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT KEIKUTSERTAAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Ikhwan atau Akhwat.",
+              "Memiliki minimal gelar S1 dalam ilmu syar’i.",
+              "Memiliki pengaruh dalam dakwah, terutama di bidang al-Quran dan ilmu-ilmunya.",
+              "Memiliki lembaga dakwah untuk dapat menerapkan program.",
+              "Berumur minimal 25 tahun dan maksimal 60 tahun.",
+              "Fasih dan aktif berbahasa Arab.",
+              "Mahir dan rutin tilawah al-Qur’an.",
+              "Mampu menerjemahkan teks Arab ke dalam bahasa Indonesia.",
+              "Memiliki aqidah dan pemikiran Islam yang benar(tidak sesat atau liberal).",
+              "Tidak pernah mempunyai kasus kepolisian dan berbudi pekerti baik.",
+              "Mendapatkan rekomendasi dari lembaga tempat berkhidmah saat ini.",
+              "Komitmen hadir dan mengikuti 100% semua pelatihan, baik teori atau praktek.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* SYARAT DOKUMEN */}
+        <Box
+          style={{
+            backgroundColor: "#152D46",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT DOKUMEN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {["Rekomendasi Lembaga", "Paspor", "KTP", "CV"].map(
+              (item, index) => (
+                <List.Item
+                  key={index}
+                  icon={<IconOctagon size={18} color="#FFD700" />}
+                  style={{
+                    fontWeight: "650",
+                  }}
+                >
+                  {item}
+                </List.Item>
+              )
+            )}
+          </List>
+        </Box>
+
+        {/* SYARAT PERJALANAN */}
+        <Box
+          style={{
+            backgroundColor: "#F7F7F7",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "#152D46",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
+            SYARAT PERJALANAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Menyiapkan paspor pribadi.",
+              "Menyiapkan ihram pribadi.",
+              "Menyiapkan koper pribadi.",
+              "Mengurus vaksin miningitis pribadi.",
+              "Membawa seragam baju putih dan celana hitam.",
+              "Membeli kuota internet umrah sebelum perjalanan.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconOctagon size={18} color="#FFD700" />}
+                style={{ color: "#152D46", fontWeight: "650" }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
         <Button
           component="a"
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.whatsappButton}
+          mt={80}
         >
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami
