@@ -1,6 +1,18 @@
 import React from "react";
-import { Button, Text, Container, Paper, SimpleGrid, Group } from "@mantine/core";
-import { IconBrandWhatsapp, IconHomeFilled, IconCircleCheck } from "@tabler/icons-react";
+import {
+  Button,
+  Text,
+  Container,
+  Paper,
+  SimpleGrid,
+  Group,
+  Accordion,
+} from "@mantine/core";
+import {
+  IconBrandWhatsapp,
+  IconHomeFilled,
+  IconCircleCheck,
+} from "@tabler/icons-react";
 import styles from "./DQ.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 
@@ -105,6 +117,91 @@ const DQ = () => {
             ))}
           </SimpleGrid>
         </Paper>
+
+        {/* Accordion Section */}
+        <Text
+          className={styles.subtitle}
+          style={{ marginTop: "2rem", fontSize: "1.7rem" }}
+          mt={70}
+        >
+          CAKUPAN PROGRAM
+        </Text>
+        <Accordion
+          variant="contained"
+          mt={20}
+          styles={{
+            control: {
+              backgroundColor: "#ffffff", // White background for the control
+              color: "#0A3867", // Dark blue text color
+            },
+            item: {
+              border: "1px solid #e0e0e0", // Light border for each item
+              borderRadius: "8px", // Rounded corners
+            },
+            content: {
+              backgroundColor: "#f7f7f7", // Light gray background for the content
+              padding: "1rem", // Padding inside the content
+              fontWeight: "500",
+            },
+          }}
+          transitionDuration={1000}
+        >
+          <Accordion.Item value="pembekalan">
+            <Accordion.Control>
+              <Text fw={600}>Kelas al-Qur'an</Text>
+            </Accordion.Control>
+            <Accordion.Panel ml={20}>
+              <p>Mempelajari al-Qur’an meliputi ilmu tajwid dan tadabur.</p>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="madinah">
+            <Accordion.Control>
+              <Text fw={600}>Kelas Bahasa Arab</Text>
+            </Accordion.Control>
+            <Accordion.Panel ml={20}>
+              <p>
+                Siswa diajarkan keterampilan bahasa yang mencakup: Istima’
+                (mendengar), kalam (berbicara), Qira’ah (membaca) dan Kitabah
+                (menulis).
+              </p>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="mekah">
+            <Accordion.Control>
+              <Text fw={600}>Pendalaman Bahasa</Text>
+            </Accordion.Control>
+            <Accordion.Panel ml={20}>
+              <Text fw={650} mb={10}>
+                Dalam rangka menguatkan dan mendalami bahasa secara langsung di
+                lingkungan aslinya dilakukan beberapa kegiatan diantaranya:
+              </Text>
+              <ol>
+                <li>Praktek langsung di pasar dan tempat umum lainnya.</li>
+                <li>
+                  Praktek bahasa di lingkungan Masjidil Haram dibimbing oleh
+                  pengajar langsung.
+                </li>
+                <li>
+                  Ziarah ke lembaga pendidikan seperti sekolah dan kampus.
+                </li>
+                <li>Praktek di hadiqah (taman umum).</li>
+                <li>Tugas meringkas materi dari video maupun rekaman.</li>
+                <li>Melaporkan kegiatan sehari-hari secara singkat.</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
+          <Accordion.Item value="pasca">
+            <Accordion.Control>
+              <Text fw={600}>Rihlah</Text>
+            </Accordion.Control>
+            <Accordion.Panel ml={20}>
+              <p>
+                Kunjungan kota Madinah, padang pasir, museum dan tempat
+                bersejarah lainnya.
+              </p>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
 
         <Button
           component="a"
