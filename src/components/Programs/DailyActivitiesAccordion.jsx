@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Accordion, Text, Table, Box } from "@mantine/core";
 import { IconChevronsDown } from "@tabler/icons-react";
 
-const DailyActivitiesAccordion = ({ data }) => {
+const DailyActivitiesAccordion = ({ columns, data }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleAccordionToggle = () => {
@@ -33,12 +33,11 @@ const DailyActivitiesAccordion = ({ data }) => {
         </Text>
         <IconChevronsDown
           size={24}
-          color="#AE8126"
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 0.3s ease",
-            color: isOpen ? "#228BE6" : "#AE8126", // Blue when open, brown when closed
           }}
+          color={isOpen ? "#228BE6" : "#AE8126"}
         />
       </Box>
 
@@ -67,22 +66,23 @@ const DailyActivitiesAccordion = ({ data }) => {
             >
               <thead>
                 <tr>
-                  <th
-                    style={{
-                      padding: "10px",
-                      minWidth: "50px",
-                      textAlign: "center",
-                    }}
-                  >
-                    Jam
-                  </th>
-
-                  <th style={{ padding: "10px" }}>Kegiatan</th>
-                  <th style={{ padding: "10px" }}>Lokasi</th>
+                  {/* Render column headers dynamically */}
+                  {columns.map((col, index) => (
+                    <th
+                      key={index}
+                      style={{
+                        padding: "10px",
+                        minWidth: col.minWidth || "50px",
+                        textAlign: col.textAlign || "center",
+                      }}
+                    >
+                      {col.header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {/* Map through the data prop to render rows */}
+                {/* Render table rows dynamically */}
                 {data.map((row, index) => (
                   <tr
                     key={index}
@@ -90,17 +90,17 @@ const DailyActivitiesAccordion = ({ data }) => {
                       backgroundColor: index % 2 === 0 ? "#AFC2D6" : "#D9D9D9",
                     }}
                   >
-                    <td
-                      style={{
-                        padding: "2px",
-                      }}
-                    >
-                      {row.time}
-                    </td>
-                    <td style={{ padding: "2px", textAlign: "center" }}>
-                      {row.activity}
-                    </td>
-                    <td style={{ padding: "2px" }}>{row.location}</td>
+                    {columns.map((col, colIndex) => (
+                      <td
+                        key={colIndex}
+                        style={{
+                          padding: "2px",
+                          textAlign: col.textAlign || "center",
+                        }}
+                      >
+                        {row[col.key]}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>

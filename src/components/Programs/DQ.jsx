@@ -32,6 +32,7 @@ import transport from "../../assets/imgs/facilities/transport.png";
 import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
 import certificate from "../../assets/imgs/facilities/certificate.png";
+import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 
 const DQ = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Duta Qur'an.`;
@@ -55,6 +56,26 @@ const DQ = () => {
       icon: learning,
     },
     { text: "Sertifikat pelatihan.", icon: certificate },
+  ];
+
+  const activitiesData = [
+    { hari: "1", kegiatan: "Tiba di Mekah menuju hotel" },
+    { hari: "2", kegiatan: "Melaksanakan Umrah" },
+    { hari: "3", kegiatan: "Tadabbur Al-Qur'anDaurah “Majelis Tadarus Metode 5T; Teori”. Daurah “Majelis Tadarus Metode 5T; Praktek”" },
+    { hari: "4", kegiatan: "Daurah “Hidayatul Qur’an” Daurah “Tanzil Al-Ayaatlil Waaqi’”" },
+    { hari: "5", kegiatan: "Daurah “Keahlian Tadabbur”" },
+    { hari: "6", kegiatan: "Daurah “Keahlian Tadabbur" },
+    { hari: "7", kegiatan: "Daurah “kitab Tadabbur anak”" },
+    { hari: "8", kegiatan: "Acara bebas dan penutupan" },
+    { hari: "9", kegiatan: "Menuju Madinah" },
+    { hari: "10", kegiatan: "Menuju Madinah" },
+    { hari: "11", kegiatan: "Kunjungan-kunjungan" },
+    { hari: "12", kegiatan: "Kembali ke Indonesia" },
+  ];
+
+  const columns = [
+    { header: "Hari", key: "hari" },
+    { header: "Kegiatan", key: "kegiatan" },
   ];
 
   return (
@@ -378,6 +399,7 @@ const DQ = () => {
             ))}
           </List>
         </Box>
+        <DailyActivitiesAccordion columns={columns} data={activitiesData} />
 
         <Button
           component="a"
