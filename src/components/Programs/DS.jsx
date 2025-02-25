@@ -32,6 +32,11 @@ import tour from "../../assets/imgs/facilities/tour.png";
 import transport from "../../assets/imgs/facilities/transport.png";
 import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
+import friend from "../../assets/imgs/facilities/friend.png";
+import certificate from "../../assets/imgs/facilities/certificate.png";
+import time from "../../assets/imgs/facilities/time.png";
+import language from "../../assets/imgs/facilities/language.png";
+import learning from "../../assets/imgs/facilities/learning.png";
 
 const DS = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Daurah Santri.`;
@@ -50,21 +55,17 @@ const DS = () => {
     { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
     { text: "Kunjungan-kunjungan.", icon: visits },
     { text: "Modul Pembelajaran.", icon: prov },
-    { text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.", icon: "" },
+    { text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.", icon: learning },
     {
       text: "Pendalaman bahasa non klasikal di hari Jum’at dan Sabtu.",
-      icon: "",
+      icon: language,
     },
     {
       text: "Durasi belajar 5 jam terbagi menjadi waktu pagi dan sore.",
-      icon: "",
+      icon: time,
     },
-    { text: "Sertifikat.", icon: "" },
-    {
-      text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.",
-      icon: "",
-    },
-    { text: "Berteman dengan santri Mekah.", icon: "" },
+    { text: "Sertifikat.", icon: certificate },
+    { text: "Berteman dengan santri Mekah.", icon: friend },
   ];
 
   const [isOpen, setIsOpen] = useState(false);
