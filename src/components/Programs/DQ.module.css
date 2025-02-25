@@ -1,8 +1,11 @@
 .dqPage {
   min-height: 100vh;
-  background: url("../../assets/imgs/DQ.png") center/cover no-repeat fixed;
+  background: url("../../assets/imgs/programs/DQ.jpg") center/cover no-repeat
+    fixed;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  gap: 64px;
   position: relative;
   padding: 2rem 1rem;
 }
@@ -23,10 +26,21 @@
   z-index: 0;
 }
 
-.contentWrapper {
-  background: rgba(40, 20, 60, 0.6);
+.topWrapper {
+  background: #f7f7f7c6;
   padding: 2.5rem;
-  max-width: 800px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.contentWrapper {
+  background: #f7f7f7c6;
+  padding: 2.5rem;
+  max-width: 1000px;
   width: 100%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -48,11 +62,11 @@
 }
 
 .homeButton {
-  background: #c8b26c;
+  background: #1a1a2e;
   color: white;
   font-weight: bold;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.85rem;
+  padding: 0.2rem 0.4rem; /* Less padding */
+  font-size: 0.75rem; /* Smaller text */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -61,21 +75,30 @@
 }
 
 .homeButton:hover {
-  background: #b59c5f;
+  background: #0a3867;
 }
 
 .title {
   font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 900;
-  color: white;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  font-weight: 800;
+  color: #0a3867;
   text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  font-weight: 800;
+  color: #0a3867;
+  margin-bottom: 15px;
 }
 
 .textContent {
   font-size: 1.25rem;
-  line-height: 1.8;
-  color: rgb(230, 230, 250);
+  text-align: center;
+  line-height: 1.5;
+  color: #0a3867;
   margin-bottom: 2rem;
 }
 
