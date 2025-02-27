@@ -26,6 +26,7 @@
       rgba(15, 15, 15, 0.9) /* Dark overlay at the bottom */
   );
   z-index: 0;
+  background-attachment: fixed;
 }
 
 .topWrapper {

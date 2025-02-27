@@ -24,6 +24,7 @@
     rgba(80, 40, 110, 0.4)
   );
   z-index: 0;
+  background-attachment: fixed;
 }
 
 .topWrapper {
