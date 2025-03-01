@@ -1,8 +1,9 @@
-import { Button, Container, Text, Overlay } from "@mantine/core";
-import { IconBrandWhatsapp } from "@tabler/icons-react"; // Import WhatsApp icon
-import { Typewriter } from "react-simple-typewriter"; // Import Typewriter
+import { Container, Overlay } from "@mantine/core";
+import { IconBrandWhatsapp } from "@tabler/icons-react";
+import { Typewriter } from "react-simple-typewriter";
 import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
+import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
 
 const Hero = () => {
   const whatsappUrl =
@@ -41,6 +42,9 @@ const Hero = () => {
           </span>
         </h1>
       </Container>
+
+      {/* Add the animated arrow */}
+      <ScrollDownArrow />
 
       <a
         className={classes.whatsappButton}

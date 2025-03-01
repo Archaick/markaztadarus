@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Card, Text, Grid, Container } from "@mantine/core";
 import { IconQuote } from "@tabler/icons-react";
 import Rahmat from "../../assets/imgs/leaders/rahmat.png";
@@ -17,7 +17,7 @@ const leaders = [
   {
     name: "Ir. Adnan Afiff",
     role: "Pembina Markaz Tadarus Indonesia",
-    text: "Markaz Tadarus Indonesia berupaya menyebarkan nilai-nilai al-Qur’an seluas-luasnya di seluruh wilayah Indonesia melalui berbagai media, Tujuan tertinggi dari semua ini adalah agar setiap Muslim dapat menghayati al-Qur’an untuk dirinya sendiri dan setiap saat.",
+    text: "Al-Qur'an adalah\u00a0pedoman hidup umat Islam yang mengandung nilai-nilai moral, sosial, dan etika.\u00a0Nilai-nilai tersebut dapat diinternalisasikan melalui keluarga dan pendidikan lainnya.",
     image: Adnan,
   },
   {
@@ -40,7 +40,14 @@ const cardVariants = {
 const Leaders = () => {
   return (
     <Container mt={100} mb={100} id="about">
-      <Text align="center" size="1.8rem" mt={20} color="#112A42" fw={700} mb={10}>
+      <Text
+        align="center"
+        size="1.8rem"
+        mt={20}
+        color="#112A42"
+        fw={700}
+        mb={10}
+      >
         Tentang Belajar al-Qur’an dan Bahasa Arab di Mekah
       </Text>
       <Text align="center" size="1.2rem" color="gray" mb={10}>
@@ -55,7 +62,13 @@ const Leaders = () => {
               viewport={{ amount: 0.2 }}
               variants={cardVariants}
             >
-              <Card className={styles.card} shadow="sm" padding="lg" radius="md" withBorder>
+              <Card
+                className={styles.card}
+                shadow="sm"
+                padding="lg"
+                radius="md"
+                withBorder
+              >
                 <div className={styles.imageWrap}>
                   <img
                     src={leader.image}
@@ -70,16 +83,22 @@ const Leaders = () => {
                     }}
                   />
                 </div>
-                <IconQuote size={40} color="#c8b26c" style={{ marginBottom: 10 }} />
-                <Text size="sm" style={{ minHeight: "80px" }}>
+                <IconQuote
+                  size={40}
+                  color="#c8b26c"
+                  style={{ marginBottom: 10 }}
+                />
+                <Text size="sm" style={{ minHeight: "80px", flexGrow: 1 }}>
                   {leader.text}
                 </Text>
-                <Text weight={900} mt={50}>
-                  {leader.name}
-                </Text>
-                <Text size="xs" color="gray">
-                  {leader.role}
-                </Text>
+                <div className={styles.cardFooter}>
+                  <Text weight={900} mt={50}>
+                    {leader.name}
+                  </Text>
+                  <Text size="xs" color="gray">
+                    {leader.role}
+                  </Text>
+                </div>
               </Card>
             </motion.div>
           </Grid.Col>
