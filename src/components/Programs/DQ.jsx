@@ -105,7 +105,7 @@ const DQ = () => {
         <div className={styles.videoContainer}>
           <iframe
             className={styles.video}
-            src="https://www.youtube.com/embed/I6DeL-x0PW4"
+            src="https://www.youtube.com/embed/mfzh-Y_MMio"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

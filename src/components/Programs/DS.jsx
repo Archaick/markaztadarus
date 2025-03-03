@@ -9,7 +9,6 @@ import {
   Box,
   Image,
   List,
-  Table,
 } from "@mantine/core";
 import React, { useState } from "react";
 import { IconCheckbox } from "@tabler/icons-react";
@@ -141,7 +140,7 @@ const DS = () => {
             Beranda
           </Button>
         </div>
-        <h2 className={styles.title}>Daurah Santri</h2>
+        <h2 className={styles.title}>DAURAH SANTRI</h2>
         <Text className={styles.subtitle}>GAMBARAN SINGKAT PROGRAM</Text>
         <Text className={styles.textContent} mt={50} p={6} fw={550}>
           Program Daurah Santri ialah program pembelajaran singkat yang

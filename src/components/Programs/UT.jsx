@@ -91,7 +91,7 @@ const UT = () => {
           </Button>
         </div>
 
-        <h2 className={styles.title}>Umrah Tadabburiyah</h2>
+        <h2 className={styles.title}>UMRAH TADABBURIYAH</h2>
         <Text className={styles.subtitle}>GAMBARAN SINGKAT PROGRAM</Text>
         <Text className={styles.textContent} mt={50} p={6}>
           “Umrah Tadabburiyah” adalah program Umrah yang disertai pembelajaran
