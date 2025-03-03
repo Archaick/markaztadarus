@@ -10,11 +10,7 @@ import {
   Image,
   List,
 } from "@mantine/core";
-import {
-  IconHomeFilled,
-  IconCircleCheck,
-  IconOctagon,
-} from "@tabler/icons-react";
+import { IconHomeFilled, IconCheckbox, IconCircle } from "@tabler/icons-react";
 import styles from "./DQ.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import Whatsapp from "../../components/Whatsapp/Whatsapp";
@@ -168,7 +164,7 @@ const DQ = () => {
               "Pelaksanaan umrah minimal satu kali.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
-                <IconCircleCheck size={20} color="#BAF6AD" />
+                <IconCheckbox size={24} color="#FFD700" />
                 <Text
                   style={{
                     color: "#F7F7F7",
@@ -241,7 +237,7 @@ const DQ = () => {
             ].map((item, index) => (
               <List.Item
                 key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
+                icon={<IconCircle size={18} color="#FFD700" />}
                 style={{
                   fontWeight: "650",
                 }}
@@ -275,7 +271,7 @@ const DQ = () => {
               (item, index) => (
                 <List.Item
                   key={index}
-                  icon={<IconOctagon size={18} color="#FFD700" />}
+                  icon={<IconCircle size={18} color="#FFD700" />}
                   style={{
                     fontWeight: "650",
                   }}

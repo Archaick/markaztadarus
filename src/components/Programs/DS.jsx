@@ -12,13 +12,13 @@ import {
   Table,
 } from "@mantine/core";
 import React, { useState } from "react";
-import { IconCircleCheck, IconChevronDown } from "@tabler/icons-react";
+import { IconCheckbox } from "@tabler/icons-react";
 import styles from "./DS.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import {
   IconBrandWhatsapp,
   IconHomeFilled,
-  IconOctagon,
+  IconCircle,
 } from "@tabler/icons-react";
 
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
@@ -227,7 +227,7 @@ const DS = () => {
               "Belajar dan berteman dengan penutur asli bahasa Arab.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
-                <IconCircleCheck size={20} color="#BAF6AD" />
+                <IconCheckbox size={24} color="#FFD700" />
                 <Text
                   style={{
                     color: "#F7F7F7",
@@ -372,7 +372,7 @@ const DS = () => {
             ].map((item, index) => (
               <List.Item
                 key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
+                icon={<IconCircle size={18} color="#FFD700" />}
                 style={{
                   fontWeight: "650",
                 }}
@@ -406,7 +406,7 @@ const DS = () => {
               (item, index) => (
                 <List.Item
                   key={index}
-                  icon={<IconOctagon size={18} color="#FFD700" />}
+                  icon={<IconCircle size={18} color="#FFD700" />}
                   style={{
                     fontWeight: "650",
                   }}

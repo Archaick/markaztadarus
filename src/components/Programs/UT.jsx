@@ -12,12 +12,7 @@ import {
   SimpleGrid,
   Group,
 } from "@mantine/core";
-import {
-  IconBrandWhatsapp,
-  IconHomeFilled,
-  IconOctagon,
-  IconCircleCheck,
-} from "@tabler/icons-react";
+import { IconHomeFilled, IconCircle, IconCheckbox } from "@tabler/icons-react";
 import styles from "./UT.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 // program cards
@@ -169,7 +164,7 @@ const UT = () => {
               "Akan lebih mencintai al-Qur’an sepulangnya dari Umrah.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
-                <IconCircleCheck size={20} color="#BAF6AD" />
+                <IconCheckbox size={24} color="#FFD700" />
                 <Text
                   style={{
                     color: "#F7F7F7",
@@ -311,7 +306,7 @@ const UT = () => {
             {["Paspor", "KTP"].map((item, index) => (
               <List.Item
                 key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
+                icon={<IconCircle size={18} color="#FFD700" />}
                 style={{
                   fontWeight: "650",
                 }}

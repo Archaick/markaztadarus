@@ -32,7 +32,7 @@ const DailyActivitiesAccordion = ({ columns, data }) => {
           KEGIATAN HARIAN
         </Text>
         <IconChevronsDown
-          size={24}
+          size={42}
           style={{
             transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
             transition: "transform 0.3s ease",
