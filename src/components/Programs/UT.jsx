@@ -325,7 +325,7 @@ const UT = () => {
           Hubungi Kami
         </Button>
 
-        <Whatsapp message={"Test"} />
+        <Whatsapp message={"Assalamu'alaikum warahmatullah wabarakatuh.\n\n Afwan, Saya ingin bertanya tentang Umrah Tadabburiyah."} />
       </Container>
     </div>
   );

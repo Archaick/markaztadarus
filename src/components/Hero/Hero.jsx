@@ -7,8 +7,6 @@ import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
 import Whatsapp from "../../components/Whatsapp/Whatsapp"
 
 const Hero = () => {
-  // const whatsappUrl =
-  //   "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
 
   return (
     <div className={classes.hero} id="home">
@@ -47,16 +45,8 @@ const Hero = () => {
       {/* Add the animated arrow */}
       <ScrollDownArrow />
 
-      {/* <a
-        className={classes.whatsappButton}
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <IconBrandWhatsapp size={32} />
-      </a> */}
 
-      <Whatsapp />
+      <Whatsapp message={"Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, saya ingin nertanya tentang program Umrah Markaz Tadarus Indonesia."} />
     </div>
   );
 };

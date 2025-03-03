@@ -22,7 +22,7 @@ import {
 } from "@tabler/icons-react";
 
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
-import Whatsapp from "../../components/Whatsapp/Whatsapp"
+import Whatsapp from "../../components/Whatsapp/Whatsapp";
 // facilities
 import food from "../../assets/imgs/facilities/food.png";
 import learn from "../../assets/imgs/facilities/learn.png";
@@ -46,16 +46,15 @@ const DS = () => {
   )}`;
 
   const facilities = [
-    { text: "Pembekalan sebelum keberangkatan.", icon: learn },
+    { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },
     { text: "Visa dan Bis selama di Saudi.", icon: visa },
     { text: "Tour Leader.", icon: tour },
-    { text: "Transportasi Jedah-Mekah-Madinah", icon: transport },
-    { text: "Tempat tinggal Mekah selama 8 malam.", icon: room },
-    { text: "Tempat tinggal Madinah selama 2 malam.", icon: room },
-    { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
-    { text: "Kunjungan-kunjungan.", icon: visits },
-    { text: "Modul Pembelajaran.", icon: prov },
+    { text: "Transportasi Jedah-Mekah-Madinah.", icon: transport },
+    { text: "Tempat tinggal Mekah & Madinah.", icon: room },
+    { text: "Konsumsi 3x sehari selama kegiatan.", icon: food },
+    { text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.", icon: visits },
+    { text: "Modul Pembelajaran.", icon: learn },
     {
       text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.",
       icon: learning,
@@ -68,7 +67,7 @@ const DS = () => {
       text: "Durasi belajar 5 jam terbagi menjadi waktu pagi dan sore.",
       icon: time,
     },
-    { text: "Sertifikat.", icon: certificate },
+    { text: "Mendapatkan sertifikat.", icon: certificate },
     { text: "Berteman dengan santri Mekah.", icon: friend },
   ];
 
@@ -269,7 +268,7 @@ const DS = () => {
               <Text fw={600}>Kelas al-Qur'an</Text>
             </Accordion.Control>
             <Accordion.Panel ml={20}>
-              <p>Mempelajari al-Qur'an meliputi ilmu tajwid dan tadabur.</p>
+              <p>Mempelajari al-Qur’an meliputi ilmu tajwid dan tadabur.</p>
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="madinah">
@@ -278,8 +277,8 @@ const DS = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <p>
-                Siswa diajarkan keterampilan bahasa yang mencakup: Istima'
-                (mendengar), kalam (berbicara), Qira'ah (membaca) dan Kitabah
+                Siswa diajarkan keterampilan bahasa yang mencakup: Istima’
+                (mendengar), kalam (berbicara), Qira’ah (membaca) dan Kitabah
                 (menulis).
               </p>
             </Accordion.Panel>
@@ -290,21 +289,16 @@ const DS = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <Text fw={650} mb={10}>
-                Dalam rangka menguatkan dan mendalami bahasa secara langsung di
-                lingkungan aslinya dilakukan beberapa kegiatan diantaranya:
+                Menguatkan dan mendalami bahasa Arab secara langsung:
               </Text>
               <ol>
-                <li>Praktek langsung di pasar dan tempat umum lainnya.</li>
                 <li>
-                  Praktek bahasa di lingkungan Masjidil Haram dibimbing oleh
-                  pengajar langsung.
+                  Praktek langsung di tempat umum (Masjid, arena olahraga,
+                  taman, sahara, pusat perbelanjaan, dan transportasi umum).
                 </li>
-                <li>
-                  Ziarah ke lembaga pendidikan seperti sekolah dan kampus.
-                </li>
-                <li>Praktek di hadiqah (taman umum).</li>
+                <li>Ziarah ke sekolah dan Universitas.</li>
                 <li>Tugas meringkas materi dari video maupun rekaman.</li>
-                <li>Melaporkan kegiatan sehari-hari secara singkat.</li>
+                <li>Mempresentasikan tugas dalam bahasa Arab.</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -314,8 +308,8 @@ const DS = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <p>
-                Kunjungan kota Madinah, padang pasir, museum dan tempat
-                bersejarah lainnya.
+                Kunjungan kota Madinah, sahara, museum dan tempat bersejarah
+                lainnya.
               </p>
             </Accordion.Panel>
           </Accordion.Item>
@@ -403,8 +397,7 @@ const DS = () => {
             {[
               "Rekomendasi Lembaga",
               "Paspor",
-              "KTP",
-              "Foto Background putih",
+              "Kartu Keluarga / KTP.",
             ].map((item, index) => (
               <List.Item
                 key={index}
@@ -419,49 +412,10 @@ const DS = () => {
           </List>
         </Box>
 
-        {/* SYARAT PERJALANAN */}
-        <Box
-          style={{
-            backgroundColor: "#F7F7F7",
-            padding: "2rem",
-            borderRadius: "8px",
-            maxWidth: "600px",
-            margin: "auto",
-            color: "#152D46",
-          }}
-          mt={50}
-        >
-          {/* Header */}
-          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
-            SYARAT PERJALANAN
-          </Text>
-
-          {/* List */}
-          <List spacing="sm" mt="md">
-            {[
-              "Menyiapkan paspor pribadi.",
-              "Menyiapkan ihram pribadi.",
-              "Menyiapkan koper pribadi.",
-              "Mengurus vaksin miningitis pribadi.",
-              "Membawa seragam baju putih dan celana hitam.",
-              "Membeli kuota internet umrah sebelum perjalanan.",
-            ].map((item, index) => (
-              <List.Item
-                key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
-                style={{ color: "#152D46", fontWeight: "650" }}
-              >
-                {item}
-              </List.Item>
-            ))}
-          </List>
-        </Box>
-
         {/* Table */}
         <DailyActivitiesAccordion data={activitiesData} columns={columns} />
 
-        {/* Whatsapp */}
-        <Button
+        {/* <Button
           component="a"
           href={whatsappUrl}
           target="_blank"
@@ -472,9 +426,14 @@ const DS = () => {
         >
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami
-        </Button>
+        </Button> */}
 
-        <Whatsapp />
+        {/* Whatsapp */}
+        <Whatsapp
+          message={
+            "Assalamu'alaikum warahmatullah wabarakatuh. \n\n Afwan, Saya ingin bertanya tentang Daurah Santri."
+          }
+        />
       </Container>
     </div>
   );
