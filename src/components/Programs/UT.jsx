@@ -35,7 +35,8 @@ import tour from "../../assets/imgs/facilities/tour.png";
 import transport from "../../assets/imgs/facilities/transport.png";
 import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
-
+import learning from "../../assets/imgs/facilities/learning.png";
+import Whatsapp from "../../components/Whatsapp/Whatsapp"
 const UT = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Umrah Tadabburiyah.`;
   const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
@@ -61,36 +62,17 @@ const UT = () => {
     },
   ];
 
-  const advantages = [
-    {
-      text: "Mempelajari ayat suci al-Qur’an di tempat turunnya.",
-      position: "left",
-    },
-    {
-      text: "Melaksanakan ibadah Umrah.",
-      position: "right",
-    },
-    {
-      text: "Mempelajari kunci-kunci mentadabburi al-Qur’an.",
-      position: "left",
-    },
-    {
-      text: "Beri’tikaf di Masjidil Haram dan Masjid Nabawi.",
-      position: "right",
-    },
-  ];
-
   const facilities = [
-    { text: "Pembekalan sebelum keberangkatan.", icon: learn },
+    { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },
     { text: "Visa dan Bis selama di Saudi.", icon: visa },
     { text: "Tour Leader.", icon: tour },
-    { text: "Transportasi Jedah-Mekah-Madinah", icon: transport },
-    { text: "Tempat tinggal Mekah selama 8 malam.", icon: room },
-    { text: "Tempat tinggal Madinah selama 2 malam.", icon: room },
-    { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
+    { text: "Transportasi Jedah-Mekah-Madinah.", icon: transport },
+    { text: "Tempat tinggal Mekah & Madinah.", icon: room },
+    { text: "Konsumsi 3x sehari.", icon: food },
     { text: "Kunjungan-kunjungan.", icon: visits },
-    { text: "Modul Pembelajaran.", icon: prov },
+    { text: "Modul Pembelajaran.", icon: learn },
+    { text: "Kelas Tadarus untuk alumni.", icon: learning },
   ];
 
   return (
@@ -171,10 +153,10 @@ const UT = () => {
         >
           <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
             {[
-              "Mempelajari ayat suci al-Qur’an di tempat turunnya.",
-              "Melaksanakan ibadah Umrah.",
-              "Mempelajari kunci-kunci mentadabburi al-Qur’an.",
-              "Beri’tikaf di Masjidil Haram dan Masjid Nabawi.",
+              "Mempelajari al-Qur’an dari tafsir hingga ke amalnya.",
+              "Bimbingan tata cara Umrah semi mandiri.",
+              "Bimbingan intensif tadabbur sebelum dan setelah program.",
+              "Akan lebih mencintai al-Qur’an sepulangnya dari Umrah.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
                 <IconCircleCheck size={20} color="#BAF6AD" />
@@ -241,10 +223,8 @@ const UT = () => {
               <ol>
                 <li>Tadabbur al-Qur'an</li>
                 <li>I'tikaf di Masjid Nabawi</li>
-                <li>Shalat Jum'at di Masjid Nabawi</li>
                 <li>Berjalan kaki ke Masjid Quba</li>
                 <li>Kunjungan ke tempat bersejarah</li>
-                <li>Manasik Umrah</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -257,8 +237,8 @@ const UT = () => {
                 <li>Umrah</li>
                 <li>Tadabbur al-Qur'an</li>
                 <li>I'tikaf di Masjidil Haram</li>
-                <li>Nasehat Qur'Aniyah Bersama syeikh dari Lembaga an-Naba</li>
-                <li>Kunjungan ke museum wahyu</li>
+                <li>Nasehat Qur’aniyah</li>
+                <li>Kunjungan ke museum</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -268,8 +248,7 @@ const UT = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <ol>
-                <li>Lebih Mencintai al-Qur'an</li>
-                <li>Mentadabburi ayat-ayat al-Qur'an secara mandiri</li>
+                <li>Bimbingan tadarus al-Qur’an secara berkala online dan offline</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -317,7 +296,7 @@ const UT = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {["Paspor", "KTP", "Foto Background putih"].map((item, index) => (
+            {["Paspor", "KTP"].map((item, index) => (
               <List.Item
                 key={index}
                 icon={<IconOctagon size={18} color="#FFD700" />}
@@ -331,43 +310,6 @@ const UT = () => {
           </List>
         </Box>
 
-        {/* requirements */}
-        <Box
-          style={{
-            backgroundColor: "#F7F7F7",
-            padding: "2rem",
-            borderRadius: "8px",
-            maxWidth: "600px",
-            margin: "auto",
-            color: "#152D46",
-          }}
-          mt={50}
-        >
-          {/* Header */}
-          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
-            SYARAT PERJALANAN
-          </Text>
-
-          {/* List */}
-          <List spacing="sm" mt="md">
-            {[
-              "Menyiapkan paspor pribadi.",
-              "Menyiapkan ihram pribadi.",
-              "Menyiapkan koper pribadi.",
-              "Mengurus vaksin miningitis pribadi.",
-              "Membawa seragam baju putih dan celana hitam.",
-              "Membeli kuota internet umrah sebelum perjalanan.",
-            ].map((item, index) => (
-              <List.Item
-                key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
-                style={{ color: "#152D46", fontWeight: "650" }}
-              >
-                {item}
-              </List.Item>
-            ))}
-          </List>
-        </Box>
 
         {/* WhatsApp Button */}
         <Button
@@ -382,6 +324,8 @@ const UT = () => {
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami
         </Button>
+
+        <Whatsapp message={"Test"} />
       </Container>
     </div>
   );

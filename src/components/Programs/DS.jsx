@@ -22,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
+import Whatsapp from "../../components/Whatsapp/Whatsapp"
 // facilities
 import food from "../../assets/imgs/facilities/food.png";
 import learn from "../../assets/imgs/facilities/learn.png";
@@ -148,9 +149,9 @@ const DS = () => {
         <Text className={styles.textContent} mt={50} p={6} fw={550}>
           Program Daurah Santri ialah program pembelajaran singkat yang
           dirancang khusus untuk memperdalam ilmu pengetahuan di kota Mekah
-          al-Mukarramah dalam bidang bahasa Arab dan al-Qur’an, sekaligus
-          melaksanakan ibadah umrah dan kunjungan tempat-tempat bersejarah dan
-          berbudaya Arab.
+          al-Mukarramah dalam bidang bahasa Arab dan al-Qur’an. Peserta akan
+          melaksanakan ibadah umrah, dan kunjungan tempat-tempat bersejarah,
+          serta merasakan kekayaan budaya Arab.
         </Text>
       </Container>
 
@@ -174,7 +175,8 @@ const DS = () => {
             textAlign: "center",
           }}
         >
-          Menambah pengetahuan bahasa Arab, al-Qur’an dan kebudayaan Arab.
+          Mempelajari bahasa Arab dan kebudayaannya, memperbaiki bacaan dan
+          hafalan al-Qur’an, serta mentadabburinya.
         </Paper>
         <Paper
           shadow="xs"
@@ -210,12 +212,12 @@ const DS = () => {
         >
           <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
             {[
-              "Pelaksanaan program terletak di kota suci Mekah.",
+              "Pelaksanaan program di kota suci Mekah.",
+              "Bimbingan tadabbur al-Qur’an.",
               "Melaksanakan ibadah umrah dan kunjungan ke Madinah al-Munawwarah.",
+              "Program fokus dalam perbaikan linguistik yang komunikatif dan aplikatif.",
               "Mengenal budaya Arab.",
-              "Terdapat majelis Tadarus al-Qur’an.",
-              "Program mencakup: linguistik, komunikatif, edukatif dan self development.",
-              "Berteman dengan santri Arab.",
+              "Belajar dan berteman dengan penutur asli bahasa Arab.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
                 <IconCircleCheck size={20} color="#BAF6AD" />
@@ -471,6 +473,8 @@ const DS = () => {
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami
         </Button>
+
+        <Whatsapp />
       </Container>
     </div>
   );

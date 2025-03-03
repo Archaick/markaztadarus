@@ -55,10 +55,7 @@ const Footer = () => {
                 <IconPhoneFilled size={20} />
                 <Text className={styles.phone}>0812-1001-0733</Text>
               </Group>
-              <Divider
-                my="sm"
-                color="#c8b26c"
-              />
+              <Divider my="sm" color="#c8b26c" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
                 <Anchor
                   className={styles.socialIcon}
@@ -122,13 +119,14 @@ const Footer = () => {
                 </Text>
               </Group>
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1402.3652198947646!2d106.7594086789109!3d-6.199189171554229!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f79c25e4783d%3A0xef2291486674a122!2sMarkaz%20al-Hijaz!5e0!3m2!1sen!2sid!4v1738400069398!5m2!1sen!2sid"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.90546088526807!2d106.75978070333016!3d-6.199249358822371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xab0a011bc11d515d%3A0x787e75220eaca7e6!2sMarkaz%20Tadarus%20Indonesia!5e0!3m2!1sen!2sid!4v1740981015725!5m2!1sen!2sid"
                 width="100%"
                 height="220"
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
               ></iframe>
+
             </Stack>
           </div>
         </div>

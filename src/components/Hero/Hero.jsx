@@ -4,10 +4,11 @@ import { Typewriter } from "react-simple-typewriter";
 import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
 import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
+import Whatsapp from "../../components/Whatsapp/Whatsapp"
 
 const Hero = () => {
-  const whatsappUrl =
-    "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
+  // const whatsappUrl =
+  //   "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
 
   return (
     <div className={classes.hero} id="home">
@@ -46,14 +47,16 @@ const Hero = () => {
       {/* Add the animated arrow */}
       <ScrollDownArrow />
 
-      <a
+      {/* <a
         className={classes.whatsappButton}
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
       >
         <IconBrandWhatsapp size={32} />
-      </a>
+      </a> */}
+
+      <Whatsapp />
     </div>
   );
 };

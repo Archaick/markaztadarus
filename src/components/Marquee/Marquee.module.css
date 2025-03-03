@@ -6,9 +6,9 @@
 }
 
 .heading {
-  font-size: 1.7rem;
+  font-size: 2rem;
   font-weight: 800;
-  padding-bottom: 25px;
+  margin-bottom: 48px;
   color: #112a42;
 }
 
@@ -20,7 +20,7 @@
 .partnerLogo {
   height: 60px; /* Adjust height for responsiveness */
   width: auto;
-  margin: 0 40px; /* Space between logos */
+  margin: 0 85px; /* Space between logos */
 }
 
 @media (max-width: 480px) {
