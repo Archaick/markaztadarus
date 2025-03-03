@@ -12,7 +12,7 @@ const DailyActivitiesAccordion = ({ columns, data }) => {
   return (
     <Box
       style={{
-        backgroundColor: "#D9D9D9",
+        backgroundColor: "#f7f7f7",
         padding: "1rem",
         borderRadius: "8px",
         margin: "4rem 0",
@@ -87,7 +87,7 @@ const DailyActivitiesAccordion = ({ columns, data }) => {
                   <tr
                     key={index}
                     style={{
-                      backgroundColor: index % 2 === 0 ? "#AFC2D6" : "#D9D9D9",
+                      backgroundColor: index % 2 === 0 ? "#AFC2D6" : "#f7f7f7",
                     }}
                   >
                     {columns.map((col, colIndex) => (

@@ -310,9 +310,7 @@ const UT = () => {
           </List>
         </Box>
 
-
-        {/* WhatsApp Button */}
-        <Button
+        {/* <Button
           component="a"
           href={whatsappUrl}
           target="_blank"
@@ -323,7 +321,7 @@ const UT = () => {
         >
           <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
           Hubungi Kami
-        </Button>
+        </Button> */}
 
         <Whatsapp message={"Assalamu'alaikum warahmatullah wabarakatuh.\n\n Afwan, Saya ingin bertanya tentang Umrah Tadabburiyah."} />
       </Container>

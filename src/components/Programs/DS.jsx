@@ -40,11 +40,6 @@ import language from "../../assets/imgs/facilities/language.png";
 import learning from "../../assets/imgs/facilities/learning.png";
 
 const DS = () => {
-  const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Daurah Santri.`;
-  const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
-    whatsappMessage
-  )}`;
-
   const facilities = [
     { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },

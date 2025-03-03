@@ -17,7 +17,7 @@ const leaders = [
   {
     name: "Ir. Adnan Afiff",
     role: "Pembina Markaz Tadarus Indonesia",
-    text: "Markaz Tadarus Indonesia membangun umat agar hidup bersama al Qur'an dengan mengerti, menghayati dan menjadikan al Quran sebagai aplikasi dalam kehidupan keseharian.",
+    text: "Al-Qur'an adalah pedoman hidup umat Islam yang mengandung nilai-nilai moral, sosial, dan etika. Nilai-nilai tersebut dapat diinternalisasikan melalui keluarga dan  pendidikan lainnya. \n\nMarkaz Tadarus Indonesia membangun umat agar hidup bersama al Qur'an dengan mengerti, menghayati dan menjadikan al Quran sebagai aplikasi dalam kehidupan keseharian.",
     image: Adnan,
   },
   {

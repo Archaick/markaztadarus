@@ -6,19 +6,18 @@ import {
   Paper,
   SimpleGrid,
   Group,
-  Accordion,
   Box,
   Image,
   List,
 } from "@mantine/core";
 import {
-  IconBrandWhatsapp,
   IconHomeFilled,
   IconCircleCheck,
   IconOctagon,
 } from "@tabler/icons-react";
 import styles from "./DQ.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
+import Whatsapp from "../../components/Whatsapp/Whatsapp";
 
 // Facilities import
 import food from "../../assets/imgs/facilities/food.png";
@@ -35,11 +34,6 @@ import certificate from "../../assets/imgs/facilities/certificate.png";
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 
 const DQ = () => {
-  const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Duta Qur'an.`;
-  const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
-    whatsappMessage
-  )}`;
-
   const facilities = [
     { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },
@@ -61,8 +55,15 @@ const DQ = () => {
   const activitiesData = [
     { hari: "1", kegiatan: "Tiba di Mekah menuju hotel" },
     { hari: "2", kegiatan: "Melaksanakan Umrah" },
-    { hari: "3", kegiatan: "Tadabbur Al-Qur'anDaurah “Majelis Tadarus Metode 5T; Teori”. Daurah “Majelis Tadarus Metode 5T; Praktek”" },
-    { hari: "4", kegiatan: "Daurah “Hidayatul Qur’an” Daurah “Tanzil Al-Ayaatlil Waaqi’”" },
+    {
+      hari: "3",
+      kegiatan:
+        "Tadabbur Al-Qur'anDaurah “Majelis Tadarus Metode 5T; Teori”. Daurah “Majelis Tadarus Metode 5T; Praktek”",
+    },
+    {
+      hari: "4",
+      kegiatan: "Daurah “Hidayatul Qur’an” Daurah “Tanzil Al-Ayaatlil Waaqi’”",
+    },
     { hari: "5", kegiatan: "Daurah “Keahlian Tadabbur”" },
     { hari: "6", kegiatan: "Daurah “Keahlian Tadabbur" },
     { hari: "7", kegiatan: "Daurah “kitab Tadabbur anak”" },
@@ -151,11 +152,10 @@ const DQ = () => {
         >
           <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
             {[
-              "Pelaksanaan program terletak di kota suci Mekah.",
-              "Kunjungan lembaga-lembaga al-Qur’an di Mekah bersama Akademi an-Naba’.",
+              "Pelaksanaan program di kota suci Mekah.",
+              "Kunjungan lembaga-lembaga al-Qur’an dan tempat bersejarah di Mekah bersama Akademi an-Naba’.",
               "Mendapatkan sertifikat diakreditasi Akademi an-Naba’.",
-              "Kunjungan tempat-tempat bersejarah di Mekah bersama Akademi an-Naba’.",
-              "Pelaksanaan minimal satu kali umrah.",
+              "Pelaksanaan umrah minimal satu kali.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
                 <IconCircleCheck size={20} color="#BAF6AD" />
@@ -174,90 +174,6 @@ const DQ = () => {
           </SimpleGrid>
         </Paper>
 
-        {/* Accordion Section */}
-        <Text
-          className={styles.subtitle}
-          style={{ marginTop: "2rem", fontSize: "1.7rem" }}
-          mt={70}
-        >
-          CAKUPAN PROGRAM
-        </Text>
-        <Accordion
-          variant="contained"
-          mt={20}
-          styles={{
-            control: {
-              backgroundColor: "#ffffff", // White background for the control
-              color: "#0A3867", // Dark blue text color
-            },
-            item: {
-              border: "1px solid #e0e0e0", // Light border for each item
-              borderRadius: "8px", // Rounded corners
-            },
-            content: {
-              backgroundColor: "#f7f7f7", // Light gray background for the content
-              padding: "1rem", // Padding inside the content
-              fontWeight: "500",
-            },
-          }}
-          transitionDuration={1000}
-        >
-          <Accordion.Item value="pembekalan">
-            <Accordion.Control>
-              <Text fw={600}>Kelas al-Qur'an</Text>
-            </Accordion.Control>
-            <Accordion.Panel ml={20}>
-              <p>Mempelajari al-Qur’an meliputi ilmu tajwid dan tadabur.</p>
-            </Accordion.Panel>
-          </Accordion.Item>
-          <Accordion.Item value="madinah">
-            <Accordion.Control>
-              <Text fw={600}>Kelas Bahasa Arab</Text>
-            </Accordion.Control>
-            <Accordion.Panel ml={20}>
-              <p>
-                Siswa diajarkan keterampilan bahasa yang mencakup: Istima’
-                (mendengar), kalam (berbicara), Qira’ah (membaca) dan Kitabah
-                (menulis).
-              </p>
-            </Accordion.Panel>
-          </Accordion.Item>
-          <Accordion.Item value="mekah">
-            <Accordion.Control>
-              <Text fw={600}>Pendalaman Bahasa</Text>
-            </Accordion.Control>
-            <Accordion.Panel ml={20}>
-              <Text fw={650} mb={10}>
-                Dalam rangka menguatkan dan mendalami bahasa secara langsung di
-                lingkungan aslinya dilakukan beberapa kegiatan diantaranya:
-              </Text>
-              <ol>
-                <li>Praktek langsung di pasar dan tempat umum lainnya.</li>
-                <li>
-                  Praktek bahasa di lingkungan Masjidil Haram dibimbing oleh
-                  pengajar langsung.
-                </li>
-                <li>
-                  Ziarah ke lembaga pendidikan seperti sekolah dan kampus.
-                </li>
-                <li>Praktek di hadiqah (taman umum).</li>
-                <li>Tugas meringkas materi dari video maupun rekaman.</li>
-                <li>Melaporkan kegiatan sehari-hari secara singkat.</li>
-              </ol>
-            </Accordion.Panel>
-          </Accordion.Item>
-          <Accordion.Item value="pasca">
-            <Accordion.Control>
-              <Text fw={600}>Rihlah</Text>
-            </Accordion.Control>
-            <Accordion.Panel ml={20}>
-              <p>
-                Kunjungan kota Madinah, padang pasir, museum dan tempat
-                bersejarah lainnya.
-              </p>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
 
         {/* Facilities */}
         <Box className={styles.facilitiesSection} mt={40} mb={40}>
@@ -362,56 +278,13 @@ const DQ = () => {
           </List>
         </Box>
 
-        {/* SYARAT PERJALANAN */}
-        <Box
-          style={{
-            backgroundColor: "#F7F7F7",
-            padding: "2rem",
-            borderRadius: "8px",
-            maxWidth: "600px",
-            margin: "auto",
-            color: "#152D46",
-          }}
-          mt={50}
-        >
-          {/* Header */}
-          <Text fw={900} size="xl" ta="center" style={{ color: "#152D46" }}>
-            SYARAT PERJALANAN
-          </Text>
-
-          {/* List */}
-          <List spacing="sm" mt="md">
-            {[
-              "Menyiapkan paspor pribadi.",
-              "Menyiapkan ihram pribadi.",
-              "Menyiapkan koper pribadi.",
-              "Mengurus vaksin miningitis pribadi.",
-              "Membawa seragam baju putih dan celana hitam.",
-              "Membeli kuota internet umrah sebelum perjalanan.",
-            ].map((item, index) => (
-              <List.Item
-                key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
-                style={{ color: "#152D46", fontWeight: "650" }}
-              >
-                {item}
-              </List.Item>
-            ))}
-          </List>
-        </Box>
         <DailyActivitiesAccordion columns={columns} data={activitiesData} />
 
-        <Button
-          component="a"
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.whatsappButton}
-          mt={80}
-        >
-          <IconBrandWhatsapp size={24} style={{ marginRight: "8px" }} />
-          Hubungi Kami
-        </Button>
+        <Whatsapp
+          message={
+            "Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, Saya ingin bertanya tentang Duta Qur'an."
+          }
+        />
       </Container>
     </div>
   );
