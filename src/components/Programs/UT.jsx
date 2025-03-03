@@ -16,7 +16,7 @@ import {
   IconBrandWhatsapp,
   IconHomeFilled,
   IconOctagon,
-  IconCircleCheck
+  IconCircleCheck,
 } from "@tabler/icons-react";
 import styles from "./UT.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
@@ -36,7 +36,7 @@ import transport from "../../assets/imgs/facilities/transport.png";
 import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
 import learning from "../../assets/imgs/facilities/learning.png";
-import Whatsapp from "../../components/Whatsapp/Whatsapp"
+import Whatsapp from "../../components/Whatsapp/Whatsapp";
 const UT = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Umrah Tadabburiyah.`;
   const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
@@ -103,6 +103,16 @@ const UT = () => {
           tadabbur al-Qur’an di tempat turunnya, yaitu Mekah dan Madinah,
           disertai program i’tikaf di Masjid Nabawi dan Masjidil Haram.
         </Text>
+
+        <div className={styles.videoContainer}>
+          <iframe
+            className={styles.video}
+            src="https://www.youtube.com/embed/I6DeL-x0PW4"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </Container>
 
       <Container className={styles.contentWrapper}>
@@ -248,7 +258,9 @@ const UT = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <ol>
-                <li>Bimbingan tadarus al-Qur’an secara berkala online dan offline</li>
+                <li>
+                  Bimbingan tadarus al-Qur’an secara berkala online dan offline
+                </li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -323,7 +335,11 @@ const UT = () => {
           Hubungi Kami
         </Button> */}
 
-        <Whatsapp message={"Assalamu'alaikum warahmatullah wabarakatuh.\n\n Afwan, Saya ingin bertanya tentang Umrah Tadabburiyah."} />
+        <Whatsapp
+          message={
+            "Assalamu'alaikum warahmatullah wabarakatuh.\n\n Afwan, Saya ingin bertanya tentang Umrah Tadabburiyah."
+          }
+        />
       </Container>
     </div>
   );

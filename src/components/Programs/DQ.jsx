@@ -39,9 +39,8 @@ const DQ = () => {
     { text: "Tiket Pesawat PP.", icon: ticket },
     { text: "Visa dan Bis selama di Saudi.", icon: visa },
     { text: "Tour Leader.", icon: tour },
-    { text: "Transportasi Jedah-Mekah-Madinah", icon: transport },
-    { text: "Tempat tinggal Mekah selama 8 malam.", icon: room },
-    { text: "Tempat tinggal Madinah selama 2 malam.", icon: room },
+    { text: "Transportasi Jedah-Mekah-Madinah.", icon: transport },
+    { text: "Tempat tinggal Mekah & Madinah.", icon: room },
     { text: "Konsumsi 3x sehari selama kegiatan", icon: food },
     { text: "Kunjungan-kunjungan.", icon: visits },
     { text: "Buku paket daurah.", icon: learn },
@@ -58,11 +57,12 @@ const DQ = () => {
     {
       hari: "3",
       kegiatan:
-        "Tadabbur Al-Qur'anDaurah “Majelis Tadarus Metode 5T; Teori”. Daurah “Majelis Tadarus Metode 5T; Praktek”",
+        "Daurah “Majelis Tadarus Metode5T; Teori”. Daurah “Majelis Tadarus Metode 5T; Praktek”.",
     },
     {
       hari: "4",
-      kegiatan: "Daurah “Hidayatul Qur’an” Daurah “Tanzil Al-Ayaatlil Waaqi’”",
+      kegiatan:
+        "Daurah “Hidayatul Qur’an”. Daurah “Tanzil Al-Ayaatlil Waaqi’”.",
     },
     { hari: "5", kegiatan: "Daurah “Keahlian Tadabbur”" },
     { hari: "6", kegiatan: "Daurah “Keahlian Tadabbur" },
@@ -105,6 +105,16 @@ const DQ = () => {
           mengaitkannya dengan realita kehidupan, juga memahami langkah-langkah
           pelaksanaan majelis tadarus al-Qur’an.
         </Text>
+
+        <div className={styles.videoContainer}>
+          <iframe
+            className={styles.video}
+            src="https://www.youtube.com/embed/I6DeL-x0PW4"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </Container>
 
       <Container className={styles.contentWrapper}>
@@ -174,7 +184,6 @@ const DQ = () => {
           </SimpleGrid>
         </Paper>
 
-
         {/* Facilities */}
         <Box className={styles.facilitiesSection} mt={40} mb={40}>
           <Box className={styles.facilitiesHeader}>
@@ -221,11 +230,11 @@ const DQ = () => {
               "Memiliki minimal gelar S1 dalam ilmu syar’i.",
               "Memiliki pengaruh dalam dakwah, terutama di bidang al-Quran dan ilmu-ilmunya.",
               "Memiliki lembaga dakwah untuk dapat menerapkan program.",
-              "Berumur minimal 25 tahun dan maksimal 60 tahun.",
+              "Berumur 25-60 tahun.",
               "Fasih dan aktif berbahasa Arab.",
               "Mahir dan rutin tilawah al-Qur’an.",
               "Mampu menerjemahkan teks Arab ke dalam bahasa Indonesia.",
-              "Memiliki aqidah dan pemikiran Islam yang benar(tidak sesat atau liberal).",
+              "Memiliki aqidah dan pemikiran Islam yang benar (tidak sesat atau liberal).",
               "Tidak pernah mempunyai kasus kepolisian dan berbudi pekerti baik.",
               "Mendapatkan rekomendasi dari lembaga tempat berkhidmah saat ini.",
               "Komitmen hadir dan mengikuti 100% semua pelatihan, baik teori atau praktek.",

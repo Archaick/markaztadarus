@@ -48,7 +48,10 @@ const DS = () => {
     { text: "Transportasi Jedah-Mekah-Madinah.", icon: transport },
     { text: "Tempat tinggal Mekah & Madinah.", icon: room },
     { text: "Konsumsi 3x sehari selama kegiatan.", icon: food },
-    { text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.", icon: visits },
+    {
+      text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.",
+      icon: visits,
+    },
     { text: "Modul Pembelajaran.", icon: learn },
     {
       text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.",
@@ -147,6 +150,16 @@ const DS = () => {
           melaksanakan ibadah umrah, dan kunjungan tempat-tempat bersejarah,
           serta merasakan kekayaan budaya Arab.
         </Text>
+
+        <div className={styles.videoContainer}>
+          <iframe
+            className={styles.video}
+            src="https://www.youtube.com/embed/SkS0H-ImbtI"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
       </Container>
 
       <Container className={styles.contentWrapper}>
@@ -389,21 +402,19 @@ const DS = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {[
-              "Rekomendasi Lembaga",
-              "Paspor",
-              "Kartu Keluarga / KTP.",
-            ].map((item, index) => (
-              <List.Item
-                key={index}
-                icon={<IconOctagon size={18} color="#FFD700" />}
-                style={{
-                  fontWeight: "650",
-                }}
-              >
-                {item}
-              </List.Item>
-            ))}
+            {["Rekomendasi Lembaga", "Paspor", "Kartu Keluarga / KTP."].map(
+              (item, index) => (
+                <List.Item
+                  key={index}
+                  icon={<IconOctagon size={18} color="#FFD700" />}
+                  style={{
+                    fontWeight: "650",
+                  }}
+                >
+                  {item}
+                </List.Item>
+              )
+            )}
           </List>
         </Box>
 
