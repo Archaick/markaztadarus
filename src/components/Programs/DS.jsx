@@ -365,9 +365,9 @@ const DS = () => {
           {/* List */}
           <List spacing="sm" mt="md">
             {[
-              "Siswa siswi kelas 3 SMP dan SMA",
-              "Sehat jasamani dan rohani",
-              "Izin orangtua atau wali",
+              "Siswa siswi kelas 3 SMP dan SMA.",
+              "Sehat jasamani dan rohani.",
+              "Izin orangtua atau wali.",
             ].map((item, index) => (
               <List.Item
                 key={index}
@@ -401,7 +401,7 @@ const DS = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {["Rekomendasi Lembaga", "Paspor", "Kartu Keluarga / KTP."].map(
+            {["Rekomendasi Lembaga.", "Paspor.", "Kartu Keluarga / KTP."].map(
               (item, index) => (
                 <List.Item
                   key={index}

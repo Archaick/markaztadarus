@@ -214,9 +214,9 @@ const UT = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <ol>
-                <li>Kisah Umrah Nabi dan Sahabat</li>
-                <li>Keutamaan Mekah dan Madinah</li>
-                <li>Kunci-Kunci Tadabbur al-Qur'an</li>
+                <li>Kisah Umrah Nabi dan Sahabat.</li>
+                <li>Keutamaan Mekah dan Madinah.</li>
+                <li>Kunci-Kunci Tadabbur al-Qur'an.</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -226,10 +226,10 @@ const UT = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <ol>
-                <li>Tadabbur al-Qur'an</li>
-                <li>I'tikaf di Masjid Nabawi</li>
-                <li>Berjalan kaki ke Masjid Quba</li>
-                <li>Kunjungan ke tempat bersejarah</li>
+                <li>Tadabbur al-Qur'an.</li>
+                <li>I'tikaf di Masjid Nabawi.</li>
+                <li>Berjalan kaki ke Masjid Quba.</li>
+                <li>Kunjungan ke tempat bersejarah.</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -239,11 +239,11 @@ const UT = () => {
             </Accordion.Control>
             <Accordion.Panel ml={20}>
               <ol>
-                <li>Umrah</li>
-                <li>Tadabbur al-Qur'an</li>
-                <li>I'tikaf di Masjidil Haram</li>
-                <li>Nasehat Qur’aniyah</li>
-                <li>Kunjungan ke museum</li>
+                <li>Umrah.</li>
+                <li>Tadabbur al-Qur'an.</li>
+                <li>I'tikaf di Masjidil Haram.</li>
+                <li>Nasehat Qur’aniyah.</li>
+                <li>Kunjungan ke museum.</li>
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
@@ -254,7 +254,7 @@ const UT = () => {
             <Accordion.Panel ml={20}>
               <ol>
                 <li>
-                  Bimbingan tadarus al-Qur’an secara berkala online dan offline
+                  Bimbingan tadarus al-Qur’an secara berkala online dan offline.
                 </li>
               </ol>
             </Accordion.Panel>
@@ -303,7 +303,7 @@ const UT = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {["Paspor", "KTP"].map((item, index) => (
+            {["Paspor.", "KTP."].map((item, index) => (
               <List.Item
                 key={index}
                 icon={<IconCircle size={18} color="#FFD700" />}

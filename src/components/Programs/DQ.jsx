@@ -267,7 +267,7 @@ const DQ = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {["Rekomendasi Lembaga", "Paspor", "KTP", "CV"].map(
+            {["Rekomendasi Lembaga.", "Paspor.", "KTP.", "CV."].map(
               (item, index) => (
                 <List.Item
                   key={index}
