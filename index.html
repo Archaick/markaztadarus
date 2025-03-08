@@ -9,6 +9,13 @@
     <link rel="icon" href="/MTIFavicon.png" type="image/png" sizes="512x512" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Markaz Tadarus</title>
+
+    <!-- Redirect -->
+    <script>
+      if (window.location.hostname === "markaz-tadarus.web.app") {
+        window.location.replace("https://markaztadarus.com" + window.location.pathname + window.location.search);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
