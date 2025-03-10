@@ -2,11 +2,11 @@ import React, { useRef } from "react";
 import "@mantine/carousel/styles.css";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import SlideOne from "../../assets/imgs/gallery/slide1.jpg";
-import SlideTwo from "../../assets/imgs/gallery/slide2.jpg";
-import SlideThree from "../../assets/imgs/gallery/slide3.jpg";
-import SlideFour from "../../assets/imgs/gallery/slide4.jpg";
-import SlideFive from "../../assets/imgs/gallery/slide5.jpg";
+import SlideOne from "../../assets/imgs/gallery/slide1.webp";
+import SlideTwo from "../../assets/imgs/gallery/slide2.webp";
+import SlideThree from "../../assets/imgs/gallery/slide3.webp";
+import SlideFour from "../../assets/imgs/gallery/slide4.webp";
+import SlideFive from "../../assets/imgs/gallery/slide5.webp";
 import styles from "./Gallery.module.css"; // Import CSS module
 
 const Gallery = () => {

@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
+import { Helmet } from "react-helmet-async";
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Hero from "./components/Hero/Hero";
@@ -18,6 +19,16 @@ import DQ from "./components/Programs/DQ";
 
 const MainPage = () => (
   <>
+    {/* Helmet for dynamic SEO on client side (for internal navigation) */}
+    <Helmet>
+      <title>Markaz Tadarus - Umrah dan Kursus di Makkah</title>
+      <meta
+        name="description"
+        content="Markaz Tadarus menghadirkan Umrah unik dengan kursus di Makkah. Perkuat pemahaman agama sambil beribadah untuk pengalaman spiritual mendalam."
+      />
+      <link rel="canonical" href="https://markaztadarus.com" />
+      {/* You can add additional dynamic tags if needed */}
+    </Helmet>
     <Navbar />
     <Hero />
     <Programs />
@@ -44,6 +55,5 @@ const App = () => {
     </MantineProvider>
   );
 };
-
 
 export default App;

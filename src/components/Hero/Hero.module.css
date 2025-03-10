@@ -89,7 +89,7 @@
 
 @media (max-width: 768px) {
   .title {
-    font-size: 1.7rem;
+    font-size: 1.55rem;
   }
   .content {
     margin-left: clamp(3%, 7vw, 10%);

@@ -1,63 +1,62 @@
 /* WhatsAppButton.module.css */
 .whatsappButton {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #128c7e;
-    color: white;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-    text-decoration: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25D366; /* Updated to WhatsApp's official green */
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  text-decoration: none;
+}
+
+.whatsappButton:hover {
+  transform: scale(1.1);
+  background-color: #128C7E; /* Darker shade for hover */
+}
+
+/* Optional tooltip */
+.tooltip {
+  position: absolute;
+  right: 60px;
+  background-color: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tooltip:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #333;
+}
+
+.whatsappButton:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .whatsappButton {
+    bottom: 15px;
+    right: 15px;
   }
-  
-  .whatsappButton:hover {
-    transform: scale(1.1);
-    background-color: #075e54;
-  }
-  
-  /* Optional tooltip */
-  .tooltip {
-    position: absolute;
-    right: 60px;
-    background-color: #333;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-  
-  .tooltip:after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent transparent #333;
-  }
-  
-  .whatsappButton:hover .tooltip {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .whatsappButton {
-      bottom: 15px;
-      right: 15px;
-    }
-  }
-  
+}

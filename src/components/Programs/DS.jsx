@@ -10,12 +10,10 @@ import {
   Image,
   List,
 } from "@mantine/core";
-import React, { useState } from "react";
 import { IconCheckbox } from "@tabler/icons-react";
 import styles from "./DS.module.css";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import {
-  IconBrandWhatsapp,
   IconHomeFilled,
   IconCircle,
 } from "@tabler/icons-react";
@@ -37,6 +35,7 @@ import certificate from "../../assets/imgs/facilities/certificate.png";
 import time from "../../assets/imgs/facilities/time.png";
 import language from "../../assets/imgs/facilities/language.png";
 import learning from "../../assets/imgs/facilities/learning.png";
+import { Helmet } from "react-helmet-async";
 
 const DS = () => {
   const facilities = [
@@ -68,11 +67,6 @@ const DS = () => {
     { text: "Berteman dengan santri Mekah.", icon: friend },
   ];
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleAccordionToggle = () => {
-    setIsOpen(!isOpen);
-  };
   // table
   const activitiesData = [
     {
@@ -126,6 +120,15 @@ const DS = () => {
 
   return (
     <div className={styles.dsPage}>
+      <Helmet>
+        <title>Daurah Santri</title>
+        <meta
+          name="description"
+          content="Program Umrah & Kursus Pelajar dirancang khusus untuk pelajar, menggabungkan ibadah Umrah dengan pembelajaran interaktif di Mekah & Madinah."
+        />
+        <link rel="canonical" href="https://markaztadarus.com/ds" />
+      </Helmet>
+
       <Container className={styles.topWrapper}>
         <div className={styles.header}>
           <img src={logo} alt="MT Logo" className={styles.logo} />

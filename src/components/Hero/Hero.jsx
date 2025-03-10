@@ -1,13 +1,11 @@
 import { Container, Overlay } from "@mantine/core";
-import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { Typewriter } from "react-simple-typewriter";
 import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
 import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
-import Whatsapp from "../../components/Whatsapp/Whatsapp"
+import Whatsapp from "../../components/Whatsapp/Whatsapp";
 
 const Hero = () => {
-
   return (
     <div className={classes.hero} id="home">
       <video autoPlay loop muted className={classes.videoBg}>
@@ -24,18 +22,18 @@ const Hero = () => {
 
       <Container size="lg" className={classes.content}>
         <h1 className={classes.title}>
-          <span className={classes.bold}>Markaz Tadarus:</span>
+          <span className={classes.bold}>Umrah Tadarus</span>
           <br />
           <span className={classes.typewriter}>
             <span className="typewriter">
               <Typewriter
-                words={["Umrah Daurah", "Umrah Tadabburiyah"]}
+                words={["Duta Qur'an", "Daurah Santri", "Umrah Tadabburiyah"]}
                 loop={0}
                 cursor
                 cursorStyle="|"
-                typeSpeed={100}
+                typeSpeed={70}
                 deleteSpeed={50}
-                delaySpeed={1000}
+                delaySpeed={500}
               />
             </span>
           </span>
@@ -45,8 +43,11 @@ const Hero = () => {
       {/* Add the animated arrow */}
       <ScrollDownArrow />
 
-
-      <Whatsapp message={"Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, saya ingin nertanya tentang program Umrah Markaz Tadarus Indonesia."} />
+      <Whatsapp
+        message={
+          "Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, saya ingin nertanya tentang program Umrah Markaz Tadarus Indonesia."
+        }
+      />
     </div>
   );
 };

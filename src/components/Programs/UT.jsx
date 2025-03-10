@@ -32,6 +32,7 @@ import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
 import learning from "../../assets/imgs/facilities/learning.png";
 import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import { Helmet } from "react-helmet-async";
 const UT = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Umrah Tadabburiyah.`;
   const whatsappUrl = `https://wa.me/6281210010733?text=${encodeURIComponent(
@@ -72,6 +73,15 @@ const UT = () => {
 
   return (
     <div className={styles.utPage}>
+      <Helmet>
+        <title>Umrah Tadabburiyah</title>
+        <meta
+          name="description"
+          content="Rasakan makna mendalam Umrah di Mekah & Madinah dengan program Umrah Tadabburiyah—perjalanan spiritual yang menginspirasi bagi masyarakat umum."
+        />
+        <link rel="canonical" href="https://markaztadarus.com/ut" />
+      </Helmet>
+
       <Container className={styles.topWrapper}>
         <div className={styles.header}>
           <img src={logo} alt="MT Logo" className={styles.logo} />

@@ -28,6 +28,7 @@ import visa from "../../assets/imgs/facilities/visa.png";
 import visits from "../../assets/imgs/facilities/visits.png";
 import certificate from "../../assets/imgs/facilities/certificate.png";
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
+import { Helmet } from "react-helmet-async";
 
 const DQ = () => {
   const facilities = [
@@ -77,6 +78,15 @@ const DQ = () => {
 
   return (
     <div className={styles.dqPage}>
+      <Helmet>
+        <title>Duta Qur'an</title>
+        <meta
+          name="description"
+          content="Program eksklusif untuk pengajar: tingkatkan keahlian melalui pembelajaran mendalam dan strategi pengajaran dalam pengalaman Umrah di Mekah & Madinah."
+        />
+        <link rel="canonical" href="https://markaztadarus.com/dq" />
+      </Helmet>
+
       <Container className={styles.topWrapper}>
         <div className={styles.header}>
           <img src={logo} alt="MT Logo" className={styles.logo} />
