@@ -1,0 +1,39 @@
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-start; /* Align content to the left */
+  align-items: center;
+  padding-left: 5%; /* Ensure spacing from the left */
+  background: center/cover no-repeat;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  text-align: left; /* Align text to the left */
+  color: white;
+  z-index: 2;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  background-color: #b37d08;
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}

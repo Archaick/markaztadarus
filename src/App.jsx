@@ -16,6 +16,23 @@ import ErrorPage from "./components/ErrorPage/ErrorPage";
 import UT from "./components/Programs/UT";
 import DS from "./components/Programs/DS";
 import DQ from "./components/Programs/DQ";
+import Home from "./components/HomePage/Home";
+import BasePage from "./components/BasePage/BasePage";
+
+// Define navItems for the Umrah page
+const mainNavItems = [
+  { name: "Beranda", id: "home" },
+  { name: "Program", id: "program" },
+  { name: "Tentang Kami", id: "about" },
+  { name: "Galeri", id: "gallery" },
+];
+
+// Define navItems for the Home page
+const privateNavItems = [
+  { name: "Beranda", id: "home" },
+  { name: "Tentang Kami", id: "about" },
+  { name: "Program Kami", id: "program" },
+];
 
 const MainPage = () => (
   <>
@@ -27,9 +44,8 @@ const MainPage = () => (
         content="Markaz Tadarus menghadirkan Umrah unik dengan kursus di Makkah. Perkuat pemahaman agama sambil beribadah untuk pengalaman spiritual mendalam."
       />
       <link rel="canonical" href="https://markaztadarus.com" />
-      {/* You can add additional dynamic tags if needed */}
     </Helmet>
-    <Navbar />
+    <Navbar navItems={mainNavItems} />
     <Hero />
     <Programs />
     <Leaders />
@@ -49,6 +65,16 @@ const App = () => {
           <Route path="/ut" element={<UT />} />
           <Route path="/ds" element={<DS />} />
           <Route path="/dq" element={<DQ />} />
+
+          <Route
+            path="/private"
+            element={
+              <BasePage navItems={privateNavItems}>
+                <Home />
+              </BasePage>
+            }
+          />
+
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>

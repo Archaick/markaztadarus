@@ -6,19 +6,9 @@ import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg"; // New white logo for scrolled state
 
-// Add IDs for each navigation item
-const navItems = [
-  { name: "Beranda", id: "home" },
-  { name: "Program", id: "program" },
-  { name: "Tentang Kami", id: "about" },
-  { name: "Galeri", id: "gallery" },
-];
-
-export default function Navbar() {
+export default function Navbar({ navItems = [] }) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [scrolled, setScrolled] = useState(false);
-  const whatsappUrl =
-    "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
 
   // Handle scroll event
   useEffect(() => {
@@ -53,15 +43,6 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
-          {/* <Button
-            className={styles.contactBtn}
-            component="a"
-            href={whatsappUrl}
-            target="_blank" // Open in a new tab
-            rel="noopener noreferrer" // Security best practice
-          >
-            Hubungi Kami
-          </Button> */}
         </Group>
 
         <Burger
@@ -103,16 +84,6 @@ export default function Navbar() {
                 {item.name}
               </a>
             ))}
-            {/* <Button
-              fullWidth
-              className={styles.contactBtn}
-              component="a"
-              href={whatsappUrl}
-              target="_blank" // Open in a new tab
-              rel="noopener noreferrer" // Security best practice
-            >
-              Hubungi Kami
-            </Button> */}
           </nav>
         </Drawer>
       </div>
