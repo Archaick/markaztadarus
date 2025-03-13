@@ -4,7 +4,7 @@ import styles from "./Gallery.module.css";
 
 const Gallery = () => {
   return (
-    <div className={styles.galleryContainer}>
+    <div className={styles.galleryContainer} id="gallery">
       {/* Header and Subheader */}
       <div className={styles.header}>
         <h2 className={styles.title}>Galeri Kegiatan</h2>

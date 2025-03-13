@@ -4,6 +4,7 @@ import Methods from "./Methods/Methods";
 import About from "./About/About";
 import Map from "./Map/Map";
 import Gallery from "./Gallery/Gallery";
+import MarqueeComponent from "./Marquee/Marquee";
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <About />
       <Map />
       <Gallery />
+      <MarqueeComponent />
     </div>
   );
 };

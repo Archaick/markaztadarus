@@ -1,0 +1,42 @@
+.marqueeContainer {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.title {
+  color: #b37d08; /* Title color */
+  font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.textcontainer {
+    display: flex;
+    justify-content: center;
+}
+
+.text {
+  color: #003366; /* Text color */
+  font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
+  max-width: 780px;
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.marqueeRow {
+  margin: 1rem 0;
+}
+
+.logo {
+  height: 80px; /* Adjust logo height */
+  margin: 0 2rem; /* Spacing between logos */
+  transition: filter 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .logo {
+    height: 60px; /* Smaller logos on mobile */
+    margin: 0 1rem; /* Less spacing on mobile */
+  }
+}
