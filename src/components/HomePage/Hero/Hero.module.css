@@ -31,9 +31,20 @@
 
 .button {
   background-color: #b37d08;
+  display: flex;
+  align-items: center; /* Ensures proper vertical alignment */
+  gap: 8px; /* Adds spacing between text and icon */
   transition: transform 0.2s ease;
 }
 
 .button:hover {
   transform: scale(1.05);
+}
+
+.button span {
+  padding-right: 6px;
+}
+
+.chevron {
+  margin-top: 2px; /* Adjusts vertical alignment slightly */
 }

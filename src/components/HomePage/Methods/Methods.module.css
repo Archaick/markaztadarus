@@ -40,9 +40,9 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.methodItem:hover .image {
-  transform: rotate(15deg);
-}
+/* .methodItem:hover .image {
+  transform: rotate(360deg);
+} */
 
 .image {
   width: 40px;

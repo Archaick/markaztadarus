@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Overlay, Text, Title, Container } from "@mantine/core";
-import { IconArrowRight } from "@tabler/icons-react";
+import { IconChevronCompactDown } from "@tabler/icons-react";
 import styles from "./Hero.module.css";
 import HeroImage from "../../../assets/imgs/homepage/hero.jpg"; // Import image
 
@@ -26,13 +26,9 @@ const Hero = () => {
           Kami membangun umat agar hidup bersama al-Qur’an, memahami,
           menghayati, dan menjadikannya pedoman kehidupan.
         </Text>
-        <Button
-          size="lg"
-          radius="md"
-          rightSection={<IconArrowRight size={20} />}
-          className={styles.button}
-        >
-          Program Kami
+        <Button size="lg" radius="md" className={styles.button}>
+          <span>Program Kami</span>
+          <IconChevronCompactDown size={20} className={styles.chevron} />
         </Button>
       </Container>
     </div>

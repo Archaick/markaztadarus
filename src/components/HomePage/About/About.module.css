@@ -1,0 +1,97 @@
+.about {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  position: relative;
+  padding: 3.5rem 0;
+  background-color: #f9f9f9; /* Light background for contrast */
+}
+
+.imageCard {
+  width: 40%; /* Smaller image width */
+  position: relative;
+  text-align: center;
+  z-index: 1; /* Lift the image above the divider */
+  margin-bottom: -50px; /* Overlap the divider */
+}
+
+.image {
+  width: 290px;
+  height: 340px;
+  border-radius: 8px; /* Rounded corners for the image */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.content {
+  width: 55%; /* Content takes 60% width */
+  padding: 10px;
+  padding-left: 2rem; /* Spacing between image and content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center text vertically */
+  margin-bottom: 24px;
+}
+
+.title {
+  color: #ab8b2b; /* Title color */
+  font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.text {
+  color: #333; /* Text color */
+  font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.highlight {
+  font-weight: 700;
+  color: #1a4970; /* Highlight color */
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem; /* Spacing between text and icon */
+  color: #1a4970;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link span {
+  display: flex; /* Ensures both text and icon align */
+  align-items: center;
+}
+
+.link:hover {
+  color: #ab8b2b;
+}
+
+.divider {
+  width: 100%; /* Divider takes full width */
+  height: 65px;
+  background-color: #ab8b2b; /* Divider color */
+  margin-top: -30px; /* Overlap with the image */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .imageCard {
+    width: 100%; /* Image takes full width on smaller screens */
+    margin-bottom: 0; /* Remove overlap */
+  }
+
+  .content {
+    width: 100%; /* Content takes full width */
+    padding-left: 0; /* Remove spacing */
+    margin-top: 2rem; /* Add spacing between image and content */
+    text-align: center; /* Center-align text on smaller screens */
+  }
+  .divider {
+    margin-top: 0; /* Remove overlap */
+  }
+}
