@@ -3,6 +3,7 @@ import Hero from "./Hero/Hero";
 import Methods from "./Methods/Methods";
 import About from "./About/About";
 import Map from "./Map/Map";
+import Gallery from "./Gallery/Gallery";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Methods />
       <About />
       <Map />
+      <Gallery />
     </div>
   );
 };

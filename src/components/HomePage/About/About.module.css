@@ -3,7 +3,6 @@
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
   position: relative;
   padding: 3.5rem 0;
-  background-color: #f9f9f9; /* Light background for contrast */
 }
 
 .imageCard {
