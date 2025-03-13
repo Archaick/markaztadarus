@@ -1,10 +1,13 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { motion, useAnimation } from "framer-motion";
 import styles from "./Map.module.css";
 import before from "./../../../assets/imgs/homepage/map/before.png";
 import after from "./../../../assets/imgs/homepage/map/after.png";
 
 const Map = () => {
+  const controls = useAnimation(); // Animation controls
+  const [isInView, setIsInView] = useState(false);
+
   return (
     <div className={styles.mapContainer}>
       {/* Header and Subheader */}
@@ -19,15 +22,23 @@ const Map = () => {
         <img src={before} alt="Before Map" className={styles.beforeMap} />
 
         {/* After Map (Animated Markers) */}
-        <motion.img
-          src={after}
-          alt="After Map"
-          className={styles.afterMap}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false, amount: 0.2 }} 
-          transition={{ duration: 1, delay: 0.1, ease: "easeInOut" }} 
-        />
+        <motion.div
+          className={styles.afterMapContainer}
+          initial={{ height: 0 }} // Start with 0 height (fully hidden)
+          animate={controls} // Use animation controls
+          transition={{ duration: 3, ease: "linear" }} // Adjust duration and easing
+          onViewportEnter={() => {
+            setIsInView(true);
+            controls.start({ height: "100%" }); // Animate to full height
+          }}
+          onViewportLeave={() => {
+            setIsInView(false);
+            controls.set({ height: 0 }); // Immediately reset height to 0
+          }}
+          viewport={{ once: false, amount: 0.2 }}
+        >
+          <img src={after} alt="After Map" className={styles.afterMap} />
+        </motion.div>
       </div>
     </div>
   );

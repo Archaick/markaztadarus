@@ -40,10 +40,6 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* .methodItem:hover .image {
-  transform: rotate(360deg);
-} */
-
 .image {
   width: 40px;
   height: 40px;
@@ -60,7 +56,19 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .grid {
+    display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* Center the last item (Tazkiyah) and keep full size */
+  .methodItem:last-child {
+    grid-column: 1 / -1; /* Span across both columns */
+    display: flex; /* Ensure it behaves like other items */
+    justify-content: center; /* Center horizontally */
+    width: 100%; /* Make it take the full width */
+    max-width: 400px; /* Limit max width for balance */
+    margin: 0 auto; /* Prevent stretching */
   }
 }
 

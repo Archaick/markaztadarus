@@ -1,6 +1,7 @@
 .marqueeContainer {
   text-align: center;
   padding: 2rem 1rem;
+  background-color: #f9f9f9; /* Light background for contrast */
 }
 
 .title {
