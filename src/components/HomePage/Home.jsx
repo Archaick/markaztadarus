@@ -5,6 +5,7 @@ import About from "./About/About";
 import Map from "./Map/Map";
 import Gallery from "./Gallery/Gallery";
 import MarqueeComponent from "./Marquee/Marquee";
+import Programs from "./Programs/Programs";
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <Hero />
       <Methods />
       <About />
+      <Programs />
       <Map />
       <Gallery />
       <MarqueeComponent />

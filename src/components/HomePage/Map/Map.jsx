@@ -26,7 +26,7 @@ const Map = () => {
           className={styles.afterMapContainer}
           initial={{ height: 0 }} // Start with 0 height (fully hidden)
           animate={controls} // Use animation controls
-          transition={{ duration: 3, ease: "linear" }} // Adjust duration and easing
+          transition={{ duration: 5, ease: "linear" }} // Adjust duration and easing
           onViewportEnter={() => {
             setIsInView(true);
             controls.start({ height: "100%" }); // Animate to full height

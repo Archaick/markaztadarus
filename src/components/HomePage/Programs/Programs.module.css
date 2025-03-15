@@ -1,0 +1,149 @@
+.programsSection {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #b37d08;
+    margin-bottom: 1rem;
+  }
+  
+  .carousel {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px; /* Add padding to prevent cards from touching */
+  }
+  
+  .card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    width: 80%; /* Ensure cards take full width of their container */
+    height: 400px; /* Fixed height for consistency */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Increase card height on larger screens */
+  @media (min-width: 768px) {
+    .card {
+      height: 450px; /* Increased height for larger screens */
+    }
+  }
+  
+  .card:hover {
+    transform: scale(0.99); /* Zoom in by 10% */
+  }
+  
+  .cardImageWrapper {
+    position: relative;
+    width: 100%;
+    height: 300px; /* Fixed height for images */
+    overflow: hidden; /* Ensure the zoomed image doesn't overflow */
+  }
+  
+  .cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure images cover the container */
+    transition: transform 0.5s ease; /* Smooth zoom transition */
+  }
+  
+  .card:hover .cardImage {
+    transform: scale(1.1);
+  }
+  
+  .titleOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15%; /* Cover the bottom part of the image */
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center; /* Center text horizontally */
+    align-items: center; /* Center text vertically */
+    text-align: center; /* Center text alignment */
+    overflow: hidden; /* Required for shine effect */
+  }
+  
+  /* Shine effect for overlay */
+  .titleOverlay::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
+    animation: shine 3s infinite; /* Continuous shine animation */
+  }
+  
+  @keyframes shine {
+    0% {
+      left: -100%; /* Start from the left */
+    }
+    100% {
+      left: 100%; /* Move to the right */
+    }
+  }
+  
+  .cardContent {
+    padding: 1.5rem;
+    text-align: left;
+    flex: 1; /* Ensure content takes remaining space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+  }
+  
+  .cardDescription {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #003366;
+    margin-bottom: 1.5rem;
+    text-align: center; /* Center text */
+  }
+  
+  .cardButton {
+    background-color: #a67d00;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    padding: 0.5rem 1rem; /* Reduce button size */
+    font-size: 0.9rem; /* Reduce font size */
+    border-radius: 4px; /* Add slight border radius */
+    display: flex;
+    align-items: center; /* Align icon and text vertically */
+    gap: 8px; /* Add space between text and icon */
+  }
+  
+  .cardButton:hover {
+    background-color: #007bff; /* Accent blue on hover */
+    transform: scale(1.05); /* Slight scale effect on hover */
+  }
+  
+  .iconWrapper {
+    display: flex;
+    align-items: center; /* Align icon vertically */
+  }
