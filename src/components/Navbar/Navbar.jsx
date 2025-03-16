@@ -1,3 +1,11 @@
+// Define navItems for the Umrah page
+const mainNavItems = [
+  { name: "Beranda", id: "/private" }, // Use the full path for "Beranda"
+  { name: "Program", id: "program" }, // Anchor link
+  { name: "Tentang Kami", id: "about" }, // Anchor link
+  { name: "Galeri", id: "gallery" }, // Anchor link
+];
+
 import { useState, useEffect } from "react";
 import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -6,7 +14,7 @@ import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg"; // New white logo for scrolled state
 
-export default function Navbar({ navItems = [] }) {
+export default function Navbar({ navItems = mainNavItems }) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,7 +45,7 @@ export default function Navbar({ navItems = [] }) {
           {navItems.map((item) => (
             <a
               key={item.id}
-              href={`#${item.id}`} // Use the ID for navigation
+              href={item.id.startsWith("/") ? item.id : `#${item.id}`} // Use full path for "Beranda"
               className={styles.navLink}
             >
               {item.name}
@@ -77,7 +85,7 @@ export default function Navbar({ navItems = [] }) {
             {navItems.map((item) => (
               <a
                 key={item.id}
-                href={`#${item.id}`} // Use the ID for navigation
+                href={item.id.startsWith("/") ? item.id : `#${item.id}`} // Use full path for "Beranda"
                 onClick={close}
                 className={styles.navLink}
               >

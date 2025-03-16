@@ -21,7 +21,7 @@ import BasePage from "./components/BasePage/BasePage";
 
 // Define navItems for the Umrah page
 const mainNavItems = [
-  { name: "Beranda", id: "home" },
+  { name: "Beranda", id: "/private" },
   { name: "Program", id: "program" },
   { name: "Tentang Kami", id: "about" },
   { name: "Galeri", id: "gallery" },

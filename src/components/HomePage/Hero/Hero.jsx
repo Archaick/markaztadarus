@@ -26,7 +26,13 @@ const Hero = () => {
           Kami membangun umat agar hidup bersama al-Qur’an, memahami,
           menghayati, dan menjadikannya pedoman kehidupan.
         </Text>
-        <Button size="lg" radius="md" className={styles.button}>
+        <Button
+          size="lg"
+          radius="md"
+          className={styles.button}
+          component="a"
+          href="#programs"
+        >
           <span>Program Kami</span>
           <IconChevronCompactDown size={20} className={styles.chevron} />
         </Button>

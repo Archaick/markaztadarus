@@ -30,6 +30,7 @@
 }
 
 .button {
+  width: 200px;
   background-color: #b37d08;
   display: flex;
   align-items: center; /* Ensures proper vertical alignment */
