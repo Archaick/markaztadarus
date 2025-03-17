@@ -3,11 +3,17 @@ import styles from "./Marquee.module.css";
 import khaldon from "../../../assets/imgs/homepage/marquee/khaldon.png";
 import manba from "../../../assets/imgs/homepage/marquee/manba.png";
 import ubaidah from "../../../assets/imgs/homepage/marquee/ubaidah.png";
+import wafa from "../../../assets/imgs/homepage/marquee/wafa.png";
+import azhari from "../../../assets/imgs/homepage/marquee/azhari.png";
+// right
+import falah from "../../../assets/imgs/homepage/marquee/falah.png";
+
 import Marquee from "react-fast-marquee";
 
 const MarqueeComponent = () => {
   // Repeat the logos to fill the marquee
-  const logos = [khaldon, manba, ubaidah, khaldon]; // Repeat logos as needed
+  const logosLeft = [khaldon, manba, ubaidah, wafa, azhari]; // Repeat logos as needed
+  const logosRight = [falah]; // Repeat logos as needed
 
   return (
     <div className={styles.marqueeContainer}>
@@ -26,7 +32,7 @@ const MarqueeComponent = () => {
         gradient={false}
         className={styles.marqueeRow}
       >
-        {logos.map((logo, index) => (
+        {logosLeft.map((logo, index) => (
           <img
             key={index}
             src={logo}
@@ -43,7 +49,7 @@ const MarqueeComponent = () => {
         gradient={false}
         className={styles.marqueeRow}
       >
-        {logos.map((logo, index) => (
+        {logosRight.map((logo, index) => (
           <img
             key={index}
             src={logo}

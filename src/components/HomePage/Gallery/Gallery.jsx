@@ -2,6 +2,28 @@ import React from "react";
 import { Tabs } from "@mantine/core";
 import styles from "./Gallery.module.css";
 
+// umrah
+import Umrah1 from "../../../assets/imgs/homepage/gallery/umrah/umrah1.jpg";
+import Umrah2 from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
+import Umrah3 from "../../../assets/imgs/programs/DQ.jpg";
+// kaderisasi
+import Kaderisasi1 from "../../../assets/imgs/programs/DQ.jpg";
+import Kaderisasi2 from "../../../assets/imgs/homepage/gallery/kaderisasi/kaderisasi.jpg";
+// majelis
+import Majelis1 from "../../../assets/imgs/homepage/gallery/majelis/majelis1.jpg";
+import Majelis2 from "../../../assets/imgs/homepage/gallery/majelis/majelis2.jpg";
+// seminar
+import Seminar1 from "../../../assets/imgs/homepage/programs/seminar.jpg";
+import Seminar2 from "../../../assets/imgs/homepage/gallery/seminar/seminar2.jpg";
+
+// Define gallery data with local images
+const galleryData = {
+  umrah: [Umrah1, Umrah2, Umrah3],
+  kaderisasi: [Kaderisasi1, Kaderisasi2],
+  majelis: [Majelis1, Majelis2],
+  seminar: [Seminar1, Seminar2],
+};
+
 const Gallery = () => {
   return (
     <div className={styles.galleryContainer} id="gallery">
@@ -38,44 +60,57 @@ const Gallery = () => {
         {/* Umrah Tadarus Content */}
         <Tabs.Panel value="umrah" className={styles.tabContent}>
           <div className={styles.imageGrid}>
-            <img
-              src="https://via.placeholder.com/300"
-              alt="Umrah Tadarus 1"
-              className={styles.image}
-            />
+            {galleryData.umrah.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Umrah Tadarus ${index + 1}`}
+                className={styles.image}
+              />
+            ))}
           </div>
         </Tabs.Panel>
 
         {/* Kaderisasi dan Pelatihan Content */}
         <Tabs.Panel value="kaderisasi" className={styles.tabContent}>
           <div className={styles.imageGrid}>
-            <img
-              src="https://via.placeholder.com/300"
-              alt="Kaderisasi 1"
-              className={styles.image}
-            />
+            {galleryData.kaderisasi.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Kaderisasi ${index + 1}`}
+                className={styles.image}
+              />
+            ))}
           </div>
         </Tabs.Panel>
 
         {/* Majelis Tadarus Content */}
         <Tabs.Panel value="majelis" className={styles.tabContent}>
           <div className={styles.imageGrid}>
-            <img
-              src="https://via.placeholder.com/300"
-              alt="Majelis 1"
-              className={styles.image}
-            />
+            {galleryData.majelis.map((image, index) => (
+              <div key={index} className={styles.imageWrapper}>
+                <img
+                  src={image}
+                  alt={`Majelis ${index + 1}`}
+                  className={styles.image}
+                />
+              </div>
+            ))}
           </div>
         </Tabs.Panel>
 
         {/* Seminar dan Kuliah Umum Content */}
         <Tabs.Panel value="seminar" className={styles.tabContent}>
           <div className={styles.imageGrid}>
-            <img
-              src="https://via.placeholder.com/300"
-              alt="Seminar 1"
-              className={styles.image}
-            />
+            {galleryData.seminar.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Seminar ${index + 1}`}
+                className={styles.image}
+              />
+            ))}
           </div>
         </Tabs.Panel>
       </Tabs>
