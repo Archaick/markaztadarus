@@ -31,7 +31,7 @@ const mainNavItems = [
 const privateNavItems = [
   { name: "Beranda", id: "home" },
   { name: "Tentang Kami", id: "about" },
-  { name: "Program Kami", id: "program" },
+  { name: "Program Kami", id: "programs" },
 ];
 
 const MainPage = () => (

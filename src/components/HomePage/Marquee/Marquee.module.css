@@ -12,8 +12,8 @@
 }
 
 .textcontainer {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .text {
@@ -25,7 +25,30 @@
 }
 
 .marqueeRow {
-  margin: 1rem 0;
+  margin: 2rem 0;
+  padding: 0.8rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.marqueeRow::before,
+.marqueeRow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px; /* Adjust the width of the gradient */
+  z-index: 2;
+}
+
+.marqueeRow::before {
+  left: 0;
+  background: linear-gradient(to right, #f9f9f9, rgba(249, 249, 249, 0));
+}
+
+.marqueeRow::after {
+  right: 0;
+  background: linear-gradient(to left, #f9f9f9, rgba(249, 249, 249, 0));
 }
 
 .logo {
