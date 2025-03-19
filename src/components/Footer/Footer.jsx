@@ -37,7 +37,7 @@ const Footer = () => {
                 className={styles.footerLogo}
               />
               <Text size="sm" mb={20}>
-                Belajar al-Qur’an dan Bahasa Arab di Mekah
+                Menyatukan hati dengan al-Qur’an
               </Text>
               <Text size="lg" weight={600} mt="md">
                 Hubungi Kami
@@ -126,7 +126,6 @@ const Footer = () => {
                 allowFullScreen=""
                 loading="lazy"
               ></iframe>
-
             </Stack>
           </div>
         </div>

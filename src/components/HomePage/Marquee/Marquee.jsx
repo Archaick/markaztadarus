@@ -8,7 +8,7 @@ import wafa from "../../../assets/imgs/homepage/marquee/wafa.png";
 import azhari from "../../../assets/imgs/homepage/marquee/azhari.png";
 // right
 import falah from "../../../assets/imgs/homepage/marquee/falah.png";
-import kaaffah from "../../../assets/imgs/homepage/marquee/kaaffah.png";
+import shifa from "../../../assets/imgs/homepage/marquee/shifa.png";
 import lampu from "../../../assets/imgs/homepage/marquee/lampu.png";
 import muhammadiyah from "../../../assets/imgs/homepage/marquee/muhammadiyah.png";
 import pondok from "../../../assets/imgs/homepage/marquee/pondok.png";
@@ -18,7 +18,7 @@ import Marquee from "react-fast-marquee";
 const MarqueeComponent = () => {
   // Repeat the logos to fill the marquee
   const logosLeft = [khaldon, manba, ubaidah, wafa, azhari]; // Repeat logos as needed
-  const logosRight = [falah, muhammadiyah, kaaffah, lampu, pondok]; // Repeat logos as needed
+  const logosRight = [falah, muhammadiyah, shifa, lampu, pondok]; // Repeat logos as needed
 
   return (
     <div className={styles.marqueeContainer}>

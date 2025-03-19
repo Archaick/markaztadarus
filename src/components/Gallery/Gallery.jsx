@@ -54,11 +54,11 @@ const Gallery = () => {
       {/* Full-Width Carousel */}
       <Carousel
         withIndicators
-        height={500}
+        height={420}
         plugins={[autoplay.current]}
         loop
         align="center"
-        slideSize="70%" // Adjust slide size to show hints of adjacent slides
+        slideSize="60%" // Adjust slide size to show hints of adjacent slides
         slideGap="md" // Add gap between slides
         slidesToScroll={1} // Scroll one slide at a time
         classNames={{

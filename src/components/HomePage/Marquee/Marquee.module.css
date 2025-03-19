@@ -57,6 +57,10 @@
   transition: filter 0.3s ease;
 }
 
+.logo:hover {
+  filter: grayscale(100%);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .logo {
