@@ -38,7 +38,7 @@ const MainPage = () => (
   <>
     {/* Helmet for dynamic SEO on client side (for internal navigation) */}
     <Helmet>
-      <title>Markaz Tadarus - Umrah dan Kursus di Makkah</title>
+      <title>Markaz Tadarus Indonesia - Umrah dan Kursus di Makkah</title>
       <meta
         name="description"
         content="Markaz Tadarus menghadirkan Umrah unik dengan kursus di Makkah. Perkuat pemahaman agama sambil beribadah untuk pengalaman spiritual mendalam."
