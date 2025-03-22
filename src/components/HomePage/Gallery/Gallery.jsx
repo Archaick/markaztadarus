@@ -29,11 +29,11 @@ const Gallery = () => {
     <div className={styles.galleryContainer} id="gallery">
       {/* Header and Subheader */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Galeri Kegiatan</h2>
-        <p className={styles.subtitle}>
+        <h2 className={styles.title}>Galeri</h2>
+        {/* <p className={styles.subtitle}>
           Galeri ini adalah rangkuman dari berbagai program dan kegiatan yang
           berjalan hingga tahun 2025.
-        </p>
+        </p> */}
       </div>
 
       {/* Tabs */}
@@ -45,16 +45,16 @@ const Gallery = () => {
       >
         <Tabs.List className={styles.tabsList}>
           {/* Umrah Tadarus Tab */}
-          <Tabs.Tab value="umrah">Umrah Tadarus</Tabs.Tab>
+          <Tabs.Tab value="umrah">Umrah Tadarus 5T</Tabs.Tab>
 
           {/* Kaderisasi dan Pelatihan Tab */}
-          <Tabs.Tab value="kaderisasi">Kaderisasi dan Pelatihan</Tabs.Tab>
+          <Tabs.Tab value="kaderisasi">Pelatihan Tadarus 5T</Tabs.Tab>
 
           {/* Majelis Tadarus Tab */}
-          <Tabs.Tab value="majelis">Majelis Tadarus</Tabs.Tab>
+          <Tabs.Tab value="majelis">Majelis Tadarus 5T</Tabs.Tab>
 
           {/* Seminar dan Kuliah Umum Tab */}
-          <Tabs.Tab value="seminar">Seminar dan Kuliah Umum</Tabs.Tab>
+          <Tabs.Tab value="seminar">Seminar Tadarus 5T</Tabs.Tab>
         </Tabs.List>
 
         {/* Umrah Tadarus Content */}

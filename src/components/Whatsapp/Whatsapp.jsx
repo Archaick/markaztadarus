@@ -5,7 +5,7 @@ import styles from "./Whatsapp.module.css";
 
 const Whatsapp = ({
   phoneNumber = "6281210010733",
-  message = "Halo, saya ingin konsultasi dengan Anda.",
+  message = "Assalamu Alaikum warahmatullah wabarakatuh. \n\nsaya ingin berkonsultasi",
 }) => {
   // Construct the WhatsApp URL with the provided phone number and message
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(

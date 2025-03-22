@@ -15,36 +15,32 @@ const programs = [
   {
     src: Seminar,
     title: "Seminar Tadarus 5T",
-    description:
-      "Program pengenalan Tadarus 5T, Contoh Tadarus Sahabat, dan praktik penerapan Tadarus 5T.",
+    description: "Kuliah Umum Pengenalan Tadarus al-Qur'an Metode 5T",
     link: "#", // Inactive link
   },
   {
     src: Pelatihan,
     title: "Pelatihan Tadarus 5T",
-    description:
-      "Program khusus kader lembaga pendidikan yang siap berkomitmen dalam menyebarkan Tadarus 5T di lembaganya.",
+    description: "Pelatihan dan Pembinaan Tadarus al-Qur'an Metode 5T",
     link: "#", // Inactive link
   },
   {
     src: Majelis,
     title: "Majelis Tadarus 5T",
-    description:
-      "Pembelajaran Tadarus 5T kepada masyarakat umum, lembaga pendidikan, institusi perkantoran, ataupun korporasi.",
+    description: "Pembelajaran Tadarus al-Qur'an Metode 5T",
     link: "#", // Inactive link
   },
   {
     src: Karya,
-    title: "Karya Terjemah",
-    description:
-      "Buku buku lembaga An Naba Al Azhim yang diterjemahkan ke dalam bahasa Indonesia untuk memenuhi setiap lingkup pendidikan.",
+    title: "Karya Ilmiah",
+    description: "Penerjemahan Kitab Tadarus 5T ke Bahasa Indonesia",
     link: "#", // Inactive link
   },
   {
     src: Umrah,
-    title: "Umrah Tadarus",
+    title: "Umrah Tadarus 5T",
     description:
-      "Program Umrah yang diselingi dengan Tadarus 5T di tanah Haram.",
+      "Tadarus dan Tadabbur al-Qur'an di Tanah Suci Mekah dan Madinah",
     link: "/", // Active link
   },
 ];
@@ -55,10 +51,10 @@ const Programs = () => {
   return (
     <section className={styles.programsSection} id="programs">
       <h2 className={styles.header}>Program Kami</h2>
-      <Text align="center" size="1.2rem" color="#003366" mb={40} fw={500}>
+      {/* <Text align="center" size="1.1rem" color="#003366" mb={40} fw={500}>
         Dalam membangun kehidupan bersama al-Qur’an, Markaz Tadarus Indonesia
         menjalankan 5 program utama
-      </Text>
+      </Text> */}
 
       <Carousel
         slideSize="100%"

@@ -25,44 +25,43 @@ const MarqueeComponent = () => {
       <h2 className={styles.title}>Mitra Kami</h2>
       <div className={styles.textcontainer}>
         <p className={styles.text}>
-          Hingga tahun 2025, telah lebih dari 35 lembaga pendidikan yang
-          tersebar di seluruh Indonesia telah bekerjasama dengan kami dalam
-          penyebaran Tadarus 5T, dan ini adalah salahsatu dari mereka:
+          Lebih dari 35 Lembaga Pendidikan di Seluruh Indonesia Telah
+          bekerjasama dengan kami dalam penerapan Tadarus 5T
         </p>
       </div>
 
-        <Marquee
-          direction="right"
-          speed={30}
-          gradient={false} // Disable default gradient
-          className={styles.marqueeRow}
-        >
-          {logosLeft.map((logo, index) => (
-            <img
-              key={index}
-              src={logo}
-              alt={`Logo ${index + 1}`}
-              className={styles.logo}
-            />
-          ))}
-        </Marquee>
+      <Marquee
+        direction="right"
+        speed={30}
+        gradient={false} // Disable default gradient
+        className={styles.marqueeRow}
+      >
+        {logosLeft.map((logo, index) => (
+          <img
+            key={index}
+            src={logo}
+            alt={`Logo ${index + 1}`}
+            className={styles.logo}
+          />
+        ))}
+      </Marquee>
 
-        {/* Second Row (Left to Right) */}
-        <Marquee
-          direction="left"
-          speed={30}
-          gradient={false} // Disable default gradient
-          className={styles.marqueeRow}
-        >
-          {logosRight.map((logo, index) => (
-            <img
-              key={index}
-              src={logo}
-              alt={`Logo ${index + 1}`}
-              className={styles.logo}
-            />
-          ))}
-        </Marquee>
+      {/* Second Row (Left to Right) */}
+      <Marquee
+        direction="left"
+        speed={30}
+        gradient={false} // Disable default gradient
+        className={styles.marqueeRow}
+      >
+        {logosRight.map((logo, index) => (
+          <img
+            key={index}
+            src={logo}
+            alt={`Logo ${index + 1}`}
+            className={styles.logo}
+          />
+        ))}
+      </Marquee>
     </div>
   );
 };

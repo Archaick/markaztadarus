@@ -18,7 +18,7 @@ const Methods = () => {
   return (
     <div className={styles.methods}>
       <div className={styles.container}>
-        <h2 className={styles.header}>Tadarus al-Qur’an metode 5T</h2>
+        <h2 className={styles.header}>Tadarus al-Qur’an Metode 5T</h2>
         <div className={styles.grid}>
           {methods.map((method, index) => (
             <div key={index} className={styles.methodItem}>

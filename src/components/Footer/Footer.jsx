@@ -37,7 +37,7 @@ const Footer = () => {
                 className={styles.footerLogo}
               />
               <Text size="sm" mb={20}>
-                Menyatukan hati dengan al-Qur’an
+                Menyatukan Hati Dengan al-Qur’an
               </Text>
               <Text size="lg" weight={600} mt="md">
                 Hubungi Kami

@@ -20,12 +20,10 @@ const Hero = () => {
 
       <Container className={styles.content}>
         <Title order={1} className={styles.title}>
-          Menyatukan Hati Dengan al-Qur’an
+          Markaz Tadarus Indonesia
         </Title>
-        <Text className={styles.subtitle}>
-          Kami membangun umat agar hidup bersama al-Qur’an, memahami,
-          menghayati, dan menjadikannya pedoman kehidupan.
-        </Text>
+        <Text className={styles.subtitle}>"Menyatukan Hati Dengan al-Qur’an"</Text>
+
         <Button
           size="lg"
           radius="md"
