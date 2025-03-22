@@ -5,13 +5,15 @@ import styles from "./Gallery.module.css";
 // umrah
 import Umrah1 from "../../../assets/imgs/homepage/gallery/umrah/umrah1.jpg";
 import Umrah2 from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
-import Umrah3 from "../../../assets/imgs/programs/DQ.jpg";
+import Umrah3 from "../../../assets/imgs/gallery/slide3.webp";
 // kaderisasi
 import Kaderisasi1 from "../../../assets/imgs/programs/DQ.jpg";
 import Kaderisasi2 from "../../../assets/imgs/homepage/gallery/kaderisasi/kaderisasi.jpg";
+import Kaderisasi3 from "../../../assets/imgs/homepage/gallery/kaderisasi/kaderisasi3.jpg";
 // majelis
 import Majelis1 from "../../../assets/imgs/homepage/gallery/majelis/majelis1.jpg";
 import Majelis2 from "../../../assets/imgs/homepage/gallery/majelis/majelis2.jpg";
+import Majelis3 from "../../../assets/imgs/homepage/gallery/majelis/majelis3.jpg";
 // seminar
 import Seminar1 from "../../../assets/imgs/homepage/programs/seminar.jpg";
 import Seminar2 from "../../../assets/imgs/homepage/gallery/seminar/seminar2.jpg";
@@ -19,8 +21,8 @@ import Seminar2 from "../../../assets/imgs/homepage/gallery/seminar/seminar2.jpg
 // Define gallery data with local images
 const galleryData = {
   umrah: [Umrah1, Umrah2, Umrah3],
-  kaderisasi: [Kaderisasi1, Kaderisasi2],
-  majelis: [Majelis1, Majelis2],
+  kaderisasi: [Kaderisasi1, Kaderisasi2, Kaderisasi3],
+  majelis: [Majelis1, Majelis2, Majelis3],
   seminar: [Seminar1, Seminar2],
 };
 
@@ -30,10 +32,6 @@ const Gallery = () => {
       {/* Header and Subheader */}
       <div className={styles.header}>
         <h2 className={styles.title}>Galeri</h2>
-        {/* <p className={styles.subtitle}>
-          Galeri ini adalah rangkuman dari berbagai program dan kegiatan yang
-          berjalan hingga tahun 2025.
-        </p> */}
       </div>
 
       {/* Tabs */}
