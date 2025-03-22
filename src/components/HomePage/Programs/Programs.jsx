@@ -9,7 +9,7 @@ import Seminar from "../../../assets/imgs/homepage/programs/seminar.jpg";
 import Pelatihan from "../../../assets/imgs/homepage/programs/pelatihan.jpg";
 import Majelis from "../../../assets/imgs/homepage/hero.jpg";
 import Karya from "../../../assets/imgs/homepage/programs/karya.jpg";
-import Umrah from "../../../assets/imgs/homepage/programs/umrah.jpg";
+import Umrah from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
 
 const programs = [
   {
