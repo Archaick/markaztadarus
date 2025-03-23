@@ -1,11 +1,22 @@
 import { Container, Overlay } from "@mantine/core";
-import { Typewriter } from "react-simple-typewriter";
+import TextTransition, { presets } from "react-text-transition"; // Import react-text-transition
 import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
 import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
 import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import React from "react"; // Import React for state and effects
 
 const Hero = () => {
+  const TEXTS = ["Duta Qur'an", "Daurah Santri", "Umrah Tadabburiyah"];
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIndex((index) => index + 1);
+    }, 2000); // Change text every 2 seconds
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className={classes.hero} id="home">
       <video autoPlay loop muted className={classes.videoBg}>
@@ -25,17 +36,9 @@ const Hero = () => {
           <span className={classes.bold}>Umrah Tadarus</span>
           <br />
           <span className={classes.typewriter}>
-            <span className="typewriter">
-              <Typewriter
-                words={["Duta Qur'an", "Daurah Santri", "Umrah Tadabburiyah"]}
-                loop={0}
-                cursor
-                cursorStyle="|"
-                typeSpeed={70}
-                deleteSpeed={50}
-                delaySpeed={500}
-              />
-            </span>
+            <TextTransition springConfig={presets.wobbly}>
+              {TEXTS[index % TEXTS.length]}
+            </TextTransition>
           </span>
         </h1>
       </Container>
@@ -45,7 +48,7 @@ const Hero = () => {
 
       <Whatsapp
         message={
-          "Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, saya ingin nertanya tentang program Umrah Markaz Tadarus Indonesia."
+          "Assalamu'alaikum warahmatullah wabarakatuh. \n\nAfwan, saya ingin nertanya tentang program Umrah Markaz Tadarus Indonesia."
         }
       />
     </div>
