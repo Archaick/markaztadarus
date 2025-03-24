@@ -1,10 +1,10 @@
 import { Container, Overlay } from "@mantine/core";
-import TextTransition, { presets } from "react-text-transition"; // Import react-text-transition
+import TextTransition, { presets } from "react-text-transition";
 import classes from "./Hero.module.css";
 import heroVideo from "../../assets/video/hero.mp4";
-import ScrollDownArrow from "./ScrollDownArrow"; // Import the arrow component
+import ScrollDownArrow from "./ScrollDownArrow";
 import Whatsapp from "../../components/Whatsapp/Whatsapp";
-import React from "react"; // Import React for state and effects
+import React from "react";
 
 const Hero = () => {
   const TEXTS = ["Duta Qur'an", "Daurah Santri", "Umrah Tadabburiyah"];
@@ -36,7 +36,13 @@ const Hero = () => {
           <span className={classes.bold}>Umrah Tadarus</span>
           <br />
           <span className={classes.typewriter}>
-            <TextTransition springConfig={presets.wobbly}>
+            <TextTransition
+              springConfig={{
+                stiffness: 120, // Less bouncy
+                damping: 20, // Slower animation
+              }}
+              className={classes.transitions}
+            >
               {TEXTS[index % TEXTS.length]}
             </TextTransition>
           </span>
