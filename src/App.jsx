@@ -19,7 +19,7 @@ import DQ from "./components/Programs/DQ";
 import Home from "./components/HomePage/Home";
 import BasePage from "./components/BasePage/BasePage";
 
-// Define navItems for the Umrah page
+// This is for Umrah Page
 const mainNavItems = [
   { name: "Beranda", id: "/private" },
   { name: "Program", id: "program" },
@@ -27,7 +27,7 @@ const mainNavItems = [
   { name: "Galeri", id: "gallery" },
 ];
 
-// Define navItems for the Home page
+// This is for Private page "Next Home Page"
 const privateNavItems = [
   { name: "Beranda", id: "home" },
   { name: "Tentang Kami", id: "about" },
