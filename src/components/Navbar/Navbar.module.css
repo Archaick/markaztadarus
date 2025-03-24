@@ -124,3 +124,42 @@
     display: block;
   }
 }
+
+/* Umrah Button Navbar */
+
+/* Add these to your existing Navbar.module.css */
+
+/* Home link specific styles */
+.homeLink {
+  background-color: #021c3c; /* Orange color */
+  color: white !important;
+  padding: 8px 16px !important;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.homeLink:hover {
+  background-color: #021329; /* Orange color */
+}
+
+.homeLink::after {
+  display: none; /* Remove the underline effect */
+}
+
+.navbar.scrolled .homeLink {
+  color: white !important; /* Keep white text even when scrolled */
+}
+
+/* Home icon specific styles */
+.homeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile specific styles */
+.mobileNav .homeLink {
+  justify-content: center;
+}

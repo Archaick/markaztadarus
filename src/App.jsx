@@ -4,6 +4,7 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { Helmet } from "react-helmet-async";
 import Navbar from "./components/Navbar/Navbar";
+import NavbarHome from "./components/Navbar/NavbarHome";
 import Footer from "./components/Footer/Footer";
 import Hero from "./components/Hero/Hero";
 import Programs from "./components/Programs/Programs";
@@ -12,31 +13,13 @@ import Quote from "./components/Quote/Quote";
 import Gallery from "./components/Gallery/Gallery";
 import Marquee from "./components/Marquee/Marquee";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
-// Programs
 import UT from "./components/Programs/UT";
 import DS from "./components/Programs/DS";
 import DQ from "./components/Programs/DQ";
 import Home from "./components/HomePage/Home";
-import BasePage from "./components/BasePage/BasePage";
-
-// This is for Umrah Page
-const mainNavItems = [
-  { name: "Beranda", id: "/private" },
-  { name: "Program", id: "program" },
-  { name: "Tentang Kami", id: "about" },
-  { name: "Galeri", id: "gallery" },
-];
-
-// This is for Private page "Next Home Page"
-const privateNavItems = [
-  { name: "Beranda", id: "home" },
-  { name: "Tentang Kami", id: "about" },
-  { name: "Program Kami", id: "programs" },
-];
 
 const MainPage = () => (
   <>
-    {/* Helmet for dynamic SEO on client side (for internal navigation) */}
     <Helmet>
       <title>Markaz Tadarus Indonesia - Umrah dan Kursus di Makkah</title>
       <meta
@@ -45,13 +28,21 @@ const MainPage = () => (
       />
       <link rel="canonical" href="https://markaztadarus.com" />
     </Helmet>
-    <Navbar navItems={mainNavItems} />
+    <Navbar />
     <Hero />
     <Programs />
     <Leaders />
     <Quote />
     <Gallery />
     <Marquee />
+    <Footer />
+  </>
+);
+
+const HomePage = () => (
+  <>
+    <NavbarHome />
+    <Home />
     <Footer />
   </>
 );
@@ -65,16 +56,7 @@ const App = () => {
           <Route path="/ut" element={<UT />} />
           <Route path="/ds" element={<DS />} />
           <Route path="/dq" element={<DQ />} />
-
-          <Route
-            path="/private"
-            element={
-              <BasePage navItems={privateNavItems}>
-                <Home />
-              </BasePage>
-            }
-          />
-
+          <Route path="/private" element={<HomePage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>

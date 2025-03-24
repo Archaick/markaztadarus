@@ -68,11 +68,13 @@
 
 /* Modal Styles */
 .modalHeader {
-  background: linear-gradient(to bottom, #102141, #1f3e79);
+  background: linear-gradient(to bottom, #1f3e79, #102141);
   padding: 1.5rem;
   text-align: center;
 }
 
+/* 102141 */
+/* 1f3e79 */
 .modalHeader button {
   color: white !important;
 }
@@ -88,7 +90,7 @@
 
 .modalBody {
   padding: 2rem;
-  background: linear-gradient(to bottom, #1f3e79, #102141);
+  background: linear-gradient(to bottom, #102141, #1f3e79);
 }
 
 .modalTitle {
