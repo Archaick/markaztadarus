@@ -81,7 +81,7 @@ const MarqueeComponent = () => {
       </Marquee>
 
       <Marquee
-        direction="left"
+        direction="right"
         speed={30}
         gradient={false} // Disable default gradient
         className={styles.marqueeRow}
@@ -97,7 +97,7 @@ const MarqueeComponent = () => {
       </Marquee>
 
       <Marquee
-        direction="right"
+        direction="left"
         speed={30}
         gradient={false} // Disable default gradient
         className={styles.marqueeRow}
