@@ -17,13 +17,14 @@ import Majelis3 from "../../../assets/imgs/homepage/gallery/majelis/majelis3.jpg
 // seminar
 import Seminar1 from "../../../assets/imgs/homepage/programs/seminar.jpg";
 import Seminar2 from "../../../assets/imgs/homepage/gallery/seminar/seminar2.jpg";
+import Seminar3 from "../../../assets/imgs/homepage/gallery/seminar/seminar3.jpg";
 
 // Define gallery data with local images
 const galleryData = {
   umrah: [Umrah1, Umrah2, Umrah3],
   kaderisasi: [Kaderisasi1, Kaderisasi2, Kaderisasi3],
   majelis: [Majelis1, Majelis2, Majelis3],
-  seminar: [Seminar1, Seminar2],
+  seminar: [Seminar1, Seminar2, Seminar3],
 };
 
 const Gallery = () => {
