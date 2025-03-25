@@ -59,12 +59,12 @@ const About = () => {
           mendesak untuk mengembalikan umat Islam kepada al-Qur’an secara
           pemahaman dan amalan, bukan sekedar tajwid dan hafalan.
         </p>
-        <a href="/about" className={styles.link}>
+        {/* <a href="/about" className={styles.link}>
           <span>Selengkapnya</span>
           <span>
             <IconExternalLink size={20} />
           </span>
-        </a>
+        </a> */}
       </motion.div>
 
       {/* Divider */}

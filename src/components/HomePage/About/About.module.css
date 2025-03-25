@@ -74,7 +74,7 @@
 .divider {
   width: 100%; /* Divider takes full width */
   height: 65px;
-  background-color: #ab8b2b; /* Divider color */
+  background: linear-gradient(to bottom, #1f3e79, #102141);
   margin-top: -30px; /* Overlap with the image */
 }
 

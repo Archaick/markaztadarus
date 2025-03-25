@@ -71,6 +71,7 @@
   background: linear-gradient(to bottom, #1f3e79, #102141);
   padding: 1.5rem;
   text-align: center;
+  border: none !important; /* Remove default border */
 }
 
 /* 102141 */
@@ -86,10 +87,12 @@
 .modalContent {
   max-width: 600px;
   overflow: hidden;
+  border: none !important; /* Remove default border */
+  padding: 0 !important; /* Remove default padding */
 }
 
 .modalBody {
-  padding: 2rem;
+  padding: 0; /* Remove padding here and handle it in content wrapper */
   background: linear-gradient(to bottom, #102141, #1f3e79);
 }
 
@@ -114,6 +117,9 @@
   align-items: center;
   gap: 1.5rem;
   text-align: center;
+  width: 100%;
+  padding: 2rem; /* Move padding here instead of modalBody */
+
 }
 
 .modalIcon {

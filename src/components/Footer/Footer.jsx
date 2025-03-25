@@ -21,7 +21,7 @@ import whiteLogo from "../../assets/imgs/MT-logo.svg";
 
 const Footer = () => {
   const whatsappUrl =
-    "https://wa.me/6281210010733?text=Halo,%20saya%20ingin%20konsultasi%20dengan%20Anda.";
+    "https://wa.me/6281210010733?text=Assalamu Alaikum warahmatullah wabarakatuh. \n\nsaya ingin berkonsultasi";
 
   return (
     <footer className={styles.footer}>
@@ -55,7 +55,7 @@ const Footer = () => {
                 <IconPhoneFilled size={20} />
                 <Text className={styles.phone}>0812-1001-0733</Text>
               </Group>
-              <Divider my="sm" color="#c8b26c" />
+              <Divider my="sm" color="#b37d08" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
                 <Anchor
                   className={styles.socialIcon}
@@ -131,7 +131,7 @@ const Footer = () => {
         </div>
 
         {/* Subfooter */}
-        <Divider my="md" color="#c8b26c" mt={50} />
+        <Divider my="md" color="#b37d08" mt={50} />
         <Text className={styles.subfooter}>
           © 2025 Markaz Tadarus. All rights reserved
         </Text>
