@@ -6,6 +6,7 @@ import Leaders from "./Leaders/Leaders";
 import Gallery from "./Gallery/Gallery";
 import UmrahMarquee from "./Marquee/Marquee";
 import Footer from "../Footer/Footer";
+import Quote from "./Quote/Quote";
 
 const Umrah = () => {
   return (
@@ -14,6 +15,7 @@ const Umrah = () => {
       <Hero />
       <Programs />
       <Leaders />
+      <Quote />
       <Gallery />
       <UmrahMarquee />
       <Footer />
