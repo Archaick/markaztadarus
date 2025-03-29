@@ -1,0 +1,27 @@
+{
+  "header": "Program Kami",
+  "inDevelopment": "Dalam Pengembangan",
+  "learnMore": "Selengkapnya",
+  "programs": {
+    "seminar": {
+      "title": "Seminar Tadarus 5T",
+      "description": "Kuliah Umum Pengenalan Tadarus al-Qur'an Metode 5T"
+    },
+    "pelatihan": {
+      "title": "Pelatihan Tadarus 5T",
+      "description": "Pelatihan dan Pembinaan Tadarus al-Qur'an Metode 5T"
+    },
+    "majelis": {
+      "title": "Majelis Tadarus 5T",
+      "description": "Pembelajaran Tadarus al-Qur'an Metode 5T"
+    },
+    "karya": {
+      "title": "Karya Ilmiah",
+      "description": "Penerjemahan Kitab Tadarus 5T ke Bahasa Indonesia"
+    },
+    "umrah": {
+      "title": "Umrah Tadarus 5T",
+      "description": "Tadarus dan Tadabbur al-Qur'an di Tanah Suci Mekah dan Madinah"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "header": "Tadarus al-Qur'an Metode 5T",
+  "methods": {
+    "tamhid": {
+      "title": "Tamhid",
+      "description": "Pendahuluan yang disampaikan dengan pola pertanyaan menarik bertujuan untuk mengenal sekilas ayat atau surat yang akan ditadarusi"
+    },
+    "tilawah": {
+      "title": "Tilawah",
+      "description": "Membaca ayat yang akan ditadarusi bertujuan untuk menghadirkan hati"
+    },
+    "tafsir": {
+      "title": "Tafsir",
+      "description": "Menjelaskan 'Kata' atau 'Kalimat' pada ayat secara singkat bertujuan untuk memahami arti ayat"
+    },
+    "tadabbur": {
+      "title": "Tadabbur",
+      "description": "Menelaah dan menghayati ayat bertujuan untuk memetik pelajaran, pesan dan hikmah dari ayat"
+    },
+    "tazkiyah": {
+      "title": "Tazkiyah",
+      "description": "Mensucikan hati dan diri dengan ayat bertujuan untuk menambah iman dan mengamalkan ayat dalam keseharian"
+    }
+  },
+  "learn_more": "Selengkapnya"
+}

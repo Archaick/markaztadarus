@@ -1,0 +1,27 @@
+{
+  "header": "Our Programs",
+  "inDevelopment": "In Development",
+  "learnMore": "Learn More",
+  "programs": {
+    "seminar": {
+      "title": "5T Tadarus Seminar",
+      "description": "An introductory lecture on the 5T Tadarus al-Qur'an method"
+    },
+    "pelatihan": {
+      "title": "5T Tadarus Training",
+      "description": "Hands-on training on the 5T Tadarus al-Qur'an method"
+    },
+    "majelis": {
+      "title": "5T Tadarus Study Gathering",
+      "description": "Learning sessions on the 5T Tadarus al-Qur'an method"
+    },
+    "karya": {
+      "title": "Scholarly Works",
+      "description": "Translation of the 5T Tadarus textbook into Indonesian"
+    },
+    "umrah": {
+      "title": "5T Tadarus Umrah",
+      "description": "Tadarus and Tadabbur al-Qur'an in the holy cities of Mecca and Medina"
+    }
+  }
+}

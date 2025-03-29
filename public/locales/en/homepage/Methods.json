@@ -1,0 +1,26 @@
+{
+  "header": "5T Tadarus al-Qur'an Method",
+  "methods": {
+    "tamhid": {
+      "title": "Tamhid",
+      "description": "An engaging introduction using thought-provoking questions to provide a glimpse of the verse or surah being studied."
+    },
+    "tilawah": {
+      "title": "Tilawah",
+      "description": "Reciting the selected verses with mindfulness to connect the heart with the Qur'an."
+    },
+    "tafsir": {
+      "title": "Tafsir",
+      "description": "Briefly explaining key words or phrases in the verse to enhance understanding of its meaning."
+    },
+    "tadabbur": {
+      "title": "Tadabbur",
+      "description": "Reflecting deeply on the verse to uncover lessons, messages, and wisdom within it."
+    },
+    "tazkiyah": {
+      "title": "Tazkiyah",
+      "description": "Purifying the heart and soul through the verse, strengthening faith, and applying its teachings in daily life."
+    }
+  },
+  "learn_more": "Learn More"
+}

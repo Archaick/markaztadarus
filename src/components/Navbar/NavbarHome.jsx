@@ -1,26 +1,29 @@
 import { useState, useEffect } from "react";
-import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
+import { Group, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconLanguage } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
 
 export default function NavbarHome() {
+  const { t, i18n } = useTranslation();
   const [opened, { toggle, close }] = useDisclosure(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Navigation items for home navbar
   const navItems = [
-    { name: "Beranda", id: "home" },
-    { name: "Tentang Kami", id: "about" },
-    { name: "Program Kami", id: "programs" },
+    { id: "home", key: "menu.home" },
+    { id: "about", key: "menu.about" },
+    { id: "programs", key: "menu.programs" },
   ];
 
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === "en" ? "id" : "en");
+  };
+
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > window.innerHeight);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > window.innerHeight);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -37,18 +40,25 @@ export default function NavbarHome() {
         <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
           {navItems.map((item) => (
             <a key={item.id} href={`#${item.id}`} className={styles.navLink}>
-              {item.name}
+              {t(item.key)}
             </a>
           ))}
+
+          <button onClick={toggleLanguage} className={styles.languageToggle}>
+            <IconLanguage size={18} />
+            <span>{t("language")}</span>
+          </button>
         </Group>
 
-        <Burger
-          opened={opened}
-          onClick={toggle}
-          className={styles.burger}
-          hiddenFrom="sm"
-          color={scrolled ? "black" : "white"}
-        />
+        <div className={styles.mobileControls}>
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            className={styles.burger}
+            hiddenFrom="sm"
+            color={scrolled ? "black" : "white"}
+          />
+        </div>
 
         <Drawer
           opened={opened}
@@ -78,9 +88,23 @@ export default function NavbarHome() {
                 onClick={close}
                 className={styles.navLink}
               >
-                {item.name}
+                {t(item.key)}
               </a>
             ))}
+            <button
+              onClick={() => {
+                toggleLanguage();
+                close();
+              }}
+              className={`${styles.languageToggle} ${styles.mobileNavLanguageToggle}`}
+            >
+              <IconLanguage size={18} />
+              <span>
+                {i18n.language === "id"
+                  ? "Switch to English"
+                  : "Ganti ke Bahasa"}
+              </span>
+            </button>
           </nav>
         </Drawer>
       </div>

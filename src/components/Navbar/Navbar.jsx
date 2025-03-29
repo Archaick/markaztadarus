@@ -12,7 +12,7 @@ export default function Navbar() {
 
   // Navigation items for main navbar
   const navItems = [
-    { name: "Beranda", id: "/private", isHome: true },
+    { name: "Beranda", id: "/", isHome: true },
     { name: "Program", id: "program" },
     { name: "Tentang Kami", id: "about" },
     { name: "Galeri", id: "gallery" },

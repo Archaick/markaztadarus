@@ -52,11 +52,11 @@ const App = () => {
     <MantineProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/umrah" element={<MainPage />} />
           <Route path="/ut" element={<UT />} />
           <Route path="/ds" element={<DS />} />
           <Route path="/dq" element={<DQ />} />
-          <Route path="/private" element={<HomePage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Router>

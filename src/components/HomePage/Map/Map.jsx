@@ -3,17 +3,20 @@ import { motion, useAnimation } from "framer-motion";
 import styles from "./Map.module.css";
 import before from "./../../../assets/imgs/homepage/map/before.png";
 import after from "./../../../assets/imgs/homepage/map/after.png";
+import { useTranslation } from "react-i18next";
 
 const Map = () => {
   const controls = useAnimation(); // Animation controls
   const [isInView, setIsInView] = useState(false);
 
+  const { t } = useTranslation("homepage/Map") 
+
   return (
     <div className={styles.mapContainer}>
       {/* Header and Subheader */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Markaz Tadarus Indonesia</h2>
-        <p className={styles.subtitle}>Tahun 1446 H | 2025 M</p>
+        <h2 className={styles.title}>{t("title")}</h2>
+        <p className={styles.subtitle}>{t("subtitle")}</p>
       </div>
 
       {/* Map Animation */}

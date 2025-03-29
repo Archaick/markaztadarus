@@ -1,17 +1,19 @@
 import React from "react";
 import { Button, Overlay, Text, Title, Container } from "@mantine/core";
 import { IconChevronCompactDown } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import styles from "./Hero.module.css";
-import HeroImage from "../../../assets/imgs/homepage/hero.jpg"; // Import image
+import HeroImage from "../../../assets/imgs/homepage/hero.jpg";
 
 const Hero = () => {
+  const { t } = useTranslation("homepage/Hero");
+
   return (
     <div
       id="home"
       className={styles.hero}
-      style={{ backgroundImage: `url(${HeroImage})` }} // Apply background
+      style={{ backgroundImage: `url(${HeroImage})` }}
     >
-      {/* Dark Blue Overlay */}
       <Overlay
         gradient="linear-gradient(to bottom, rgba(10, 20, 50, 0.7), rgba(10, 20, 50, 0.9))"
         opacity={1}
@@ -20,9 +22,9 @@ const Hero = () => {
 
       <Container className={styles.content}>
         <Title order={1} className={styles.title}>
-          Markaz Tadarus Indonesia
+          {t("title")}
         </Title>
-        <Text className={styles.subtitle}>"Menyatukan Hati Dengan al-Qur’an"</Text>
+        <Text className={styles.subtitle}>{t("subtitle")}</Text>
 
         <Button
           size="lg"
@@ -31,7 +33,7 @@ const Hero = () => {
           component="a"
           href="#programs"
         >
-          <span>Program Kami</span>
+          <span>{t("cta_button")}</span>
           <IconChevronCompactDown size={20} className={styles.chevron} />
         </Button>
       </Container>

@@ -27,8 +27,10 @@ import ybi from "../../../assets/imgs/homepage/marquee/ybi.png";
 
 
 import Marquee from "react-fast-marquee";
+import { useTranslation } from "react-i18next";
 
 const MarqueeComponent = () => {
+  const { t } = useTranslation("homepage/Marquee")
   // Repeat the logos to fill the marquee
   const logosLeft = [khaldon, manba, ubaidah, wafa, azhari]; 
   const logosRight = [falah, muhammadiyah, shifa, lampu, pondok]; 
@@ -39,11 +41,10 @@ const MarqueeComponent = () => {
 
   return (
     <div className={styles.marqueeContainer}>
-      <h2 className={styles.title}>Mitra Kami</h2>
+      <h2 className={styles.title}>{t("title")}</h2>
       <div className={styles.textcontainer}>
         <p className={styles.text}>
-          Lebih dari 35 Lembaga Pendidikan di Seluruh Indonesia Telah
-          bekerjasama dengan kami dalam penerapan Tadarus 5T
+          {t("description")}
         </p>
       </div>
 

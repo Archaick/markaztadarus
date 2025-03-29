@@ -1,0 +1,15 @@
+{
+  "title": "Galeri",
+  "tabs": {
+    "umrah": "Umrah Tadarus 5T",
+    "kaderisasi": "Pelatihan Tadarus 5T",
+    "majelis": "Majelis Tadarus 5T",
+    "seminar": "Seminar Tadarus 5T"
+  },
+  "alt": {
+    "umrah": "Gambar Umrah Tadarus {{number}}",
+    "kaderisasi": "Gambar Pelatihan {{number}}",
+    "majelis": "Gambar Majelis {{number}}",
+    "seminar": "Gambar Seminar {{number}}"
+  }
+}

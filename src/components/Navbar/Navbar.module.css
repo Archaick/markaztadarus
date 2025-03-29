@@ -1,3 +1,5 @@
+/* Navbar.module.css */
+
 /* Navbar */
 .navbar {
   position: fixed;
@@ -6,19 +8,19 @@
   width: 100%;
   z-index: 50;
   backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.05); /* Transparent */
+  background: rgba(0, 0, 0, 0.05);
   padding: 16px 24px;
   transition: all 0.3s ease-in-out;
   font-weight: 500;
 }
 
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.9); /* White background after scroll */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for better contrast */
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbar.scrolled .navLink {
-  color: black; /* Change link color to black after scrolling */
+  color: black;
   font-weight: 500;
 }
 
@@ -72,7 +74,7 @@
 }
 
 .contactBtn:hover {
-  background-color: #007bff !important; /* Modern blue */
+  background-color: #007bff !important;
   color: white !important;
 }
 
@@ -114,24 +116,14 @@
   opacity: 0.7;
 }
 
-/* Hamburger Menu Visibility */
+/* Hamburger Menu */
 .burger {
   display: none;
 }
 
-@media (max-width: 768px) {
-  .burger {
-    display: block;
-  }
-}
-
-/* Umrah Button Navbar */
-
-/* Add these to your existing Navbar.module.css */
-
-/* Home link specific styles */
+/* Home Link Styles */
 .homeLink {
-  background-color: #021c3c; /* Orange color */
+  background-color: #021c3c;
   color: white !important;
   padding: 8px 16px !important;
   border-radius: 6px;
@@ -141,25 +133,72 @@
 }
 
 .homeLink:hover {
-  background-color: #021329; /* Orange color */
+  background-color: #021329;
 }
 
 .homeLink::after {
-  display: none; /* Remove the underline effect */
+  display: none;
 }
 
 .navbar.scrolled .homeLink {
-  color: white !important; /* Keep white text even when scrolled */
+  color: white !important;
 }
 
-/* Home icon specific styles */
 .homeIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Mobile specific styles */
 .mobileNav .homeLink {
   justify-content: center;
+}
+
+/* Language Toggle */
+.languageToggle {
+  background: #b37d08;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.languageToggle:hover {
+  background: #9a6b07;
+}
+
+.navbar.scrolled .languageToggle {
+  color: white !important;
+  background: linear-gradient(to bottom, #1f3e79, #102141);
+}
+
+.navbar.scrolled .languageToggle:hover {
+  background: linear-gradient(to bottom, #9d7214, #9a6b07);
+}
+
+/* Mobile Nav Language Toggle */
+.mobileNavLanguageToggle {
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Mobile Controls */
+.mobileControls {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileControls {
+    display: flex;
+  }
+
+  .burger {
+    display: block;
+  }
 }

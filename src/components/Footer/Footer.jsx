@@ -16,12 +16,13 @@ import {
   Image,
   Stack,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import styles from "./Footer.module.css";
 import whiteLogo from "../../assets/imgs/MT-logo.svg";
 
 const Footer = () => {
-  const whatsappUrl =
-    "https://wa.me/6281210010733?text=Assalamu Alaikum warahmatullah wabarakatuh. \n\nsaya ingin berkonsultasi";
+  const { t } = useTranslation("common/Footer");
+  const whatsappUrl = "https://wa.me/6281210010733?text=Assalamu%20Alaikum%20warahmatullah%20wabarakatuh.%20%0A%0Asaya%20ingin%20berkonsultasi";
 
   return (
     <footer className={styles.footer}>
@@ -32,15 +33,15 @@ const Footer = () => {
             <Stack spacing="sm">
               <Image
                 src={whiteLogo}
-                alt="Logo"
+                alt="Markaz Tadarus Logo"
                 width={100}
                 className={styles.footerLogo}
               />
               <Text size="sm" mb={20}>
-                Menyatukan Hati Dengan al-Qur’an
+                {t("tagline")}
               </Text>
               <Text size="lg" weight={600} mt="md">
-                Hubungi Kami
+                {t("contactUs")}
               </Text>
               <Group spacing="sm">
                 <IconMail size={20} />
@@ -61,8 +62,8 @@ const Footer = () => {
                   className={styles.socialIcon}
                   component="a"
                   href={whatsappUrl}
-                  target="_blank" // Open in a new tab
-                  rel="noopener noreferrer" // Security best practice
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <IconBrandWhatsapp size={30} />
                 </Anchor>
@@ -88,19 +89,19 @@ const Footer = () => {
           <div className={styles.column}>
             <Stack spacing="sm" className={styles.infoLinks}>
               <Text size="lg" weight={600}>
-                Informasi
+                {t("information")}
               </Text>
               <Anchor href="#home" className={styles.link}>
-                Beranda
+                {t("links.home")}
               </Anchor>
               <Anchor href="#program" className={styles.link}>
-                Program
+                {t("links.program")}
               </Anchor>
               <Anchor href="#about" className={styles.link}>
-                Tentang Kami
+                {t("links.about")}
               </Anchor>
               <Anchor href="#gallery" className={styles.link}>
-                Galeri
+                {t("links.gallery")}
               </Anchor>
             </Stack>
           </div>
@@ -109,7 +110,7 @@ const Footer = () => {
           <div className={styles.column}>
             <Stack spacing="sm">
               <Text size="lg" weight={600}>
-                Find Us
+                {t("address")}
               </Text>
               <Group spacing="sm">
                 <IconMapPin size={20} />
@@ -125,6 +126,7 @@ const Footer = () => {
                 style={{ border: 0 }}
                 allowFullScreen=""
                 loading="lazy"
+                title="Markaz Tadarus Location"
               ></iframe>
             </Stack>
           </div>
