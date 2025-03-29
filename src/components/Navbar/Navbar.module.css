@@ -65,19 +65,6 @@
   left: 0;
 }
 
-/* Contact Button */
-.contactBtn {
-  background-color: #ffd700 !important;
-  color: black !important;
-  border-radius: 25px;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.contactBtn:hover {
-  background-color: #007bff !important;
-  color: white !important;
-}
-
 /* Mobile Menu */
 .mobileMenu {
   background: rgba(0, 0, 0, 0.4) !important;
@@ -121,37 +108,9 @@
   display: none;
 }
 
-/* Home Link Styles */
-.homeLink {
-  background-color: #021c3c;
-  color: white !important;
-  padding: 8px 16px !important;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.homeLink:hover {
-  background-color: #021329;
-}
-
-.homeLink::after {
+/* Mobile Controls */
+.mobileControls {
   display: none;
-}
-
-.navbar.scrolled .homeLink {
-  color: white !important;
-}
-
-.homeIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.mobileNav .homeLink {
-  justify-content: center;
 }
 
 /* Language Toggle */
@@ -186,11 +145,6 @@
   justify-content: center;
   width: 100%;
   margin-top: 16px;
-}
-
-/* Mobile Controls */
-.mobileControls {
-  display: none;
 }
 
 @media (max-width: 768px) {

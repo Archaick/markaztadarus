@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconX, IconHomeFilled  } from "@tabler/icons-react";
-import styles from "./Navbar.module.css";
+import styles from "./NavbarUmrah.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
 
