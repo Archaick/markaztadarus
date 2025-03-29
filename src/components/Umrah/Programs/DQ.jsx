@@ -12,21 +12,21 @@ import {
 } from "@mantine/core";
 import { IconHomeFilled, IconCheckbox, IconCircle } from "@tabler/icons-react";
 import styles from "./DQ.module.css";
-import logo from "../../assets/imgs/MT-logo-white.svg";
-import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import logo from "../../../assets/imgs/MT-logo-white.svg";
+import Whatsapp from "../../../components/Whatsapp/Whatsapp";
 
 // Facilities import
-import food from "../../assets/imgs/facilities/food.png";
-import learn from "../../assets/imgs/facilities/learn.png";
-import learning from "../../assets/imgs/facilities/learning.png";
-import prov from "../../assets/imgs/facilities/prov.png";
-import room from "../../assets/imgs/facilities/room.png";
-import ticket from "../../assets/imgs/facilities/ticket.png";
-import tour from "../../assets/imgs/facilities/tour.png";
-import transport from "../../assets/imgs/facilities/transport.png";
-import visa from "../../assets/imgs/facilities/visa.png";
-import visits from "../../assets/imgs/facilities/visits.png";
-import certificate from "../../assets/imgs/facilities/certificate.png";
+import food from "../../../assets/imgs/facilities/food.png";
+import learn from "../../../assets/imgs/facilities/learn.png";
+import learning from "../../../assets/imgs/facilities/learning.png";
+import prov from "../../../assets/imgs/facilities/prov.png";
+import room from "../../../assets/imgs/facilities/room.png";
+import ticket from "../../../assets/imgs/facilities/ticket.png";
+import tour from "../../../assets/imgs/facilities/tour.png";
+import transport from "../../../assets/imgs/facilities/transport.png";
+import visa from "../../../assets/imgs/facilities/visa.png";
+import visits from "../../../assets/imgs/facilities/visits.png";
+import certificate from "../../../assets/imgs/facilities/certificate.png";
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 import { Helmet } from "react-helmet-async";
 

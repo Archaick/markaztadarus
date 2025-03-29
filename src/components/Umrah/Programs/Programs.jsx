@@ -12,9 +12,9 @@ import {
   IconCar,
 } from "@tabler/icons-react";
 
-import UT from "../../assets/imgs/programs/UT.jpg";
-import DS from "../../assets/imgs/programs/DS.jpg";
-import DQ from "../../assets/imgs/programs/DQ.jpg";
+import UT from "../../../assets/imgs/programs/UT.jpg";
+import DS from "../../../assets/imgs/programs/DS.jpg";
+import DQ from "../../../assets/imgs/programs/DQ.jpg";
 
 const programs = [
   {

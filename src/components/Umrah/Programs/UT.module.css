@@ -1,6 +1,6 @@
 .utPage {
   min-height: 100vh;
-  background: url("../../assets/imgs/programs/UT.jpg") center/cover no-repeat
+  background: url("../../../assets/imgs/programs/UT.jpg") center/cover no-repeat
     fixed;
   display: flex;
   justify-content: center;

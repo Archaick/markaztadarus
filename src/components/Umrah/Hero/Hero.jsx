@@ -1,9 +1,9 @@
 import { Container, Overlay } from "@mantine/core";
 import TextTransition, { presets } from "react-text-transition";
 import classes from "./Hero.module.css";
-import heroVideo from "../../assets/video/hero.mp4";
+import heroVideo from "../../../assets/video/hero.mp4";
 import ScrollDownArrow from "./ScrollDownArrow";
-import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import Whatsapp from "../../Whatsapp/Whatsapp";
 import React from "react";
 
 const Hero = () => {

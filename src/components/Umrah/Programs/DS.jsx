@@ -12,29 +12,29 @@ import {
 } from "@mantine/core";
 import { IconCheckbox } from "@tabler/icons-react";
 import styles from "./DS.module.css";
-import logo from "../../assets/imgs/MT-logo-white.svg";
+import logo from "../../../assets/imgs/MT-logo-white.svg";
 import {
   IconHomeFilled,
   IconCircle,
 } from "@tabler/icons-react";
 
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
-import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import Whatsapp from "../../../components/Whatsapp/Whatsapp";
 // facilities
-import food from "../../assets/imgs/facilities/food.png";
-import learn from "../../assets/imgs/facilities/learn.png";
-import prov from "../../assets/imgs/facilities/prov.png";
-import room from "../../assets/imgs/facilities/room.png";
-import ticket from "../../assets/imgs/facilities/ticket.png";
-import tour from "../../assets/imgs/facilities/tour.png";
-import transport from "../../assets/imgs/facilities/transport.png";
-import visa from "../../assets/imgs/facilities/visa.png";
-import visits from "../../assets/imgs/facilities/visits.png";
-import friend from "../../assets/imgs/facilities/friend.png";
-import certificate from "../../assets/imgs/facilities/certificate.png";
-import time from "../../assets/imgs/facilities/time.png";
-import language from "../../assets/imgs/facilities/language.png";
-import learning from "../../assets/imgs/facilities/learning.png";
+import food from "../../../assets/imgs/facilities/food.png";
+import learn from "../../../assets/imgs/facilities/learn.png";
+import prov from "../../../assets/imgs/facilities/prov.png";
+import room from "../../../assets/imgs/facilities/room.png";
+import ticket from "../../../assets/imgs/facilities/ticket.png";
+import tour from "../../../assets/imgs/facilities/tour.png";
+import transport from "../../../assets/imgs/facilities/transport.png";
+import visa from "../../../assets/imgs/facilities/visa.png";
+import visits from "../../../assets/imgs/facilities/visits.png";
+import friend from "../../../assets/imgs/facilities/friend.png";
+import certificate from "../../../assets/imgs/facilities/certificate.png";
+import time from "../../../assets/imgs/facilities/time.png";
+import language from "../../../assets/imgs/facilities/language.png";
+import learning from "../../../assets/imgs/facilities/learning.png";
 import { Helmet } from "react-helmet-async";
 
 const DS = () => {

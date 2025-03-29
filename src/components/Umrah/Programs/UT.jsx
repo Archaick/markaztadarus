@@ -14,24 +14,24 @@ import {
 } from "@mantine/core";
 import { IconHomeFilled, IconCircle, IconCheckbox } from "@tabler/icons-react";
 import styles from "./UT.module.css";
-import logo from "../../assets/imgs/MT-logo-white.svg";
+import logo from "../../../assets/imgs/MT-logo-white.svg";
 // program cards
-import kaaba from "../../assets/imgs/cards/kaaba.png";
-import hajj from "../../assets/imgs/cards/hajj.png";
-import ownership from "../../assets/imgs/cards/ownership.png";
-import quran from "../../assets/imgs/cards/quran.png";
+import kaaba from "../../../assets/imgs/cards/kaaba.png";
+import hajj from "../../../assets/imgs/cards/hajj.png";
+import ownership from "../../../assets/imgs/cards/ownership.png";
+import quran from "../../../assets/imgs/cards/quran.png";
 // facilities
-import food from "../../assets/imgs/facilities/food.png";
-import learn from "../../assets/imgs/facilities/learn.png";
-import prov from "../../assets/imgs/facilities/prov.png";
-import room from "../../assets/imgs/facilities/room.png";
-import ticket from "../../assets/imgs/facilities/ticket.png";
-import tour from "../../assets/imgs/facilities/tour.png";
-import transport from "../../assets/imgs/facilities/transport.png";
-import visa from "../../assets/imgs/facilities/visa.png";
-import visits from "../../assets/imgs/facilities/visits.png";
-import learning from "../../assets/imgs/facilities/learning.png";
-import Whatsapp from "../../components/Whatsapp/Whatsapp";
+import food from "../../../assets/imgs/facilities/food.png";
+import learn from "../../../assets/imgs/facilities/learn.png";
+import prov from "../../../assets/imgs/facilities/prov.png";
+import room from "../../../assets/imgs/facilities/room.png";
+import ticket from "../../../assets/imgs/facilities/ticket.png";
+import tour from "../../../assets/imgs/facilities/tour.png";
+import transport from "../../../assets/imgs/facilities/transport.png";
+import visa from "../../../assets/imgs/facilities/visa.png";
+import visits from "../../../assets/imgs/facilities/visits.png";
+import learning from "../../../assets/imgs/facilities/learning.png";
+import Whatsapp from "../../Whatsapp/Whatsapp";
 import { Helmet } from "react-helmet-async";
 const UT = () => {
   const whatsappMessage = `Assalamu'alaikum warahmatullahi wabarakatuh, \n\nSaya ingin konsultasi dengan Anda tentang program Umrah Tadabburiyah.`;

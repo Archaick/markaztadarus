@@ -1,9 +1,9 @@
 import React from "react";
 import { Card, Text, Grid, Container } from "@mantine/core";
 import { IconQuote } from "@tabler/icons-react";
-import Rahmat from "../../assets/imgs/leaders/rahmat.png";
-import Adnan from "../../assets/imgs/leaders/adnan.png";
-import Agus from "../../assets/imgs/leaders/agus.png";
+import Rahmat from "../../../assets/imgs/leaders/rahmat.png";
+import Adnan from "../../../assets/imgs/leaders/adnan.png";
+import Agus from "../../../assets/imgs/leaders/agus.png";
 import { motion } from "framer-motion";
 import styles from "./Leaders.module.css";
 

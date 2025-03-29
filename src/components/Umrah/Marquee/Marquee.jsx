@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./Marquee.module.css";
-import Naba from "../../assets/imgs/marquee/naba.png";
-import Hijaz from "../../assets/imgs/marquee/hijaz.png";
+import Naba from "../../../assets/imgs/marquee/naba.png";
+import Hijaz from "../../../assets/imgs/marquee/hijaz.png";
 import Marquee from "react-fast-marquee";
 
 const PartnersMarquee = () => {
