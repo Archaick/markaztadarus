@@ -9,7 +9,7 @@ i18n
   .init({
     lng: "id",
     fallbackLng: "id",
-    supportedLngs: ["id", "en"],
+    supportedLngs: ["id", "en", "ar"],
     backend: {
       loadPath: "/locales/{{lng}}/{{ns}}.json",
     },

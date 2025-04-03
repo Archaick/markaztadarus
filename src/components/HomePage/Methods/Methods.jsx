@@ -19,8 +19,13 @@ const Methods = () => {
       <div className={styles.container}>
         <h2 className={styles.header}>{t("header")}</h2>
         <div className={styles.grid}>
-          {methodKeys.map((key) => (
-            <MethodItem key={key} methodKey={key} image={getMethodImage(key)} />
+          {methodKeys.map((key, index) => (
+            <MethodItem
+              key={key}
+              methodKey={key}
+              image={getMethodImage(key)}
+              number={index + 1}
+            />
           ))}
         </div>
       </div>
@@ -40,7 +45,7 @@ function getMethodImage(key) {
   return images[key];
 }
 
-const MethodItem = ({ methodKey, image }) => {
+const MethodItem = ({ methodKey, image, number }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { t } = useTranslation("homepage/Methods");
 
@@ -71,10 +76,21 @@ const MethodItem = ({ methodKey, image }) => {
           <p className={styles.modalDescription}>
             {t(`methods.${methodKey}.description`)}
           </p>
+          {/* Video Container - Commented for future use */}
+          {/* <div className={styles.videoContainer}>
+            <iframe
+              src="https://www.youtube.com/embed/8k7H8Crot-s"
+              title="Method Video"
+              allowFullScreen
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+          </div> */}
         </div>
       </Modal>
 
       <div className={styles.methodItem}>
+        <div className={styles.numberRibbon}>{number}</div>
         <img
           src={image}
           alt={t(`methods.${methodKey}.title`)}

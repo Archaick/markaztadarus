@@ -24,6 +24,7 @@
   width: 100%; /* Ensure it takes full width */
   pointer-events: none; /* Disable interactions for the entire wrapper */
   margin-top: -40px;
+
 }
 
 .beforeMap,
@@ -32,6 +33,7 @@
   height: auto;
   display: block; /* Ensure images behave as block elements */
   pointer-events: none; /* Disable interactions for the images */
+
 }
 
 .afterMapContainer {
@@ -52,4 +54,5 @@
   height: auto; /* Maintain aspect ratio */
   display: block; /* Ensure it behaves as a block element */
   pointer-events: none; /* Disable interactions for the image */
+
 }

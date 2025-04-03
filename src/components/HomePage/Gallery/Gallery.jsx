@@ -33,7 +33,7 @@ const Gallery = () => {
         <h2 className={styles.title}>{t("title")}</h2>
       </div>
 
-      <Tabs radius="xs" defaultValue="umrah" className={styles.tabs} variant="pills">
+      <Tabs radius="xs" defaultValue="kaderisasi" className={styles.tabs} variant="pills">
         <Tabs.List className={styles.tabsList}>
           <Tabs.Tab value="umrah">{t("tabs.umrah")}</Tabs.Tab>
           <Tabs.Tab value="kaderisasi">{t("tabs.kaderisasi")}</Tabs.Tab>

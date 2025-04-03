@@ -119,7 +119,6 @@
   text-align: center;
   width: 100%;
   padding: 2rem; /* Move padding here instead of modalBody */
-
 }
 
 .modalIcon {
@@ -217,4 +216,37 @@
   .modalDescription {
     font-size: 1rem;
   }
+}
+
+/* Add to your existing CSS */
+.numberRibbon {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 40px;
+  height: 40px;
+  background-color: #b37d08;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.methodItem {
+  position: relative; /* Add this to position the ribbon absolutely within */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  text-align: center;
+  overflow: visible; /* Ensure ribbon isn't clipped */
 }

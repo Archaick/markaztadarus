@@ -56,7 +56,7 @@ const Footer = () => {
                 <IconPhoneFilled size={20} />
                 <Text className={styles.phone}>0812-1001-0733</Text>
               </Group>
-              <Divider my="sm" color="#b37d08" />
+              <Divider my="sm" color="white" size="md" />
               <Group spacing="sm" style={{ justifyContent: "center" }}>
                 <Anchor
                   className={styles.socialIcon}
@@ -133,7 +133,7 @@ const Footer = () => {
         </div>
 
         {/* Subfooter */}
-        <Divider my="md" color="#b37d08" mt={50} />
+        <Divider my="md" color="white" mt={50} size="md" />
         <Text className={styles.subfooter}>
           © 2025 Markaz Tadarus. All rights reserved
         </Text>

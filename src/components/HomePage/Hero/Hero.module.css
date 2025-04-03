@@ -8,6 +8,14 @@
   padding-left: 5%; /* Ensure spacing from the left */
   background: center/cover no-repeat;
   overflow: hidden;
+  background-attachment: fixed;
+}
+
+/* Target Safari specifically */
+@supports (-webkit-touch-callout: none) {
+  .hero {
+    background-attachment: scroll;
+  }
 }
 
 .content {
@@ -41,6 +49,7 @@
   background-color: #b37d08;
   display: flex;
   align-items: center; /* Ensures proper vertical alignment */
+  justify-content: center;
   gap: 8px; /* Adds spacing between text and icon */
   transition: transform 0.2s ease;
 }

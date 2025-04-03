@@ -114,6 +114,9 @@
 }
 
 /* Language Toggle */
+/* Add these to your Navbar.module.css */
+
+/* Language Toggle */
 .languageToggle {
   background: #b37d08;
   border: none;
@@ -125,6 +128,22 @@
   gap: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+.languageToggleMobile {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.navbar.scrolled .languageToggleMobile {
+  color: black;
 }
 
 .languageToggle:hover {
@@ -140,11 +159,10 @@
   background: linear-gradient(to bottom, #9d7214, #9a6b07);
 }
 
-/* Mobile Nav Language Toggle */
-.mobileNavLanguageToggle {
-  justify-content: center;
-  width: 100%;
-  margin-top: 16px;
+/* Mobile Controls */
+.mobileControls {
+  display: none;
+  align-items: center;
 }
 
 @media (max-width: 768px) {

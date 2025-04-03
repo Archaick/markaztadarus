@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Group, Burger, Drawer, ActionIcon } from "@mantine/core";
+import { Group, Burger, Drawer, ActionIcon, Menu, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX, IconLanguage } from "@tabler/icons-react";
+import { IconX, IconLanguage, IconChevronDown } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
+
+// Home Page (MAIN PAGE)
 
 export default function NavbarHome() {
   const { t, i18n } = useTranslation();
@@ -18,8 +20,8 @@ export default function NavbarHome() {
     { id: "programs", key: "menu.programs" },
   ];
 
-  const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === "en" ? "id" : "en");
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
   };
 
   useEffect(() => {
@@ -27,6 +29,12 @@ export default function NavbarHome() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const languageOptions = [
+    { code: "id", label: "ID" },
+    { code: "en", label: "EN" },
+    { code: "ar", label: "AR" },
+  ];
 
   return (
     <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
@@ -44,13 +52,50 @@ export default function NavbarHome() {
             </a>
           ))}
 
-          <button onClick={toggleLanguage} className={styles.languageToggle}>
-            <IconLanguage size={18} />
-            <span>{t("language")}</span>
-          </button>
+          <Menu shadow="md" width={120} withinPortal>
+            <Menu.Target>
+              <button className={styles.languageToggle}>
+                <IconLanguage size={18} />
+                <span>{i18n.language.toUpperCase()}</span>
+                <IconChevronDown size={14} />
+              </button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {languageOptions.map((option) => (
+                <Menu.Item
+                  key={option.code}
+                  onClick={() => changeLanguage(option.code)}
+                >
+                  {option.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
         </Group>
 
         <div className={styles.mobileControls}>
+          <Menu shadow="md" width={120} withinPortal>
+            <Menu.Target>
+              <button className={styles.languageToggleMobile}>
+                <IconLanguage size={18} />
+                <span>{i18n.language.toUpperCase()}</span>
+                <IconChevronDown size={14} />
+              </button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              {languageOptions.map((option) => (
+                <Menu.Item
+                  key={option.code}
+                  onClick={() => changeLanguage(option.code)}
+                >
+                  {option.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+
           <Burger
             opened={opened}
             onClick={toggle}
@@ -91,20 +136,6 @@ export default function NavbarHome() {
                 {t(item.key)}
               </a>
             ))}
-            <button
-              onClick={() => {
-                toggleLanguage();
-                close();
-              }}
-              className={`${styles.languageToggle} ${styles.mobileNavLanguageToggle}`}
-            >
-              <IconLanguage size={18} />
-              <span>
-                {i18n.language === "id"
-                  ? "Switch to English"
-                  : "Ganti ke Bahasa"}
-              </span>
-            </button>
           </nav>
         </Drawer>
       </div>

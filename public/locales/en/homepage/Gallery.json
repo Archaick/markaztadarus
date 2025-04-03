@@ -1,15 +1,15 @@
 {
   "title": "Gallery",
   "tabs": {
-    "umrah": "5T Umrah Tadarus",
-    "kaderisasi": "5T Tadarus Training",
-    "majelis": "5T Tadarus Gathering",
+    "umrah": "5T Tadarus Umrah",
+    "kaderisasi": "5T Tadarus Lectures",
+    "majelis": "5T Tadarus Study Gathering",
     "seminar": "5T Tadarus Seminar"
   },
   "alt": {
-    "umrah": "Umrah Tadarus image {{number}}",
-    "kaderisasi": "Training image {{number}}",
-    "majelis": "Assembly image {{number}}",
-    "seminar": "Seminar image {{number}}"
+    "umrah": "Image of 5T Tadarus Umrah {{number}}",
+    "kaderisasi": "Image of 5T Tadarus Training {{number}}",
+    "majelis": "Image of 5T Tadarus Study Gathering {{number}}",
+    "seminar": "Image of 5T Tadarus Seminar {{number}}"
   }
 }
