@@ -1,7 +1,64 @@
 .methods {
+  position: relative;
   background: linear-gradient(to bottom, #102141, #1f3e79);
   padding: 4rem 0;
   text-align: center;
+  overflow: hidden;
+}
+
+/* Top-right element - triangle on desktop, square on mobile */
+.methods::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 80%;
+  background-image: url("/common/cubes.png");
+  background-color: rgba(16, 33, 65, 0.6);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  clip-path: polygon(100% 0, 100% 100%, 0 0); 
+}
+
+/* Bottom-left element - triangle on desktop, square on mobile */
+.methods::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20%;
+  height: 80%;
+  background-image: url("/common/cubes.png");
+  background-color: rgba(16, 33, 65, 0.6);
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  clip-path: polygon(0 100%, 100% 100%, 0 0); /* Triangle shape */
+}
+
+.methods .container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  /* Transform top-right triangle into square */
+  .methods::before {
+    width: 55%;
+    height: 20%;
+    clip-path: none; /* Removes triangle to make square */
+    border-radius: 0 0 0 12px; /* Optional: slight rounding */
+  }
+
+  /* Transform bottom-left triangle into square */
+  .methods::after {
+    width: 55%;
+    height: 20%;
+    clip-path: none; /* Removes triangle to make square */
+    border-radius: 0 12px 0 0; /* Optional: slight rounding */
+  }
 }
 
 .container {
@@ -67,33 +124,60 @@
 }
 
 /* Modal Styles */
-.modalHeader {
-  background: linear-gradient(to bottom, #1f3e79, #102141);
-  padding: 1.5rem;
-  text-align: center;
-  border: none !important; /* Remove default border */
-}
-
-/* 102141 */
-/* 1f3e79 */
-.modalHeader button {
-  color: white !important;
-}
-
-.modalHeader button:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-
+/* Improved Modal Animation */
 .modalContent {
   max-width: 600px;
   overflow: hidden;
-  border: none !important; /* Remove default border */
-  padding: 0 !important; /* Remove default padding */
+  border: none !important;
+  padding: 0 !important;
+  background: rgba(16, 33, 65, 0.7) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Rest of your existing styles... */
+.modalHeader {
+  background-image: url("/common/cubes.png");
+  background: rgba(16, 33, 65, 0.7) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  text-align: center;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.modalHeader::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/common/cubes.png");
+  background-color: #1f3e79;
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.modalHeader button {
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.3s ease;
+}
+
+.modalHeader button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.1);
 }
 
 .modalBody {
-  padding: 0; /* Remove padding here and handle it in content wrapper */
-  background: linear-gradient(to bottom, #102141, #1f3e79);
+  padding: 0;
+  background: transparent !important;
 }
 
 .modalTitle {
@@ -102,13 +186,15 @@
   justify-content: center;
   text-align: center;
   font-size: 1.5rem;
-  font-weight: 900;
-  color: white;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.5px;
 }
 
 .modalTitleIcon {
   width: 30px;
   height: 30px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .modalContentWrapper {
@@ -118,21 +204,24 @@
   gap: 1.5rem;
   text-align: center;
   width: 100%;
-  padding: 2rem; /* Move padding here instead of modalBody */
+  padding: 2rem;
 }
 
 .modalIcon {
   width: 60px;
   height: 60px;
   object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
 }
 
 .modalDescription {
   font-size: 1.1rem;
   line-height: 1.7;
-  font-weight: 600;
-  color: white;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
   margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* youtube */
@@ -218,7 +307,7 @@
   }
 }
 
-/* Add to your existing CSS */
+/* Ribbons */
 .numberRibbon {
   position: absolute;
   top: -10px;

@@ -35,6 +35,7 @@
   font-weight: 700;
 }
 
+
 @media (max-width: 768px) {
   .tabsList {
     grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
