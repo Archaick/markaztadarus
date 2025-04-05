@@ -6,37 +6,24 @@
   overflow: hidden;
 }
 
-/* Top-right element - triangle on desktop, square on mobile */
-.methods::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20%;
-  height: 80%;
-  background-image: url("/common/cubes.png");
-  background-color: rgba(16, 33, 65, 0.6);
-  opacity: 0.3;
-  z-index: 0;
-  pointer-events: none;
-  clip-path: polygon(100% 0, 100% 100%, 0 0); 
-}
-
 /* Bottom-left element - triangle on desktop, square on mobile */
 .methods::after {
   content: "";
   position: absolute;
-  bottom: 0;
   left: 0;
-  width: 20%;
-  height: 80%;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: left bottom; /* 👈 align image to left */
   background-image: url("/common/cubes.png");
   background-color: rgba(16, 33, 65, 0.6);
+  background-size: auto;
   opacity: 0.3;
   z-index: 0;
   pointer-events: none;
-  clip-path: polygon(0 100%, 100% 100%, 0 0); /* Triangle shape */
 }
+
 
 .methods .container {
   position: relative;
@@ -44,20 +31,8 @@
 }
 
 @media (max-width: 768px) {
-  /* Transform top-right triangle into square */
-  .methods::before {
-    width: 55%;
-    height: 20%;
-    clip-path: none; /* Removes triangle to make square */
-    border-radius: 0 0 0 12px; /* Optional: slight rounding */
-  }
-
-  /* Transform bottom-left triangle into square */
   .methods::after {
-    width: 55%;
-    height: 20%;
-    clip-path: none; /* Removes triangle to make square */
-    border-radius: 0 12px 0 0; /* Optional: slight rounding */
+    background-position: center top;
   }
 }
 
@@ -124,7 +99,6 @@
 }
 
 /* Modal Styles */
-/* Improved Modal Animation */
 .modalContent {
   max-width: 600px;
   overflow: hidden;
@@ -140,8 +114,7 @@
 
 /* Rest of your existing styles... */
 .modalHeader {
-  background-image: url("/common/cubes.png");
-  background: rgba(16, 33, 65, 0.7) !important;
+  background: rgba(206, 206, 206, 0.7) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   padding: 1.5rem;
@@ -161,6 +134,9 @@
   height: 100%;
   background-image: url("/common/cubes.png");
   background-color: #1f3e79;
+  background-repeat: no-repeat;
+  background-position: center; 
+  background-size: cover; 
   opacity: 0.4;
   z-index: -1;
 }
