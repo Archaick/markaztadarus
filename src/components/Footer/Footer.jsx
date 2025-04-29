@@ -22,10 +22,13 @@ import whiteLogo from "../../assets/imgs/MT-logo.svg";
 
 const Footer = () => {
   const { t } = useTranslation("common/Footer");
-  const whatsappUrl = "https://wa.me/6281210010733?text=Assalamu%20Alaikum%20warahmatullah%20wabarakatuh.%20%0A%0Asaya%20ingin%20berkonsultasi";
+  const whatsappUrl =
+    "https://wa.me/6281210010733?text=Assalamu%20Alaikum%20warahmatullah%20wabarakatuh.%20%0A%0Asaya%20ingin%20berkonsultasi";
 
   return (
     <footer className={styles.footer}>
+      <div className={styles.watermark}></div>
+
       <Container>
         <div className={styles.grid}>
           {/* First Column */}

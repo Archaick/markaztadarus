@@ -33,7 +33,7 @@ const Hero = () => {
 
       <Container size="lg" className={classes.content}>
         <h1 className={classes.title}>
-          <span className={classes.bold}>Umrah Tadarus</span>
+          <span className={classes.bold}>Tadarus di Tanah Suci</span>
           <br />
           <span className={classes.typewriter}>
             <TextTransition
