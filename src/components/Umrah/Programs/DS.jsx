@@ -13,10 +13,7 @@ import {
 import { IconCheckbox } from "@tabler/icons-react";
 import styles from "./DS.module.css";
 import logo from "../../../assets/imgs/MT-logo-white.svg";
-import {
-  IconHomeFilled,
-  IconCircle,
-} from "@tabler/icons-react";
+import { IconHomeFilled, IconCircle } from "@tabler/icons-react";
 
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 import Whatsapp from "../../../components/Whatsapp/Whatsapp";
@@ -45,16 +42,12 @@ const DS = () => {
     { text: "Tour Leader.", icon: tour },
     { text: "Transportasi Jedah-Mekah-Madinah.", icon: transport },
     { text: "Tempat tinggal Mekah & Madinah.", icon: room },
-    { text: "Konsumsi 3x sehari selama kegiatan.", icon: food },
+    { text: "Konsumsi 3x sehari", icon: food },
     {
       text: "Kunjungan ke tempat bersejarah di Mekah maupun Madinah.",
       icon: visits,
     },
     { text: "Modul Pembelajaran.", icon: learn },
-    {
-      text: "Kegiatan belajar klasikal di hari Ahad sampe Kamis.",
-      icon: learning,
-    },
     {
       text: "Pendalaman bahasa non klasikal di hari Jum’at dan Sabtu.",
       icon: language,
@@ -75,19 +68,8 @@ const DS = () => {
       location: "Masjidil Haram",
     },
     {
-      time: "06.30",
-      activity: "Sarapan dan bersiap",
-      location: "Restoran hotel",
-    },
-    {
-      time: "08.30",
-      activity: "Bahasa Arab Sesi 1",
-      location: "Ruang kelas hotel",
-    },
-    { time: "09.45", activity: "Istirahat", location: "Ruang kelas hotel" },
-    {
-      time: "10.00",
-      activity: "Bahasa Arab Sesi 2",
+      time: "09.00",
+      activity: "Tadarus Dhuha",
       location: "Ruang kelas hotel",
     },
     {
@@ -98,13 +80,17 @@ const DS = () => {
     { time: "15.00", activity: "Shalat Ashar", location: "Masjid Hotel" },
     {
       time: "16.00",
-      activity: "Kelas Tajwid dan Tadabbur",
+      activity: "Pendalaman al-Qur’an",
       location: "Ruang kelas hotel",
     },
-    { time: "17.00", activity: "Shalat Maghrib", location: "Masjidil Haram" },
+    {
+      time: "17.00",
+      activity: "Shalat Maghrib",
+      location: "Masjidil Haram",
+    },
     {
       time: "18.30",
-      activity: "I’tikaf dan menghafal al-Qur’an",
+      activity: "I’tikaf dan tilawah al-Qur’an",
       location: "Masjidil Haram",
     },
     { time: "19.30", activity: "Shalat Isya", location: "Masjidil Haram" },
@@ -121,7 +107,7 @@ const DS = () => {
   return (
     <div className={styles.dsPage}>
       <Helmet>
-        <title>Daurah Santri</title>
+        <title>Tadarus Santri</title>
         <meta
           name="description"
           content="Program Umrah & Kursus Pelajar dirancang khusus untuk pelajar, menggabungkan ibadah Umrah dengan pembelajaran interaktif di Mekah & Madinah."
@@ -143,14 +129,14 @@ const DS = () => {
             Beranda
           </Button>
         </div>
-        <h2 className={styles.title}>DAURAH SANTRI</h2>
+        <h2 className={styles.title}>TADARUS SANTRI</h2>
         <Text className={styles.subtitle}>GAMBARAN SINGKAT PROGRAM</Text>
         <Text className={styles.textContent} mt={50} p={6} fw={550}>
-          Program Daurah Santri ialah program pembelajaran singkat yang
-          dirancang khusus untuk memperdalam ilmu pengetahuan di kota Mekah
-          al-Mukarramah dalam bidang bahasa Arab dan al-Qur’an. Peserta akan
-          melaksanakan ibadah umrah, dan kunjungan tempat-tempat bersejarah,
-          serta merasakan kekayaan budaya Arab.
+          Program Tadarus Santri ialah program pembelajaran singkat yang
+          dirancang khusus untuk memperdalam pemahaman, penghayatan dan
+          pengamalan al-Qur’an yang dilaksanakan di kota Mekah al-Mukarramah,
+          sekaligus melaksanakan ibadah umrah dan kunjungan tempat-tempat
+          bersejarah dan berbudaya Arab.
         </Text>
 
         <div className={styles.videoContainer}>
@@ -164,43 +150,66 @@ const DS = () => {
         </div>
       </Container>
 
+      {/* Tujuan Program  */}
       <Container className={styles.contentWrapper}>
         <Text
           className={styles.subtitle}
-          style={{ marginTop: "2rem", fontSize: "1.7rem" }}
+          style={{ marginTop: "2rem", fontSize: "1.7rem", textAlign: "center" }}
           mt={70}
         >
           TUJUAN PROGRAM
         </Text>
-        <Paper
-          shadow="xs"
-          p="lg"
+
+        <Box
           style={{
-            backgroundColor: "#F7F7F7",
-            color: "#153A5F",
-            fontSize: "clamp(1rem, 2vw, 1.2rem)", // Adjusts between 1rem and 1.2rem
-            fontWeight: 500,
-            marginBottom: "1rem",
-            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          Mempelajari bahasa Arab dan kebudayaannya, memperbaiki bacaan dan
-          hafalan al-Qur’an, serta mentadabburinya.
-        </Paper>
-        <Paper
-          shadow="xs"
-          p="lg"
-          style={{
-            backgroundColor: "#F7F7F7",
-            color: "#153A5F",
-            fontSize: "clamp(1rem, 2vw, 1.2rem)", // Same as above
-            fontWeight: 500,
-            textAlign: "center",
-          }}
-        >
-          Peningkatan skill berbahasa Arab: Istima’, Muhadatsah, Qira’ah dan
-          Kitabah.
-        </Paper>
+          <List
+            type="ordered"
+            size="lg"
+            spacing="sm"
+            styles={{
+              root: {
+                backgroundColor: "#F7F7F7",
+                color: "#000",
+                fontSize: "clamp(1rem, 2vw, 1.1rem)",
+                fontWeight: 500,
+                padding: "2rem",
+                borderRadius: "8px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                width: "100%",
+                maxWidth: "800px",
+              },
+              item: {
+                marginBottom: "0.5rem",
+                "&::marker": {
+                  fontWeight: "bold",
+                },
+              },
+              itemWrapper: {
+                textAlign: "left",
+                paddingLeft: "1rem",
+              },
+            }}
+          >
+            <List.Item>
+              Memahami tujuan utama dari mempelajari al-Qur'an.
+            </List.Item>
+            <List.Item>Memahami secara sempurna arti kata "Tadarus".</List.Item>
+            <List.Item>Memahami Tadarus Nabi dan Sahabat.</List.Item>
+            <List.Item>Mampu menerapkan metode 5T dalam bertadarus.</List.Item>
+            <List.Item>Mengamalkan sunnah bertadarus al-Qur'an.</List.Item>
+            <List.Item>Menyatukan hati dengan al-Qur'an.</List.Item>
+            <List.Item>Mengamalkan nilai al-Qur'an dalam keseharian.</List.Item>
+            <List.Item>
+              Mampu menghayati dan menikmati al-Qur'an secara mandiri.
+            </List.Item>
+          </List>
+        </Box>
+
         <Text
           style={{
             fontSize: "1.7rem",
@@ -221,12 +230,10 @@ const DS = () => {
         >
           <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
             {[
-              "Pelaksanaan program di kota suci Mekah.",
-              "Bimbingan tadabbur al-Qur’an.",
-              "Melaksanakan ibadah umrah dan kunjungan ke Madinah al-Munawwarah.",
-              "Program fokus dalam perbaikan linguistik yang komunikatif dan aplikatif.",
-              "Mengenal budaya Arab.",
-              "Belajar dan berteman dengan penutur asli bahasa Arab.",
+              "Pelaksanaan program terletak di kota suci Mekah.",
+              "Program tambahan berupa mengenal napak tilas jejak Nabi di sekitar Masjidil Haram.",
+              "Melaksanakan ibadah Umrah.",
+              "Mendapatkan nasehat Qur’aniyyah dari salah satu syeikh di Mekah.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
                 <IconCheckbox size={24} color="#FFD700" />
@@ -259,7 +266,7 @@ const DS = () => {
           styles={{
             control: {
               backgroundColor: "#ffffff", // White background for the control
-              color: "#0A3867", // Dark blue text color
+              color: "#3E2E0D", // Dark blue text color
             },
             item: {
               border: "1px solid #e0e0e0", // Light border for each item
@@ -275,52 +282,53 @@ const DS = () => {
         >
           <Accordion.Item value="pembekalan">
             <Accordion.Control>
-              <Text fw={600}>Kelas al-Qur'an</Text>
+              <Text fw={600}>Kelas al-Qur’an</Text>
             </Accordion.Control>
             <Accordion.Panel ml={20}>
-              <p>Mempelajari al-Qur’an meliputi ilmu tajwid dan tadabur.</p>
+              <ol style={{ color: "#152D46" }}>
+                <li>Mentadarusi al-Qur’an menggunakan metode 5T.</li>
+              </ol>
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="madinah">
             <Accordion.Control>
-              <Text fw={600}>Kelas Bahasa Arab</Text>
+              <Text fw={600}>Pendalaman al-Qur’an</Text>
             </Accordion.Control>
             <Accordion.Panel ml={20}>
-              <p>
-                Siswa diajarkan keterampilan bahasa yang mencakup: Istima’
-                (mendengar), kalam (berbicara), Qira’ah (membaca) dan Kitabah
-                (menulis).
-              </p>
+              <Text fw={700} p={10} c="#152D46">
+                Dalam rangka memaksimalkan interaksi dengan al-Qur’an dilakukan
+                kegiatan berikut:
+              </Text>
+              <ol style={{ color: "#152D46" }}>
+                <li>
+                  Membahas ayat-ayat yang berkaitan dengan suasana di mana kita
+                  berada.
+                </li>
+                <li>Tahfiz dan Khatmul Qur’an.</li>
+                <li>Mempresentasikan ayat.</li>
+                <li>Membuat kartu Tadarus.</li>
+                <li>Menyaksikan film-film sejarah Islam.</li>
+                <li>Games Tadarus.</li>
+                <li>Ayat menyentuh hatiku.</li>
+                <li>Pemetaan ayat.</li>
+              </ol>
             </Accordion.Panel>
           </Accordion.Item>
           <Accordion.Item value="mekah">
             <Accordion.Control>
-              <Text fw={600}>Pendalaman Bahasa</Text>
+              <Text fw={600}>Kegiatan Outdoor</Text>
             </Accordion.Control>
             <Accordion.Panel ml={20}>
-              <Text fw={650} mb={10}>
-                Menguatkan dan mendalami bahasa Arab secara langsung:
-              </Text>
-              <ol>
-                <li>
-                  Praktek langsung di tempat umum (Masjid, arena olahraga,
-                  taman, sahara, pusat perbelanjaan, dan transportasi umum).
-                </li>
-                <li>Ziarah ke sekolah dan Universitas.</li>
-                <li>Tugas meringkas materi dari video maupun rekaman.</li>
-                <li>Mempresentasikan tugas dalam bahasa Arab.</li>
+              <ol style={{ color: "#152D46" }}>
+                <li>Thawaf sunnah dan Qiyamullail.</li>
+                <li>Mengenal jejak Nabi sekitar Masjidil Haram.</li>
+                <li>Kegiatan di Goa Hira.</li>
+                <li>Menginap di Villa Mekah.</li>
+                <li>Olahraga futsal atau lainnya.</li>
+                <li>Kunjungan ke padang pasir atau museum.</li>
+                <li>Kunjungan kota Madinah.</li>
+                <li>Kunjungan ke lembaga pendidikan di Mekah atau Madinah.</li>
               </ol>
-            </Accordion.Panel>
-          </Accordion.Item>
-          <Accordion.Item value="pasca">
-            <Accordion.Control>
-              <Text fw={600}>Rihlah</Text>
-            </Accordion.Control>
-            <Accordion.Panel ml={20}>
-              <p>
-                Kunjungan kota Madinah, sahara, museum dan tempat bersejarah
-                lainnya.
-              </p>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
@@ -368,7 +376,7 @@ const DS = () => {
           {/* List */}
           <List spacing="sm" mt="md">
             {[
-              "Siswa siswi kelas 3 SMP dan SMA.",
+              "Siswa siswi SMP kelas 8 dan 9.",
               "Sehat jasamani dan rohani.",
               "Izin orangtua atau wali.",
             ].map((item, index) => (
@@ -385,10 +393,10 @@ const DS = () => {
           </List>
         </Box>
 
-        {/* SYARAT DOKUMEN */}
+        {/* Syarat Dokumen */}
         <Box
           style={{
-            backgroundColor: "#152D46",
+            backgroundColor: "#362C06",
             padding: "2rem",
             borderRadius: "8px",
             maxWidth: "600px",
@@ -404,19 +412,96 @@ const DS = () => {
 
           {/* List */}
           <List spacing="sm" mt="md">
-            {["Rekomendasi Lembaga.", "Paspor.", "Kartu Keluarga / KTP."].map(
-              (item, index) => (
-                <List.Item
-                  key={index}
-                  icon={<IconCircle size={18} color="#FFD700" />}
-                  style={{
-                    fontWeight: "650",
-                  }}
-                >
-                  {item}
-                </List.Item>
-              )
-            )}
+            {[
+              "Rekomendasi Lembaga.",
+              "Paspor.",
+              "Kartu Keluarga / KTP.",
+              "CV.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconCircle size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* SYARAT PERJALANAN */}
+        <Box
+          style={{
+            backgroundColor: "#152D46",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT PERJALANAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Menyiapkan pasport pribadi.",
+              "Mengurus vaksin meningitis pribadi.",
+              "Menyiapkan ihram pribadi.",
+              "Menyiapkan koper pribadi.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconCircle size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
+          </List>
+        </Box>
+
+        {/* SYARAT PENDAFTARAN */}
+        <Box
+          style={{
+            backgroundColor: "#152D46",
+            padding: "2rem",
+            borderRadius: "8px",
+            maxWidth: "600px",
+            margin: "auto",
+            color: "white",
+          }}
+          mt={50}
+        >
+          {/* Header */}
+          <Text fw={900} size="xl" ta="center">
+            SYARAT PERJALANAN
+          </Text>
+
+          {/* List */}
+          <List spacing="sm" mt="md">
+            {[
+              "Pendaftaran dilakukan 90 hari sebelum keberangkatan dengan memberikan data peserta secara lengkap, yaitu tanggal 1 Juli 2025.",
+              "Pembayaran dilakukan dalam 2 tahap: 50% untuk 90 hari sebelum keberangkatan dan sisanya paling lambat 30 hari sebelum keberangkatan.",
+            ].map((item, index) => (
+              <List.Item
+                key={index}
+                icon={<IconCircle size={18} color="#FFD700" />}
+                style={{
+                  fontWeight: "650",
+                }}
+              >
+                {item}
+              </List.Item>
+            ))}
           </List>
         </Box>
 

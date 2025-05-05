@@ -28,7 +28,7 @@ const App = () => {
           />
           <Route path="/umrah" element={<Umrah />} />
           <Route path="/ut" element={<UT />} />
-          <Route path="/ds" element={<DS />} />
+          <Route path="/ts" element={<DS />} />
           <Route path="/dq" element={<DQ />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>

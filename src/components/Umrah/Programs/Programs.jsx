@@ -25,9 +25,9 @@ const programs = [
   },
   {
     src: DS,
-    title: "Daurah Santri",
+    title: "Tadarus Santri",
     description: "Pelatihan bahasa Arab dan al-Qur'an untuk Santri plus Umrah",
-    link: "/ds",
+    link: "/ts",
   },
   {
     src: DQ,
