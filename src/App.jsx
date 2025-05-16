@@ -11,7 +11,9 @@ import DQ from "./components/Umrah/Programs/DQ";
 import Home from "./components/HomePage/Home";
 import Umrah from "./components/Umrah/Umrah";
 import Redirects from "./components/Redirects/Redirects";
+// new pages
 import Ilmiah from "./components/Ilmiah/Ilmiah";
+import Pelatihan from "./components/Pelatihan/Pelatihan";
 
 const App = () => {
   return (
@@ -34,6 +36,7 @@ const App = () => {
           <Route path="/dq" element={<DQ />} />
 
           <Route path="/ilmiah" element={<Ilmiah />} />
+          <Route path="/Pelatihan" element={<Pelatihan />} />
 
           {/* Add this new route above the catch-all route */}
           <Route path="/:shortCode" element={<Redirects />} />

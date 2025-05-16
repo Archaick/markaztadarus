@@ -1,3 +1,5 @@
+/* NavbarUmrah.module.css */
+
 /* Navbar */
 .navbar {
   position: fixed;
@@ -106,61 +108,42 @@
   display: none;
 }
 
-/* Mobile Controls */
-.mobileControls {
-  display: none;
-}
-
-/* Language Toggle */
-/* Add these to your Navbar.module.css */
-
-/* Language Toggle */
-.languageToggle {
-  background: #b37d08;
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.languageToggleMobile {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  margin-right: 10px;
-}
-
-.navbar.scrolled .languageToggleMobile {
-  color: black;
-}
-
-.languageToggle:hover {
-  background: #9a6b07;
-}
-
-.navbar.scrolled .languageToggle {
+/* Home Link Styles */
+.homeLink {
+  background-color: #021c3c;
   color: white !important;
-  background: linear-gradient(to bottom, #1f3e79, #102141);
+  padding: 8px 16px !important;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.navbar.scrolled .languageToggle:hover {
-  background: linear-gradient(to bottom, #9d7214, #9a6b07);
+.homeLink:hover {
+  background-color: #021329;
+}
+
+.homeLink::after {
+  display: none;
+}
+
+.navbar.scrolled .homeLink {
+  color: white !important;
+}
+
+.homeIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileNav .homeLink {
+  justify-content: center;
 }
 
 /* Mobile Controls */
 .mobileControls {
   display: none;
-  align-items: center;
 }
 
 @media (max-width: 768px) {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Group, Burger, Drawer, ActionIcon } from "@mantine/core";
+import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX, IconHomeFilled } from "@tabler/icons-react";
+import { IconX, IconHomeFilled  } from "@tabler/icons-react";
 import styles from "./NavbarUmrah.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
@@ -12,7 +12,7 @@ export default function Navbar() {
 
   // Navigation items for main navbar
   const navItems = [
-    { name: "Beranda", id: "/", isHome: true },
+    { name: "Beranda", id: "/", isHome: true }
   ];
 
   useEffect(() => {
@@ -37,13 +37,11 @@ export default function Navbar() {
             <a
               key={item.id}
               href={item.id.startsWith("/") ? item.id : `#${item.id}`}
-              className={`${styles.navLink} ${
-                item.isHome ? styles.homeLink : ""
-              }`}
+              className={`${styles.navLink} ${item.isHome ? styles.homeLink : ''}`}
             >
               {item.isHome && (
                 <span className={styles.homeIcon}>
-                  <IconHomeFilled size={16} />
+                  <IconHomeFilled  size={16} />
                 </span>
               )}
               {item.name}
@@ -85,13 +83,11 @@ export default function Navbar() {
                 key={item.id}
                 href={item.id.startsWith("/") ? item.id : `#${item.id}`}
                 onClick={close}
-                className={`${styles.navLink} ${
-                  item.isHome ? styles.homeLink : ""
-                }`}
+                className={`${styles.navLink} ${item.isHome ? styles.homeLink : ''}`}
               >
                 {item.isHome && (
                   <span className={styles.homeIcon}>
-                    <IconHomeFilled size={16} />
+                    <IconHomeFilled  size={16} />
                   </span>
                 )}
                 {item.name}

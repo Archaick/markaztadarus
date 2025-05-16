@@ -27,7 +27,7 @@ const Programs = () => {
       src: Pelatihan,
       title: t("programs.pelatihan.title"),
       description: t("programs.pelatihan.description"),
-      link: "#",
+      link: "/pelatihan",
     },
     {
       src: Majelis,
