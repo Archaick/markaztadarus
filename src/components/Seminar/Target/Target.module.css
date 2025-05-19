@@ -1,0 +1,109 @@
+.section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+  min-height: 100vh;
+  transform: scaleX(-1); /* flip background image horizontally */
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 3rem;
+  transform: scaleX(-1); /* unflip content */
+}
+
+.content {
+  max-width: 550px;
+  margin-left: 2rem;
+  background-color: rgba(10, 60, 120, 0.4);
+  padding: 2rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left; /* align all content left */
+}
+
+.heading {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  color: #e0e7ff;
+  text-align: left;
+}
+
+.subheading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1rem 0 0.5rem;
+  color: #c7d2fe;
+  text-align: left;
+}
+
+.list {
+  padding-left: 1.25rem;
+  list-style-type: decimal;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.polaList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.polaList li {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  color: #e0e7ff;
+}
+
+.polaList li:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .overlay {
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+
+  .content {
+    margin: 0;
+    padding: 1.25rem 1rem;
+    max-width: 100%;
+    border-radius: 8px;
+    font-size: 0.92rem;
+  }
+
+  .heading {
+    font-size: 1.25rem;
+    text-align: left;
+  }
+
+  .subheading {
+    font-size: 1.05rem;
+    text-align: left;
+  }
+
+  .list,
+  .polaList {
+    font-size: 0.9rem;
+  }
+}

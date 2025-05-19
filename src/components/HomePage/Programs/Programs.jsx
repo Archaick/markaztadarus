@@ -21,7 +21,7 @@ const Programs = () => {
       src: Seminar,
       title: t("programs.seminar.title"),
       description: t("programs.seminar.description"),
-      link: "#",
+      link: "/seminar",
     },
     {
       src: Pelatihan,

@@ -7,7 +7,7 @@ import Whatsapp from "../../Whatsapp/Whatsapp";
 import React from "react";
 
 const Hero = () => {
-  const TEXTS = ["Duta Qur'an", "Daurah Santri", "Umrah Tadabburiyah"];
+  const TEXTS = ["Duta Qur'an", "Tadarus Santri", "Umrah Tadabburiyah"];
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
