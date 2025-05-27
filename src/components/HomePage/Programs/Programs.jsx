@@ -33,7 +33,7 @@ const Programs = () => {
       src: Majelis,
       title: t("programs.majelis.title"),
       description: t("programs.majelis.description"),
-      link: "#",
+      link: "/majelis",
     },
     {
       src: Karya,

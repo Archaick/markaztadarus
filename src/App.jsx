@@ -15,6 +15,7 @@ import Redirects from "./components/Redirects/Redirects";
 import Ilmiah from "./components/Ilmiah/Ilmiah";
 import Pelatihan from "./components/Pelatihan/Pelatihan";
 import Seminar from "./components/Seminar/Seminar";
+import Majelis from "./components/Majelis/Majelis";
 
 const App = () => {
   return (
@@ -39,6 +40,8 @@ const App = () => {
           <Route path="/ilmiah" element={<Ilmiah />} />
           <Route path="/Pelatihan" element={<Pelatihan />} />
           <Route path="/Seminar" element={<Seminar />} />
+          <Route path="/Majelis" element={<Majelis />} />
+
 
           {/* Add this new route above the catch-all route */}
           <Route path="/:shortCode" element={<Redirects />} />

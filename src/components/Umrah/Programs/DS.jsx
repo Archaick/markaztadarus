@@ -112,7 +112,7 @@ const DS = () => {
           name="description"
           content="Program Umrah & Kursus Pelajar dirancang khusus untuk pelajar, menggabungkan ibadah Umrah dengan pembelajaran interaktif di Mekah & Madinah."
         />
-        <link rel="canonical" href="https://markaztadarus.com/ds" />
+        <link rel="canonical" href="https://markaztadarus.com/ts" />
       </Helmet>
 
       <Container className={styles.topWrapper}>
