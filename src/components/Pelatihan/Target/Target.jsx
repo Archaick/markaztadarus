@@ -1,5 +1,5 @@
 import React from "react";
-import background from "../../../assets/imgs/pelatihan/pelatihansec4.jpg";
+import background from "../../../assets/imgs/pelatihan/pelatihannewsec4.jpg";
 import styles from "./Target.module.css";
 
 const Target = () => {

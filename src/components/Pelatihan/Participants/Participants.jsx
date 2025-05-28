@@ -1,5 +1,5 @@
 import React from "react";
-import background from "../../../assets/imgs/pelatihan/pelatihansec6.jpg";
+import background from "../../../assets/imgs/pelatihan/pelatihannewsec6.jpg";
 import styles from "./Participants.module.css";
 
 const Participants = () => {

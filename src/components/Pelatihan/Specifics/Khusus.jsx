@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Khusus.module.css';
-import background from '../../../assets/imgs/pelatihan/pelatihansec3.jpg';
+import background from '../../../assets/imgs/pelatihan/pelatihannewsec3.jpg';
 
 const Khusus = () => {
   return (

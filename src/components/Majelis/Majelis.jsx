@@ -6,10 +6,8 @@ import Tujuan from "./Tujuan/Tujuan";
 import Khusus from "./Specifics/Khusus";
 import Target from "./Target/Target";
 
-import Fasilitas from "./Fasilitas/Fasilitas";
-import Pembiayaan from "./Pembiayaan/Pembiayaan";
-import Train from "./Train/Train";
 import Book from "./Book/Book";
+import Participants from "./Participants/Participants";
 const Majelis = () => {
   return (
     <div>
@@ -18,13 +16,10 @@ const Majelis = () => {
       <Hero />
       <Tujuan />
       <Khusus />
-
       <Book />
       <Target />
 
-      <Fasilitas />
-      <Pembiayaan />
-      <Train />
+      <Participants />
       <Footer />
     </div>
   );
