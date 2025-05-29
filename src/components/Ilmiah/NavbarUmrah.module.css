@@ -1,6 +1,3 @@
-/* NavbarUmrah.module.css */
-
-/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
@@ -8,20 +5,11 @@
   width: 100%;
   z-index: 50;
   backdrop-filter: blur(10px);
-  background: rgba(0, 0, 0, 0.05);
+  background-color: #ffffff; /* Use a clean, natural white */
   padding: 16px 24px;
   transition: all 0.3s ease-in-out;
   font-weight: 500;
-}
-
-.navbar.scrolled {
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.navbar.scrolled .navLink {
-  color: black;
-  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* soft shadow */
 }
 
 .container {
@@ -35,7 +23,6 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* Navigation Links */
 .navLinks {
   display: flex;
   gap: 24px;
@@ -43,7 +30,7 @@
 
 .navLink {
   position: relative;
-  color: white;
+  color: #021c3c; /* dark navy text */
   text-decoration: none;
   padding-bottom: 4px;
   transition: color 0.3s ease-in-out;
@@ -65,7 +52,6 @@
   left: 0;
 }
 
-/* Mobile Menu */
 .mobileMenu {
   background: rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(15px) !important;
@@ -74,7 +60,6 @@
   padding: 0 !important;
 }
 
-/* Mobile Navigation */
 .mobileNav {
   display: flex;
   flex-direction: column;
@@ -83,7 +68,6 @@
   margin-top: 15px;
 }
 
-/* Custom Drawer Header */
 .drawerHeader {
   display: flex;
   align-items: center;
@@ -91,7 +75,6 @@
   padding: 16px;
 }
 
-/* Custom Close Button */
 .closeButton {
   color: white !important;
   background: transparent !important;
@@ -103,12 +86,10 @@
   opacity: 0.7;
 }
 
-/* Hamburger Menu */
 .burger {
   display: none;
 }
 
-/* Home Link Styles */
 .homeLink {
   background-color: #021c3c;
   color: white !important;
@@ -127,10 +108,6 @@
   display: none;
 }
 
-.navbar.scrolled .homeLink {
-  color: white !important;
-}
-
 .homeIcon {
   display: inline-flex;
   align-items: center;
@@ -141,16 +118,7 @@
   justify-content: center;
 }
 
-/* Mobile Controls */
-.mobileControls {
-  display: none;
-}
-
 @media (max-width: 768px) {
-  .mobileControls {
-    display: flex;
-  }
-
   .burger {
     display: block;
   }

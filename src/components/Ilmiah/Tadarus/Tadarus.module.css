@@ -1,0 +1,150 @@
+.wrapper {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2rem;
+  position: relative;
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+.bookContainer {
+  flex: 1;
+  min-width: 45%;
+  position: relative;
+  z-index: 1;
+}
+
+.bookImage {
+  width: 100%;
+  height: auto;
+  max-height: 550px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.textHeader {
+  text-align: center;
+}
+
+
+.contentGroup {
+  flex: 1;
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
+}
+
+.textContent {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+
+
+.textHeader h2 {
+  color: #a29c61;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.textHeader h3 {
+  color: #003f5c;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.textHeader p {
+  color: #333;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.strikeBox {
+  display: flex;
+  background-color: #023047;
+  color: white;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  margin-left: -100px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  gap: 2rem;
+}
+
+.infoItem {
+  flex: 1;
+}
+
+.number {
+  display: block;
+  font-size: 1.8rem;
+  color: #ffb703;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+}
+
+.infoItem h4 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+}
+
+.infoItem p {
+  font-size: 1rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+@media (max-width: 992px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .strikeBox {
+    margin-left: 0;
+    margin-top: 3rem;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .bookContainer {
+    margin-top: 2rem;
+  }
+
+  .textContent {
+    padding-left: 0;
+  }
+
+  .textHeader {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .textHeader p {
+    max-width: 100%;
+  }
+
+  .contentGroup {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .strikeBox {
+    padding: 1.5rem;
+  }
+
+  .textHeader h2 {
+    font-size: 2rem;
+  }
+}

@@ -1,12 +1,14 @@
 import Navbar from "./Navbar";
-import Marquee from "./MarqueeIlmiah";
 import Footer from "./Footer";
+import Toddlers from "./Toddlers/Toddlers";
+import Tadarus from "./Tadarus/Tadarus";
 
 const Ilmiah = () => {
   return (
     <div>
       <Navbar />
-      <Marquee />
+      <Toddlers />
+      <Tadarus />
       <Footer />
     </div>
   );

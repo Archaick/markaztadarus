@@ -1,33 +1,21 @@
-import { useState, useEffect } from "react";
-import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX, IconHomeFilled  } from "@tabler/icons-react";
+import { Group, Button, Burger, Drawer, ActionIcon } from "@mantine/core";
+import { IconX, IconHomeFilled } from "@tabler/icons-react";
 import styles from "./NavbarUmrah.module.css";
-import logo from "../../assets/imgs/MT-logo.svg";
-import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
+import logo from "../../assets/imgs/MT-logo-white.svg"; // Use the white logo consistently
 
 export default function Navbar() {
   const [opened, { toggle, close }] = useDisclosure(false);
-  const [scrolled, setScrolled] = useState(false);
 
-  // Navigation items for main navbar
   const navItems = [
-    { name: "Beranda", id: "/", isHome: true }
+    { name: "Beranda", id: "/", isHome: true },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > window.innerHeight);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
+    <header className={styles.navbar}>
       <div className={styles.container}>
         <img
-          src={scrolled ? whiteLogo : logo}
+          src={logo}
           alt="Markaz Tadarus"
           className={styles.logoImage}
         />
@@ -37,11 +25,11 @@ export default function Navbar() {
             <a
               key={item.id}
               href={item.id.startsWith("/") ? item.id : `#${item.id}`}
-              className={`${styles.navLink} ${item.isHome ? styles.homeLink : ''}`}
+              className={`${styles.navLink} ${item.isHome ? styles.homeLink : ""}`}
             >
               {item.isHome && (
                 <span className={styles.homeIcon}>
-                  <IconHomeFilled  size={16} />
+                  <IconHomeFilled size={16} />
                 </span>
               )}
               {item.name}
@@ -54,7 +42,7 @@ export default function Navbar() {
           onClick={toggle}
           className={styles.burger}
           hiddenFrom="sm"
-          color={scrolled ? "black" : "white"}
+          color="black"
         />
 
         <Drawer
@@ -68,7 +56,7 @@ export default function Navbar() {
         >
           <div className={styles.drawerHeader}>
             <img
-              src={scrolled ? whiteLogo : logo}
+              src={logo}
               alt="Markaz Tadarus"
               className={styles.logoImage}
             />
@@ -83,11 +71,11 @@ export default function Navbar() {
                 key={item.id}
                 href={item.id.startsWith("/") ? item.id : `#${item.id}`}
                 onClick={close}
-                className={`${styles.navLink} ${item.isHome ? styles.homeLink : ''}`}
+                className={`${styles.navLink} ${item.isHome ? styles.homeLink : ""}`}
               >
                 {item.isHome && (
                   <span className={styles.homeIcon}>
-                    <IconHomeFilled  size={16} />
+                    <IconHomeFilled size={16} />
                   </span>
                 )}
                 {item.name}
