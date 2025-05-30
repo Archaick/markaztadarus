@@ -35,9 +35,11 @@ const Toddlers = () => {
         <div className={styles.textContent}>
           <div className={styles.textHeader}>
             <h2>Pendidikan Qur'ani Anak</h2>
-            <h3>Ages x–y Years</h3>
+            <h3>6-10</h3>
             <p>
-              Description
+              Merupakan buku panduan program pendidikan al-Qur'an untuk anak
+              yang bertujuan untuk membangun kepribadian Qur'ani yang dipetik
+              dari surat adh-Dhuha sampai an-Nas.
             </p>
           </div>
         </div>
@@ -45,20 +47,24 @@ const Toddlers = () => {
         <div className={styles.strikeBox}>
           <div className={styles.infoItem}>
             <span className={styles.number}>1</span>
-            <h4>Kit Objectives</h4>
+            <h4>Target Kompetensi</h4>
             <p>
-              Reinforce selected Qur'anic values in the child's personality.
+              Menanamkan keimanan pada hati dan jiwa anak-anak dari pembelajaran
+              setiap ayat atau surat.
             </p>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.number}>2</span>
-            <h4>Kit Objectives</h4>
-            <p>Encourage creativity and innovation in children.</p>
+            <h4>Keistimewaan</h4>
+            <p>
+              Terdapat latihan tugas yang mengokohkan pengamalan nilai-nilai
+              Al-Qur’an.
+            </p>
           </div>
           <div className={styles.infoItem}>
             <span className={styles.number}>3</span>
-            <h4>Kit Objectives</h4>
-            <p>Implement the curriculum in schools and educational centers.</p>
+            <h4>Peruntukan</h4>
+            <p>Sekolah TK dan SD, TPA, lembaga tahfiz dan keluarga di rumah.</p>
           </div>
         </div>
       </motion.div>
