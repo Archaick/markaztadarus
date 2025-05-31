@@ -272,27 +272,28 @@
 .bookWrapper::before {
   content: "";
   position: absolute;
-  top: -30%;
-  left: -30%;
-  width: 180%;
-  height: 180%;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
   background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.05) 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.05) 100%
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    /* Increased opacity for stronger light */ rgba(255, 255, 255, 0) 100%
   );
-  transform: rotate(25deg);
-  animation: shine 4s infinite linear;
+  transform: skewX(-20deg);
+  animation: shine 2.5s infinite;
   pointer-events: none;
+  z-index: -1;
 }
 
 @keyframes shine {
   0% {
-    transform: rotate(25deg) translateX(-100%);
+    left: -75%;
   }
   100% {
-    transform: rotate(25deg) translateX(100%);
+    left: 100%;
   }
 }
 

@@ -1,0 +1,411 @@
+.bghero {
+  min-height: 100vh;
+  background: url("../../assets/imgs/pelatihan/hero.jpg") center/cover no-repeat
+    fixed;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 64px;
+  position: relative;
+  padding: 2rem 1rem;
+}
+
+.bghero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-attachment: fixed;
+}
+
+.topWrapper {
+  background-color: rgba(12, 61, 46, 0.5);
+  padding: 2.5rem;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.contentWrapper {
+  /* background: #f7f7f7c6; */
+  background-color: rgba(12, 61, 46, 0.5);
+  padding: 2.5rem;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 180px;
+  max-width: 60%;
+  height: auto;
+}
+
+.homeButton {
+  background: #f7f7f7c6;
+  color: #0a3867;
+  font-weight: bold;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  border-radius: 6px;
+}
+
+.homeButton:hover {
+  background: #0a3867;
+}
+
+.title {
+  font-size: 2.5rem;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  font-weight: 800;
+  color: #f7f7f7c6;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  font-weight: 800;
+  color: #f7f7f7c6;
+  margin-bottom: 15px;
+}
+
+.textContent {
+  font-size: 1.25rem;
+  text-align: center;
+  line-height: 1.5;
+  color: #f7f7f7c6;
+  margin-bottom: 2rem;
+}
+
+/* Cards Container */
+.cardsContainer {
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  justify-items: center;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* prevent padding from Mantine interfering */
+}
+
+.cardContent {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+}
+
+/* Card Styling */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #153a5f;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Image Styling */
+.card img {
+  padding: 12px;
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 2rem;
+  }
+  .logo {
+    width: 165px;
+  }
+
+  .homeButton {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+  .textContent {
+    font-size: 1.1rem;
+  }
+
+  /* Ensure cards stack vertically on small screens */
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .cardsContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* KEUNGGULAN PROGRAM */
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+/* KEUNGGULAN PROGRAM Container */
+.advantagesContainer {
+  background-color: #0a3867;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+/* Advantage Item Styling */
+.advantageItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .advantagesContainer {
+    padding: 1.5rem;
+  }
+
+  .advantageItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .advantageItem svg {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .advantagesContainer {
+    padding: 1rem;
+  }
+
+  .advantageItem {
+    margin-bottom: 0.5rem;
+  }
+  /*  KEUNGGULAN PROGRAM */
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.facilitiesSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.bookWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(20, 20, 30, 0.9) 0%,
+    rgba(40, 40, 60, 0.95) 50%,
+    rgba(20, 20, 30, 0.9) 100%
+  );
+  border-radius: 16px;
+  padding: 1rem;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), 0 0 25px rgba(0, 100, 255, 0.2);
+  position: relative;
+  overflow: hidden; /* Crucial for containing the shine */
+  text-align: center;
+  z-index: 1; /* Ensure content is above the shine */
+}
+
+/* New Shining Effect for .bookWrapper */
+.bookWrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%; /* Start off-screen to the left */
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg); /* Skew the gradient for a slanted shine */
+  animation: shine 2.5s infinite; /* Animation duration and loop */
+  animation-delay: var(
+    --delay,
+    0s
+  ); /* For potential staggered effect if you use it later */
+  pointer-events: none; /* Allows clicks/interactions through the shine */
+  z-index: -1; /* Place shine behind the content of bookWrapper */
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 100%; /* End off-screen to the right */
+  }
+}
+
+.responsiveCardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.responsiveCard {
+  flex: 1 1 45%;
+  max-width: 45%;
+  /* Dark Theme for these cards */
+  background-color: #1a1a1a; /* Dark background */
+  color: #e0e0e0; /* Light text color for contrast */
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Darker shadow */
+  position: relative; /* Needed for pseudo-element positioning */
+  overflow: hidden; /* Ensures the shine stays within the card boundaries */
+  z-index: 1; /* Ensures content is above the shine */
+}
+
+/* Shining Effect Styles */
+.shiningCard {
+  position: relative;
+  overflow: hidden;
+  z-index: 1; /* Ensures content is above the shine */
+}
+
+.shiningCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%; /* Start off-screen to the left */
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg); /* Skew the gradient for a slanted shine */
+  animation: shine 2.5s infinite; /* Animation duration and loop */
+  animation-delay: var(
+    --delay,
+    0s
+  ); /* For potential staggered effect if you use it later */
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 100%; /* End off-screen to the right */
+  }
+}
+
+.facilitiesHeaderTitle {
+  font-size: 1.8rem;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.bookImage {
+  width: 280px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .bookImage {
+    width: 180px;
+  }
+}
+
+.bookTexts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.bookText {
+  font-size: 1rem;
+  color: #d6faff;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .facilitiesHeader {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: 2rem;
+  }
+  .logo {
+    width: 165px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+  .textContent {
+    font-size: 1.1rem;
+  }
+}

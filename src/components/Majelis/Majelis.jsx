@@ -95,7 +95,7 @@ const Majelis = () => {
             content: { backgroundColor: "#f7f7f7", padding: "1rem", fontWeight: "500" },
           }}>
             <Accordion.Item value="kurikulum">
-              <Accordion.Control><Text fw={600}>Kurikulum</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800}>Kurikulum</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ol>
                   <li>Ad-Dhuha s/d an-Nas.</li>
@@ -108,7 +108,7 @@ const Majelis = () => {
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="durasi">
-              <Accordion.Control><Text fw={600}>Durasi Kegiatan</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800}>Durasi Kegiatan</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ul style={{ listStyleType: "none", paddingLeft: 0, marginLeft: 0 }}>
                   <li>30 sampai 60 menit per pertemuan</li>
@@ -116,7 +116,7 @@ const Majelis = () => {
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="peserta">
-              <Accordion.Control><Text fw={600}>Target Peserta</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800  }>Target Peserta</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ol>
                   <li>Pelajar.</li>
@@ -159,7 +159,7 @@ const Majelis = () => {
             content: { backgroundColor: "#f7f7f7", padding: "1rem", fontWeight: "500" },
           }}>
             <Accordion.Item value="pelatihan">
-              <Accordion.Control><Text fw={600}>Pola Pelatihan</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800}>Pola Pelatihan</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ol>
                   <li>Tanya jawab antara pemateri dan peserta.</li>
@@ -168,7 +168,7 @@ const Majelis = () => {
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="syarat">
-              <Accordion.Control><Text fw={600}>Syarat Peserta</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800}>Syarat Peserta</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ol>
                   <li>Ikhwan dan Akhwat.</li>
@@ -177,7 +177,7 @@ const Majelis = () => {
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="jumlah">
-              <Accordion.Control><Text fw={600}>Jumlah Peserta</Text></Accordion.Control>
+              <Accordion.Control><Text fw={800}>Jumlah Peserta</Text></Accordion.Control>
               <Accordion.Panel ml={20}>
                 <ul style={{ listStyleType: "none", paddingLeft: 0, marginLeft: 0 }}>
                   <li>5-10 Orang per halaqah</li>
