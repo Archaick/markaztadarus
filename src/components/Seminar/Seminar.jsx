@@ -46,7 +46,7 @@ const Seminar = () => {
             variant="filled"
             size="md"
             component="a"
-            href="/umrah/#program"
+            href="/"
             className={styles.homeButton}
           >
             <IconHomeFilled size={14} style={{ marginRight: "3px" }} />

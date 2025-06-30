@@ -1,0 +1,6 @@
+.parentWrapper {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}

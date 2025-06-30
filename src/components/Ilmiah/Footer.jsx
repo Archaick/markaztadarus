@@ -93,7 +93,7 @@ const Footer = () => {
               <Text size="lg" weight={600}>
                 {t("information")}
               </Text>
-              <Anchor href="#home" className={styles.link}>
+              <Anchor href="/" className={styles.link}>
                 {t("links.home")}
               </Anchor>
             </Stack>
@@ -107,7 +107,7 @@ const Footer = () => {
               </Text>
               <Group spacing="sm">
                 <IconMapPin size={20} />
-                <Text color="#c8c8c8">
+                <Text color="white">
                   Jl. Belimbing 1 No.32 2, RT.2/RW.1, Srengseng, Kec. Kembangan,
                   Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11630
                 </Text>

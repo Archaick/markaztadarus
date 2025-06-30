@@ -301,20 +301,28 @@
   gap: 1.5rem;
   justify-content: center;
   margin-top: 50px;
+  padding: 0 1rem; /* Small side padding for mobile */
 }
 
 .responsiveCard {
-  flex: 1 1 45%;
-  max-width: 45%;
-  /* Dark Theme for these cards */
-  background-color: #1a1a1a; /* Dark background */
-  color: #e0e0e0; /* Light text color for contrast */
+  width: 100%;
+  max-width: 600px;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Darker shadow */
-  position: relative; /* Needed for pseudo-element positioning */
-  overflow: hidden; /* Ensures the shine stays within the card boundaries */
-  z-index: 1; /* Ensures content is above the shine */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  word-wrap: break-word;
+}
+
+/* Make it 50% on medium to large screens */
+@media (min-width: 768px) {
+  .responsiveCard {
+    flex: 1 1 45%;
+  }
 }
 
 /* Shining Effect Styles */

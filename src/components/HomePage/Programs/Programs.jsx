@@ -39,7 +39,7 @@ const Programs = () => {
       src: Karya,
       title: t("programs.karya.title"),
       description: t("programs.karya.description"),
-      link: "#",
+      link: "/ilmiah",
     },
     {
       src: Umrah,
