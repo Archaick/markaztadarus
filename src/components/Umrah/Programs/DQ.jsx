@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   Text,
@@ -16,6 +15,7 @@ import logo from "../../../assets/imgs/MT-logo-white.svg";
 import Whatsapp from "../../../components/Whatsapp/Whatsapp";
 
 // Facilities import
+import finance from "../../../assets/imgs/facilities/finance.png";
 import food from "../../../assets/imgs/facilities/food.png";
 import learn from "../../../assets/imgs/facilities/learn.png";
 import learning from "../../../assets/imgs/facilities/learning.png";
@@ -27,11 +27,14 @@ import transport from "../../../assets/imgs/facilities/transport.png";
 import visa from "../../../assets/imgs/facilities/visa.png";
 import visits from "../../../assets/imgs/facilities/visits.png";
 import certificate from "../../../assets/imgs/facilities/certificate.png";
+import brochure from "../../../assets/imgs/programs/dq-brochure.jpg";
+
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 import { Helmet } from "react-helmet-async";
 
 const DQ = () => {
   const facilities = [
+    { text: "Rp. 24.500.000.", icon: finance },
     { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },
     { text: "Visa dan Bis selama di Saudi.", icon: visa },
@@ -123,6 +126,12 @@ const DQ = () => {
         </div>
       </Container>
 
+      <Container className={styles.topWrapper}>
+        <div className={styles.mediaContainer}>
+          <img src={brochure} alt="Program Brochure" />
+        </div>
+      </Container>
+
       <Container className={styles.contentWrapper}>
         <Text
           className={styles.subtitle}
@@ -169,9 +178,9 @@ const DQ = () => {
           <SimpleGrid cols={2} spacing="lg" className={styles.gridContainer}>
             {[
               "Pelaksanaan program di kota suci Mekah.",
-              "Kunjungan lembaga-lembaga al-Qur’an dan tempat bersejarah di Mekah bersama Akademi an-Naba’.",
+              "Kunjungan tempat bersejarah di Mekah bersama Akademi an-Naba’.",
               "Mendapatkan sertifikat diakreditasi Akademi an-Naba’.",
-              "Pelaksanaan umrah minimal satu kali.",
+              "Mendapatkan buku paket pelatihan.",
             ].map((item, index) => (
               <Group key={index} spacing="sm" align="center" wrap="nowrap">
                 <IconCheckbox size={24} color="#FFD700" />
@@ -194,7 +203,7 @@ const DQ = () => {
         <Box className={styles.facilitiesSection} mt={40} mb={40}>
           <Box className={styles.facilitiesHeader}>
             <Text fw={900} className={styles.facilitiesHeaderTitle}>
-              FASILITAS
+              HARGA DAN FASILITAS
             </Text>
           </Box>
 

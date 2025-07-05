@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import styles from "./Toddlers.module.css";
 import childBook from "../../../assets/imgs/ilmiah/toddlerbook.jpg";
-import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
+// import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
 
 const Toddlers = () => {
   const [opened, setOpened] = useState(false);

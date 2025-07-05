@@ -10,4 +10,9 @@ export const redirects = {
   worksheetTfT:
     "https://drive.google.com/drive/folders/1rr8uIb_lRBGGxrttBrsH2OKzcEe2XOqd?usp=sharing",
   TugasTfT: "https://bit.ly/m/TugasTOT",
+
+  QuesionerGuruBaitussalam:
+  "https://docs.google.com/forms/d/e/1FAIpQLSe1V2tRr8ht-SOFtLONOC6RpYLz9RcLl_MDKBVT3_lfybY2Qg/viewform",
+  QuesionerGuruAssyifa:
+  "https://docs.google.com/forms/d/e/1FAIpQLScJQLipaYjEKHK39PveSBNzfj1-wlCqNEUC0YYvi45Dz95dTg/viewform",
 };

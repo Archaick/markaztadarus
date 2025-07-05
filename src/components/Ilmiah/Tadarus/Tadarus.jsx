@@ -4,8 +4,8 @@ import { Modal, Button, Image } from "@mantine/core";
 import { IconBrandWhatsapp, IconChecklist } from "@tabler/icons-react";
 
 import styles from "./Tadarus.module.css";
-import tadarusBook from "../../../assets/imgs/ilmiah/tadarusbook.jpeg";
-import brochure from "../../../assets/imgs/ilmiah/brochure.jpg"; // Add your real image
+import tadarusBook from "../../../assets/imgs/ilmiah/tadarusbook.jpg";
+// import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
 
 const Tadarus = () => {
   const [opened, setOpened] = useState(false);
@@ -43,14 +43,15 @@ const Tadarus = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className={styles.title}>Tadarus Al-Qur'an</h2>
-          <h3 className={styles.subtitle}>Untuk Segala Usia</h3>
+          <h2 className={styles.title}>Buku Tadarus al-Quran</h2>
+          <h3 className={styles.subtitle}>Untuk Dewasa dan Umum</h3>
           <p className={styles.description}>
-            Buku Tadarus al-Qur’an merupakan panduan pelaksanaan Majelis Tadarus
-            yang memuat surat-surat Mufassal dan Qishar Mufassal — mulai dari
-            surat Qaf hingga An-Nas. Buku ini bertujuan membimbing peserta
-            memahami, menghayati, dan mengamalkan ayat-ayat al-Qur’an secara
-            bertahap.
+            Buku ini berisikan panduan bertadarus yang disusun secara sistematis
+            melalui pendekatan metode 5T. Materi yang terdapat di buku ini
+            berisikan pembahasan surat-surat dalam al-Quran yang dimulai dari
+            surat Qaf hingga surat an-Nas dan ditambahkan surat al-Fatihah.
+            Secara keseluruhan terbagi menjadi 4 buku berdasarkan pembagian juz
+            dalam al-Qur'an yang dimulai dari juz 27 sampai juz 30.
           </p>
 
           <div className={styles.buttonWrap}>
@@ -69,7 +70,11 @@ const Tadarus = () => {
               </span>
               <div>
                 <h4>Buku 1</h4>
-                <p>Mencakup surat Qaf, Juz Adz-Dzariyat, dan Juz Qad Sami‘a.</p>
+                <p>
+                  Mencakup surat-surat yang terdapat di juz 27 yaitu dari surat
+                  adz-Dzariyat hingga surat al-Hadid dengan ditambahkan surat
+                  Qaf sebagai materi pertama.
+                </p>
               </div>
             </div>
 
@@ -80,7 +85,8 @@ const Tadarus = () => {
               <div>
                 <h4>Buku 2</h4>
                 <p>
-                  Fokus pada Juz Tabarak dengan penekanan nilai-nilai hikmah.
+                  Mencakup surat-surat yang terdapat di juz 28 yaitu dari surat
+                  al-Mujadilah hingga surat at-Tahrim.
                 </p>
               </div>
             </div>
@@ -92,7 +98,20 @@ const Tadarus = () => {
               <div>
                 <h4>Buku 3</h4>
                 <p>
-                  Berisi al-Fatihah dan Juz Amma untuk pendalaman surat pendek.
+                  Mencakup surat-surat yang ada di juz 29 yaitu dari surat
+                  al-Mulk hingga surat al-Mursalat.
+                </p>
+              </div>
+            </div>
+            <div className={styles.glassCard}>
+              <span className={styles.icon}>
+                <IconChecklist size={28} stroke={2} />
+              </span>
+              <div>
+                <h4>Buku 4</h4>
+                <p>
+                  Mencakup surat-surat yang ada di juz 30 yaitu dari surat
+                  an-Naba hingga surat an-Nas.
                 </p>
               </div>
             </div>
