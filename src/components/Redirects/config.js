@@ -15,4 +15,10 @@ export const redirects = {
   "https://docs.google.com/forms/d/e/1FAIpQLSe1V2tRr8ht-SOFtLONOC6RpYLz9RcLl_MDKBVT3_lfybY2Qg/viewform",
   QuesionerGuruAssyifa:
   "https://docs.google.com/forms/d/e/1FAIpQLScJQLipaYjEKHK39PveSBNzfj1-wlCqNEUC0YYvi45Dz95dTg/viewform",
+
+
+  "Pre-PostTestSeminar":
+  "https://docs.google.com/forms/d/e/1FAIpQLSf2cYd6dQwsMVI76g8ag2wEWPpdyET_h5eJM8o6JH1Su3F77g/viewform",
+  "Pre-PostTestToT":
+  "https://docs.google.com/forms/d/e/1FAIpQLSeTiEZWmXrzXexf92_-oLjJntwz025o_UTgQSCkN8daNmK-tg/viewform",
 };
