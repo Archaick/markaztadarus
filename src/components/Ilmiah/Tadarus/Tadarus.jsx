@@ -6,6 +6,7 @@ import { IconBrandWhatsapp, IconChecklist } from "@tabler/icons-react";
 import styles from "./Tadarus.module.css";
 import tadarusBook from "../../../assets/imgs/ilmiah/tadarusbook.jpg";
 // import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
+import Whatsapp from "../../Whatsapp/Whatsapp";
 
 const Tadarus = () => {
   const [opened, setOpened] = useState(false);
@@ -46,12 +47,18 @@ const Tadarus = () => {
           <h2 className={styles.title}>Buku Tadarus al-Quran</h2>
           <h3 className={styles.subtitle}>Untuk Dewasa dan Umum</h3>
           <p className={styles.description}>
-            Buku ini berisikan panduan bertadarus yang disusun secara sistematis
-            melalui pendekatan metode 5T. Materi yang terdapat di buku ini
-            berisikan pembahasan surat-surat dalam al-Quran yang dimulai dari
-            surat Qaf hingga surat an-Nas dan ditambahkan surat al-Fatihah.
-            Secara keseluruhan terbagi menjadi 4 buku berdasarkan pembagian juz
-            dalam al-Qur'an yang dimulai dari juz 27 sampai juz 30.
+            Buku ini merupakan <strong>Rujukan</strong> bagi Guru dan Peserta
+            yang akan melaksanakan majelis Tadarus, namun dapat juga digunakan
+            untuk bacaan mandiri. Buku disusun berdasarkan Metode 5T, dimulai
+            dengan
+            <strong> Tamhid</strong> berupa pertanyaan sekitar surat. Kemudian{" "}
+            <strong>Tilawah</strong> berupa teks Ayat. Kemudian{" "}
+            <strong>Tafsir</strong> berupa makna ayat secara singkat. Kemudian
+            <strong> Tadabbur</strong> berupa pelajaran dari ayat. Diakhiri
+            dengan <strong>Tazkiyah</strong> berupa pengamalan ayat, baik amalan
+            hati atau perbuatan. Kandungan surat pada buku mencakup surat-surat{" "}
+            <strong>mufashshal</strong> yaitu Qaf sampai an-Nas, dibagi
+            ke dalam 4 buku.
           </p>
 
           <div className={styles.buttonWrap}>
@@ -69,11 +76,11 @@ const Tadarus = () => {
                 <IconChecklist size={28} stroke={2} />
               </span>
               <div>
-                <h4>Buku 1</h4>
+                <h4>Buku Juz 30</h4>
                 <p>
-                  Mencakup surat-surat yang terdapat di juz 27 yaitu dari surat
-                  adz-Dzariyat hingga surat al-Hadid dengan ditambahkan surat
-                  Qaf sebagai materi pertama.
+                  Mencakup surat an-Naba sampai an-Nas ditambah dengan surat
+                  al-Fatihah di bagian depan. Buku ini adalah sebagai materi
+                  pertama.
                 </p>
               </div>
             </div>
@@ -83,11 +90,8 @@ const Tadarus = () => {
                 <IconChecklist size={28} stroke={2} />
               </span>
               <div>
-                <h4>Buku 2</h4>
-                <p>
-                  Mencakup surat-surat yang terdapat di juz 28 yaitu dari surat
-                  al-Mujadilah hingga surat at-Tahrim.
-                </p>
+                <h4>Buku Juz 29</h4>
+                <p>Mencakup surat al-Mulk sampai al-Mursalat.</p>
               </div>
             </div>
 
@@ -96,11 +100,8 @@ const Tadarus = () => {
                 <IconChecklist size={28} stroke={2} />
               </span>
               <div>
-                <h4>Buku 3</h4>
-                <p>
-                  Mencakup surat-surat yang ada di juz 29 yaitu dari surat
-                  al-Mulk hingga surat al-Mursalat.
-                </p>
+                <h4>Buku Juz 28</h4>
+                <p>Mencakup surat al-Mujadilah sampai at-Tahrim.</p>
               </div>
             </div>
             <div className={styles.glassCard}>
@@ -108,10 +109,10 @@ const Tadarus = () => {
                 <IconChecklist size={28} stroke={2} />
               </span>
               <div>
-                <h4>Buku 4</h4>
+                <h4>Buku Juz 27</h4>
                 <p>
-                  Mencakup surat-surat yang ada di juz 30 yaitu dari surat
-                  an-Naba hingga surat an-Nas.
+                  Mencakup surat adz-Dzariyat sampai al-Hadid, ditambah
+                  dengan surat Qaf.
                 </p>
               </div>
             </div>
@@ -185,6 +186,7 @@ const Tadarus = () => {
           </Button>
         </Modal>
       </div>
+      <Whatsapp />
     </div>
   );
 };

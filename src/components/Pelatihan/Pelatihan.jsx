@@ -361,6 +361,13 @@ const Pelatihan = () => {
                 Markaz Tadarus Indonesia menerima infaq dan shadaqah sebagai
                 pendukung dakwah untuk penyebaran Tadarus 5T.
               </List.Item>
+              <List.Item
+                icon={<IconCircle size={18} color="#FFD700" />}
+                style={{ fontWeight: "650", color: "#0a3867" }}
+              >
+                Markaz Tadarus Indonesia akan mengirimkan utusan minimal 2 orang
+                dan maksimal 3 orang.
+              </List.Item>
             </List>
           </Box>
         </motion.div>
