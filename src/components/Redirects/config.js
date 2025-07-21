@@ -21,4 +21,7 @@ export const redirects = {
   "https://docs.google.com/forms/d/e/1FAIpQLSf2cYd6dQwsMVI76g8ag2wEWPpdyET_h5eJM8o6JH1Su3F77g/viewform",
   "Pre-PostTestToT":
   "https://docs.google.com/forms/d/e/1FAIpQLSeTiEZWmXrzXexf92_-oLjJntwz025o_UTgQSCkN8daNmK-tg/viewform",
+
+  TugasTadarus5T:
+  "https://bit.ly/m/TugasTadarus5T"
 };
