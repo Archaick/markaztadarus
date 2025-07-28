@@ -49,7 +49,7 @@ const Pelatihan = () => {
 
         <h2 className={styles.title}>PELATIHAN TADARUS 5T</h2>
         <Text className={styles.textContent} mt={50} p={6}>
-          PMerupakan kegiatan pelatihan untuk para dai dan guru Qur’an yang akan
+          Merupakan kegiatan pelatihan untuk para dai dan guru Qur’an yang akan
           dikader menjadi trainer atau pengajar Tadarus metode 5T.
         </Text>
       </Container>
