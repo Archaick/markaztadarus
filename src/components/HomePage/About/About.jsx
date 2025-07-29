@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import styles from "./About.module.css";
 import AboutImage from "../../../assets/imgs/homepage/about.jpg";
 import { IconExternalLink } from "@tabler/icons-react";
+import { Modal, Button } from "@mantine/core"; // Assuming you are using Mantine for modals
 
 const imageVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -25,6 +26,10 @@ const contentVariants = {
 
 const About = () => {
   const { t } = useTranslation("homepage/About");
+  const [opened, setOpened] = useState(false);
+
+  const openModal = () => setModalOpened(true);
+  const closeModal = () => setModalOpened(false);
 
   // Get paragraph1 as an object
   const paragraph1 = t("paragraph1", { returnObjects: true });
@@ -56,14 +61,40 @@ const About = () => {
           {paragraph1.text}
         </p>
         <p className={styles.text}>{t("paragraph2")}</p>
-        {/* Uncomment if needed
-        <a href="/about" className={styles.link}>
-          <span>{t('learn_more')}</span>
-          <span>
-            <IconExternalLink size={20} />
-          </span>
-        </a>
-        */}
+ 
+
+        <button className={styles.modalButton} onClick={() => setOpened(true)}>
+          {t("modalButtonTitle")}
+        </button>
+
+        <Modal
+          opened={opened}
+          onClose={() => setOpened(false)}
+          title={
+            <div className={styles.modalTitle}>
+              <span>{t("modalTitle")}</span>
+            </div>
+          }
+          centered
+          size="lg"
+          classNames={{
+            header: styles.modalHeader,
+            content: styles.modalContent,
+            body: styles.modalBody,
+          }}
+        >
+          <div className={styles.modalContentWrapper}>
+            <div className={styles.videoContainer}>
+              <iframe
+                src="https://www.youtube.com/embed/Kyab-ckEIYQ"
+                title="Introductory Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                frameBorder="0"
+              />
+            </div>
+          </div>
+        </Modal>
       </motion.div>
 
       {/* Divider */}
