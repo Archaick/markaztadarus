@@ -26,6 +26,7 @@ const contentVariants = {
 
 const About = () => {
   const { t } = useTranslation("homepage/About");
+  const { i18n } = useTranslation();
   const [opened, setOpened] = useState(false);
 
   const openModal = () => setModalOpened(true);
@@ -61,7 +62,6 @@ const About = () => {
           {paragraph1.text}
         </p>
         <p className={styles.text}>{t("paragraph2")}</p>
- 
 
         <button className={styles.modalButton} onClick={() => setOpened(true)}>
           {t("modalButtonTitle")}
@@ -85,13 +85,26 @@ const About = () => {
         >
           <div className={styles.modalContentWrapper}>
             <div className={styles.videoContainer}>
-              <iframe
-                src="https://www.youtube.com/embed/Kyab-ckEIYQ"
-                title="Introductory Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                frameBorder="0"
-              />
+              {/* the default website is indonesia language */}
+
+              {/* run the following only when the arabic version is selected */}
+              {["id", "en"].includes(i18n.language) ? (
+                <iframe
+                  src="https://www.youtube.com/embed/q8JCiONd-Ho"
+                  title="Introductory Video - Indonesian"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+              ) : (
+                <iframe
+                  src="https://www.youtube.com/embed/Kyab-ckEIYQ"
+                  title="Introductory Video - Arabic"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+              )}
             </div>
           </div>
         </Modal>

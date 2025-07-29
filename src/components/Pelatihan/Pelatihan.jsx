@@ -13,6 +13,11 @@ import { IconHomeFilled, IconCircle, IconCheckbox } from "@tabler/icons-react";
 import logo from "../../assets/imgs/MT-logo.svg";
 import certificate from "../../assets/imgs/pelatihan/certificate.png";
 import { motion } from "framer-motion";
+import { Carousel } from "@mantine/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import pelatihan1 from "../../assets/imgs/homepage/programs/pelatihan.jpg";
+import pelatihan2 from "../../assets/imgs/homepage/programs/pelatihan2.jpg";
+import pelatihan3 from "../../assets/imgs/homepage/programs/pelatihan3.jpg";
 
 // Fade-in variant from bottom
 const fadeInVariants = {
@@ -29,6 +34,7 @@ const Pelatihan = () => {
     { title: "Memahami Tadarus Nabi dan Sahabat" },
     { title: "Mampu menerapkan metode 5T dalam majelis Tadarus" },
   ];
+  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false });
 
   return (
     <div className={styles.bghero}>
@@ -52,6 +58,56 @@ const Pelatihan = () => {
           Merupakan kegiatan pelatihan untuk para dai dan guru Qur’an yang akan
           dikader menjadi trainer atau pengajar Tadarus metode 5T.
         </Text>
+      </Container>
+
+      <Container className={styles.carouselSection}>
+        <h3 className={styles.subtitle} style={{ fontSize: "1.5rem" }}>
+          Dokumentasi Pelatihan
+        </h3>
+
+        <Carousel
+          withIndicators
+          loop
+          align="start"
+          slideSize="100%"
+          slidesToScroll={1}
+          plugins={[autoplay]}
+          className={styles.carouselWrapper}
+          styles={{
+            indicator: {
+              width: 10,
+              height: 10,
+            },
+          }}
+        >
+          <Carousel.Slide>
+            <Image
+              src={pelatihan1}
+              alt="Pelatihan 1"
+              className={styles.carouselImage}
+              fit="cover"
+              height="100%"
+            />
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Image
+              src={pelatihan2}
+              alt="Pelatihan 2"
+              className={styles.carouselImage}
+              fit="cover"
+              height="100%"
+            />
+          </Carousel.Slide>
+          <Carousel.Slide>
+            <Image
+              src={pelatihan3}
+              alt="Pelatihan 3"
+              className={styles.carouselImage}
+              fit="cover"
+              height="100%"
+            />
+          </Carousel.Slide>
+        </Carousel>
       </Container>
 
       <Container className={styles.contentWrapper}>

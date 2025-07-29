@@ -32,6 +32,36 @@
   z-index: 1;
 }
 
+.carouselContainer {
+  background-color: transparent; /* no overlay */
+  padding: 0;
+  margin: 2rem auto;
+  max-width: 1000px;
+  width: 100%;
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+  box-shadow: none; /* cleaner look for carousel */
+}
+
+.carouselSection {
+  background-color: rgba(12, 61, 46, 0.5); /* match topWrapper */
+  padding: 3rem; /* smaller padding to let carousel breathe */
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .carouselSection {
+    padding: 0.5rem; /* smaller padding to let carousel breathe */
+  }
+}
+
 .contentWrapper {
   /* background: #f7f7f7c6; */
   background-color: rgba(12, 61, 46, 0.5);
