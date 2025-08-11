@@ -29,5 +29,8 @@ export const redirects = {
   "https://docs.google.com/forms/d/e/1FAIpQLSceWhxoITYZn8hOYqHicftL7OqHtgaCNHC9Sqf6FGlTgGsONw/viewform",
 
   "QuesionerGuru-TP2Q":
-  "https://docs.google.com/forms/d/e/1FAIpQLSf5vMYpndPvwcqD8hy9TmkPbKAiAC1hbQVlQhrccc2kJ9TPhA/viewform"
+  "https://docs.google.com/forms/d/e/1FAIpQLSf5vMYpndPvwcqD8hy9TmkPbKAiAC1hbQVlQhrccc2kJ9TPhA/viewform",
+
+  "KuesionerPeserta-BaitulMukhlisin":
+  "https://docs.google.com/forms/d/e/1FAIpQLSfon98wJgsbr_qJIOsTDNNOc_7z9EgQWjTRSip2AvcrgWVtqw/viewform"
 };
