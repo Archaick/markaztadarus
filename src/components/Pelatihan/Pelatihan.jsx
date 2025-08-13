@@ -1,217 +1,207 @@
+import React from "react";
+import bokeh from "./Bokeh.module.css";
+import styles from "./Pelatihan.module.css";
+import { IconHomeFilled, IconCircleCheck } from "@tabler/icons-react";
 import {
   Button,
   Text,
   Container,
-  Card,
-  Image,
-  Accordion,
+  SimpleGrid,
+  Grid,
+  Paper,
   Box,
+  Title,
+  Accordion,
   List,
+  ThemeIcon,
 } from "@mantine/core";
-import styles from "./Pelatihan.module.css";
-import { IconHomeFilled, IconCircle, IconCheckbox } from "@tabler/icons-react";
 import logo from "../../assets/imgs/MT-logo.svg";
-import certificate from "../../assets/imgs/pelatihan/certificate.png";
-import { motion } from "framer-motion";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { Image } from "@mantine/core";
 import pelatihan1 from "../../assets/imgs/homepage/programs/pelatihan.jpg";
 import pelatihan2 from "../../assets/imgs/homepage/programs/pelatihan2.jpg";
 import pelatihan3 from "../../assets/imgs/homepage/programs/pelatihan3.jpg";
-
-// Fade-in variant from bottom
-const fadeInVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
-};
+import certificate from "../../assets/imgs/pelatihan/certificate.png";
+import Whatsapp from "../Whatsapp/Whatsapp";
 
 const Pelatihan = () => {
-  const programCards = [
-    { title: "Memahami Tadarus Nabi dan Sahabat" },
-    { title: "Mampu menerapkan metode 5T dalam majelis Tadarus" },
-  ];
-  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false });
+  const autoplay = Autoplay({
+    delay: 3000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: false,
+  });
 
   return (
-    <div className={styles.bghero}>
-      <Container className={styles.topWrapper}>
-        <div className={styles.header}>
-          <img src={logo} alt="MT Logo" className={styles.logo} />
-          <Button
-            variant="filled"
-            size="md"
-            component="a"
-            href="/"
-            className={styles.homeButton}
-          >
-            <IconHomeFilled size={14} style={{ marginRight: "3px" }} />
-            Beranda
-          </Button>
-        </div>
+    <div className={bokeh.page}>
+      <div className={bokeh.bg} aria-hidden="true" />
 
-        <h2 className={styles.title}>PELATIHAN TADARUS 5T</h2>
-        <Text className={styles.textContent} mt={50} p={6}>
-          Merupakan kegiatan pelatihan untuk para dai dan guru Qur’an yang akan
-          dikader menjadi trainer atau pengajar Tadarus metode 5T.
-        </Text>
-      </Container>
-
-      <Container className={styles.carouselSection}>
-        <h3 className={styles.subtitle} style={{ fontSize: "1.5rem" }}>
-          Dokumentasi Pelatihan
-        </h3>
-
-        <Carousel
-          withIndicators
-          loop
-          align="start"
-          slideSize="100%"
-          slidesToScroll={1}
-          plugins={[autoplay]}
-          className={styles.carouselWrapper}
-          styles={{
-            indicator: {
-              width: 10,
-              height: 10,
-            },
-          }}
-        >
-          <Carousel.Slide>
-            <Image
-              src={pelatihan1}
-              alt="Pelatihan 1"
-              className={styles.carouselImage}
-              fit="cover"
-              height="100%"
-            />
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Image
-              src={pelatihan2}
-              alt="Pelatihan 2"
-              className={styles.carouselImage}
-              fit="cover"
-              height="100%"
-            />
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <Image
-              src={pelatihan3}
-              alt="Pelatihan 3"
-              className={styles.carouselImage}
-              fit="cover"
-              height="100%"
-            />
-          </Carousel.Slide>
-        </Carousel>
-      </Container>
-
-      <Container className={styles.contentWrapper}>
-        {/* Program Cards Section */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Text
-            className={styles.subtitle}
-            mt={70}
-            style={{ fontSize: "1.7rem" }}
-          >
-            Tujuan Umum Program
-          </Text>
-          <div className={styles.cardsContainer}>
-            {programCards.map((card, index) => (
-              <Card
-                key={index}
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                className={styles.card}
-              >
-                <div className={styles.cardContent}>
-                  <Text size="lg" align="center" fw={700}>
-                    {card.title}
-                  </Text>
-                </div>
-              </Card>
-            ))}
+      {/* Modern floating lights */}
+      <div className={bokeh.bokeh} aria-hidden="true">
+        <div className="light-1"></div>
+        <div className="light-2"></div>
+      </div>
+      {/* Glass card */}
+      <div className={styles.glass}>
+        <Container className={styles.topWrapper}>
+          <div className={styles.header}>
+            <img src={logo} alt="MT Logo" className={styles.logo} />
+            <Button
+              variant="filled"
+              size="md"
+              component="a"
+              href="/"
+              className={styles.homeButton}
+            >
+              <IconHomeFilled size={14} style={{ marginRight: "3px" }} />
+              Beranda
+            </Button>
           </div>
-        </motion.div>
 
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Text
-            className={styles.subtitle}
-            mt={70}
-            style={{ fontSize: "1.7rem" }}
-          >
-            Tujuan Khusus Program
+          <h2 className={styles.title}>PELATIHAN TADARUS 5T</h2>
+          <Text className={styles.textContent} mt={50} p={6}>
+            Merupakan kegiatan pelatihan untuk para dai dan guru Qur’an yang
+            akan dikader menjadi trainer atau pengajar Tadarus metode 5T.
           </Text>
-          <List
-            spacing="sm"
-            mt="md"
-            style={{
-              textAlign: "center",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <List.Item
-              icon={<IconCheckbox size={18} color="#FFD700" />}
-              style={{
-                fontWeight: "650",
-                color: "white",
-                width: "100%",
-                maxWidth: "400px",
-              }}
-            >
-              Mencetak trainer Tadarus 5T.
-            </List.Item>
-            <List.Item
-              icon={<IconCheckbox size={18} color="#FFD700" />}
-              style={{
-                fontWeight: "650",
-                color: "white",
-                width: "100%",
-                maxWidth: "400px",
-              }}
-            >
-              Mencetak pengajar Tadarus 5T.
-            </List.Item>
-          </List>
+        </Container>
+      </div>
 
-          {/* 👇 Start here */}
-          <Accordion
-            variant="contained"
-            mt={20}
-            transitionDuration={1000}
+      <div className={styles.glass}>
+        <Container className={styles.topWrapper}>
+          <h2 className={styles.title}>Dokumentasi Pelatihan</h2>
+
+          <Carousel
+            withIndicators
+            slideSize="100%"
+            slideGap="md"
+            loop
+            align="center"
+            plugins={[autoplay]} // enable autoplay
             styles={{
-              control: { backgroundColor: "#ffffff", color: "#0A3867" },
-              item: { border: "1px solid #e0e0e0", borderRadius: "8px" },
-              content: {
-                backgroundColor: "#f7f7f7",
-                padding: "1rem",
-                fontWeight: "500",
+              root: {
+                maxWidth: "900px", // prevents full-screen stretching
+                margin: "0 auto",
+              },
+              control: {
+                backgroundColor: "rgba(255,255,255,0.25)",
+                borderRadius: "50%",
+                border: "1px solid rgba(255,255,255,0.5)",
+                backdropFilter: "blur(5px)",
+                transition: "all 0.3s ease",
+              },
+              indicator: {
+                backgroundColor: "rgba(255,255,255,0.6)",
               },
             }}
+            breakpoints={[
+              { maxWidth: "md", height: 250 },
+              { maxWidth: "sm", height: 200 },
+            ]}
           >
-            <Accordion.Item value="subtema">
-              <Accordion.Control>
-                <Text fw={800}>Materi Pelatihan</Text>
-              </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+            {[pelatihan1, pelatihan2, pelatihan3].map((img, idx) => (
+              <Carousel.Slide key={idx} className={styles.carouselSlide}>
+                <Image
+                  src={img}
+                  alt={`Pelatihan ${idx + 1}`}
+                  radius="md"
+                  className={styles.carouselImage}
+                />
+              </Carousel.Slide>
+            ))}
+          </Carousel>
+        </Container>
+      </div>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Tujuan Umum Program
+          </Title>
+
+          <Grid gutter="lg">
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box className={styles.goalBox}>
+                Memahami Tadarus Nabi dan Sahabat
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box className={styles.goalBox}>
+                Mampu menerapkan metode 5T dalam majelis Tadarus
+              </Box>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </div>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Tujuan Khusus Program
+          </Title>
+
+          {/* Two Boxes Side by Side */}
+          <Grid gutter="lg" mb="xl">
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box
+                style={{
+                  background: "rgba(0, 0, 0, 0.5)",
+                  color: "#fff",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Mencetak trainer Tadarus 5T.
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box
+                style={{
+                  background: "rgba(0, 0, 0, 0.5)",
+                  color: "#fff",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Mencetak pengajar Tadarus 5T.
+              </Box>
+            </Grid.Col>
+          </Grid>
+
+          {/* Accordion Below */}
+          <Accordion
+            variant="separated"
+            radius="md"
+            styles={{
+              item: {
+                background: "rgba(0,0,0,0.5)",
+                color: "#fff",
+                border: "none",
+              },
+              control: { color: "#fff", fontWeight: 600 },
+            }}
+          >
+            <Accordion.Item value="item-1">
+              <Accordion.Control>Materi Pelatihan</Accordion.Control>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Keagungan al-Qur’an.</li>
                   <li>Landasan metode 5T dari al-Qur’an dan hadis.</li>
                   <li>Tadarus Nabi dan sahabat.</li>
@@ -222,31 +212,17 @@ const Pelatihan = () => {
               </Accordion.Panel>
             </Accordion.Item>
 
-            <Accordion.Item value="durasi">
-              <Accordion.Control>
-                <Text fw={800}>Durasi Kegiatan</Text>
-              </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ul
-                  style={{
-                    listStyleType: "none",
-                    paddingLeft: 0,
-                    marginLeft: 0,
-                  }}
-                >
-                  <li>
-                    Kegiatan berlangsung selama 2 hari dengan durasi 6 jam/hari.
-                  </li>
-                </ul>
+            <Accordion.Item value="item-2">
+              <Accordion.Control>Durasi Kegiatan</Accordion.Control>
+              <Accordion.Panel>
+                Kegiatan berlangsung selama 2 hari dengan durasi 6 jam/hari.
               </Accordion.Panel>
             </Accordion.Item>
 
-            <Accordion.Item value="target">
-              <Accordion.Control>
-                <Text fw={800}>Target Peserta</Text>
-              </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+            <Accordion.Item value="item-3">
+              <Accordion.Control>Target Peserta</Accordion.Control>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Pimpinan lembaga.</li>
                   <li>Dai dan asatidz.</li>
                   <li>Guru al-Qur'an.</li>
@@ -255,12 +231,10 @@ const Pelatihan = () => {
               </Accordion.Panel>
             </Accordion.Item>
 
-            <Accordion.Item value="peserta">
-              <Accordion.Control>
-                <Text fw={800}>Pola Pelatihan</Text>
-              </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+            <Accordion.Item value="item-4">
+              <Accordion.Control>Pola Pelatihan</Accordion.Control>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>
                     Peserta dibagi menjadi beberapa halaqah maksimal 5
                     orang/halaqah.
@@ -274,194 +248,188 @@ const Pelatihan = () => {
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </motion.div>
+        </Container>
+      </div>
 
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
+      {/* Jumla Pserta */}
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Jumlah Peserta
+          </Title>
+
           <Box
-            mt={50}
+            className={styles.goalBox}
             style={{
-              backgroundColor: "#ffffff",
-              padding: "2rem",
-              borderRadius: "8px",
-              maxWidth: "600px",
-              margin: "auto",
-              color: "#0a3867",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              textAlign: "center",
+              fontSize: "1.1rem",
+              color: "#fff",
+              fontWeight: 500,
             }}
           >
-            <Text fw={900} size="xl" ta="center">
-              Jumlah Peserta:
-            </Text>
-            <List spacing="sm" mt="md">
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
-                Minimal 20 orang dan maksimal 30 orang.
-              </List.Item>
+            Minimal 20 orang dan maksimal 30 orang.
+          </Box>
+        </Container>
+      </div>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Syarat Peserta
+          </Title>
+
+          <Box
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              borderRadius: "12px",
+              padding: "1.5rem",
+              backdropFilter: "blur(10px)",
+              color: "#fff",
+            }}
+          >
+            <List
+              spacing="md"
+              size="md"
+              icon={
+                <ThemeIcon
+                  color="teal"
+                  size={24}
+                  radius="xl"
+                  style={{ backgroundColor: "rgba(78, 204, 163, 0.2)" }}
+                >
+                  <IconCircleCheck size={16} />
+                </ThemeIcon>
+              }
+            >
+              <List.Item>Ikhwan dan akhwat.</List.Item>
+              <List.Item>Pendidikan terakhir S1.</List.Item>
+              <List.Item>Pengalaman mengajar al-Qur’an.</List.Item>
+              <List.Item>Mampu berbahasa Arab (diutamakan).</List.Item>
+              <List.Item>Hafal Juz 30 mutqin (diutamakan).</List.Item>
             </List>
           </Box>
-        </motion.div>
+        </Container>
+      </div>
 
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+      {/* Certificate */}
+      <div className={styles.glass}>
+        <Title
+          order={2}
+          ta="center"
+          mb="lg"
+          style={{ color: "#fff", fontWeight: 700 }}
         >
-          <Box mt={50} className={styles.responsiveCardContainer}>
-            <Card className={`${styles.responsiveCard} ${styles.shiningCard}`}>
-              <Text fw={800} align="center">
-                Syarat Peserta
-              </Text>
-              <List spacing="sm" mt="md">
-                <List.Item
-                  icon={<IconCheckbox size={18} color="#FFD700" />}
-                  style={{ fontWeight: "650" }}
-                >
-                  Ikhwan dan akhwat.
-                </List.Item>
-                <List.Item
-                  icon={<IconCheckbox size={18} color="#FFD700" />}
-                  style={{ fontWeight: "650" }}
-                >
-                  Pendidikan terakhir S1.
-                </List.Item>
-                <List.Item
-                  icon={<IconCheckbox size={18} color="#FFD700" />}
-                  style={{ fontWeight: "650" }}
-                >
-                  Pengalaman mengajar al-Qur’an.
-                </List.Item>
-                <List.Item
-                  icon={<IconCheckbox size={18} color="#FFD700" />}
-                  style={{ fontWeight: "650" }}
-                >
-                  Mampu berbahasa Arab (diutamakan).
-                </List.Item>
-                <List.Item
-                  icon={<IconCheckbox size={18} color="#FFD700" />}
-                  style={{ fontWeight: "650" }}
-                >
-                  Hafal Juz 30 mutqin (diutamakan).
-                </List.Item>
-              </List>
-            </Card>
-          </Box>
-        </motion.div>
+          Fasilitas
+        </Title>
+        <img
+          src={certificate}
+          alt="Sertifikat"
+          style={{
+            maxWidth: "150px",
+            height: "auto",
+            display: "block",
+            margin: "1rem auto",
+          }}
+        />
+        <p style={{ textAlign: "center" }}>
+          Mendapatkan e-sertifikat keikutsertaan (PDF).
+        </p>
+      </div>
 
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Box className={styles.facilitiesSection} mt={40} mb={40}>
-            <Box className={styles.bookWrapper}>
-              <Text fw={900} className={styles.facilitiesHeaderTitle}>
-                Fasilitas:
-              </Text>
-              <Image
-                src={certificate}
-                alt="vector image of a certificate"
-                className={styles.bookImage}
-              />
-              <Box className={styles.bookTexts}>
-                <Text className={styles.bookText}>
-                  Mendapatkan e-sertifikat keikutsertaan (pdf).
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-        </motion.div>
+      {/* Pembiayaan */}
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Pembiayaan
+          </Title>
 
-        {/* Learning Intensity Section */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
           <Box
-            mt={50}
             style={{
-              backgroundColor: "#ffffff",
-              padding: "2rem",
-              borderRadius: "8px",
-              maxWidth: "600px",
-              margin: "auto",
-              color: "#0a3867",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              borderRadius: "12px",
+              padding: "1.5rem",
+              backdropFilter: "blur(10px)",
+              color: "#fff",
             }}
           >
-            <Text fw={900} size="xl" ta="center">
-              Pembiayaan:
-            </Text>
-            <List spacing="sm" mt="md">
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
+            <List
+              spacing="md"
+              size="md"
+              icon={
+                <ThemeIcon
+                  color="teal"
+                  size={24}
+                  radius="xl"
+                  style={{ backgroundColor: "rgba(78, 204, 163, 0.2)" }}
+                >
+                  <IconCircleCheck size={16} />
+                </ThemeIcon>
+              }
+            >
+              <List.Item>
                 Perihal yang terkait dengan transportasi, akomodasi dan modul
                 pembelajaran dibebankan kepada Pihak Penyelenggara.
               </List.Item>
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
+              <List.Item>
                 Markaz Tadarus Indonesia menerima infaq dan shadaqah sebagai
                 pendukung dakwah untuk penyebaran Tadarus 5T.
               </List.Item>
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
+              <List.Item>
                 Markaz Tadarus Indonesia akan mengirimkan utusan minimal 2 orang
-                dan maksimal 3 orang.
+                dan maksimal 3 orang.
               </List.Item>
             </List>
           </Box>
-        </motion.div>
+        </Container>
+      </div>
 
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Pembinaan
+          </Title>
+
           <Box
-            mt={50}
+            className={styles.goalBox}
             style={{
-              backgroundColor: "#ffffff",
-              padding: "2rem",
-              borderRadius: "8px",
-              maxWidth: "600px",
-              margin: "auto",
-              color: "#0a3867",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              textAlign: "center",
+              fontSize: "1.1rem",
+              color: "#fff",
+              fontWeight: 500,
             }}
           >
-            <Text fw={900} size="xl" ta="center">
-              Pembinaan:
-            </Text>
-            <List spacing="sm" mt="md">
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
-                Pembinaan setelah pelatihan dilakukan secara online dengan
-                teknis yang disepakati antara Markaz Tadarus Indonesia dan pihak
-                penyelenggara sesuai kebutuhan.
-              </List.Item>
-            </List>
+            Pembinaan setelah pelatihan dilakukan secara online dengan teknis
+            yang disepakati antara Markaz Tadarus Indonesia dan pihak
+            penyelenggara sesuai kebutuhan.
           </Box>
-        </motion.div>
-      </Container>
+        </Container>
+      </div>
+
+      <Whatsapp
+        message={
+          "Assalamu'alaikum warahmatullah wabarakatuh. \n\n Afwan, Saya ingin bertanya tentang Daurah Santri."
+        }
+      />
     </div>
   );
 };

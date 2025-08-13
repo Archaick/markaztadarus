@@ -43,6 +43,8 @@ const App = () => {
           <Route path="/Majelis" element={<Majelis />} />
 
 
+
+
           {/* Add this new route above the catch-all route */}
           <Route path="/:shortCode" element={<Redirects />} />
 
