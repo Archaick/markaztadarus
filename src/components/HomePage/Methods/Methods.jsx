@@ -12,13 +12,16 @@ import Tazkiyah from "../../../assets/imgs/homepage/methods/tazkiyah.png";
 const methodKeys = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 
 const Methods = () => {
-  const { t } = useTranslation("homepage/Methods");
+  const { t, i18n } = useTranslation("homepage/Methods");
 
   return (
     <div className={styles.methods}>
       <div className={styles.container}>
         <h2 className={styles.header}>{t("header")}</h2>
-        <div className={styles.grid}>
+        <div
+          className={styles.grid}
+          dir={i18n.language === "ar" ? "rtl" : "ltr"}
+        >
           {methodKeys.map((key, index) => (
             <MethodItem
               key={key}
@@ -76,7 +79,7 @@ const MethodItem = ({ methodKey, image, number }) => {
           <p className={styles.modalDescription}>
             {t(`methods.${methodKey}.description`)}
           </p>
-          {/* Video Container - Commented for future use */}
+          {/* Video Container - Commented for future use dont erase this */}
           {/* <div className={styles.videoContainer}>
             <iframe
               src="https://www.youtube.com/embed/8k7H8Crot-s"

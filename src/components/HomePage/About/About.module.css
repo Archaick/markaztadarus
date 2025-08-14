@@ -45,6 +45,18 @@
   margin-bottom: 1.5rem;
 }
 
+/* Automatically handles RTL languages */
+[dir="rtl"] .title,
+[dir="rtl"] .text {
+  text-align: right;
+}
+
+/* Default LTR styles */
+.title,
+.text {
+  text-align: left;
+}
+
 .highlight {
   font-weight: 700;
   color: #1a4970; /* Highlight color */

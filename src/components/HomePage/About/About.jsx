@@ -56,12 +56,18 @@ const About = () => {
         viewport={{ once: false, amount: 0.2 }}
         variants={contentVariants}
       >
-        <h2 className={styles.title}>{t("title")}</h2>
-        <p className={styles.text}>
-          <span className={styles.highlight}>{paragraph1.highlight}</span>
-          {paragraph1.text}
-        </p>
-        <p className={styles.text}>{t("paragraph2")}</p>
+        <div
+          className={styles.container}
+          dir={i18n.language === "ar" ? "rtl" : "ltr"}
+          lang={i18n.language}
+        >
+          <h2 className={styles.title}>{t("title")}</h2>
+          <p className={styles.text}>
+            <span className={styles.highlight}>{paragraph1.highlight}</span>
+            {paragraph1.text}
+          </p>
+          <p className={styles.text}>{t("paragraph2")}</p>
+        </div>
 
         <button className={styles.modalButton} onClick={() => setOpened(true)}>
           {t("modalButtonTitle")}

@@ -15,7 +15,7 @@
   height: 100%;
   width: 100%;
   background-repeat: no-repeat;
-  background-position: left bottom; 
+  background-position: left bottom;
   background-image: url("/common/cubes.png");
   background-color: rgba(16, 33, 65, 0.6);
   background-size: auto;
@@ -23,7 +23,6 @@
   z-index: 0;
   pointer-events: none;
 }
-
 
 .methods .container {
   position: relative;
@@ -54,6 +53,14 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
 }
+/* 
+.grid[dir="rtl"] {
+  direction: rtl; 
+}
+
+.grid[dir="rtl"] > * {
+  direction: ltr; 
+} */
 
 .methodItem {
   position: relative; /* Add this to position the ribbon absolutely within */
@@ -135,8 +142,8 @@
   background-image: url("/common/cubes.png");
   background-color: #1f3e79;
   background-repeat: no-repeat;
-  background-position: center; 
-  background-size: cover; 
+  background-position: center;
+  background-size: cover;
   opacity: 0.4;
   z-index: -1;
 }
