@@ -1,135 +1,148 @@
+import React from "react";
+import bokeh from "./Bokeh.module.css";
+import styles from "./Majelis.module.css";
+import { IconHomeFilled, IconCircleCheck } from "@tabler/icons-react";
 import {
   Button,
   Text,
   Container,
+  Grid,
   Card,
-  Image,
-  Accordion,
   Box,
+  Title,
+  Accordion,
   List,
+  ThemeIcon,
 } from "@mantine/core";
-import styles from "./Majelis.module.css";
-import { IconHomeFilled, IconCircle } from "@tabler/icons-react";
 import logo from "../../assets/imgs/MT-logo.svg";
-import bookcover from "../../assets/imgs/majelis/book.png";
-import { motion } from "framer-motion";
-import Whatsapp from "../Whatsapp/Whatsapp"
-
-// Fade-in variant from bottom
-const fadeInVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: "easeOut" },
-  },
-};
+import Autoplay from "embla-carousel-autoplay";
+// import book from "../../assets/imgs/majelis/book.png";
+import toddler from "../../assets/imgs/ilmiah/toddlerbook.jpg";
+import book from "../../assets/imgs/ilmiah/tadarusbook.jpg";
+import Whatsapp from "../Whatsapp/Whatsapp";
 
 const Majelis = () => {
-  const programCards = [
-    { title: "Mengamalkan sunnah bertadarus al-Qur’an" },
-    { title: "Mengamalkan nilai al-Qur’an dalam keseharian." },
-  ];
+  const autoplay = Autoplay({
+    delay: 3000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: false,
+  });
 
   return (
-    <div className={styles.bghero}>
-      <Container className={styles.topWrapper}>
-        <div className={styles.header}>
-          <img src={logo} alt="MT Logo" className={styles.logo} />
-          <Button
-            variant="filled"
-            size="md"
-            component="a"
-            href="/"
-            className={styles.homeButton}
-          >
-            <IconHomeFilled size={14} style={{ marginRight: "3px" }} />
-            Beranda
-          </Button>
-        </div>
+    <div className={bokeh.page}>
+      <div className={bokeh.bg} aria-hidden="true" />
 
-        <h2 className={styles.title}>MAJELIS TADARUS 5T</h2>
-        <Text className={styles.textContent} mt={50} p={6}>
-          Pembelajaran Tadarus al-Qur’an metode 5T untuk para santri atau
-          masyarakat umum.
-        </Text>
-      </Container>
+      {/* Modern floating lights */}
+      <div className={bokeh.bokeh} aria-hidden="true">
+        <div className="light-1"></div>
+        <div className="light-2"></div>
+      </div>
+      {/* Glass card */}
+      <div className={styles.glass}>
+        <Container className={styles.topWrapper}>
+          <div className={styles.header}>
+            <img src={logo} alt="MT Logo" className={styles.logo} />
+            <Button
+              variant="filled"
+              size="md"
+              component="a"
+              href="/"
+              className={styles.homeButton}
+            >
+              <IconHomeFilled size={14} style={{ marginRight: "3px" }} />
+              Beranda
+            </Button>
+          </div>
 
-      <Container className={styles.contentWrapper}>
-        {/* Program Cards Section */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Text
-            className={styles.subtitle}
-            mt={70}
-            style={{ fontSize: "1.7rem" }}
+          <h2 className={styles.title}>MAJELIS TADARUS 5T</h2>
+          <Text className={styles.textContent} mt={50} p={6}>
+            Pembelajaran Tadarus al-Qur’an metode 5T untuk para santri atau
+            masyarakat umum.
+          </Text>
+        </Container>
+      </div>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
           >
             Tujuan Umum Program
-          </Text>
-          <div className={styles.cardsContainer}>
-            {programCards.map((card, index) => (
-              <Card
-                key={index}
-                shadow="sm"
-                padding="lg"
-                radius="md"
-                className={styles.card}
-              >
-                <div className={styles.cardContent}>
-                  <Text size="lg" align="center">
-                    {card.title}
-                  </Text>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
+          </Title>
 
-        {/* Accordion Tujuan Khusus */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Text
-            className={styles.subtitle}
-            mt={70}
-            style={{ fontSize: "1.7rem" }}
+          <Grid gutter="lg">
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box className={styles.goalBox}>
+                Mengamalkan sunnah bertadarus al-Qur’an
+              </Box>
+            </Grid.Col>
+
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box className={styles.goalBox}>
+                Mengamalkan nilai al-Qur’an dalam keseharian.
+              </Box>
+            </Grid.Col>
+          </Grid>
+        </Container>
+      </div>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
           >
             Tujuan Khusus Program
-          </Text>
-          <Text
-            className={styles.subtitle}
-            mt="md"
-            style={{ fontSize: "1.1rem" }}
+          </Title>
+
+          {/* Two Boxes Side by Side */}
+          <Grid
+            gutter="lg"
+            mb="xl"
+            justify="
+          center"
           >
-            Mampu menghayati dan menikmati al-Qur’an secara mandiri.
-          </Text>
+            <Grid.Col span={{ base: 12, sm: 6 }}>
+              <Box
+                style={{
+                  background: "rgba(0, 0, 0, 0.5)",
+                  color: "#fff",
+                  padding: "20px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                  fontWeight: "900",
+                  fontSize: "1rem",
+                }}
+              >
+                Mampu menghayati dan menikmati al-Qur’an secara mandiri.
+              </Box>
+            </Grid.Col>
+          </Grid>
+
+          {/* Accordion Below */}
           <Accordion
-            variant="contained"
-            mt={20}
-            transitionDuration={1000}
+            variant="separated"
+            radius="md"
             styles={{
-              control: { backgroundColor: "#ffffff", color: "#0A3867" },
-              item: { border: "1px solid #e0e0e0", borderRadius: "8px" },
-              content: {
-                backgroundColor: "#f7f7f7",
-                padding: "1rem",
-                fontWeight: "500",
+              item: {
+                background: "rgba(0,0,0,0.5)",
+                color: "#fff",
+                border: "none",
               },
+              control: { color: "#fff", fontWeight: 800 },
             }}
           >
-            <Accordion.Item value="kurikulum">
+            <Accordion.Item value="item-1">
               <Accordion.Control>
                 <Text fw={800}>Kurikulum</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Ad-Dhuha s/d an-Nas.</li>
                   <li>Al-lail s/d an-Naba.</li>
                   <li>Al-Mulk s/d al-Mursalat.</li>
@@ -139,160 +152,159 @@ const Majelis = () => {
                 </ol>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="durasi">
+
+            <Accordion.Item value="item-2">
               <Accordion.Control>
                 <Text fw={800}>Durasi Kegiatan</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ul
-                  style={{
-                    listStyleType: "none",
-                    paddingLeft: 0,
-                    marginLeft: 0,
-                  }}
-                >
-                  <li>30 sampai 60 menit per pertemuan</li>
-                </ul>
+              <Accordion.Panel>
+                30 sampai 60 menit per pertemuan.
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="peserta">
+
+            <Accordion.Item value="item-3">
               <Accordion.Control>
                 <Text fw={800}>Target Peserta</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Pelajar.</li>
                   <li>Masyarakat umum.</li>
                 </ol>
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </motion.div>
+        </Container>
+      </div>
 
-        {/* Book Section */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
-          <Box className={styles.facilitiesSection} mt={40} mb={40}>
-            <Box className={styles.bookWrapper}>
-              <Text fw={900} className={styles.facilitiesHeaderTitle}>
-                Modul
-              </Text>
-              <Image
-                src={bookcover}
-                alt="Modul Book Cover"
+      <Card className={styles.glass} p="xl">
+        <Title order={2} ta="center" mb="lg" c="white" fw={700}>
+          Modul
+        </Title>
+
+        <Grid gutter="xl" justify="center">
+          <Grid.Col span={{ base: 12, md: 6 }}>
+            <Card p="lg" bg="rgba(0, 0, 0, 0.6)">
+              <img
+                src={book}
+                alt="Kitab Tadarus Mubtadi"
                 className={styles.bookImage}
               />
-              <Box className={styles.bookTexts}>
-                <Text className={styles.bookText}>Kitab Tadarus Mubtadi</Text>
-                <Text className={styles.bookText}>
-                  Kitab Pendidikan Qur’ani Anak
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-        </motion.div>
+              <Text ta="center" mt="sm" c="white">
+                Kitab Tadarus Mubtadi
+              </Text>
+            </Card>
+          </Grid.Col>
 
-        {/* Accordion Pola Pelatihan */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
+          <Grid.Col span={{ base: 12, md: 6 }}>
+            <Card p="lg" bg="rgba(0, 0, 0, 0.6)">
+              <img
+                src={toddler}
+                alt="Kitab Pendidikan Qur'ani Anak"
+                className={styles.bookImage}
+              />
+              <Text ta="center" mt="sm" c="white">
+                Kitab Pendidikan Qur'ani Anak
+              </Text>
+            </Card>
+          </Grid.Col>
+        </Grid>
+      </Card>
+
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
           <Accordion
-            variant="contained"
-            mt={20}
-            transitionDuration={1000}
+            variant="separated"
+            radius="md"
             styles={{
-              control: { backgroundColor: "#ffffff", color: "#0A3867" },
-              item: { border: "1px solid #e0e0e0", borderRadius: "8px" },
-              content: {
-                backgroundColor: "#f7f7f7",
-                padding: "1rem",
-                fontWeight: "500",
+              item: {
+                background: "rgba(0,0,0,0.5)",
+                color: "#fff",
+                border: "none",
               },
+              control: { color: "#fff", fontWeight: 600 },
             }}
           >
-            <Accordion.Item value="pelatihan">
+            <Accordion.Item value="item-1">
               <Accordion.Control>
                 <Text fw={800}>Pola Pelatihan</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Tanya jawab antara pemateri dan peserta.</li>
                   <li>Diskusi interaktif sesama peserta.</li>
                 </ol>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="syarat">
+
+            <Accordion.Item value="item-2">
               <Accordion.Control>
                 <Text fw={800}>Syarat Peserta</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ol>
+              <Accordion.Panel>
+                <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Ikhwan dan Akhwat.</li>
                   <li>Berkomitmen dalam belajar.</li>
                 </ol>
               </Accordion.Panel>
             </Accordion.Item>
-            <Accordion.Item value="jumlah">
+
+            <Accordion.Item value="item-3">
               <Accordion.Control>
                 <Text fw={800}>Jumlah Peserta</Text>
               </Accordion.Control>
-              <Accordion.Panel ml={20}>
-                <ul
-                  style={{
-                    listStyleType: "none",
-                    paddingLeft: 0,
-                    marginLeft: 0,
-                  }}
-                >
-                  <li>5-10 Orang per halaqah</li>
-                </ul>
-              </Accordion.Panel>
+              <Accordion.Panel>5-10 Orang per halaqah</Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </motion.div>
+        </Container>
+      </div>
 
-        {/* Learning Intensity Section */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
-        >
+      {/* Pembiayaan */}
+      <div className={styles.glass}>
+        <Container size="lg" py="xl">
+          <Title
+            order={2}
+            ta="center"
+            mb="lg"
+            style={{ color: "#fff", fontWeight: 700 }}
+          >
+            Intensitas Pembelajaran
+          </Title>
+
           <Box
-            mt={50}
             style={{
-              backgroundColor: "#ffffff",
-              padding: "2rem",
-              borderRadius: "8px",
-              maxWidth: "600px",
-              margin: "auto",
-              color: "#0a3867",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              borderRadius: "12px",
+              padding: "1.5rem",
+              backdropFilter: "blur(10px)",
+              color: "#fff",
             }}
           >
-            <Text fw={900} size="xl" ta="center">
-              Intensitas Pembelajaran
-            </Text>
-            <List spacing="sm" mt="md">
-              <List.Item
-                icon={<IconCircle size={18} color="#FFD700" />}
-                style={{ fontWeight: "650", color: "#0a3867" }}
-              >
-                Minimal 1 ayat per pekan.
-              </List.Item>
+            <List
+              spacing="md"
+              size="md"
+              icon={
+                <ThemeIcon
+                  color="teal"
+                  size={24}
+                  radius="xl"
+                  style={{ backgroundColor: "rgba(78, 204, 163, 0.2)" }}
+                >
+                  <IconCircleCheck size={16} />
+                </ThemeIcon>
+              }
+            >
+              <List.Item>Minimal 1 ayat per pekan.</List.Item>
             </List>
           </Box>
-        </motion.div>
+        </Container>
+      </div>
 
-        <Whatsapp message="test new massage"/>
-      </Container>
+      <Whatsapp
+        message={
+          "Assalamu'alaikum warahmatullah wabarakatuh. \n\n Afwan, Saya ingin bertanya tentang Daurah Santri."
+        }
+      />
     </div>
   );
 };

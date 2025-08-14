@@ -1,354 +1,126 @@
-.bghero {
-  min-height: 100vh;
-  background: url("../../assets/imgs/homepage/hero.jpg") center/cover no-repeat
-    fixed;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 64px;
-  position: relative;
-  padding: 2rem 1rem;
-}
-
-.bghero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(10, 10, 20, 0.9),
-    /* Deep black-blue */ rgba(20, 30, 60, 0.6),
-    /* Dark navy blue hint */ rgba(10, 10, 20, 0.9)
-      /* Return to deep black-blue */
-  );
-  z-index: 0;
-  background-attachment: fixed;
-}
-
-.topWrapper {
-  /* background: #f7f7f7c6; */
-  background-color: rgba(12, 36, 61, 0.5);
-  padding: 2.5rem;
+.glass {
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 16px 24px;
   max-width: 1000px;
-  width: 100%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  position: relative;
-  z-index: 1;
-}
-
-.contentWrapper {
-  /* background: #f7f7f7c6; */
-  background-color: rgba(12, 36, 61, 0.5);
-  padding: 2.5rem;
-  max-width: 1000px;
-  width: 100%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  position: relative;
-  z-index: 1;
+  width: 90%;
+  margin: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  color: white; /* Ensure text stays visible */
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  flex-wrap: nowrap; /* Prevent stacking */
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .logo {
-  width: 180px;
-  max-width: 60%;
-  height: auto;
+  height: clamp(35px, 4vw, 50px); /* Responsive logo size */
+  width: auto;
 }
 
 .homeButton {
-  background: #f7f7f7c6;
-  color: #0a3867;
-  font-weight: bold;
-  padding: 0.2rem 0.4rem;
-  font-size: 0.75rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-  border-radius: 6px;
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+  padding: 6px 12px;
+  white-space: nowrap; /* Keep text on one line */
 }
 
-.homeButton:hover {
-  background: #0a3867;
-}
-
+/* Text styles */
 .title {
-  font-size: 2.5rem;
-  margin-top: 50px;
-  margin-bottom: 10px;
-  font-weight: 800;
-  color: #f7f7f7c6;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 16px;
   text-align: center;
-}
-
-.subtitle {
-  text-align: center;
-  font-weight: 800;
-  color: #f7f7f7c6;
-  margin-bottom: 15px;
+  color: #ffffff; /* Ensure visible text */
 }
 
 .textContent {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  line-height: 1.6;
   text-align: center;
-  line-height: 1.5;
-  color: #f7f7f7c6;
-  margin-bottom: 2rem;
+  max-width: 600px;
+  font-weight: 800;
+  margin: 0 auto;
+  color: #e0e0e0; /* Slightly softer white for readability */
 }
 
-/* Cards Container */
-.cardsContainer {
-  margin: 20px auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
-  justify-items: center;
-}
-
-.card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0; /* prevent padding from Mantine interfering */
-}
-
-.cardContent {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  padding: 1rem;
-}
-
-/* Card Styling */
-.card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  color: #153a5f;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-/* Image Styling */
-.card img {
-  padding: 12px;
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px 8px 0 0;
-}
-
-@media (max-width: 768px) {
-  .contentWrapper {
-    padding: 2rem;
+/* Mobile tweaks */
+@media (max-width: 500px) {
+  .header {
+    gap: 5px;
   }
+  .homeButton {
+    padding: 2px 4px;
+  }
+
   .logo {
-    width: 165px;
+    height: 20px; /* Force smaller for very narrow screens */
   }
 
   .homeButton {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    padding: 3px 8px; /* Reduce padding so it fits next to logo */
   }
 
-  .title {
-    font-size: 2rem;
-  }
-  .textContent {
-    font-size: 1.1rem;
-  }
-
-  /* Ensure cards stack vertically on small screens */
-  .cardsContainer {
-    grid-template-columns: repeat(2, 1fr);
+  .header {
+    gap: 4px; /* Keep them tight together */
   }
 }
 
-@media (max-width: 480px) {
-  .cardsContainer {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* KEUNGGULAN PROGRAM */
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
-
-/* KEUNGGULAN PROGRAM Container */
-.advantagesContainer {
-  background-color: #0a3867;
-  padding: 2rem;
-  border-radius: 12px;
-  margin-top: 2rem;
-}
-
-/* Advantage Item Styling */
-.advantageItem {
+.carouselSlide {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .advantagesContainer {
-    padding: 1.5rem;
-  }
-
-  .advantageItem {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .advantageItem svg {
-    margin-bottom: 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .advantagesContainer {
-    padding: 1rem;
-  }
-
-  .advantageItem {
-    margin-bottom: 0.5rem;
-  }
-  /*  KEUNGGULAN PROGRAM */
-  .gridContainer {
-    grid-template-columns: 1fr;
-  }
-}
-
-.facilitiesSection {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 2rem 1rem;
 }
 
-.bookWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2.2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(20, 20, 30, 0.9) 0%,
-    rgba(40, 40, 60, 0.95) 50%,
-    rgba(20, 20, 30, 0.9) 100%
-  );
-  border-radius: 16px;
-  padding: 1rem;
+.carouselImage {
   width: 100%;
-  max-width: 900px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1), 0 0 25px rgba(0, 100, 255, 0.2);
-  position: relative;
-  overflow: hidden;
-  text-align: center;
+  height: auto;
+  aspect-ratio: 16 / 9; /* cinematic feel */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
-.bookWrapper::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
+@media (max-width: 768px) {
+  .carouselImage {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 500px) {
+  .carouselImage {
+    aspect-ratio: 1 / 1; /* square for small devices */
+  }
+}
+
+.goalBox {
+  background-color: rgba(0, 0, 0, 0.6); /* dark transparent */
+  border-radius: 12px;
+  color: #fff;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.35) 50%,
-    /* Increased opacity for stronger light */ rgba(255, 255, 255, 0) 100%
-  );
-  transform: skewX(-20deg);
-  animation: shine 2.5s infinite;
-  pointer-events: none;
-  z-index: -1;
-}
-
-@keyframes shine {
-  0% {
-    left: -75%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-.facilitiesHeaderTitle {
-  font-size: 1.8rem;
-  color: #ffffff;
-  font-weight: 800;
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem); /* larger text */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* center text horizontally */
+  text-align: center; /* center multi-line text */
+  padding: 24px;
+  line-height: 1.4;
+  font-size: 16px;
 }
 
 .bookImage {
-  width: 280px;
+  max-width: 150px;
   height: auto;
-  object-fit: contain;
-  flex-shrink: 0;
-  z-index: 1;
-}
-
-@media (max-width: 768px) {
-  .bookImage {
-    width: 180px;
-  }
-}
-
-.bookTexts {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  z-index: 1;
-}
-
-.bookText {
-  font-size: 1rem;
-  color: #d6faff;
-  font-weight: 600;
-}
-
-@media (max-width: 768px) {
-  .facilitiesHeader {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .contentWrapper {
-    padding: 2rem;
-  }
-  .logo {
-    width: 165px;
-  }
-
-  .title {
-    font-size: 2rem;
-  }
-  .textContent {
-    font-size: 1.1rem;
-  }
+  display: block;
+  margin: 0 auto;
 }
