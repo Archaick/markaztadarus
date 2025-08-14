@@ -331,19 +331,31 @@ const Pelatihan = () => {
         >
           Fasilitas
         </Title>
-        <img
-          src={certificate}
-          alt="Sertifikat"
+        <Box
           style={{
-            maxWidth: "150px",
-            height: "auto",
-            display: "block",
-            margin: "1rem auto",
+            background: "rgba(0, 0, 0, 0.5)",
+            color: "#fff",
+            padding: "20px",
+            borderRadius: "12px",
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: "0.9rem",
           }}
-        />
-        <p style={{ textAlign: "center" }}>
-          Mendapatkan e-sertifikat keikutsertaan (PDF).
-        </p>
+        >
+          <img
+            src={certificate}
+            alt="Sertifikat"
+            style={{
+              maxWidth: "150px",
+              height: "auto",
+              display: "block",
+              margin: "1rem auto",
+            }}
+          />
+          <p style={{ textAlign: "center" }}>
+            Mendapatkan e-sertifikat keikutsertaan (PDF).
+          </p>
+        </Box>
       </div>
 
       {/* Pembiayaan */}
