@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Modal, Button, Image } from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
 import {
   IconTarget,
   IconStar,
@@ -9,10 +10,13 @@ import {
 } from "@tabler/icons-react";
 import styles from "./Toddlers.module.css";
 import childBook from "../../../assets/imgs/ilmiah/toddlerbook.jpg";
+import childBookAr from "../../../assets/imgs/ilmiah/toddlerbook-ar.jpg";
+import Autoplay from "embla-carousel-autoplay";
 // import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
 
 const Toddlers = () => {
   const [opened, setOpened] = useState(false);
+  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false  });
 
   return (
     <div className={styles.fullWidthBg}>
@@ -53,7 +57,7 @@ const Toddlers = () => {
               <IconStar size={28} className={styles.icon} />
               <div>
                 <h4>Keistimewaan</h4>
-                <p>Latihan tugas yang menguatkan pengamalan nilai Qur’ani.</p>
+                <p>Latihan tugas yang menguatkan pengamalan nilai Qur'ani.</p>
               </div>
             </div>
             <div className={styles.glassCard}>
@@ -66,7 +70,7 @@ const Toddlers = () => {
           </div>
         </motion.div>
 
-        {/* Right Section */}
+        {/* Right Section - Now with Carousel */}
         <motion.div
           className={styles.right}
           initial={{ opacity: 0, x: 50 }}
@@ -74,11 +78,62 @@ const Toddlers = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <img
-            src={childBook}
-            alt="Buku Qur'ani Anak"
-            className={styles.bookImage}
-          />
+          <Carousel
+            withIndicators
+            loop
+            withControls={false}
+            plugins={[autoplay]}
+            height="100%"
+            slideSize="100%"
+            slideGap="0"
+            align="start"
+            styles={{
+              root: {
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+              },
+              viewport: {
+                borderRadius: "1rem",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4)",
+              },
+              indicator: {
+                width: 10,
+                height: 10,
+                transition: "width 250ms ease",
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                "&[data-active]": {
+                  width: 20,
+                  backgroundColor: "#f7c04a",
+                },
+              },
+              indicators: {
+                bottom: -30,
+              },
+            }}
+            sx={{
+              ".mantine-Carousel-slide": {
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            }}
+          >
+            <Carousel.Slide>
+              <img
+                src={childBook}
+                alt="Buku Qur'ani Anak (Indonesian)"
+                className={styles.bookImage}
+              />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <img
+                src={childBookAr}
+                alt="Buku Qur'ani Anak (Arabic)"
+                className={styles.bookImage}
+              />
+            </Carousel.Slide>
+          </Carousel>
         </motion.div>
 
         {/* Modal */}
@@ -95,12 +150,12 @@ const Toddlers = () => {
               fontWeight: 700,
               fontSize: "1.5rem",
               color: "#fff",
-              flex: 1, // Allow the title to fill available space
+              flex: 1,
             },
             header: {
-              display: "flex", // Add flex to align title and close button
+              display: "flex",
               alignItems: "center",
-              justifyContent: "center", // Center contents, then override close button
+              justifyContent: "center",
               position: "relative",
               background: "rgba(255, 255, 255, 0.1)",
               backdropFilter: "blur(16px)",
@@ -114,7 +169,7 @@ const Toddlers = () => {
               right: "1rem",
               top: "50%",
               transform: "translateY(-50%)",
-              color: "#fff", // Optional: make close button white
+              color: "#fff",
             },
             content: {
               background: "rgba(255, 255, 255, 0.1)",
@@ -134,7 +189,6 @@ const Toddlers = () => {
             },
           }}
         >
-          {/* <Image src={brochure} alt="Brochure" radius="md" mb="md" /> */}
           <h4 className={styles.previewTitle}>Lihat Contoh Halaman</h4>
           <iframe
             src="https://drive.google.com/file/d/1QgBMDZw0Rx5zJbZQOxJoVPuiU3RxbNFb/preview"

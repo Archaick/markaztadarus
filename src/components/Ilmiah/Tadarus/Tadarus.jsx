@@ -2,14 +2,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Modal, Button, Image } from "@mantine/core";
 import { IconBrandWhatsapp, IconChecklist } from "@tabler/icons-react";
-
+import { Carousel } from "@mantine/carousel";
 import styles from "./Tadarus.module.css";
 import tadarusBook from "../../../assets/imgs/ilmiah/tadarusbook.jpg";
 // import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
 import Whatsapp from "../../Whatsapp/Whatsapp";
-
+import TadarusBookAr from "../../../assets/imgs/ilmiah/tadarusbook-ar.jpg";
+import Autoplay from "embla-carousel-autoplay";
 const Tadarus = () => {
   const [opened, setOpened] = useState(false);
+  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false });
 
   const waMessage =
     "Assalamu Alaikum warahmatullah wabarakatuh. \n\nSaya ingin berkonsultasi dengan buku Tadarus Al-Qur'an";
@@ -29,11 +31,62 @@ const Tadarus = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <img
-            src={tadarusBook}
-            alt="Tadarus Qur'ani Book"
-            className={styles.bookImage}
-          />
+          <Carousel
+            withIndicators
+            loop
+            withControls={false}
+            plugins={[autoplay]}
+            height="100%"
+            slideSize="100%"
+            slideGap="0"
+            align="start"
+            styles={{
+              root: {
+                width: "100%",
+                maxWidth: "400px",
+                margin: "0 auto",
+              },
+              viewport: {
+                borderRadius: "1rem",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4)",
+              },
+              indicator: {
+                width: 10,
+                height: 10,
+                transition: "width 250ms ease",
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                "&[data-active]": {
+                  width: 20,
+                  backgroundColor: "#f7c04a",
+                },
+              },
+              indicators: {
+                bottom: -30,
+              },
+            }}
+            sx={{
+              ".mantine-Carousel-slide": {
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              },
+            }}
+          >
+            <Carousel.Slide>
+              <img
+                src={tadarusBook}
+                alt="Tadarus Qur'ani Book (Indonesian) cover"
+                className={styles.bookImage}
+              />
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <img
+                src={TadarusBookAr}
+                alt="Tadarus Qur'ani Book (Arabic) cover"
+                className={styles.bookImage}
+              />
+            </Carousel.Slide>
+          </Carousel>
         </motion.div>
 
         {/* Text + Features on Right */}

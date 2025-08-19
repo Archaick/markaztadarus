@@ -21,8 +21,8 @@ const Hero = () => {
   useEffect(() => {
     if (currentIndex < subtitle.length) {
       const timeout = setTimeout(() => {
-        setDisplayedSubtitle(prev => prev + subtitle[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
+        setDisplayedSubtitle((prev) => prev + subtitle[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
       }, 60);
 
       return () => clearTimeout(timeout);
@@ -45,7 +45,10 @@ const Hero = () => {
         <Title order={1} className={styles.title}>
           {t("title")}
         </Title>
-        <Text className={styles.subtitle}>
+        <Text
+          className={styles.subtitle}
+          dir={i18n.language === "ar" ? "rtl" : "ltr"}
+        >
           {displayedSubtitle}
           {/* Blinking cursor effect - optional */}
         </Text>

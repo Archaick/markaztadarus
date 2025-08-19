@@ -164,7 +164,7 @@ const Pelatihan = () => {
                   fontSize: "0.9rem",
                 }}
               >
-                Mencetak trainer Tadarus 5T.
+                <Text fw={800}>Mencetak trainer Tadarus 5T.</Text>
               </Box>
             </Grid.Col>
 
@@ -180,7 +180,7 @@ const Pelatihan = () => {
                   fontSize: "0.9rem",
                 }}
               >
-                Mencetak pengajar Tadarus 5T.
+                <Text fw={800}>Mencetak pengajar Tadarus 5T.</Text>
               </Box>
             </Grid.Col>
           </Grid>
@@ -199,7 +199,7 @@ const Pelatihan = () => {
             }}
           >
             <Accordion.Item value="item-1">
-              <Accordion.Control>Materi Pelatihan</Accordion.Control>
+              <Accordion.Control><Text fw={800}>Materi Pelatihan</Text></Accordion.Control>
               <Accordion.Panel>
                 <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Keagungan al-Qur’an.</li>
@@ -213,14 +213,14 @@ const Pelatihan = () => {
             </Accordion.Item>
 
             <Accordion.Item value="item-2">
-              <Accordion.Control>Durasi Kegiatan</Accordion.Control>
+              <Accordion.Control><Text fw={800}>Durasi Kegiatan</Text></Accordion.Control>
               <Accordion.Panel>
                 Kegiatan berlangsung selama 2 hari dengan durasi 6 jam/hari.
               </Accordion.Panel>
             </Accordion.Item>
 
             <Accordion.Item value="item-3">
-              <Accordion.Control>Target Peserta</Accordion.Control>
+              <Accordion.Control><Text fw={800}>Target Peserta</Text></Accordion.Control>
               <Accordion.Panel>
                 <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>Pimpinan lembaga.</li>
@@ -232,7 +232,7 @@ const Pelatihan = () => {
             </Accordion.Item>
 
             <Accordion.Item value="item-4">
-              <Accordion.Control>Pola Pelatihan</Accordion.Control>
+              <Accordion.Control><Text fw={800}>Pola Pelatihan</Text></Accordion.Control>
               <Accordion.Panel>
                 <ol style={{ textAlign: "left", listStylePosition: "inside" }}>
                   <li>

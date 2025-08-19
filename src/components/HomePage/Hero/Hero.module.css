@@ -38,6 +38,14 @@
   margin-bottom: 1.7rem;
 }
 
+.subtitle[dir="rtl"] {
+  text-align: right;
+}
+
+.subtitle[dir="ltr"] {
+  text-align: left;
+}
+
 @media (max-width: 768px) {
   .subtitle {
     font-size: 1.13rem;

@@ -21,16 +21,16 @@
   transform: translate(-50%, -50%);
   background: radial-gradient(
       circle at center,
-      rgba(90, 60, 255, 0.4) 0%,
-      /* Increased from 0.25 to 0.4 */ transparent 60%
+      rgba(50, 220, 150, 0.3) 0%,  /* Emerald */
+      transparent 60%
     ),
     radial-gradient(
       circle at 30% 40%,
-      rgba(0, 200, 255, 0.35) 0%,
-      /* Increased from 0.2 to 0.35 */ transparent 65%
+      rgba(220, 190, 50, 0.35) 0%,  /* Gold */
+      transparent 65%
     );
   filter: blur(80px);
-  opacity: 0.9; /* Increased from 0.8 to 0.9 */
+  opacity: 0.9;
   z-index: 0;
   animation: pulse 16s ease-in-out infinite;
 }
@@ -64,12 +64,11 @@
   left: 15%;
   background: radial-gradient(
     circle,
-    rgba(150, 80, 255, 0.5) 0%,
-    /* Increased from 0.3 to 0.5 */ rgba(150, 80, 255, 0.3) 50%,
-    /* Added mid-color stop */ transparent 80% /* Keep fade-out */
+    rgba(70, 230, 170, 0.4) 0%,  /* Mint */
+    transparent 80%
   );
   animation: float 12s linear infinite;
-  opacity: 0.7; /* Peak opacity increased */
+  opacity: 0.7;
 }
 
 /* Blue light - opposite diagonal */
@@ -80,22 +79,20 @@
   right: 15%;
   background: radial-gradient(
     circle,
-    rgba(0, 200, 255, 0.45) 0%,
-    /* Increased from 0.25 to 0.45 */ rgba(0, 200, 255, 0.25) 50%,
-    /* Added mid-color stop */ transparent 80%
+    rgba(255, 200, 80, 0.4) 0%,  /* Honey */
+    transparent 80%
   );
-  opacity: 0.7; /* Peak opacity increased */
+  opacity: 0.7;
   animation: floatReverse 14s linear infinite;
   animation-delay: 2s;
 }
 
-/* Additional light elements in HTML */
 .bokeh .light-1 {
   width: 250px;
   height: 250px;
   top: 30%;
   right: 10%;
-  background: rgba(255, 100, 255, 0.35);  /* Increased from 0.2 to 0.35 */
+  background: rgba(100, 255, 180, 0.3);  /* Aqua */
   animation: pulse 8s ease-in-out infinite;
   animation-delay: 1s;
 }
@@ -105,7 +102,7 @@
   height: 350px;
   bottom: 20%;
   left: 10%;
-  background: rgba(0, 180, 255, 0.3);  /* Increased from 0.15 to 0.3 */
+  background: rgba(255, 180, 50, 0.25);  /* Amber */
   animation: pulse 10s ease-in-out infinite;
   animation-delay: 3s;
 }

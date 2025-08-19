@@ -338,7 +338,7 @@ const Seminar = () => {
               </List.Item>
               <List.Item>Tanya jawab antara pemateri dan peserta.</List.Item>
               <List.Item>Diskusi interaktif per halaqah.</List.Item>
-              <List.Item>Presentasi perwakilan setiap halaqah. .</List.Item>
+              <List.Item>Presentasi perwakilan setiap halaqah.</List.Item>
             </List>
           </Box>
         </Container>
