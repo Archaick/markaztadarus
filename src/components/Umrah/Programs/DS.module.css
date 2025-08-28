@@ -126,6 +126,23 @@
   border: none;
 }
 
+.mediaContainer {
+  position: relative;
+  width: 100%;
+  max-width: 648px;
+  margin: 2rem auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.mediaContainer img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
 /* Adjust for smaller screens */
 @media (max-width: 600px) {
   .videoContainer {
@@ -216,7 +233,6 @@
     font-size: 1.2rem;
   }
 }
-
 
 @media (max-width: 768px) {
   .contentWrapper {

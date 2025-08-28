@@ -18,6 +18,7 @@ import { IconHomeFilled, IconCircle } from "@tabler/icons-react";
 import DailyActivitiesAccordion from "./DailyActivitiesAccordion";
 import Whatsapp from "../../../components/Whatsapp/Whatsapp";
 // facilities
+import finance from "../../../assets/imgs/facilities/finance.png";
 import food from "../../../assets/imgs/facilities/food.png";
 import learn from "../../../assets/imgs/facilities/learn.png";
 import prov from "../../../assets/imgs/facilities/prov.png";
@@ -33,9 +34,11 @@ import time from "../../../assets/imgs/facilities/time.png";
 import language from "../../../assets/imgs/facilities/language.png";
 import learning from "../../../assets/imgs/facilities/learning.png";
 import { Helmet } from "react-helmet-async";
+import brochure from "../../../assets/imgs/programs/ds-brochure.jpg";
 
 const DS = () => {
   const facilities = [
+    { text: "Rp. 42.500.000.", icon: finance },
     { text: "Pembekalan sebelum keberangkatan.", icon: prov },
     { text: "Tiket Pesawat PP.", icon: ticket },
     { text: "Visa dan Bis selama di Saudi.", icon: visa },
@@ -134,9 +137,9 @@ const DS = () => {
         <Text className={styles.textContent} mt={50} p={6} fw={550}>
           Program Tadarus Santri ialah program pembelajaran singkat yang
           dirancang khusus untuk memperdalam pemahaman, penghayatan dan
-          pengamalan al-Qur’an yang dilaksanakan di kota Mekah al-Mukarramah,
-          sekaligus melaksanakan ibadah umrah dan kunjungan tempat-tempat
-          bersejarah dan berbudaya Arab.
+          pengamalan al-Qur’an dan bahasa Arab yang dilaksanakan di kota Mekah
+          al-Mukarramah, sekaligus melaksanakan ibadah umrah dan kunjungan
+          tempat-tempat bersejarah dan berbudaya Arab.
         </Text>
 
         <div className={styles.videoContainer}>
@@ -147,6 +150,12 @@ const DS = () => {
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
+        </div>
+      </Container>
+
+      <Container className={styles.topWrapper}>
+        <div className={styles.mediaContainer}>
+          <img src={brochure} alt="Program Brochure" />
         </div>
       </Container>
 
@@ -290,6 +299,16 @@ const DS = () => {
               </ol>
             </Accordion.Panel>
           </Accordion.Item>
+          <Accordion.Item value="arabic">
+            <Accordion.Control>
+              <Text fw={600}>Kelas Bahasa Arab</Text>
+            </Accordion.Control>
+            <Accordion.Panel ml={20}>
+              <ol style={{ color: "#152D46" }}>
+                <li>Pembelajaran Bahasa Arab intensif di kelas.</li>
+              </ol>
+            </Accordion.Panel>
+          </Accordion.Item>
           <Accordion.Item value="madinah">
             <Accordion.Control>
               <Text fw={600}>Pendalaman al-Qur’an</Text>
@@ -322,7 +341,6 @@ const DS = () => {
               <ol style={{ color: "#152D46" }}>
                 <li>Thawaf sunnah dan Qiyamullail.</li>
                 <li>Mengenal jejak Nabi sekitar Masjidil Haram.</li>
-                <li>Kegiatan di Goa Hira.</li>
                 <li>Menginap di Villa Mekah.</li>
                 <li>Olahraga futsal atau lainnya.</li>
                 <li>Kunjungan ke padang pasir atau museum.</li>
@@ -377,6 +395,7 @@ const DS = () => {
           <List spacing="sm" mt="md">
             {[
               "Siswa siswi SMP kelas 8 dan 9.",
+              "Siswa siswi SMA kelas 10 sampai 12.",
               "Sehat jasamani dan rohani.",
               "Izin orangtua atau wali.",
             ].map((item, index) => (
@@ -489,7 +508,7 @@ const DS = () => {
           {/* List */}
           <List spacing="sm" mt="md">
             {[
-              "Pendaftaran dilakukan 90 hari sebelum keberangkatan dengan memberikan data peserta secara lengkap, yaitu tanggal 1 Juli 2025.",
+              "Pendaftaran dilakukan 60 hari sebelum keberangkatan dengan memberikan data peserta secara lengkap, paling lambat 30 September 2025.",
               "Pembayaran dilakukan dalam 2 tahap: 50% untuk 90 hari sebelum keberangkatan dan sisanya paling lambat 30 hari sebelum keberangkatan.",
             ].map((item, index) => (
               <List.Item
