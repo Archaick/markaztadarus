@@ -21,7 +21,8 @@ i18n
       "homepage/About",
       "homepage/Map",
       "homepage/Gallery",
-      "homepage/Programs"
+      "homepage/Programs",
+      "homepage/Stats"
     ], 
     defaultNS: "homepage/Navbar",
     interpolation: {

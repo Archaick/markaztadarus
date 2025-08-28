@@ -27,8 +27,6 @@ const Footer = () => {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.watermark}></div>
-
       <Container>
         <div className={styles.grid}>
           {/* First Column */}

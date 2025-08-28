@@ -1,6 +1,6 @@
 .methods {
   position: relative;
-  background: linear-gradient(to bottom, #102141, #1f3e79);
+  background: linear-gradient(to bottom, #1a1a2e, #102141);
   padding: 4rem 0;
   text-align: center;
   overflow: hidden;
@@ -71,7 +71,8 @@
   padding: 1.5rem 1rem;
   border-radius: 12px;
   text-align: center;
-  background: rgba(16, 33, 65, 0.7) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+
 }
 
 .image {

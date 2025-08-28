@@ -180,7 +180,7 @@
   position: relative;
   width: 100%; /* Divider takes full width */
   height: 65px;
-  background: linear-gradient(to bottom, #1f3e79, #102141);
+  background: linear-gradient(to bottom, #1a1a2e, #102141);
   margin-top: -30px; /* Overlap with the image */
 }
 

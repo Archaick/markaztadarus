@@ -3,6 +3,7 @@ import Hero from "./Hero/Hero";
 import Methods from "./Methods/Methods";
 import About from "./About/About";
 import Map from "./Map/Map";
+import Stats from "./Stats/Stats";
 import Gallery from "./Gallery/Gallery";
 import MarqueeComponent from "./Marquee/Marquee";
 import Programs from "./Programs/Programs";
@@ -15,6 +16,7 @@ const Home = () => {
       <About />
       <Programs />
       <Map />
+      <Stats />
       <Gallery />
       <MarqueeComponent />
       <Whatsapp />
