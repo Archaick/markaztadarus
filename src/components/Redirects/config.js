@@ -45,4 +45,9 @@ export const redirects = {
 
   "KuesionerPeserta-MimbarTauhid":
     "https://docs.google.com/forms/d/e/1FAIpQLSe2oiXkne4b4zg9E1aXtTy2GQkUSMqU32Lg1bxDA9wxTRKYCg/viewform?usp=send_form",
+
+  "Al-FatihahMubtadi":
+    "https://docs.google.com/forms/d/e/1FAIpQLSfwATfPqA2PNb0zpBh3MsAimDHmlVwqAIDAYT89AcFtypYAhw/viewform",
+  "Al-FatihahMutaqaddim":
+    "https://docs.google.com/forms/d/e/1FAIpQLSfwCytYP8mCAhvMS5Fzq2jxOghjgShrNjSsR9Wz-_52FguE2g/viewform",
 };
