@@ -16,10 +16,10 @@
   left: 10px;
   width: 250px;
   height: 250px;
-  background-image: url("/MTIFavicon.png"); /* stays correct since it’s in /public */
+  background-image: url("/MTIFavicon.png");
   background-size: contain;
   background-repeat: no-repeat;
-  opacity: 0.2 ;
+  opacity: 0.2;
   filter: brightness(0.5) invert(1);
   pointer-events: none;
   z-index: 0;
@@ -47,33 +47,16 @@
   margin: 0 auto;
 }
 
-/* Desktop layout for 8 cards */
+/* Updated Desktop layout for 6 cards - 3 columns, 2 rows */
 @media (min-width: 1024px) {
   .statisticsGrid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
-
-  /* First row: 5 cards */
-  .statisticsGrid > :nth-child(1),
-  .statisticsGrid > :nth-child(2),
-  .statisticsGrid > :nth-child(3),
-  .statisticsGrid > :nth-child(4),
-  .statisticsGrid > :nth-child(5) {
+  
+  /* All cards span 1 column */
+  .statisticsGrid > * {
     grid-column: span 1;
-  }
-
-  /* Second row: 3 cards centered */
-  .statisticsGrid > :nth-child(6) {
-    grid-column: 2;
-  }
-
-  .statisticsGrid > :nth-child(7) {
-    grid-column: 3;
-  }
-
-  .statisticsGrid > :nth-child(8) {
-    grid-column: 4;
   }
 }
 

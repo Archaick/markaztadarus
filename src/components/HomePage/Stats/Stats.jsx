@@ -84,21 +84,21 @@ const Stats = () => {
       suffix: t("copies"),
       description: t("booksDescription"),
     },
-    {
-      icon: (
-        <img src={qurban} alt={t("qurbanAlt")} className={styles.customIcon} />
-      ),
-      value: 77,
-      title: t("qurbanTitle"),
-      suffix: t("animals"),
-      description: t("qurbanDescription"),
-    },
-    {
-      icon: <IconBuildingMosque size={28} />,
-      value: 2,
-      title: t("masjidsBuilt"),
-      suffix: t("masjids"),
-    },
+    // {
+    //   icon: (
+    //     <img src={qurban} alt={t("qurbanAlt")} className={styles.customIcon} />
+    //   ),
+    //   value: 77,
+    //   title: t("qurbanTitle"),
+    //   suffix: t("animals"),
+    //   description: t("qurbanDescription"),
+    // },
+    // {
+    //   icon: <IconBuildingMosque size={28} />,
+    //   value: 2,
+    //   title: t("masjidsBuilt"),
+    //   suffix: t("masjids"),
+    // },
   ];
 
   return (
