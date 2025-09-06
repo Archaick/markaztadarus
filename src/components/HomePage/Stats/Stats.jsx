@@ -79,7 +79,7 @@ const Stats = () => {
     },
     {
       icon: <IconScript size={28} />,
-      value: 390,
+      value: 1443,
       title: t("booksDistributed"),
       suffix: t("copies"),
       description: t("booksDescription"),
