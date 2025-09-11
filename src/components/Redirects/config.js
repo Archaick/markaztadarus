@@ -52,5 +52,7 @@ export const redirects = {
     "https://docs.google.com/forms/d/e/1FAIpQLSfwCytYP8mCAhvMS5Fzq2jxOghjgShrNjSsR9Wz-_52FguE2g/viewform",
 
     "MTadarus5T":
-    "https://www.youtube.com/playlist?list=PLCcFgzBG-ulXVQA4-DIehtTBbhDRVQczb"
+    "https://www.youtube.com/playlist?list=PLCcFgzBG-ulXVQA4-DIehtTBbhDRVQczb",
+    "Pendataan-Majelis-Tadarus":
+    "https://docs.google.com/forms/d/e/1FAIpQLSdCQP1cQ06t7z1bftieWp8wt_Z3GNnXoV6c9KJzIHA2MrH_lQ/viewform"
 };
