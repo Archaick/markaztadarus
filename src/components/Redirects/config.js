@@ -54,5 +54,7 @@ export const redirects = {
     "MTadarus5T":
     "https://www.youtube.com/playlist?list=PLCcFgzBG-ulXVQA4-DIehtTBbhDRVQczb",
     "Pendataan-Majelis-Tadarus":
-    "https://docs.google.com/forms/d/e/1FAIpQLSdCQP1cQ06t7z1bftieWp8wt_Z3GNnXoV6c9KJzIHA2MrH_lQ/viewform"
+    "https://docs.google.com/forms/d/e/1FAIpQLSdCQP1cQ06t7z1bftieWp8wt_Z3GNnXoV6c9KJzIHA2MrH_lQ/viewform",
+    "Penilaian-Praktek-Majelis5T":
+    "https://docs.google.com/forms/d/e/1FAIpQLSc3GiBSP1gbu1GUjq_TCSsz50QObySdhLB431uo81nLzgY0gw/viewform"
 };
