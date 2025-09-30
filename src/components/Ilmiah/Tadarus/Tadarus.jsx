@@ -239,7 +239,7 @@ const Tadarus = () => {
           </Button>
         </Modal>
       </div>
-      <Whatsapp />
+      {/* <Whatsapp /> */}
     </div>
   );
 };

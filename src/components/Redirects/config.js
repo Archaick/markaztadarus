@@ -51,10 +51,13 @@ export const redirects = {
   "Al-FatihahMutaqaddim":
     "https://docs.google.com/forms/d/e/1FAIpQLSfwCytYP8mCAhvMS5Fzq2jxOghjgShrNjSsR9Wz-_52FguE2g/viewform",
 
-    "MTadarus5T":
+  MTadarus5T:
     "https://www.youtube.com/playlist?list=PLCcFgzBG-ulXVQA4-DIehtTBbhDRVQczb",
-    "Pendataan-Majelis-Tadarus":
+  "Pendataan-Majelis-Tadarus":
     "https://docs.google.com/forms/d/e/1FAIpQLSdCQP1cQ06t7z1bftieWp8wt_Z3GNnXoV6c9KJzIHA2MrH_lQ/viewform",
-    "Penilaian-Praktek-Majelis5T":
-    "https://docs.google.com/forms/d/e/1FAIpQLSc3GiBSP1gbu1GUjq_TCSsz50QObySdhLB431uo81nLzgY0gw/viewform"
+  "Penilaian-Praktek-Majelis5T":
+    "https://docs.google.com/forms/d/e/1FAIpQLSc3GiBSP1gbu1GUjq_TCSsz50QObySdhLB431uo81nLzgY0gw/viewform",
+
+  bukutadarus:
+    "https://drive.google.com/drive/folders/1K9Xk7-LBGquqruEZ_XtjIWPINo0srOff",
 };

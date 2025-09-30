@@ -13,10 +13,12 @@ import childBook from "../../../assets/imgs/ilmiah/toddlerbook.jpg";
 import childBookAr from "../../../assets/imgs/ilmiah/toddlerbook-ar.jpg";
 import Autoplay from "embla-carousel-autoplay";
 // import brochure from "../../../assets/imgs/ilmiah/brochure.jpg";
+import OrderForm from "./OrderForm";
 
 const Toddlers = () => {
   const [opened, setOpened] = useState(false);
-  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false  });
+  const autoplay = Autoplay({ delay: 3000, stopOnInteraction: false });
+  const [showOrderForm, setShowOrderForm] = useState(false); // Add this state
 
   return (
     <div className={styles.fullWidthBg}>
@@ -38,10 +40,24 @@ const Toddlers = () => {
 
           <div className={styles.buttonWrap}>
             <Button
-              onClick={() => setOpened(true)}
+              onClick={() => {
+                setShowOrderForm(false); // Show regular content
+                setOpened(true);
+              }}
               className={styles.customButton}
             >
               Selengkapnya
+            </Button>
+            <Button
+              onClick={() => {
+                setShowOrderForm(true); // Show order form
+                setOpened(true);
+              }}
+              className={styles.customButton}
+              color="green"
+              style={{ marginLeft: "1rem" }}
+            >
+              Pesan Sekarang
             </Button>
           </div>
 
@@ -139,8 +155,11 @@ const Toddlers = () => {
         {/* Modal */}
         <Modal
           opened={opened}
-          onClose={() => setOpened(false)}
-          title="Pendidikan Qur'ani Anak"
+          onClose={() => {
+            setOpened(false);
+            setShowOrderForm(false); // Reset when modal closes
+          }}
+          title={showOrderForm ? "Pesan Buku" : "Pendidikan Qur'ani Anak"} // Dynamic title
           size="lg"
           centered
           scrollAreaComponent="div"
@@ -189,27 +208,35 @@ const Toddlers = () => {
             },
           }}
         >
-          <h4 className={styles.previewTitle}>Lihat Contoh Halaman</h4>
-          <iframe
-            src="https://drive.google.com/file/d/1QgBMDZw0Rx5zJbZQOxJoVPuiU3RxbNFb/preview"
-            width="100%"
-            height="400px"
-            allow="autoplay"
-            title="PDF Preview"
-            style={{ border: "none", borderRadius: "12px" }}
-          ></iframe>
+          {showOrderForm ? (
+            // Show OrderForm when "Pesan Sekarang" is clicked
+            <OrderForm />
+          ) : (
+            // Show regular content when "Selengkapnya" is clicked
+            <>
+              <h4 className={styles.previewTitle}>Lihat Contoh Halaman</h4>
+              <iframe
+                src="https://drive.google.com/file/d/1QgBMDZw0Rx5zJbZQOxJoVPuiU3RxbNFb/preview"
+                width="100%"
+                height="400px"
+                allow="autoplay"
+                title="PDF Preview"
+                style={{ border: "none", borderRadius: "12px" }}
+              ></iframe>
 
-          <Button
-            fullWidth
-            mt="md"
-            color="green"
-            leftSection={<IconBrandWhatsapp size={18} />}
-            component="a"
-            href="https://wa.me/+6287875764426"
-            target="_blank"
-          >
-            Hubungi via WhatsApp
-          </Button>
+              <Button
+                fullWidth
+                mt="md"
+                color="green"
+                leftSection={<IconBrandWhatsapp size={18} />}
+                component="a"
+                href="https://wa.me/+6287875764426"
+                target="_blank"
+              >
+                Hubungi via WhatsApp
+              </Button>
+            </>
+          )}
         </Modal>
       </div>
     </div>
