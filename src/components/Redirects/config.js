@@ -60,4 +60,7 @@ export const redirects = {
 
   bukutadarus:
     "https://drive.google.com/drive/folders/1K9Xk7-LBGquqruEZ_XtjIWPINo0srOff",
+
+  "Kuesioner-Mahad-Hidayatullah":
+    "https://docs.google.com/forms/d/e/1FAIpQLSf98ZPwnoHoT8fKx_bkfU_DW6Pya1w2iqa_kb1dNPwnRR1WgQ/viewform",
 };
