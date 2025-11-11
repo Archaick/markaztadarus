@@ -138,6 +138,11 @@ const Footer = () => {
         <Text className={styles.subfooter}>
           © 2025 Markaz Tadarus. All rights reserved
         </Text>
+        {/* For verification */}
+        <Text className={styles.subfooter}>
+          Markaz Tadarus is a community and educational initiative under <strong>Yayasan Madinatul Hijaz Jakarta</strong>, registered with the Ministry of Law and Human Rights of the Republic of Indonesia <strong>SK No. AHU-0007727.AH.01.04.Tahun2022.</strong>
+        </Text>
+
       </Container>
     </footer>
   );
