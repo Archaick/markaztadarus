@@ -140,7 +140,7 @@ const Footer = () => {
         </Text>
         {/* For verification */}
         <Text className={styles.subfooter}>
-          Markaz Tadarus is a community and educational initiative under <strong>Yayasan Madinatul Hijaz Jakarta</strong>, registered with the Ministry of Law and Human Rights of the Republic of Indonesia <strong>SK No. AHU-0007727.AH.01.04.Tahun2022.</strong>
+          Markaz Tadarus is a religious and social non-profit under <strong>Yayasan Madinatul Hijaz Jakarta</strong>, registered with the Ministry of Law and Human Rights of the Republic of Indonesia <strong>SK No. AHU-0007727.AH.01.04.Tahun2022.</strong>
         </Text>
 
       </Container>
