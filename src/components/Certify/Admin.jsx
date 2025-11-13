@@ -17,6 +17,10 @@ import { Button, TextInput, Table, Title, Group, Image, Pagination } from "@mant
 import QRCode from "qrcode";
 import LoadingOverlay from "../LoadingOverlay";
 
+import { auth } from "../../../firebaseConfig";
+import { signOut } from "firebase/auth";
+
+
 const ITEMS_PER_PAGE = 5;
 
 const Admin = () => {
@@ -31,6 +35,14 @@ const Admin = () => {
     const [totalPages, setTotalPages] = useState(1);
 
     const certCollection = collection(db, "certificates");
+
+    const handleLogout = async () => {
+        if (window.confirm("Are you sure you want to log out?")) {
+            await signOut(auth);
+            window.location.reload(); // or redirect to login page
+        }
+    };
+
 
     // Generate QR codes in parallel
     const generateQRCodes = async (certData) => {
@@ -199,6 +211,11 @@ const Admin = () => {
             <Title order={2} mb="md">
                 MTI Admin Certificate Panel
             </Title>
+
+            <Button color="gray" variant="outline" onClick={handleLogout} mb="md">
+                Logout
+            </Button>
+
 
             <div className={styles.form}>
                 <TextInput
