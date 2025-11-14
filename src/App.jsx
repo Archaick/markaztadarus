@@ -24,6 +24,7 @@ import Majelis from "./components/Majelis/Majelis";
 // Certify
 import Admin from "./components/Certify/Admin";
 import AdminLogin from "./components/Certify/AdminLogin";
+import CertificateVerify from "./components/Certify/CertificateVerify";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -63,8 +64,6 @@ const App = () => {
           <Route path="/Seminar" element={<Seminar />} />
           <Route path="/Majelis" element={<Majelis />} />
 
-          <Route path="/:shortCode" element={<Redirects />} />
-
           {/* 🔐 Protected Route for Admin Panel */}
           <Route
             path="/cert-admin"
@@ -76,6 +75,12 @@ const App = () => {
             path="/cert-login"
             element={<AdminLogin onLoginSuccess={() => window.location.href = "/cert-admin"} />}
           />
+
+          {/* 📜 Certificate Verification - Public Route */}
+          <Route path="/verify/:code" element={<CertificateVerify />} />
+
+          {/* Other redirects */}
+          <Route path="/:shortCode" element={<Redirects />} />
 
           <Route path="*" element={<ErrorPage />} />
         </Routes>
