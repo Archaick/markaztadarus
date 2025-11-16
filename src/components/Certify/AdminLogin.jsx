@@ -1,73 +1,126 @@
 import React, { useState } from "react";
-import { auth } from "../../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import {
-  TextInput,
-  PasswordInput,
-  Button,
-  Title,
-  Paper,
-  Center,
-  Stack,
-} from "@mantine/core";
+import { auth } from "../../../firebaseConfig";
+import { TextInput, PasswordInput, Button, Card, Stack, Title, Text } from "@mantine/core";
+import { IconLock, IconAlertCircle } from "@tabler/icons-react";
+import styles from "./AdminLogin.module.css";
 
-export default function AdminLogin({ onLoginSuccess }) {
+const AdminLogin = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      onLoginSuccess();
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
     } catch (err) {
-      alert("Login failed. Please check your credentials.");
-      console.error(err);
+      console.error("Login error:", err);
+
+      // User-friendly error messages
+      let errorMessage = "Invalid email or password";
+
+      if (err.code === "auth/invalid-email") {
+        errorMessage = "Please enter a valid email address";
+      } else if (err.code === "auth/user-not-found") {
+        errorMessage = "No account found with this email";
+      } else if (err.code === "auth/wrong-password") {
+        errorMessage = "Incorrect password";
+      } else if (err.code === "auth/too-many-requests") {
+        errorMessage = "Too many failed attempts. Please try again later";
+      } else if (err.code === "auth/network-request-failed") {
+        errorMessage = "Network error. Please check your connection";
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Center style={{ height: "100vh", backgroundColor: "#f8f9fa" }}>
-      <Paper
-        p="xl"
-        shadow="xl"
-        radius="lg"
-        withBorder
-        style={{
-          width: 400,
-          maxWidth: "90%",
-          backgroundColor: "white",
-        }}
-      >
-        <Title order={2} mb="lg" ta="center">
-          MTI Admin Login
-        </Title>
-        <form onSubmit={handleLogin}>
-          <Stack gap="md">
-            <TextInput
-              size="md"
-              label="Email"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <PasswordInput
-              size="md"
-              label="Password"
-              placeholder="Your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit" fullWidth size="md" loading={loading}>
-              Sign In
-            </Button>
-          </Stack>
+    <div className={styles.container}>
+      <div className={styles.backgroundPattern}></div>
+
+      <Card className={styles.loginCard}>
+        <div className={styles.header}>
+          <div className={styles.iconWrapper}>
+            <IconLock size={36} />
+          </div>
+          <Title order={1} className={styles.title}>
+            Admin Login
+          </Title>
+          <Text className={styles.subtitle}>
+            MTI Certificate Management
+          </Text>
+        </div>
+
+        {error && (
+          <div className={styles.errorMessage}>
+            <Text>
+              <IconAlertCircle size={18} />
+              {error}
+            </Text>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className={styles.form}>
+          <TextInput
+            label="Email Address"
+            placeholder="admin@example.com"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+            size="md"
+            classNames={{
+              input: styles.input,
+              label: styles.label
+            }}
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={loading}
+            size="md"
+            classNames={{
+              input: styles.input,
+              label: styles.label
+            }}
+          />
+
+          <Button
+            type="submit"
+            className={styles.submitButton}
+            loading={loading}
+            disabled={loading || !email || !password}
+            fullWidth
+            size="md"
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </Button>
         </form>
-      </Paper>
-    </Center>
+
+        <div className={styles.footer}>
+          <Text className={styles.footerText}>
+            Secure Certificate Management System
+          </Text>
+        </div>
+      </Card>
+    </div>
   );
-}
+};
+
+export default AdminLogin;
