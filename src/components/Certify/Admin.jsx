@@ -212,7 +212,7 @@ const Admin = () => {
                 MTI Admin Certificate Panel
             </Title>
 
-            <Button color="gray" variant="outline" onClick={handleLogout} mb="md">
+            <Button className={styles.logoutBtn} onClick={handleLogout} mb="md">
                 Logout
             </Button>
 

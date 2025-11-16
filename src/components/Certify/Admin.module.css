@@ -47,21 +47,20 @@
     letter-spacing: -0.5px;
 }
 
-/* Logout Button */
-.container :global(button[color="gray"]) {
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    transition: all 0.3s ease;
-    max-width: 150px;
-    margin: 0 auto 1.5rem auto;
+.logoutBtn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border: none;
+  max-width: 150px;
+  margin: 0 auto 1.5rem auto;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  transition: all 0.25s ease;
 }
 
-.container :global(button[color="gray"]:hover) {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.logoutBtn:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  transform: translateY(-2px);
 }
 
 /* Form Section */
