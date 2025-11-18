@@ -2,77 +2,97 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { db } from "../../../firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { Container, Title, Text, Card, Stack, Badge, Loader, Center } from "@mantine/core";
-import { IconCertificate, IconAlertCircle, IconCheck } from "@tabler/icons-react";
+import { Container, Title, Text, Card, Stack, Badge, Loader, Center, Button, Menu } from "@mantine/core";
+import { IconCertificate, IconAlertCircle, IconCheck, IconWorld } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import styles from "./CertificateVerify.module.css";
 
 const CertificateVerify = () => {
-    const { code } = useParams(); // Get code from URL
+    const { code } = useParams();
     const [certificate, setCertificate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const { t, i18n } = useTranslation("verification/CertificateVerify");
+
+    const changeLang = (lng) => i18n.changeLanguage(lng);
+
     useEffect(() => {
         const verifyCertificate = async () => {
             if (!code) {
-                setError("No certificate code provided");
+                setError(t("errors.no_code"));
                 setLoading(false);
                 return;
             }
 
             try {
-                // Query Firestore for certificate with matching code
                 const certCollection = collection(db, "certificates");
                 const q = query(certCollection, where("code", "==", code.toUpperCase()));
                 const snapshot = await getDocs(q);
 
                 if (snapshot.empty) {
-                    setError("Certificate not found");
+                    setError(t("errors.not_found"));
                     setLoading(false);
                     return;
                 }
 
-                // Get certificate data
-                const certData = {
+                setCertificate({
                     id: snapshot.docs[0].id,
-                    ...snapshot.docs[0].data()
-                };
+                    ...snapshot.docs[0].data(),
+                });
 
-                setCertificate(certData);
             } catch (err) {
-                console.error("Error verifying certificate:", err);
-                setError("Failed to verify certificate. Please try again.");
+                console.error(err);
+                setError(t("errors.failed"));
             } finally {
                 setLoading(false);
             }
         };
 
         verifyCertificate();
-    }, [code]);
+    }, [code, i18n.language]); // re-run if language changes so error messages update
 
-    // Loading state
+    /** Loading **/
     if (loading) {
         return (
             <Center style={{ minHeight: "100vh" }}>
-                <Stack align="center" spacing="md">
+                <Stack align="center">
                     <Loader size="lg" />
-                    <Text color="dimmed">Verifying certificate...</Text>
+                    <Text>{t("loading")}</Text>
                 </Stack>
             </Center>
         );
     }
 
-    // Error state
+    /** Error **/
     if (error) {
         return (
             <Container size="sm" className={styles.container}>
+
+                {/* Language Toggle */}
+                <div className={styles.langToggle}>
+                    <Menu shadow="md" width={160}>
+                        <Menu.Target>
+                            <Button variant="white" leftSection={<IconWorld size={18} />}>
+                                {i18n.language.toUpperCase()}
+                            </Button>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                            <Menu.Item onClick={() => changeLang("en")}>EN – English</Menu.Item>
+                            <Menu.Item onClick={() => changeLang("id")}>ID – Indonesia</Menu.Item>
+                            <Menu.Item onClick={() => changeLang("ar")}>AR – العربية</Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                </div>
+
                 <Card shadow="md" padding="xl" radius="md" withBorder className={styles.errorCard}>
                     <Stack align="center" spacing="lg">
                         <IconAlertCircle size={64} color="red" />
-                        <Title order={2} color="red">Invalid Certificate</Title>
-                        <Text size="lg" align="center">{error}</Text>
+                        <Title order={2} className={styles.errorTitle}>{t("invalid_title")}</Title>
+                        <Text>{error}</Text>
                         <Text size="sm" color="dimmed" align="center">
-                            This certificate code may be incorrect or does not exist in our system.
+                            {t("invalid_subtext")}
                         </Text>
                     </Stack>
                 </Card>
@@ -80,58 +100,63 @@ const CertificateVerify = () => {
         );
     }
 
-    // Success state
+    /** Success **/
     return (
         <Container size="sm" className={styles.container}>
+
+            {/* Top Right Language Toggle */}
+            <div className={styles.langToggle}>
+                <Menu shadow="md" width={160}>
+                    <Menu.Target>
+                        <Button variant="white" leftSection={<IconWorld size={18} />}>
+                            {i18n.language.toUpperCase()}
+                        </Button>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                        <Menu.Item onClick={() => changeLang("en")}>EN – English</Menu.Item>
+                        <Menu.Item onClick={() => changeLang("id")}>ID – Indonesia</Menu.Item>
+                        <Menu.Item onClick={() => changeLang("ar")}>AR – العربية</Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
+            </div>
+
             <Card shadow="lg" padding="xl" radius="md" withBorder className={styles.successCard}>
                 <Stack spacing="xl">
-
-                    {/* Header with icon */}
                     <Center>
-                        <Stack align="center" spacing="sm">
+                        <Stack align="center">
                             <div className={styles.iconWrapper}>
-                                <IconCheck size={64} color="white" className={styles.checkIcon} />
+                                <IconCheck size={64} color="white" />
                             </div>
-                            <Badge size="lg" color="green" variant="filled">
-                                Authentic MTI Document
+                            <Badge size="lg" color="green">
+                                {t("authentic_badge")}
                             </Badge>
                         </Stack>
                     </Center>
 
-
-                    {/* Document Title */}
-                    <Title order={1} align="center" className={styles.title}>
-                        {certificate.title || "Verified MTI Document"}
+                    <Title align="center" className={styles.title}>
+                        {certificate.title || t("verified_document")}
                     </Title>
 
                     <div className={styles.divider} />
 
-                    {/* Dynamic Fields */}
                     <Stack spacing="md">
-
-                        {/* If document has a name */}
                         {certificate.name && (
                             <div>
-                                <Text size="sm" color="dimmed" weight={500}>Issued to:</Text>
-                                <Title order={2} className={styles.name}>
-                                    {certificate.name}
-                                </Title>
+                                <Text size="sm" color="dimmed">{t("issued_to")}</Text>
+                                <Title order={2} className={styles.name}>{certificate.name}</Title>
                             </div>
                         )}
 
-                        {/* If document has a program */}
                         {certificate.program && (
                             <div>
-                                <Text size="sm" color="dimmed" weight={500}>Program:</Text>
-                                <Title order={3} className={styles.program}>
-                                    {certificate.program}
-                                </Title>
+                                <Text size="sm" color="dimmed">{t("program")}</Text>
+                                <Title order={3} className={styles.program}>{certificate.program}</Title>
                             </div>
                         )}
 
-                        {/* If document has a description */}
                         {certificate.description && (
-                            <Text size="sm" align="center" color="dimmed">
+                            <Text size="sm" color="dimmed" align="center">
                                 {certificate.description}
                             </Text>
                         )}
@@ -139,39 +164,24 @@ const CertificateVerify = () => {
 
                     <div className={styles.divider} />
 
-                    {/* Metadata */}
                     <Stack spacing="xs" className={styles.metadata}>
-                        <Text size="sm" color="dimmed">
-                            <strong>Document Code:</strong> {certificate.code}
-                        </Text>
+                        <Text><strong>{t("document_code")}</strong> {certificate.code}</Text>
 
                         {certificate.createdAt && (
-                            <Text size="sm" color="dimmed">
-                                <strong>Issued On:</strong>{" "}
-                                {certificate.createdAt.toDate
-                                    ? certificate.createdAt.toDate().toLocaleDateString("id-ID", {
-                                        year: "numeric", month: "long", day: "numeric"
-                                    })
-                                    : new Date(certificate.createdAt).toLocaleDateString("id-ID", {
-                                        year: "numeric", month: "long", day: "numeric"
-                                    })
-                                }
+                            <Text>
+                                <strong>{t("issued_on")}</strong>{" "}
+                                {certificate.createdAt.toDate().toLocaleDateString("id-ID")}
                             </Text>
                         )}
                     </Stack>
 
-                    {/* Footer */}
                     <Center>
-                        <Text size="xs" color="dimmed" align="center">
-                            This document has been verified as an authentic record issued by MTI.
-                        </Text>
+                        <Text size="xs" color="dimmed">{t("footer_text")}</Text>
                     </Center>
-
                 </Stack>
             </Card>
         </Container>
     );
-
 };
 
 export default CertificateVerify;

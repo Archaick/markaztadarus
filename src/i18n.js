@@ -22,7 +22,8 @@ i18n
       "homepage/Map",
       "homepage/Gallery",
       "homepage/Programs",
-      "homepage/Stats"
+      "homepage/Stats",
+      "certify/CertificateVerify",
     ], 
     defaultNS: "homepage/Navbar",
     interpolation: {

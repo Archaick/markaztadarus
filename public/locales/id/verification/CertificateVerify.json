@@ -1,0 +1,17 @@
+{
+    "loading": "Memverifikasi sertifikat...",
+    "invalid_title": "Sertifikat Tidak Valid",
+    "invalid_subtext": "Kode sertifikat ini mungkin salah atau tidak terdaftar dalam sistem kami.",
+    "errors": {
+        "no_code": "Tidak ada kode sertifikat.",
+        "not_found": "Sertifikat tidak ditemukan.",
+        "failed": "Gagal memverifikasi sertifikat. Silakan coba lagi."
+    },
+    "authentic_badge": "Dokumen MTI Asli",
+    "verified_document": "Dokumen MTI Terverifikasi",
+    "issued_to": "Diterbitkan untuk:",
+    "program": "Program:",
+    "document_code": "Kode Dokumen:",
+    "issued_on": "Diterbitkan Pada:",
+    "footer_text": "Dokumen ini telah diverifikasi sebagai catatan resmi yang diterbitkan oleh MTI."
+}
