@@ -1,6 +1,8 @@
+// src/.../Admin.jsx
 import React, { useState, useEffect } from "react";
 import styles from "./Admin.module.css";
-import { db } from "../../../firebaseConfig";
+import { db, auth } from "../../../firebaseConfig";
+
 import {
     collection,
     addDoc,
@@ -10,70 +12,92 @@ import {
     query,
     orderBy,
     startAfter,
-    limit as firestoreLimit
+    limit as firestoreLimit,
 } from "firebase/firestore";
 
-import { Button, TextInput, Table, Title, Group, Image, Pagination } from "@mantine/core";
+import {
+    Button,
+    TextInput,
+    Table,
+    Title,
+    Group,
+    Image,
+    Pagination,
+    Modal,
+    Text,
+    PasswordInput,
+} from "@mantine/core";
+
 import QRCode from "qrcode";
 import LoadingOverlay from "../LoadingOverlay";
 
-import { auth } from "../../../firebaseConfig";
-import { signOut } from "firebase/auth";
-
+import {
+    reauthenticateWithCredential,
+    EmailAuthProvider,
+    signOut,
+} from "firebase/auth";
 
 const ITEMS_PER_PAGE = 5;
 
 const Admin = () => {
+    // Data state
     const [certificates, setCertificates] = useState([]);
     const [newCert, setNewCert] = useState({ name: "", program: "" });
     const [searchTerm, setSearchTerm] = useState("");
     const [qrCodes, setQrCodes] = useState({});
+
+    // UI state
     const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
-    const [lastVisible, setLastVisible] = useState(null);
+
+    // Pagination
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [lastVisible, setLastVisible] = useState(null);
+
+    // Delete modal + reauth
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
+    const [reauthPassword, setReauthPassword] = useState("");
 
     const certCollection = collection(db, "certificates");
 
-    const handleLogout = async () => {
-        if (window.confirm("Are you sure you want to log out?")) {
-            await signOut(auth);
-            window.location.reload(); // or redirect to login page
+    /* ---------- Helpers ---------- */
+
+    const sanitizeFilename = (s) =>
+        s.replace(/[^\w\-_. ]+/g, "").replace(/\s+/g, "_");
+
+    const generateQRCodes = async (certData) => {
+        try {
+            const qrPromises = certData.map(async (cert) => {
+                const qrUrl = `${window.location.origin}/verify/${cert.code}`;
+                const qrDataUrl = await QRCode.toDataURL(qrUrl);
+                return { id: cert.id, qrDataUrl };
+            });
+
+            const results = await Promise.all(qrPromises);
+            const map = {};
+            results.forEach(({ id, qrDataUrl }) => (map[id] = qrDataUrl));
+            return map;
+        } catch (err) {
+            console.error("QR generation error:", err);
+            return {};
         }
     };
 
+    /* ---------- Fetch certificates ---------- */
 
-    // Generate QR codes in parallel
-    const generateQRCodes = async (certData) => {
-        const qrPromises = certData.map(async (cert) => {
-            const qrUrl = `${window.location.origin}/verify/${cert.code}`;
-            const qrDataUrl = await QRCode.toDataURL(qrUrl);
-            return { id: cert.id, qrDataUrl };
-        });
-
-        const qrResults = await Promise.all(qrPromises);
-        const qrMap = {};
-        qrResults.forEach(({ id, qrDataUrl }) => {
-            qrMap[id] = qrDataUrl;
-        });
-
-        return qrMap;
-    };
-
-    // Fetch certificates with pagination
     const fetchCertificates = async (pageNum = 1) => {
         setLoading(true);
         try {
-            let q = query(
+            let qQuery = query(
                 certCollection,
                 orderBy("createdAt", "desc"),
                 firestoreLimit(ITEMS_PER_PAGE)
             );
 
-            // If not first page, use pagination cursor
             if (pageNum > 1 && lastVisible) {
-                q = query(
+                qQuery = query(
                     certCollection,
                     orderBy("createdAt", "desc"),
                     startAfter(lastVisible),
@@ -81,26 +105,28 @@ const Admin = () => {
                 );
             }
 
-            const snapshot = await getDocs(q);
-            const certData = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-                _doc: doc // Store document reference for pagination
+            const snapshot = await getDocs(qQuery);
+            const certData = snapshot.docs.map((d) => ({
+                id: d.id,
+                ...d.data(),
+                _doc: d,
             }));
 
             setCertificates(certData);
 
-            // Set last visible document for pagination
             if (snapshot.docs.length > 0) {
                 setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
             }
 
-            // Generate QR codes in parallel
             const qrMap = await generateQRCodes(certData);
             setQrCodes(qrMap);
 
-            // Estimate total pages (this is approximate - for exact count you'd need a separate query)
-            setTotalPages(Math.max(pageNum, snapshot.docs.length === ITEMS_PER_PAGE ? pageNum + 1 : pageNum));
+            setTotalPages(
+                Math.max(
+                    pageNum,
+                    snapshot.docs.length === ITEMS_PER_PAGE ? pageNum + 1 : pageNum
+                )
+            );
         } catch (err) {
             console.error("Error fetching certificates:", err);
             alert("Failed to load certificates");
@@ -113,7 +139,8 @@ const Admin = () => {
         fetchCertificates(1);
     }, []);
 
-    // Add a new certificate with optimistic update
+    /* ---------- Add certificate ---------- */
+
     const handleAdd = async () => {
         if (!newCert.name || !newCert.program) {
             return alert("Please fill all fields.");
@@ -122,26 +149,23 @@ const Admin = () => {
         setActionLoading(true);
         try {
             const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-            const newCertData = {
+            const newData = {
                 ...newCert,
                 code,
                 createdAt: new Date(),
             };
 
-            // Add to Firestore
-            const docRef = await addDoc(certCollection, newCertData);
+            const docRef = await addDoc(certCollection, newData);
+            const addedCert = { id: docRef.id, ...newData };
 
-            // Optimistic update - add to local state instead of refetching
-            const newCertWithId = { id: docRef.id, ...newCertData };
-
-            // Generate QR for new cert
             const qrUrl = `${window.location.origin}/verify/${code}`;
             const qrDataUrl = await QRCode.toDataURL(qrUrl);
 
-            // Update state optimistically
-            setCertificates(prev => [newCertWithId, ...prev.slice(0, ITEMS_PER_PAGE - 1)]);
-            setQrCodes(prev => ({ ...prev, [docRef.id]: qrDataUrl }));
+            setCertificates((prev) => [
+                addedCert,
+                ...prev.slice(0, ITEMS_PER_PAGE - 1),
+            ]);
+            setQrCodes((prev) => ({ ...prev, [docRef.id]: qrDataUrl }));
 
             setNewCert({ name: "", program: "" });
             alert("Certificate added successfully!");
@@ -153,94 +177,140 @@ const Admin = () => {
         }
     };
 
-    // Delete a certificate with optimistic update
-    const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this certificate?")) {
-            return;
-        }
+    /* ---------- Delete certificate (reauth first) ---------- */
+
+    const handleConfirmDelete = async () => {
+        if (!deleteTargetId) return alert("No certificate selected.");
+
+        const currentUser = auth?.currentUser;
+        if (!currentUser) return alert("Not authenticated.");
+
+        if (!reauthPassword) return alert("Enter password.");
 
         setActionLoading(true);
         try {
-            await deleteDoc(doc(db, "certificates", id));
+            const cred = EmailAuthProvider.credential(
+                currentUser.email,
+                reauthPassword
+            );
+            await reauthenticateWithCredential(currentUser, cred);
 
-            // Optimistic update - remove from local state
-            setCertificates(prev => prev.filter(cert => cert.id !== id));
-            setQrCodes(prev => {
-                const newQrCodes = { ...prev };
-                delete newQrCodes[id];
-                return newQrCodes;
+            await deleteDoc(doc(db, "certificates", deleteTargetId));
+
+            setCertificates((prev) =>
+                prev.filter((c) => c.id !== deleteTargetId)
+            );
+
+            setQrCodes((prev) => {
+                const updated = { ...prev };
+                delete updated[deleteTargetId];
+                return updated;
             });
 
-            alert("Certificate deleted successfully!");
+            setDeleteModalOpen(false);
+            setDeleteTargetId(null);
+            setReauthPassword("");
+
+            alert("Certificate deleted!");
         } catch (err) {
-            console.error("Error deleting certificate:", err);
-            alert("Failed to delete certificate");
+            console.error("Delete error:", err);
+
+            if (err.code === "auth/wrong-password")
+                alert("Wrong password.");
+            else alert("Delete failed.");
         } finally {
             setActionLoading(false);
         }
     };
 
-    // Download QR code
+    /* ---------- QR download ---------- */
+
     const handleDownloadQR = (cert) => {
-        const qrDataUrl = qrCodes[cert.id];
-        if (!qrDataUrl) return;
+        const url = qrCodes[cert.id];
+        if (!url) return;
+
+        const filename = `QR_${sanitizeFilename(
+            cert.name
+        )}_${cert.code}.png`;
 
         const link = document.createElement("a");
-        link.href = qrDataUrl;
-        link.download = `QR_${cert.name.replace(/\s+/g, "_")}_${cert.code}.png`;
-        document.body.appendChild(link);
+        link.href = url;
+        link.download = filename;
         link.click();
-        document.body.removeChild(link);
     };
 
-    // Handle page change
+    /* ---------- Pagination ---------- */
+
     const handlePageChange = (newPage) => {
         setPage(newPage);
         fetchCertificates(newPage);
     };
 
-    // Filter certificates (client-side for current page only)
+    /* ---------- Filter search ---------- */
+
     const filteredCertificates = certificates.filter(
         (cert) =>
             cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             cert.program.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    /* ---------- Render ---------- */
+
     return (
         <div className={styles.container}>
-            <Title order={2} mb="md">
-                MTI Admin Certificate Panel
-            </Title>
+            <Group justify="space-between" mb="md">
+                {/* Title centered */}
+                <Title order={2} style={{ textAlign: "center", width: "100%" }}>
+                    Admin Certificate Panel
+                </Title>
 
-            <Button className={styles.logoutBtn} onClick={handleLogout} mb="md">
-                Logout
-            </Button>
+                {/* Logout button under the title */}
+                <Group position="center" mt="xs" mb="md">
+                    <Button
+                        variant="outline"
+                        color="red"
+                        onClick={() => {
+                            signOut(auth)
+                                .then(() => {
+                                    window.location.href = "/cert-login";
+                                })
+                                .catch(() => alert("Logout failed"));
+                        }}
+                        className={styles.logoutBtn}
+                    >
+                        Logout
+                    </Button>
+                </Group>
+            </Group>
 
-
+            {/* Add Certificate */}
             <div className={styles.form}>
                 <TextInput
                     label="Name"
                     placeholder="Student Name"
                     value={newCert.name}
-                    onChange={(e) => setNewCert({ ...newCert, name: e.target.value })}
+                    onChange={(e) =>
+                        setNewCert({ ...newCert, name: e.target.value })
+                    }
                     disabled={actionLoading}
                 />
+
                 <TextInput
                     label="Program"
                     placeholder="Program Name"
                     value={newCert.program}
-                    onChange={(e) => setNewCert({ ...newCert, program: e.target.value })}
+                    onChange={(e) =>
+                        setNewCert({ ...newCert, program: e.target.value })
+                    }
                     disabled={actionLoading}
                 />
-                <Button
-                    mt="sm"
-                    onClick={handleAdd}
-                    loading={actionLoading}
-                >
+
+                <Button mt="sm" onClick={handleAdd} loading={actionLoading}>
                     Add Certificate
                 </Button>
             </div>
 
+            {/* Search */}
             <TextInput
                 placeholder="Search by name or program..."
                 value={searchTerm}
@@ -248,61 +318,65 @@ const Admin = () => {
                 mb="md"
             />
 
+            {/* Table */}
             {loading ? (
                 <LoadingOverlay />
             ) : (
                 <>
                     <Table striped highlightOnHover withBorder>
-                        <thead>
+                        <thead className="table-head">
                             <tr>
                                 <th>Name</th>
                                 <th>Program</th>
                                 <th>Code</th>
-                                <th>QR Code</th>
+                                <th>QR</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {filteredCertificates.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>
+                                    <td colSpan={5} style={{ padding: "2rem", textAlign: "center" }}>
                                         No certificates found
                                     </td>
                                 </tr>
                             ) : (
                                 filteredCertificates.map((cert) => (
-                                    <tr key={cert.id}>
+                                    <tr className="table-row" key={cert.id}>
                                         <td>{cert.name}</td>
                                         <td>{cert.program}</td>
                                         <td>{cert.code}</td>
-                                        <td>
-                                            <div className={styles.qrCell}>
-                                                {qrCodes[cert.id] && (
-                                                    <Image
-                                                        src={qrCodes[cert.id]}
-                                                        alt="QR Code"
-                                                        w={60}
-                                                        h={60}
-                                                        radius="md"
-                                                    />
-                                                )}
-                                            </div>
+
+                                        <td className={styles.qrCell}>
+                                            {qrCodes[cert.id] && (
+                                                <Image
+                                                    src={qrCodes[cert.id]}
+                                                    w={60}
+                                                    h={60}
+                                                    radius="md"
+                                                />
+                                            )}
                                         </td>
+
                                         <td>
-                                            <Group spacing="xs" justify="center" align="center">
+                                            <Group spacing="xs" justify="center">
                                                 <Button
                                                     color="blue"
                                                     size="xs"
                                                     onClick={() => handleDownloadQR(cert)}
-                                                    disabled={actionLoading}
                                                 >
                                                     Download
                                                 </Button>
+
                                                 <Button
                                                     color="red"
                                                     size="xs"
-                                                    onClick={() => handleDelete(cert.id)}
-                                                    loading={actionLoading}
+                                                    onClick={() => {
+                                                        setDeleteTargetId(cert.id);
+                                                        setReauthPassword("");
+                                                        setDeleteModalOpen(true);
+                                                    }}
                                                 >
                                                     Delete
                                                 </Button>
@@ -315,7 +389,7 @@ const Admin = () => {
                     </Table>
 
                     {!searchTerm && totalPages > 1 && (
-                        <Group position="center" mt="lg">
+                        <Group justify="center" mt="lg">
                             <Pagination
                                 value={page}
                                 onChange={handlePageChange}
@@ -325,6 +399,47 @@ const Admin = () => {
                     )}
                 </>
             )}
+
+            {/* Delete Modal */}
+            <Modal
+                opened={deleteModalOpen}
+                onClose={() => {
+                    setDeleteModalOpen(false);
+                    setReauthPassword("");
+                    setDeleteTargetId(null);
+                }}
+                title="Confirm Delete — re-enter password"
+                centered
+                size="sm"
+            >
+                <Text mb="sm">
+                    To delete this certificate, re-enter your admin password.
+                </Text>
+
+                <PasswordInput
+                    placeholder="Your password"
+                    value={reauthPassword}
+                    onChange={(e) => setReauthPassword(e.target.value)}
+                    required
+                />
+
+                <Group justify="flex-end" mt="md">
+                    <Button
+                        variant="default"
+                        onClick={() => {
+                            setDeleteModalOpen(false);
+                            setReauthPassword("");
+                            setDeleteTargetId(null);
+                        }}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button color="red" loading={actionLoading} onClick={handleConfirmDelete}>
+                        Confirm Delete
+                    </Button>
+                </Group>
+            </Modal>
         </div>
     );
 };
