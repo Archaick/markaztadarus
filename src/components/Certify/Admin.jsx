@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Admin.module.css";
 import { db, auth } from "../../../firebaseConfig";
-
+import QrStats from "./QrStats"
 import {
     collection,
     addDoc,
@@ -259,29 +259,37 @@ const Admin = () => {
     return (
         <div className={styles.container}>
             <Group justify="space-between" mb="md">
-                {/* Title centered */}
                 <Title order={2} style={{ textAlign: "center", width: "100%" }}>
                     Admin Certificate Panel
                 </Title>
 
-                {/* Logout button under the title */}
-                <Group position="center" mt="xs" mb="md">
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%",
+                        marginTop: "10px",
+                        marginBottom: "16px",
+                    }}
+                >
+                    <QrStats />
+
                     <Button
                         variant="outline"
                         color="red"
                         onClick={() => {
-                            signOut(auth)
-                                .then(() => {
-                                    window.location.href = "/cert-login";
-                                })
-                                .catch(() => alert("Logout failed"));
+                            signOut(auth).then(() => (window.location.href = "/cert-login"));
                         }}
                         className={styles.logoutBtn}
                     >
                         Logout
                     </Button>
-                </Group>
+                </div>
+
             </Group>
+
+
 
             {/* Add Certificate */}
             <div className={styles.form}>
