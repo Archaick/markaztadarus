@@ -1,43 +1,20 @@
+/* -------------------------------------------------------
+   CONTAINER + BACKGROUND LAYERS
+------------------------------------------------------- */
 .container {
     min-height: 100vh;
     width: 100%;
+    max-width: 100%;
     padding: 2rem 1.5rem;
-    /* reduced desktop padding */
     display: flex;
     align-items: center;
-    /* center vertically */
     justify-content: center;
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
     position: relative;
     overflow: hidden;
-    max-width: 100%;
 }
 
-.langToggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 99;
-}
-
-
-/* soft radial background pattern (subtle, keeps original effect) */
-.backgroundPattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.08;
-    background-image:
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 45%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* decorative soft blobs for desktop (makes the page feel less empty) */
+/* Decorative blurred blob (top-right) */
 .container::before {
     content: "";
     position: absolute;
@@ -49,159 +26,141 @@
     border-radius: 50%;
     filter: blur(120px);
     transform: rotate(10deg);
-    z-index: 0;
+    z-index: -1;
 }
 
-.container::after {
-    content: "";
+/* Subtle radial background pattern */
+.backgroundPattern {
     position: absolute;
-    bottom: -160px;
-    left: -140px;
-    width: 640px;
-    height: 640px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 50%;
-    filter: blur(120px);
-    transform: rotate(-8deg);
-    z-index: 0;
+    inset: 0;
+    opacity: 0.08;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: -2;
 }
 
-/* Card styles: wider and more premium on desktop */
+/* -------------------------------------------------------
+   LANGUAGE TOGGLE
+------------------------------------------------------- */
+.langToggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 99;
+}
+
+/* -------------------------------------------------------
+   CARDS (SUCCESS + ERROR)
+------------------------------------------------------- */
 .successCard,
 .errorCard {
     width: 100%;
     max-width: 920px;
-    /* wider on desktop */
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 35px 100px rgba(0, 0, 0, 0.35);
     position: relative;
     z-index: 2;
     animation: fadeSlide 0.6s ease-out;
-    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Slightly smaller error card width if you want visual variety (keeps original feel) */
+/* -------------------------------------------------------
+   WATERMARK INSIDE SUCCESS CARD
+------------------------------------------------------- */
+.successCard::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 260px;
+    height: 260px;
+    background-image: url('/MTIFavicon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+}
+
 .errorCard {
     max-width: 760px;
 }
 
-/* animation */
+/* Fade-in animation */
 @keyframes fadeSlide {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* icon wrappers (kept but adapted) */
-.iconWrapper {
-    position: relative;
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 12px 36px rgba(16, 185, 129, 0.28);
-    animation: scaleIn 1s ease-out 0.2s both;
-    overflow: visible;
-}
-
-/* Repeating slow aura wave */
-.iconWrapper::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 4px solid rgba(16, 185, 129, 0.4);
-    top: 0;
-    left: 0;
-
-    /* Repeat every 3 seconds */
-    animation: ring 3s ease-out infinite;
-    transform: scale(0.5);
-    opacity: 0;
-}
-
-@keyframes ring {
-    0% {
-        transform: scale(0.6);
-        opacity: 0;
-    }
-
-    40% {
-        opacity: 0.35;
-    }
-
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-}
-
-
+/* -------------------------------------------------------
+   ICON WRAPPERS
+------------------------------------------------------- */
+.iconWrapper,
 .errorIconWrapper {
     width: 84px;
     height: 84px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.iconWrapper {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 12px 36px rgba(16, 185, 129, 0.28);
+    animation: scaleIn 1s ease-out 0.2s both;
+    position: relative;
+}
+
+/* Pulsing ring */
+.iconWrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px solid rgba(16, 185, 129, 0.4);
+    animation: ring 3s ease-out infinite;
+    opacity: 0;
+}
+
+@keyframes ring {
+    0% { transform: scale(0.6); opacity: 0; }
+    40% { opacity: 0.35; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+.errorIconWrapper {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     box-shadow: 0 12px 36px rgba(239, 68, 68, 0.28);
     color: white;
 }
 
 @keyframes scaleIn {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
 }
 
-/* check icon style */
 .checkIcon {
-    color: white;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12));
     width: 70px;
     height: 70px;
+    color: white;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
 }
 
-/* badge */
-.badge {
-    font-size: 0.95rem;
-    padding: 0.5rem 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-}
-
-/* content spacing */
-.certContent {
-    padding: 1.5rem 0;
-}
-
-/* Title, name and program styles (bigger and balanced) */
+/* -------------------------------------------------------
+   TYPOGRAPHY + SECTIONS
+------------------------------------------------------- */
 .title {
     font-size: 2rem;
     font-weight: 800;
-    color: #0f172a;
-    margin: 0;
     text-align: center;
+    color: #0f172a;
 }
 
 .nameSection {
@@ -209,206 +168,136 @@
 }
 
 .name {
+    font-size: 2.25rem;
+    font-weight: 800;
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin: 0;
-    line-height: 1.15;
     text-transform: capitalize;
-    letter-spacing: -0.5px;
+    margin: 0;
 }
 
 .programSection {
     text-align: center;
     padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%);
+    background: linear-gradient(135deg, rgba(37,99,235,0.03), rgba(124,58,237,0.03));
     border-radius: 12px;
     border: 1px solid rgba(37, 99, 235, 0.06);
 }
 
 .program {
-    color: #0f172a;
     font-size: 1.4rem;
     font-weight: 700;
-    margin: 0;
-    line-height: 1.3;
+    color: #0f172a;
 }
 
-/* divider thicker for visual separation */
+.certContent {
+    padding: 1.5rem 0;
+}
+
+/* -------------------------------------------------------
+   DIVIDERS + METADATA
+------------------------------------------------------- */
 .divider {
     height: 2px;
-    background: linear-gradient(to right,
-            transparent,
-            rgba(37, 99, 235, 0.18),
-            rgba(124, 58, 237, 0.18),
-            transparent);
-    margin: 1.5rem 0;
     border-radius: 4px;
+    margin: 1.5rem 0;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(37, 99, 235, 0.18),
+        rgba(124, 58, 237, 0.18),
+        transparent
+    );
 }
 
-/* metadata area - grid on desktop */
 .metadata {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #fbfdff 0%, #f6f9fb 100%);
     border-radius: 12px;
+    background: linear-gradient(135deg, #fbfdff, #f6f9fb);
     border: 1px solid #e6eef7;
 }
 
-.metadataItem {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
+.metadataItem { display: flex; flex-direction: column; gap: 0.25rem; }
 
 .metadataLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-weight: 700;
-    font-size: 0.75rem;
 }
 
 .metadataValue {
-    color: #0f172a;
     font-weight: 600;
+    color: #0f172a;
 }
 
-/* footer */
+/* -------------------------------------------------------
+   FOOTER
+------------------------------------------------------- */
 .footer {
     padding-top: 1rem;
     border-top: 1px solid #e9eef6;
-    margin-top: 0.5rem;
 }
 
 .footerText {
+    text-align: center;
     color: #64748b;
     font-weight: 500;
-    text-align: center;
 }
 
-/* error-specific tweaks */
-.errorTitle {
-    color: #dc2626;
-    margin: 0;
-}
+/* -------------------------------------------------------
+   ERROR CONTENT
+------------------------------------------------------- */
+.errorTitle { color: #dc2626; }
+.errorMessage { color: #0f172a; font-weight: 600; }
+.errorSubtext { color: #64748b; }
 
-.errorMessage {
-    color: #0f172a;
-    font-weight: 600;
-}
-
-.errorSubtext {
-    color: #64748b;
-}
-
-/* smaller screens: keep the mobile-friendly compact design */
+/* -------------------------------------------------------
+   RESPONSIVE
+------------------------------------------------------- */
 @media (max-width: 992px) {
-    .container {
-        padding: 3rem 1.5rem;
-        align-items: center;
-    }
-
     .successCard,
     .errorCard {
         padding: 2.25rem;
         max-width: 720px;
     }
-
-    .title {
-        font-size: 1.8rem;
-    }
-
-    .name {
-        font-size: 1.85rem;
-    }
-
-    .checkIcon {
-        width: 60px;
-        height: 60px;
-    }
-
-    .divider {
-        margin: 1rem 0;
-        height: 1.5px;
-    }
-
-    .metadata {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
+    .title { font-size: 1.8rem; }
+    .name { font-size: 1.85rem; }
+    .checkIcon { width: 60px; height: 60px; }
 }
 
-/* tablet & mobile: single column layout */
 @media (max-width: 768px) {
-    .container {
-        padding: 2rem 1rem;
-    }
-
     .successCard,
     .errorCard {
         padding: 1.75rem;
         border-radius: 14px;
     }
-
-    .title {
-        font-size: 1.6rem;
-    }
-
-    .name {
-        font-size: 1.6rem;
-    }
-
-    .program {
-        font-size: 1.15rem;
-    }
-
     .metadata {
         grid-template-columns: 1fr;
         gap: 1rem;
         padding: 1rem;
     }
-
-    .checkIcon {
-        width: 50px;
-        height: 50px;
-    }
+    .title { font-size: 1.6rem; }
+    .name { font-size: 1.6rem; }
+    .program { font-size: 1.15rem; }
 }
 
-/* smallest phones */
 @media (max-width: 480px) {
-    .container {
-        padding: 1.2rem;
-    }
-
     .successCard,
     .errorCard {
         padding: 1rem;
     }
-
-    .title {
-        font-size: 1.25rem;
-    }
-
-    .name {
-        font-size: 1.4rem;
-    }
-
-    .program {
-        font-size: 1rem;
-    }
-
+    .title { font-size: 1.25rem; }
+    .name { font-size: 1.4rem; }
+    .program { font-size: 1rem; }
+    .divider { margin: 0.75rem 0; }
     .badge {
         font-size: 0.85rem;
         padding: 0.4rem 1rem;
-    }
-
-    .divider {
-        margin: 0.75rem 0;
     }
 }
