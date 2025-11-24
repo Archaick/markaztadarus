@@ -118,6 +118,13 @@ const AdminLogin = ({ onLoginSuccess }) => {
             Secure Certificate Management System
           </Text>
         </div>
+
+        <div className={styles.subFooter}>
+          <Text className={styles.subFooterText}>
+            Product by Markaz Tadarus Indonesia
+          </Text>
+        </div>
+
       </Card>
     </div>
   );
