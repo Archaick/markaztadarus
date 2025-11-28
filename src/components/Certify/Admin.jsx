@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Admin.module.css";
 import { db, auth } from "../../../firebaseConfig";
 import QrStats from "./QrStats";
+import BackupManager from "./BackupManager";
 import {
     collection,
     addDoc,
@@ -199,6 +200,12 @@ const Admin = () => {
         link.click();
     };
 
+    const handleImportComplete = () => {
+        // Refresh certificates after import
+        setPage(1);
+        fetchCertificates(1);
+    };
+
     const filteredCertificates = certificates.filter(
         (cert) =>
             cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -220,6 +227,9 @@ const Admin = () => {
                     Logout
                 </Button>
             </div>
+
+            {/* Backup Manager Component */}
+            <BackupManager onImportComplete={handleImportComplete} />
 
             <div className={styles.form}>
                 <TextInput
