@@ -94,8 +94,15 @@
 
 /* Fade-in animation */
 @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(40px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* -------------------------------------------------------
@@ -130,9 +137,19 @@
 }
 
 @keyframes ring {
-    0% { transform: scale(0.6); opacity: 0; }
-    40% { opacity: 0.35; }
-    100% { transform: scale(1.5); opacity: 0; }
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    40% {
+        opacity: 0.35;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
 }
 
 .errorIconWrapper {
@@ -142,15 +159,22 @@
 }
 
 @keyframes scaleIn {
-    from { transform: scale(0); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .checkIcon {
     width: 70px;
     height: 70px;
     color: white;
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.12));
 }
 
 /* -------------------------------------------------------
@@ -180,7 +204,7 @@
 .programSection {
     text-align: center;
     padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(37,99,235,0.03), rgba(124,58,237,0.03));
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.03), rgba(124, 58, 237, 0.03));
     border-radius: 12px;
     border: 1px solid rgba(37, 99, 235, 0.06);
 }
@@ -202,13 +226,11 @@
     height: 2px;
     border-radius: 4px;
     margin: 1.5rem 0;
-    background: linear-gradient(
-        to right,
-        transparent,
-        rgba(37, 99, 235, 0.18),
-        rgba(124, 58, 237, 0.18),
-        transparent
-    );
+    background: linear-gradient(to right,
+            transparent,
+            rgba(37, 99, 235, 0.18),
+            rgba(124, 58, 237, 0.18),
+            transparent);
 }
 
 .metadata {
@@ -221,7 +243,11 @@
     border: 1px solid #e6eef7;
 }
 
-.metadataItem { display: flex; flex-direction: column; gap: 0.25rem; }
+.metadataItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
 
 .metadataLabel {
     font-size: 0.75rem;
@@ -253,51 +279,118 @@
 /* -------------------------------------------------------
    ERROR CONTENT
 ------------------------------------------------------- */
-.errorTitle { color: #dc2626; }
-.errorMessage { color: #0f172a; font-weight: 600; }
-.errorSubtext { color: #64748b; }
+.errorTitle {
+    color: #dc2626;
+}
+
+.errorMessage {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.errorSubtext {
+    color: #64748b;
+}
 
 /* -------------------------------------------------------
    RESPONSIVE
 ------------------------------------------------------- */
 @media (max-width: 992px) {
+
     .successCard,
     .errorCard {
         padding: 2.25rem;
         max-width: 720px;
     }
-    .title { font-size: 1.8rem; }
-    .name { font-size: 1.85rem; }
-    .checkIcon { width: 60px; height: 60px; }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .name {
+        font-size: 1.85rem;
+    }
+
+    .checkIcon {
+        width: 60px;
+        height: 60px;
+    }
 }
 
 @media (max-width: 768px) {
+
     .successCard,
     .errorCard {
         padding: 1.75rem;
         border-radius: 14px;
     }
+
     .metadata {
         grid-template-columns: 1fr;
         gap: 1rem;
         padding: 1rem;
     }
-    .title { font-size: 1.6rem; }
-    .name { font-size: 1.6rem; }
-    .program { font-size: 1.15rem; }
+
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .name {
+        font-size: 1.6rem;
+    }
+
+    .program {
+        font-size: 1.15rem;
+    }
 }
 
 @media (max-width: 480px) {
+
     .successCard,
     .errorCard {
         padding: 1rem;
     }
-    .title { font-size: 1.25rem; }
-    .name { font-size: 1.4rem; }
-    .program { font-size: 1rem; }
-    .divider { margin: 0.75rem 0; }
+
+    .title {
+        font-size: 1.25rem;
+    }
+
+    .name {
+        font-size: 1.4rem;
+    }
+
+    .program {
+        font-size: 1rem;
+    }
+
+    .divider {
+        margin: 0.75rem 0;
+    }
+
     .badge {
         font-size: 0.85rem;
         padding: 0.4rem 1rem;
     }
+}
+
+/* -------------------------------------------------------
+   REALISTIC STAMP ABOVE FOOTER (VITE SAFE)
+------------------------------------------------------- */
+.footerWrapper {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.stamp {
+    position: absolute;
+    bottom: 1px;
+    /* sits right above the footer text */
+    left: 50%;
+    transform: translateX(-50%) rotate(12deg);
+    width: 120px;
+    height: auto;
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+
 }

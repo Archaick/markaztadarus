@@ -6,6 +6,8 @@ import { Container, Title, Text, Card, Stack, Badge, Loader, Center, Button, Men
 import { IconCertificate, IconAlertCircle, IconCheck, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./CertificateVerify.module.css";
+import stampImg from "../../assets/imgs/stamp.png"
+
 
 const CertificateVerify = () => {
     const { code } = useParams();
@@ -175,9 +177,11 @@ const CertificateVerify = () => {
                         )}
                     </Stack>
 
-                    <Center>
+                    <Center className={styles.footerWrapper}>
+                        <img src={stampImg} alt="Stamp" className={styles.stamp} />
                         <Text size="xs" color="dimmed">{t("footer_text")}</Text>
                     </Center>
+
                 </Stack>
             </Card>
         </Container>
