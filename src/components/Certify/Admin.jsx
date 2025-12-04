@@ -1,4 +1,4 @@
-// src/.../Admin.jsx
+// src/.../Admin.jsx - Enhanced Security Version
 import React, { useState, useEffect } from "react";
 import styles from "./Admin.module.css";
 import { db, auth } from "../../../firebaseConfig";
@@ -14,6 +14,7 @@ import {
     orderBy,
     startAfter,
     limit as firestoreLimit,
+    where,
 } from "firebase/firestore";
 
 import {
@@ -27,6 +28,7 @@ import {
     Modal,
     Text,
     PasswordInput,
+    Alert,
 } from "@mantine/core";
 
 import QRCode from "qrcode";
@@ -39,6 +41,7 @@ import {
 } from "firebase/auth";
 
 const ITEMS_PER_PAGE = 5;
+const MAX_RETRIES = 3; // For code generation collision handling
 
 const Admin = () => {
     const [certificates, setCertificates] = useState([]);
@@ -53,18 +56,78 @@ const Admin = () => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState(null);
     const [reauthPassword, setReauthPassword] = useState("");
+    const [securityWarning, setSecurityWarning] = useState("");
 
     const certCollection = collection(db, "certificates");
 
+    // ========== SECURITY: Cryptographic Code Generation ==========
+    const generateSecureCode = async () => {
+        const array = new Uint8Array(6);
+        crypto.getRandomValues(array);
+        
+        // Convert to alphanumeric code (uppercase)
+        return Array.from(array)
+            .map(b => b.toString(36).toUpperCase())
+            .join('')
+            .substring(0, 8);
+    };
+
+    // ========== SECURITY: Check for code uniqueness ==========
+    const isCodeUnique = async (code) => {
+        try {
+            const q = query(certCollection, where("code", "==", code));
+            const snapshot = await getDocs(q);
+            return snapshot.empty;
+        } catch (err) {
+            console.error("Error checking code uniqueness:", err);
+            return false;
+        }
+    };
+
+    // ========== SECURITY: Generate unique code with retries ==========
+    const generateUniqueCode = async () => {
+        for (let i = 0; i < MAX_RETRIES; i++) {
+            const code = await generateSecureCode();
+            const unique = await isCodeUnique(code);
+            if (unique) return code;
+        }
+        throw new Error("Failed to generate unique code after multiple attempts");
+    };
+
+    // ========== SECURITY: Input Sanitization ==========
+    const sanitizeInput = (input) => {
+        return input
+            .trim()
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .substring(0, 200); // Limit length
+    };
+
     const sanitizeFilename = (s) =>
         s.replace(/[^\w\-_. ]+/g, "").replace(/\s+/g, "_");
+
+    // ========== SECURITY: Verify admin authentication ==========
+    const verifyAdminAuth = () => {
+        const user = auth?.currentUser;
+        if (!user) {
+            setSecurityWarning("Authentication required. Please log in again.");
+            setTimeout(() => {
+                signOut(auth).then(() => (window.location.href = "/cert-login"));
+            }, 2000);
+            return false;
+        }
+        return true;
+    };
 
     const generateQRCodes = async (certData) => {
         try {
             const results = await Promise.all(
                 certData.map(async (cert) => {
                     const qrUrl = `${window.location.origin}/verify/${cert.code}`;
-                    const qrDataUrl = await QRCode.toDataURL(qrUrl);
+                    const qrDataUrl = await QRCode.toDataURL(qrUrl, {
+                        errorCorrectionLevel: 'H', // Higher error correction
+                        margin: 2,
+                        width: 300
+                    });
                     return { id: cert.id, qrDataUrl };
                 })
             );
@@ -76,6 +139,8 @@ const Admin = () => {
     };
 
     const fetchCertificates = async (pageNum = 1) => {
+        if (!verifyAdminAuth()) return;
+        
         setLoading(true);
         try {
             let qQuery = query(
@@ -116,7 +181,7 @@ const Admin = () => {
             );
         } catch (err) {
             console.error("Error fetching certificates:", err);
-            alert("Failed to load certificates");
+            setSecurityWarning("Failed to load certificates. Check your permissions.");
         } finally {
             setLoading(false);
         }
@@ -127,29 +192,51 @@ const Admin = () => {
     }, []);
 
     const handleAdd = async () => {
-        if (!newCert.name || !newCert.program) {
-            return alert("Please fill all fields.");
+        // Input validation
+        const sanitizedName = sanitizeInput(newCert.name);
+        const sanitizedProgram = sanitizeInput(newCert.program);
+
+        if (!sanitizedName || !sanitizedProgram) {
+            return alert("Please fill all fields with valid data.");
         }
+
+        if (!verifyAdminAuth()) return;
 
         setActionLoading(true);
         try {
-            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const newData = { ...newCert, code, createdAt: new Date() };
+            // Generate cryptographically secure unique code
+            const code = await generateUniqueCode();
+            
+            const newData = {
+                name: sanitizedName,
+                program: sanitizedProgram,
+                code,
+                createdAt: new Date(),
+                createdBy: auth.currentUser.email, // Track who created it
+            };
 
             const docRef = await addDoc(certCollection, newData);
             const addedCert = { id: docRef.id, ...newData };
 
             const qrUrl = `${window.location.origin}/verify/${code}`;
-            const qrDataUrl = await QRCode.toDataURL(qrUrl);
+            const qrDataUrl = await QRCode.toDataURL(qrUrl, {
+                errorCorrectionLevel: 'H',
+                margin: 2,
+                width: 300
+            });
 
             setCertificates((prev) => [addedCert, ...prev.slice(0, ITEMS_PER_PAGE - 1)]);
             setQrCodes((prev) => ({ ...prev, [docRef.id]: qrDataUrl }));
 
             setNewCert({ name: "", program: "" });
-            alert("Certificate added successfully!");
+            alert("Certificate added successfully with secure code!");
         } catch (err) {
             console.error("Error adding certificate:", err);
-            alert("Failed to add certificate");
+            if (err.code === 'permission-denied') {
+                setSecurityWarning("Permission denied. Check Firestore security rules.");
+            } else {
+                alert("Failed to add certificate: " + err.message);
+            }
         } finally {
             setActionLoading(false);
         }
@@ -184,7 +271,13 @@ const Admin = () => {
             alert("Certificate deleted!");
         } catch (err) {
             console.error("Delete error:", err);
-            alert(err.code === "auth/wrong-password" ? "Wrong password." : "Delete failed.");
+            if (err.code === 'auth/wrong-password') {
+                alert("Wrong password.");
+            } else if (err.code === 'permission-denied') {
+                setSecurityWarning("Permission denied. Check Firestore security rules.");
+            } else {
+                alert("Delete failed: " + err.message);
+            }
         } finally {
             setActionLoading(false);
         }
@@ -201,7 +294,6 @@ const Admin = () => {
     };
 
     const handleImportComplete = () => {
-        // Refresh certificates after import
         setPage(1);
         fetchCertificates(1);
     };
@@ -216,6 +308,12 @@ const Admin = () => {
         <div className={styles.container}>
             <Title order={2}>Admin Certificate Panel</Title>
 
+            {securityWarning && (
+                <Alert color="red" title="Security Warning" mb="md" withCloseButton onClose={() => setSecurityWarning("")}>
+                    {securityWarning}
+                </Alert>
+            )}
+
             <div className={styles.headerActions}>
                 <QrStats />
                 <Button
@@ -228,7 +326,6 @@ const Admin = () => {
                 </Button>
             </div>
 
-            {/* Backup Manager Component */}
             <BackupManager onImportComplete={handleImportComplete} />
 
             <div className={styles.form}>
@@ -238,6 +335,7 @@ const Admin = () => {
                     value={newCert.name}
                     onChange={(e) => setNewCert({ ...newCert, name: e.target.value })}
                     disabled={actionLoading}
+                    maxLength={200}
                 />
                 <TextInput
                     label="Program"
@@ -245,6 +343,7 @@ const Admin = () => {
                     value={newCert.program}
                     onChange={(e) => setNewCert({ ...newCert, program: e.target.value })}
                     disabled={actionLoading}
+                    maxLength={200}
                 />
                 <Button mt="sm" onClick={handleAdd} loading={actionLoading}>
                     Add Certificate
@@ -316,7 +415,11 @@ const Admin = () => {
 
                     {!searchTerm && totalPages > 1 && (
                         <Group justify="center" mt="lg">
-                            <Pagination value={page} onChange={(p) => { setPage(p); fetchCertificates(p); }} total={totalPages} />
+                            <Pagination 
+                                value={page} 
+                                onChange={(p) => { setPage(p); fetchCertificates(p); }} 
+                                total={totalPages} 
+                            />
                         </Group>
                     )}
                 </>

@@ -167,7 +167,19 @@ const CertificateVerify = () => {
                     <div className={styles.divider} />
 
                     <Stack spacing="xs" className={styles.metadata}>
-                        <Text><strong>{t("document_code")}</strong> {certificate.code}</Text>
+                        <Text>
+                            <strong>{t("document_code")}</strong>
+
+                            {i18n.language === "ar" ? (
+                                <>
+                                    <br />
+                                    <span className={styles.ltrCode}>{certificate.code}</span>
+                                </>
+                            ) : (
+                                <span className={styles.ltrCode}> {certificate.code}</span>
+                            )}
+                        </Text>
+
 
                         {certificate.createdAt && (
                             <Text>
