@@ -29,7 +29,7 @@ import {
     PasswordInput,
     Alert,
 } from "@mantine/core";
-import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle } from '@tabler/icons-react';
+import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle, IconDownload, IconTrash } from '@tabler/icons-react';
 import QRCode from "qrcode";
 import LoadingOverlay from "../LoadingOverlay";
 import {
@@ -261,8 +261,8 @@ const Admin = () => {
             const errorMessage = err.code === "auth/wrong-password"
                 ? "Incorrect password. Please try again."
                 : err.code === "permission-denied"
-                ? "Permission denied. Check Firestore security rules."
-                : err.message || "Deletion failed.";
+                    ? "Permission denied. Check Firestore security rules."
+                    : err.message || "Deletion failed.";
             showNotification("error", "Delete Failed", errorMessage);
         } finally {
             setActionLoading(false);
@@ -393,19 +393,27 @@ const Admin = () => {
                                         </td>
                                         <td>
                                             <Group spacing="xs" justify="center">
-                                                <Button color="blue" size="xs" onClick={() => handleDownloadQR(cert)}>
-                                                    Download
+                                                <Button
+                                                    color="blue"
+                                                    size="s"
+                                                    onClick={() => handleDownloadQR(cert)}
+                                                    title="Download QR Code"
+                                                    p="xs"
+                                                >
+                                                    <IconDownload size={16} />
                                                 </Button>
                                                 <Button
                                                     color="red"
-                                                    size="xs"
+                                                    size="s"
                                                     onClick={() => {
                                                         setDeleteTargetId(cert.id);
                                                         setReauthPassword("");
                                                         setDeleteModalOpen(true);
                                                     }}
+                                                    title="Delete Certificate"
+                                                    p="xs"
                                                 >
-                                                    Delete
+                                                    <IconTrash size={16} />
                                                 </Button>
                                             </Group>
                                         </td>
