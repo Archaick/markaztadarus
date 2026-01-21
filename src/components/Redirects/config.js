@@ -63,4 +63,8 @@ export const redirects = {
 
   "Kuesioner-Mahad-Hidayatullah":
     "https://docs.google.com/forms/d/e/1FAIpQLSf98ZPwnoHoT8fKx_bkfU_DW6Pya1w2iqa_kb1dNPwnRR1WgQ/viewform",
+
+
+  haqibahmutaqaddim:
+    "https://drive.google.com/drive/folders/1bxCpKp3GgijKmQyo6SDnA7ySUXKj8BAj"
 };
