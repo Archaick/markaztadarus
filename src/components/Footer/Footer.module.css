@@ -63,7 +63,8 @@
 }
 
 .column {
-  flex: 1 1 100%; /* Full width on mobile */
+  flex: 1 1 100%;
+  /* Full width on mobile */
 }
 
 .infoLinks {
@@ -72,7 +73,8 @@
 
 .link {
   color: #c8c8c8;
-  text-decoration: none; /* Removes underline */
+  text-decoration: none;
+  /* Removes underline */
   transition: color 0.3s ease-in-out;
 }
 
@@ -82,18 +84,20 @@
 }
 
 .socialIcon {
-  color: #fff; 
+  color: #fff;
   transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
 .socialIcon:hover {
   color: #b37d08;
-  transform: scale(1.1); 
+  transform: scale(1.1);
 }
 
-.email, .phone {
+.email,
+.phone {
   color: #c8c8c8;
-  text-decoration: none; /* Removes underline */
+  text-decoration: none;
+  /* Removes underline */
   transition: color 0.3s ease-in-out;
 }
 
@@ -106,16 +110,27 @@
 
 @media (min-width: 768px) {
   .column {
-    flex: 1 1 calc(30% - 20px); /* First column takes 30% of the width */
+    flex: 1 1 calc(30% - 20px);
+    /* First column takes 30% of the width */
   }
 
   .column:nth-child(2) {
-    flex: 1 1 calc(20% - 20px); /* Second column takes 20% of the width */
+    flex: 1 1 calc(20% - 20px);
+    /* Second column takes 20% of the width */
   }
 
   .column:last-child {
-    flex: 1 1 calc(50% - 20px); /* Third column takes 50% of the width */
+    flex: 1 1 calc(50% - 20px);
+    /* Third column takes 50% of the width */
   }
+}
+
+
+.ahuLogo {
+  max-width: 340px;
+  width: 100%;
+  opacity: 0.9;
+  /* optional: softer legal look */
 }
 
 .subfooter {
@@ -130,6 +145,7 @@
     width: 240px;
     margin-bottom: 10px;
   }
+
   .column:last-child iframe {
     height: 300px;
   }

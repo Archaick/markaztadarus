@@ -4,7 +4,6 @@ import {
   IconBrandInstagram,
   IconBrandYoutube,
   IconMail,
-  IconMapPin,
   IconPhoneFilled,
 } from "@tabler/icons-react";
 import {
@@ -19,9 +18,11 @@ import {
 import { useTranslation } from "react-i18next";
 import styles from "./Footer.module.css";
 import whiteLogo from "../../assets/imgs/MT-logo.svg";
+import yayasan from "../../assets/imgs/AHU.png";
 
 const Footer = () => {
-  const { t } = useTranslation("common/Footer");
+  const { t, i18n } = useTranslation("common/Footer");
+  const isArabic = i18n.language.startsWith("ar");
   const whatsappUrl =
     "https://wa.me/6281210010733?text=Assalamu%20Alaikum%20warahmatullah%20wabarakatuh.%20%0A%0Asaya%20ingin%20berkonsultasi";
 
@@ -107,28 +108,44 @@ const Footer = () => {
             </Stack>
           </div>
 
-          {/* Third Column */}
+          {/* Third Column - Legal/Registration */}
           <div className={styles.column}>
             <Stack spacing="sm">
-              <Text size="lg" weight={600}>
-                {t("address")}
+              <Image
+                src={yayasan}
+                alt="Kemenkumham Registration"
+                fit="contain"
+                draggable={false}
+                className={styles.ahuLogo}
+              />
+
+              <Text
+                size="sm"
+                color="#d4d4d4"
+                style={{
+                  lineHeight: 1.6,
+                  textAlign: isArabic ? "right" : "left",
+                  direction: isArabic ? "rtl" : "ltr",
+                }}
+              >
+                {t("description")}
               </Text>
-              <Group spacing="sm">
-                <IconMapPin size={20} />
-                <Text color="#c8c8c8">
-                  Jl. Belimbing 1 No.32 2, RT.2/RW.1, Srengseng, Kec. Kembangan,
-                  Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11630
+
+              <div style={{
+                borderLeft: '3px solid #b37d08',
+                paddingLeft: '12px',
+                marginTop: '8px'
+              }}>
+                <Text size="xs" color="#c8c8c8" style={{ marginBottom: '4px' }}>
+                  Registered under
                 </Text>
-              </Group>
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d247.90546088526807!2d106.75978070333016!3d-6.199249358822371!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xab0a011bc11d515d%3A0x787e75220eaca7e6!2sMarkaz%20Tadarus%20Indonesia!5e0!3m2!1sen!2sid!4v1740981015725!5m2!1sen!2sid"
-                width="100%"
-                height="220"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                title="Markaz Tadarus Location"
-              ></iframe>
+                <Text size="sm" weight={600} color="#ffffff">
+                  Yayasan Madinatul Hijaz Jakarta
+                </Text>
+                <Text size="xs" color="#a8a8a8" style={{ marginTop: '6px', lineHeight: 1.4 }}>
+                  Ministry of Law and Human Rights of the Republic of Indonesia
+                </Text>
+              </div>
             </Stack>
           </div>
         </div>
@@ -136,13 +153,8 @@ const Footer = () => {
         {/* Subfooter */}
         <Divider my="md" color="white" mt={50} size="md" />
         <Text className={styles.subfooter}>
-          © 2025 Markaz Tadarus. All rights reserved
+          © 2026 Markaz Tadarus. All rights reserved
         </Text>
-        {/* For verification */}
-        <Text className={styles.subfooter}>
-          Markaz Tadarus is a religious and social non-profit under <strong>Yayasan Madinatul Hijaz Jakarta</strong>, registered with the Ministry of Law and Human Rights of the Republic of Indonesia <strong>SK No. AHU-0007727.AH.01.04.Tahun2022.</strong>
-        </Text>
-
       </Container>
     </footer>
   );
