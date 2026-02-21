@@ -66,5 +66,32 @@ export const redirects = {
 
 
   haqibahmutaqaddim:
-    "https://drive.google.com/drive/folders/1bxCpKp3GgijKmQyo6SDnA7ySUXKj8BAj"
+    "https://drive.google.com/drive/folders/1bxCpKp3GgijKmQyo6SDnA7ySUXKj8BAj",
+
+
+    DefinisiQuran: 
+    "https://docs.google.com/forms/d/e/1FAIpQLSeeEkEdumICeVZ_bXJkSNQQTIaCbyhFrsPaS8syXr8VCbvQig/viewform",
+
+    "SifatQuran-DariIsinya": 
+    "https://docs.google.com/forms/d/e/1FAIpQLScprcszAF6OkfemeNepI4lc7mmeGWK_CvzwyvgLhXHtjfxtBA/viewform",
+
+    KeutamaanQuran:
+    "https://docs.google.com/forms/d/e/1FAIpQLSdNjDwFZfrU59MGtpWLg62Wi3pRqOAJ_e7JPxryUes52iyivw/viewform",
+
+
+    SebelumBelajarQuran:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfyc1dNsS0IAEojMIDYNTOUfgNZRC1qfsGCTZS6D9TdLDq-AQ/viewform",
+
+    SetelahBelajarQuran:
+    "https://docs.google.com/forms/d/e/1FAIpQLScLQW7pXiOEqjhB8xQMrvR0PK5-8S1nGMBfDTedEaOSn55Plw/viewform",
+
+    MaknaTadarus:
+    "https://docs.google.com/forms/d/e/1FAIpQLScilOqGttxSFIBsL1_5EotJdSSCCPPrmM5Zh1752heE3JsEag/viewform",
+
+    KeutamaanTadarus:
+    "https://docs.google.com/forms/d/e/1FAIpQLSd3OhHtReaZO1LPXDSwQqgjZCvjSL3MQlP8GTNIOD8aRG2RKw/viewform"
 };
+
+
+
+
