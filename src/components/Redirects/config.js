@@ -89,7 +89,20 @@ export const redirects = {
     "https://docs.google.com/forms/d/e/1FAIpQLScilOqGttxSFIBsL1_5EotJdSSCCPPrmM5Zh1752heE3JsEag/viewform",
 
     KeutamaanTadarus:
-    "https://docs.google.com/forms/d/e/1FAIpQLSd3OhHtReaZO1LPXDSwQqgjZCvjSL3MQlP8GTNIOD8aRG2RKw/viewform"
+    "https://docs.google.com/forms/d/e/1FAIpQLSd3OhHtReaZO1LPXDSwQqgjZCvjSL3MQlP8GTNIOD8aRG2RKw/viewform",
+
+
+    QuranPerkataanAllah:
+    "https://docs.google.com/forms/d/e/1FAIpQLSeeEkEdumICeVZ_bXJkSNQQTIaCbyhFrsPaS8syXr8VCbvQig/viewform",
+
+    PenerimaWahyuQuran:
+    "https://docs.google.com/forms/d/e/1FAIpQLScWg4k_xLCjXpfGqcd_98WdSXOazSKubNbMIA2ADvZ7Xo4I-g/viewform",
+
+    PenyampaianQuran:
+    "https://docs.google.com/forms/d/e/1FAIpQLSfU24qzo1k8Cnud_vLuzJ9NJx3G-iXxYQkskYHsbq9N3u8nXg/viewform",
+
+    "KekhususanQuran-SisiIbadah":
+    "https://docs.google.com/forms/d/e/1FAIpQLSdaKn1i1mVK1B6REvALdGkHwQdnfBCqhzVJ8Uof1CXLDQbNMQ/viewform",
 };
 
 
