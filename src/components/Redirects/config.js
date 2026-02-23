@@ -68,40 +68,38 @@ export const redirects = {
   haqibahmutaqaddim:
     "https://drive.google.com/drive/folders/1bxCpKp3GgijKmQyo6SDnA7ySUXKj8BAj",
 
-
     DefinisiQuran: 
     "https://docs.google.com/forms/d/e/1FAIpQLSeeEkEdumICeVZ_bXJkSNQQTIaCbyhFrsPaS8syXr8VCbvQig/viewform",
 
-    "SifatQuran-DariIsinya": 
+    "Apakah-sifat-quran-dari-sisi-isinya": 
     "https://docs.google.com/forms/d/e/1FAIpQLScprcszAF6OkfemeNepI4lc7mmeGWK_CvzwyvgLhXHtjfxtBA/viewform",
 
-    KeutamaanQuran:
+    "Bagaimana-keutamaan-Quran-atas-seluruh-nikmat":
     "https://docs.google.com/forms/d/e/1FAIpQLSdNjDwFZfrU59MGtpWLg62Wi3pRqOAJ_e7JPxryUes52iyivw/viewform",
 
 
-    SebelumBelajarQuran:
+    "Apa-yang-harus-dipelajari-sebelum-belajar-quran":
     "https://docs.google.com/forms/d/e/1FAIpQLSfyc1dNsS0IAEojMIDYNTOUfgNZRC1qfsGCTZS6D9TdLDq-AQ/viewform",
 
-    SetelahBelajarQuran:
+    "Apa-yang-harus-dilakukan-setelah-mempelajari-quran":
     "https://docs.google.com/forms/d/e/1FAIpQLScLQW7pXiOEqjhB8xQMrvR0PK5-8S1nGMBfDTedEaOSn55Plw/viewform",
 
-    MaknaTadarus:
+    "Apa-arti-tadarus":
     "https://docs.google.com/forms/d/e/1FAIpQLScilOqGttxSFIBsL1_5EotJdSSCCPPrmM5Zh1752heE3JsEag/viewform",
 
-    KeutamaanTadarus:
+    "Apa-keutamaan-tadarus":
     "https://docs.google.com/forms/d/e/1FAIpQLSd3OhHtReaZO1LPXDSwQqgjZCvjSL3MQlP8GTNIOD8aRG2RKw/viewform",
 
-
-    QuranPerkataanAllah:
+    "Perkataan-siapakah-quran-itu-dan-bagaimana-sifatnya":
     "https://docs.google.com/forms/d/e/1FAIpQLSeeEkEdumICeVZ_bXJkSNQQTIaCbyhFrsPaS8syXr8VCbvQig/viewform",
 
-    PenerimaWahyuQuran:
+    "Diturunkan-kepada-siapakah-quran-itu-dan-melalui-siapa":
     "https://docs.google.com/forms/d/e/1FAIpQLScWg4k_xLCjXpfGqcd_98WdSXOazSKubNbMIA2ADvZ7Xo4I-g/viewform",
 
-    PenyampaianQuran:
+    "Bagaimanakah-quran-sampai-kepada-kita":
     "https://docs.google.com/forms/d/e/1FAIpQLSfU24qzo1k8Cnud_vLuzJ9NJx3G-iXxYQkskYHsbq9N3u8nXg/viewform",
 
-    "KekhususanQuran-SisiIbadah":
+    "Apa-kekhususan-quran-dari-sisi-ibadah":
     "https://docs.google.com/forms/d/e/1FAIpQLSdaKn1i1mVK1B6REvALdGkHwQdnfBCqhzVJ8Uof1CXLDQbNMQ/viewform",
 };
 
