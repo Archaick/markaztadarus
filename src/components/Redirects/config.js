@@ -101,6 +101,33 @@ export const redirects = {
 
     "Apa-kekhususan-quran-dari-sisi-ibadah":
     "https://docs.google.com/forms/d/e/1FAIpQLSdaKn1i1mVK1B6REvALdGkHwQdnfBCqhzVJ8Uof1CXLDQbNMQ/viewform",
+
+
+    // 28 feb, 2026
+
+    "Apakah-sifat-quran-dari-sisi-kemuliaannya":
+    "https://docs.google.com/forms/d/e/1FAIpQLScKpUyD7QHMgCo-fHiB6Pov4fV6jZhFfSSGCSduuKY7FyekDg/viewform",
+    
+    "Apakah-sifat-quran-dari-sisi-fungsinya-bagian1":
+    "https://docs.google.com/forms/d/e/1FAIpQLSc7C8CBIZmlO0qOnDlKpYcyfcfCa9hFsq7Gtg2iYfqHsZZovQ/viewform",
+
+    "Apakah-sifat-quran-dari-sisi-fungsinya-bagian2":
+    "https://docs.google.com/forms/d/e/1FAIpQLScPOk-ta7ZmqCKkOPoGksoIfLfMe5NGXEcp4spcyhCYLX07kw/viewform",
+
+    "Apa-keutamaan-quran-atas-kitab-suci-sebelumnya":
+    "https://docs.google.com/forms/d/e/1FAIpQLSdaAjfQnsCcFYdGNrHirqUQP-GLcJWXg_E199U-cH_m5AvQoQ/viewform",
+
+    "Bagaimana-keutamaan-kalamullah-atas-kalam-makhluk":
+    "https://docs.google.com/forms/d/e/1FAIpQLSfNJyhb3785_iBUu_kRxx5cO1aY39mNBlXjI_u2WpXlAEbYtw/viewform",
+
+    "Apa-yang-harus-bertambah-setelah-mempelajari-quran":
+    "https://docs.google.com/forms/d/e/1FAIpQLSfUzOl8is00vBgxxN1r9gQERclIncpPAnlpdQfOlURLmWCQJg/viewform",
+
+    "Apa-tujuan-mempelajari-quran":
+    "https://docs.google.com/forms/d/e/1FAIpQLSehNLKXsT_7GcEpYLEL_S9hYtl8RI8LbS2L-pcPOfm4dSzaqQ/viewform",
+
+    "":
+    "",
 };
 
 
