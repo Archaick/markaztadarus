@@ -18,7 +18,31 @@ export default function NavbarHome() {
     { id: "home", key: "menu.home" },
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
+    { id: "hidayah", key: "menu.hidayah", special: true },
   ];
+
+  const [timeLeft, setTimeLeft] = useState("");
+  const targetDate = new Date("2026-04-20T00:00:00").getTime();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        setTimeLeft(t("countdown.expired"));
+        clearInterval(timer);
+      } else {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [t]);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -49,6 +73,12 @@ export default function NavbarHome() {
           {navItems.map((item) => (
             <a key={item.id} href={`#${item.id}`} className={styles.navLink}>
               {t(item.key)}
+              {item.special && (
+                <div className={styles.countdownBadge}>
+                  <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
+                  <span className={styles.countdownTime}>{timeLeft}</span>
+                </div>
+              )}
             </a>
           ))}
 
@@ -134,6 +164,12 @@ export default function NavbarHome() {
                 className={styles.navLink}
               >
                 {t(item.key)}
+                {item.special && (
+                  <div className={styles.countdownBadgeMobile}>
+                    <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
+                    <span className={styles.countdownTime}>{timeLeft}</span>
+                  </div>
+                )}
               </a>
             ))}
           </nav>

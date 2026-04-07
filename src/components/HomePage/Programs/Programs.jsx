@@ -11,6 +11,7 @@ import Pelatihan from "../../../assets/imgs/homepage/programs/pelatihan.jpg";
 import Majelis from "../../../assets/imgs/homepage/hero.jpg";
 import Karya from "../../../assets/imgs/homepage/programs/karya.jpg";
 import Umrah from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
+import Diploma from "../../../assets/imgs/homepage/programs/diploma.png";
 
 const Programs = () => {
   const { t } = useTranslation("homepage/Programs");
@@ -46,6 +47,12 @@ const Programs = () => {
       title: t("programs.umrah.title"),
       description: t("programs.umrah.description"),
       link: "/umrah",
+    },
+    {
+      src: Diploma,
+      title: t("programs.hidayah.title"),
+      description: t("programs.hidayah.description"),
+      link: "#",
     },
   ];
 

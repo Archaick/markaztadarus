@@ -2,7 +2,12 @@
   "menu": {
     "home": "Home",
     "about": "About Us",
-    "programs": "Our Programs"
+    "programs": "Our Programs",
+    "hidayah": "Hidayah Diploma"
+  },
+  "countdown": {
+    "prefix": "Opens In:",
+    "expired": "Registration Open"
   },
   "language": "English"
 }

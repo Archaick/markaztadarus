@@ -2,7 +2,12 @@
   "menu": {
     "home": "الرئيسية",
     "about": "معلومات عنا",
-    "programs": "برامجنا"
+    "programs": "برامجنا",
+    "hidayah": "دبلوم الهدايات"
+  },
+  "countdown": {
+    "prefix": "يبدأ في:",
+    "expired": "التسجيل مفتوح"
   },
   "language": "العربية"
 }

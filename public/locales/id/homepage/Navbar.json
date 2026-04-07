@@ -2,7 +2,12 @@
   "menu": {
     "home": "Beranda",
     "about": "Tentang Kami",
-    "programs": "Program Kami"
+    "programs": "Program Kami",
+    "hidayah": "Diploma Hidayah"
+  },
+  "countdown": {
+    "prefix": "Buka dalam:",
+    "expired": "Pendaftaran Terbuka"
   },
   "language": "Bahasa"
 }
