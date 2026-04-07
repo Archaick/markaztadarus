@@ -24,6 +24,7 @@ i18n
       "homepage/Programs",
       "homepage/Stats",
       "certify/CertificateVerify",
+      "hidayah/Hidayah"
     ], 
     defaultNS: "homepage/Navbar",
     interpolation: {

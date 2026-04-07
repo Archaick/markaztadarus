@@ -1,0 +1,49 @@
+{
+  "title": "Tentang Program Daurah Hidayah al-Qur’an",
+  "about": "Program Daurah Hidayah al-Qur’an merupakan program pembelajaran yang mencakup tema-tema penting dalam kajian Ulum al-Qur’an (ilmu-ilmu al-Qur’an) dan ushul tafsir (dasar-dasar penafsiran). Program ini dirancang untuk memberikan pemahaman yang mendalam terhadap al-Qur’an serta membantu peserta dalam menggali kandungan maknanya.",
+  "books_intro": "Materi Daurah Hidayah al-Qur’an disusun berdasarkan buku-buku yang akan dibahas, yaitu:",
+  "books": [
+    "Pengantar Studi al-Qur’an",
+    "Pengantar Ilmu Hidayah al-Qur’an",
+    "Prinsip dan Kaidah Hidayah al-Qur’an",
+    "Balaghah dalam al-Qur’an",
+    "Ilmu Istinbath dari al-Qur’an",
+    "Metode Ulama dalam Menggali Hidayah al-Qur’an",
+    "Maqashid al-Qur’an",
+    "Penerapan Hidayah al-Qur’an dalam Kehidupan"
+  ],
+  "about_ext": "Program ini diselenggarakan dalam bentuk pembelajaran intensif dengan biaya gratis (di luar pembelian buku materi sebagai penunjang pembelajaran), serta memberikan sertifikat internasional dengan sistem pembelajaran yang fleksibel dan komprehensif.",
+  "system_title": "Sistem Pembelajaran",
+  "system_items": [
+    "Pembelajaran menggunakan bahasa Arab sebagai bahasa pengantar.",
+    "Program dilaksanakan secara tatap muka daring (online) melalui Zoom Meeting.",
+    "Materi disusun berdasarkan 8 buku Hidayah al-Qur’an yang dipelajari secara bertahap.",
+    "Setiap buku dipelajari dalam ±28 kali pertemuan, dengan frekuensi 3 kali per pekan, sehingga durasi pembelajaran per buku sekitar 2–2,5 bulan.",
+    "Durasi setiap pertemuan berlangsung selama 60–90 menit."
+  ],
+  "requirements_title": "Syarat Keikutsertaan",
+  "requirements_items": [
+    "Lulusan Sarjana (S1) dari jurusan Studi Islam atau Bahasa Arab.",
+    "Memiliki kemampuan bahasa Arab yang memadai.",
+    "Lulus seleksi wawancara yang diselenggarakan oleh Markaz Tadarus Indonesia."
+  ],
+  "terms_title": "Ketentuan Program",
+  "terms_items": [
+    "Pendaftaran dibuka pada tanggal 9–20 April 2026.",
+    "Pelaksanaan wawancara peserta: 21–23 April 2026.",
+    "Pengumuman hasil seleksi: 26 April 2026.",
+    "Peserta yang telah terdaftar dianjurkan memiliki buku pembelajaran sebagai penunjang selama program berlangsung.",
+    "Sertifikat akan diberikan kepada peserta yang telah menyelesaikan pembelajaran minimal 1 buku sesuai ketentuan program.",
+    "Peserta wajib mengikuti pembelajaran secara aktif dan disiplin selama program berlangsung.",
+    "Peserta yang mengundurkan diri setelah program dimulai wajib memberikan infaq kontribusi sesuai dengan ketentuan program."
+  ],
+  "schedule_title": "Jadwal Program",
+  "schedule_items": [
+    "Hari pelaksanaan: Salah satu hari pada rentang Senin–Jumat, serta Sabtu dan Ahad",
+    "Waktu pembelajaran: Dilaksanakan setiap setelah Subuh atau setelah Isya",
+    "Pembukaan program: Kamis, 30 April 2026",
+    "Pelaksanaan kelas dimulai: Senin, 4 Mei 2026"
+  ],
+  "register_btn": "🔗 DAFTAR SEKARANG",
+  "register_desc": "Klik \"DAFTAR SEKARANG\" untuk menuju formulir pendaftaran (Google Form)"
+}

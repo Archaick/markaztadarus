@@ -1,0 +1,266 @@
+.pageContainer {
+  min-height: 100vh;
+  /* Dark Blue Background */
+  background: linear-gradient(135deg, #0d1b2a 0%, #152d4c 100%);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  padding-bottom: 60px;
+}
+
+/* Custom Simple Header */
+.simpleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  /* Dark semi-transparent header */
+  background: rgba(13, 27, 42, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(200, 178, 108, 0.2); /* Gold subtle border */
+  position: relative;
+  z-index: 50;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #c8b26c; /* Gold */
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.backLink:hover {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(200, 178, 108, 0.5);
+}
+
+.languageToggle {
+  background: rgba(200, 178, 108, 0.1);
+  border: 1px solid rgba(200, 178, 108, 0.3);
+  color: #c8b26c; /* Gold */
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.languageToggle:hover {
+  background: rgba(200, 178, 108, 0.2);
+  color: #fff;
+}
+
+[dir="rtl"] .backLink {
+  flex-direction: row-reverse;
+}
+
+.cleanPage .hero {
+  margin-top: 0;
+}
+
+/* Hero Section */
+.hero {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  padding: 40px 20px;
+  margin-bottom: -40px; /* Overlap content */
+  position: relative;
+  z-index: 1;
+}
+
+.heroContent {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(200, 178, 108, 0.3);
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Main Content Area */
+.mainContent {
+  position: relative;
+  z-index: 2;
+  margin-top: 60px;
+  padding: 0 20px;
+}
+
+.contentWrap {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mainTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #c8b26c; /* Gold */
+  text-align: center;
+  margin-bottom: 30px;
+  line-height: 1.4;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Card Styling (Form Aesthetic but Dark Mode) */
+.card {
+  /* Glassmorphism dark card */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 4px solid #c8b26c; /* Gold Accent */
+}
+
+/* Typography & Content Layout */
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #c8b26c; /* Gold */
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.paragraph {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #e2e8f0; /* Light grey text */
+  margin-bottom: 20px;
+}
+
+.paragraphBold {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff; /* White for emphasis */
+  margin-bottom: 15px;
+}
+
+.listSection {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.listSection li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #cbd5e1; /* Light greyish blue */
+  background: rgba(0, 0, 0, 0.2); /* Darker inset */
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(200, 178, 108, 0.1);
+}
+
+.listIcon {
+  color: #c8b26c; /* Gold */
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(200, 178, 108, 0.2);
+  margin: 40px 0;
+}
+
+/* Grid Layouts for smaller cards */
+.gridSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+}
+
+@media (min-width: 768px) {
+  .gridSection {
+    grid-template-columns: 1fr 1fr;
+  }
+  .gridSection .card {
+    height: 100%;
+    margin-bottom: 0;
+  }
+}
+
+/* Registration Action */
+.actionContainer {
+  text-align: center;
+  margin-top: 50px;
+  background: rgba(13, 27, 42, 0.8);
+  border: 1px solid rgba(200, 178, 108, 0.2);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.actionDesc {
+  font-size: 16px;
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+
+.registerBtn {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.05); /* Greyed out dark mode */
+  color: #64748b;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 16px 40px;
+  border-radius: 50px;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Future active state for button
+.registerBtnActive {
+  background: linear-gradient(135deg, #c8b26c 0%, #b37d08 100%);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(200, 178, 108, 0.4);
+  border: none;
+}
+.registerBtnActive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 178, 108, 0.6);
+}
+*/
+
+.disclaimer {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 15px;
+  font-style: italic;
+}
+
+/* RTL Support */
+[dir="rtl"] .listSection li {
+  padding: 12px 16px 12px 12px;
+}
+
+[dir="rtl"] .actionDesc, 
+[dir="rtl"] .paragraph, 
+[dir="rtl"] .mainTitle {
+  font-family: 'Amiri', serif;
+}

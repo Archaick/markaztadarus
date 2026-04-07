@@ -52,7 +52,7 @@ const Programs = () => {
       src: Diploma,
       title: t("programs.hidayah.title"),
       description: t("programs.hidayah.description"),
-      link: "#",
+      link: "/hidayah",
     },
   ];
 
