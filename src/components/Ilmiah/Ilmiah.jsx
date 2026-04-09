@@ -2,7 +2,6 @@ import styles from "./Ilmiah.module.css";
 import Navbar from "./Navbar";
 import Toddlers from "./Toddlers/Toddlers";
 import Tadarus from "./Tadarus/Tadarus";
-import Footer from "./Footer";
 
 const Ilmiah = () => {
   return (
@@ -10,7 +9,6 @@ const Ilmiah = () => {
       <Navbar />
       <Toddlers />
       <Tadarus />
-      <Footer />
     </div>
   );
 };
