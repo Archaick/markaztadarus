@@ -21,29 +21,22 @@
   ],
   "system_title": "Sistem Pembelajaran",
   "system_items": [
-    "Pembelajaran menggunakan bahasa Arab sebagai bahasa pengantar.",
-    "Program dilaksanakan secara tatap muka daring (online) melalui Zoom Meeting.",
-    "Materi disusun berdasarkan 8 buku Hidayah al-Qur’an yang dipelajari secara bertahap.",
-    "Setiap buku dipelajari dalam ±28 kali pertemuan, dengan frekuensi 3 kali per pekan, sehingga durasi pembelajaran per buku sekitar 2–2,5 bulan.",
-    "Durasi setiap pertemuan berlangsung selama 60–90 menit."
+    "Pengantar bahasa Arab.",
+    "Dilaksanakan secara online."
   ],
   "requirements_title": "Syarat dan Ketentuan Program",
   "requirements_items": [
-    "Peserta merupakan lulusan Sarjana (S1) dari jurusan Studi Islam atau Bahasa Arab.",
-    "Memiliki kemampuan bahasa Arab yang memadai.",
-    "Lulus seleksi wawancara yang diselenggarakan oleh Markaz Tadarus Indonesia.",
-    "Peserta yang telah terdaftar dianjurkan memiliki buku Hidayah Quraniyah sebagai penunjang selama program berlangsung.",
-    "Sertifikat akan diberikan kepada peserta yang telah menyelesaikan pembelajaran minimal 1 buku sesuai ketentuan program.",
-    "Peserta wajib mengikuti pembelajaran secara aktif dan disiplin selama program berlangsung.",
-    "Peserta yang mengundurkan diri setelah program dimulai wajib memberikan infaq kontribusi sesuai dengan ketentuan program."
+    "Ikhwan dan Akhwat.",
+    "Bergelar S1 dalam studi Islam atau Bahasa Arab.",
+    "Menguasai bahasa Arab.",
+    "Lulus wawancara."
   ],
   "program_schedule_title": "Jadwal Program",
   "program_schedule_items": [
-    "Pendaftaran dibuka pada tanggal 9–20 April 2026.",
-    "Pelaksanaan wawancara peserta: 21–23 April 2026.",
-    "Pengumuman hasil seleksi: 26 April 2026.",
-    "Pembukaan program: Kamis, 30 April 2026.",
-    "Jadwal kelas dimulai: Senin, 4 Mei 2026."
+    "Pendaftaran: 10–20 April 2026 M.",
+    "Wawancara:",
+    "Pembukaan Daurah:",
+    "Mulai Daurah:"
   ],
   "class_schedule_title": "Jadwal Pembelajaran",
   "class_schedule_items": [
@@ -52,9 +45,9 @@
   ],
   "fees_title": "Biaya",
   "fees_items": [
-    "Biaya program: GRATIS.",
-    "Biaya pembelian kitab Hidayah Quraniyah: Rp 150.000 (belum termasuk ongkos kirim).",
-    "Sertifikat: Rp 100.000 per daurah atau per khatam kitab."
+    "Daurah: GRATIS.",
+    "Buku: Rp 150.000/Daurah.",
+    "Sertifikat: Rp 100.000/Daurah."
   ],
   "register_btn": "🔗 DAFTAR SEKARANG",
   "register_desc": "Klik “DAFTAR SEKARANG” untuk menuju formulir pendaftaran",

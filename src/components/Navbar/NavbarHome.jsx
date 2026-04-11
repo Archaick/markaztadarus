@@ -70,17 +70,20 @@ export default function NavbarHome() {
         />
 
         <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
-          {navItems.map((item) => (
-            <a key={item.id} href={`#${item.id}`} className={styles.navLink}>
-              {t(item.key)}
-              {item.special && (
-                <div className={styles.countdownBadge}>
-                  <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
-                  <span className={styles.countdownTime}>{timeLeft}</span>
-                </div>
-              )}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const href = item.id === "hidayah" ? "/hidayah" : `#${item.id}`;
+            return (
+              <a key={item.id} href={href} className={styles.navLink}>
+                {t(item.key)}
+                {item.special && (
+                  <div className={styles.countdownBadge}>
+                    <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
+                    <span className={styles.countdownTime}>{timeLeft}</span>
+                  </div>
+                )}
+              </a>
+            );
+          })}
 
           <Menu shadow="md" width={120} withinPortal>
             <Menu.Target>
@@ -156,22 +159,25 @@ export default function NavbarHome() {
           </div>
 
           <nav className={styles.mobileNav}>
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={close}
-                className={styles.navLink}
-              >
-                {t(item.key)}
-                {item.special && (
-                  <div className={styles.countdownBadgeMobile}>
-                    <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
-                    <span className={styles.countdownTime}>{timeLeft}</span>
-                  </div>
-                )}
-              </a>
-            ))}
+            {navItems.map((item) => {
+              const href = item.id === "hidayah" ? "/hidayah" : `#${item.id}`;
+              return (
+                <a
+                  key={item.id}
+                  href={href}
+                  onClick={close}
+                  className={styles.navLink}
+                >
+                  {t(item.key)}
+                  {item.special && (
+                    <div className={styles.countdownBadgeMobile}>
+                      <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
+                      <span className={styles.countdownTime}>{timeLeft}</span>
+                    </div>
+                  )}
+                </a>
+              );
+            })}
           </nav>
         </Drawer>
       </div>
