@@ -6,8 +6,9 @@
     "hidayah": "Hidayah Diploma"
   },
   "countdown": {
-    "prefix": "Opens In:",
-    "expired": "Registration Open"
+    "prefix": "Closes In:",
+    "expired": "Registration Open",
+    "closed": "Registration Closed"
   },
   "language": "English"
 }

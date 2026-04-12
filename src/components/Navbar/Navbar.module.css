@@ -65,6 +65,75 @@
   left: 0;
 }
 
+.highlighted {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #c8b26c, #f4e87c);
+  color: #1d1d1d !important;
+  padding: 12px 18px;
+  border-radius: 28px;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(200, 178, 108, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlighted:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(200, 178, 108, 0.35);
+}
+
+.disabledLink {
+  pointer-events: none;
+  opacity: 0.55;
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.disabledLink:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.highlighted .countdownBadge {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 10px);
+  background: rgba(15, 23, 40, 0.98);
+  padding: 8px 14px;
+  border-radius: 18px;
+  flex-direction: row;
+  white-space: nowrap;
+  z-index: 20;
+}
+
+.highlighted .countdownLabel {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: #f4e87c;
+  margin-bottom: 0;
+}
+
+.highlighted .countdownTime {
+  font-size: 11px;
+  color: #fff;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4px 8px rgba(200, 178, 108, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(200, 178, 108, 0.5);
+  }
+  100% {
+    box-shadow: 0 4px 8px rgba(200, 178, 108, 0.3);
+  }
+}
+
 /* Mobile Menu */
 .mobileMenu {
   background: rgba(0, 0, 0, 0.4) !important;
@@ -178,20 +247,20 @@
 /* Countdown Badge */
 .countdownBadge {
   position: absolute;
-  top: -24px;
+  top: -34px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  padding: 4px 10px;
-  border-radius: 20px;
+  background: rgba(20, 26, 46, 0.92);
+  backdrop-filter: blur(12px);
+  padding: 6px 12px;
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(200, 178, 108, 0.3);
+  border: 1px solid rgba(200, 178, 108, 0.45);
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 22px rgba(200, 178, 108, 0.19);
   transition: all 0.3s ease;
   z-index: 100;
 }
@@ -227,11 +296,12 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(200, 178, 108, 0.1);
-  padding: 6px 12px;
-  border-radius: 8px;
+  background: rgba(20, 26, 46, 0.98);
+  padding: 10px 16px;
+  border-radius: 999px;
   margin: 10px auto;
-  border: 1px solid rgba(200, 178, 108, 0.2);
+  border: 1px solid rgba(200, 178, 108, 0.55);
+  box-shadow: 0 10px 24px rgba(200, 178, 108, 0.18);
 }
 
 .countdownBadgeMobile .countdownLabel {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   IconCalendar,
@@ -26,7 +26,6 @@ const Hidayah = () => {
   const { t, i18n } = useTranslation("hidayah/Hidayah");
   const isArabic = i18n.language === "ar";
   const dir = isArabic ? "rtl" : "ltr";
-  const [timeLeft, setTimeLeft] = useState("");
 
   const books = t("books", { returnObjects: true }) || [];
   const overviewParagraphs = t("overview_paragraphs", { returnObjects: true }) || [];
@@ -35,28 +34,6 @@ const Hidayah = () => {
   const programScheduleItems = t("program_schedule_items", { returnObjects: true }) || [];
   const classScheduleItems = t("class_schedule_items", { returnObjects: true }) || [];
   const feeItems = t("fees_items", { returnObjects: true }) || [];
-
-  useEffect(() => {
-    const targetDate = new Date("2026-04-20T00:00:00").getTime();
-
-    const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-
-      if (difference <= 0) {
-        setTimeLeft(t("countdown_expired"));
-        clearInterval(timer);
-      } else {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-        setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
-      }
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [t]);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -123,9 +100,9 @@ const Hidayah = () => {
                   <p className={styles.cardEyebrow}>{t("overview_title")}</p>
                   <h2 className={styles.sectionTitle}>{t("title")}</h2>
                 </div>
-                <button type="button" className={styles.registerLinkDisabled} disabled>
+                <a href={t("register_url")} className={styles.registerLink}>
                   {t("register_btn")}
-                </button>
+                </a>
               </div>
 
               <div className={styles.textStack}>
@@ -148,14 +125,6 @@ const Hidayah = () => {
                     ))}
                 </ol>
               </div>
-
-              <div className={styles.noticeBox}>
-                <p className={styles.noticeText}>{t("register_desc")}</p>
-                <div className={styles.countdownBadge}>
-                  <span className={styles.countdownLabel}>{t("countdown_prefix")}</span>
-                  <span className={styles.countdownTime}>{timeLeft}</span>
-                </div>
-              </div>
             </section>
 
             <div className={styles.gridSection}>
@@ -177,6 +146,12 @@ const Hidayah = () => {
                 </section>
               ))}
             </div>
+          </div>
+
+          <div className={styles.registerSection}>
+            <a href={t("register_url")} className={styles.registerButton}>
+              {t("register_btn")}
+            </a>
           </div>
         </main>
       </div>

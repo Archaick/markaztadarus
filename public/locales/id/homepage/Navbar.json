@@ -6,8 +6,9 @@
     "hidayah": "Diploma Hidayah"
   },
   "countdown": {
-    "prefix": "Buka dalam:",
-    "expired": "Pendaftaran Terbuka"
+    "prefix": "Tutup dalam:",
+    "expired": "Pendaftaran Terbuka",
+    "closed": "Pendaftaran Ditutup"
   },
   "language": "Bahasa"
 }
