@@ -1,4 +1,10 @@
 {
-    "title": "Markaz Tadarus Indonesia",
-    "subtitle": "Tahun 1446 H | 2025 M"
+  "title": "Markaz Tadarus Indonesia",
+  "subtitle": "Tahun 1446 H | 2025 M",
+  "city": "Kota",
+  "island": "Pulau",
+  "programs": "Program",
+  "locations": "lokasi",
+  "legend_active": "Provinsi Aktif MTI",
+  "legend_inactive": "Provinsi Lainnya"
 }

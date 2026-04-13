@@ -1,4 +1,10 @@
 {
   "title": "Markaz Tadarus Indonesia",
-  "subtitle": "1446 H | 2025 AD"
+  "subtitle": "1446 H | 2025 AD",
+  "city": "City",
+  "island": "Island",
+  "programs": "Programs",
+  "locations": "locations",
+  "legend_active": "MTI Active Province",
+  "legend_inactive": "Other Provinces"
 }

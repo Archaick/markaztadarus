@@ -1,4 +1,10 @@
 {
   "title": "مركز تدارس إندونيسيا",
-  "subtitle": "١٤٤٦ هـ | ٢٠٢٥ م"
+  "subtitle": "١٤٤٦ هـ | ٢٠٢٥ م",
+  "city": "المدينة",
+  "island": "الجزيرة",
+  "programs": "البرامج",
+  "locations": "مواقع",
+  "legend_active": "المحافظات النشطة",
+  "legend_inactive": "محافظات أخرى"
 }

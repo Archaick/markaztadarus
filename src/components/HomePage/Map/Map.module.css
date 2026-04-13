@@ -1,7 +1,19 @@
+/* ═══════════════════════════════════════════════════
+   Interactive Indonesia Map — Styles
+   Brand: Gold (#b8960c) + Navy (#1a1a2e / #102141)
+   ═══════════════════════════════════════════════════ */
+
 .mapContainer {
   text-align: center;
-  padding: 1rem 0;
-  margin: 60px 0;
+  padding: 3rem 1rem 2rem;
+  margin: 40px 0;
+  position: relative;
+}
+
+/* ── Header ────────────────────────────────────── */
+
+.header {
+  margin-bottom: 0.5rem;
 }
 
 .title {
@@ -9,50 +21,263 @@
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 700;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: #25475e;
-  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* ── Map SVG Wrapper ───────────────────────────── */
+
+.mapSvgWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.mapSvgWrapper svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Tooltip ───────────────────────────────────── */
+
+.tooltip {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 14px));
+  min-width: 180px;
+  max-width: 240px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(184, 150, 12, 0.15);
+  padding: 14px 16px;
+  opacity: 1;
+  animation: tooltipFadeIn 0.18s ease-out;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.06);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 20px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 14px));
+  }
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tooltipDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #b8960c;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(184, 150, 12, 0.5);
+}
+
+.tooltipName {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.tooltipDivider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(184, 150, 12, 0.3),
+    transparent
+  );
+  margin-bottom: 8px;
+}
+
+.tooltipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.tooltipLabel {
+  font-size: 0.78rem;
+  color: #7a8a9e;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tooltipValue {
+  font-size: 0.8rem;
+  color: #25475e;
+  font-weight: 600;
+  text-align: right;
+}
+
+.tooltipValue strong {
+  color: #b8960c;
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+/* ── Legend ─────────────────────────────────────── */
+
+.legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendSwatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.legendText {
+  font-size: 0.82rem;
+  color: #556677;
   font-weight: 500;
 }
 
-.mapWrapper {
-  position: relative;
-  display: inline-block;
-  max-width: 950px; /* Adjust based on your design */
-  width: 100%; /* Ensure it takes full width */
-  pointer-events: none; /* Disable interactions for the entire wrapper */
-  margin-top: -40px;
+/* ── Responsive ────────────────────────────────── */
 
+@media (max-width: 768px) {
+  .mapContainer {
+    padding: 2rem 0.5rem 1.5rem;
+    margin: 20px 0;
+  }
+
+  .mapSvgWrapper {
+    max-width: 100%;
+  }
+
+  .tooltip {
+    min-width: 160px;
+    max-width: 200px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .tooltipName {
+    font-size: 0.85rem;
+  }
+
+  .tooltipLabel,
+  .tooltipValue {
+    font-size: 0.75rem;
+  }
+
+  .legend {
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .legendText {
+    font-size: 0.76rem;
+  }
 }
 
-.beforeMap,
-.afterMap {
-  width: 100%;
-  height: auto;
-  display: block; /* Ensure images behave as block elements */
-  pointer-events: none; /* Disable interactions for the images */
+@media (max-width: 540px) {
+  .mapContainer {
+    padding: 1.5rem 0.25rem 1rem;
+    margin: 10px 0;
+  }
 
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .tooltip {
+    min-width: 140px;
+    max-width: 180px;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .tooltipName {
+    font-size: 0.8rem;
+  }
+
+  .tooltipDot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .tooltipLabel,
+  .tooltipValue {
+    font-size: 0.72rem;
+  }
+
+  .legendSwatch {
+    width: 12px;
+    height: 12px;
+  }
+
+  .legendText {
+    font-size: 0.72rem;
+  }
 }
 
-.afterMapContainer {
-  position: absolute;
-  bottom: 0; /* Start from the bottom */
-  left: 0;
-  width: 100%; /* Full width */
-  height: 0; /* Start with 0 height */
-  overflow: hidden; /* Clip the content */
-  pointer-events: none; /* Disable interactions for the container */
-}
-
-.afterMap {
-  position: absolute;
-  bottom: 0; /* Align to the bottom */
-  left: 0;
-  width: 100%; /* Ensure the image takes full width of its container */
-  height: auto; /* Maintain aspect ratio */
-  display: block; /* Ensure it behaves as a block element */
-  pointer-events: none; /* Disable interactions for the image */
-
+@media (max-width: 380px) {
+  .legend {
+    flex-direction: column;
+    gap: 6px;
+  }
 }
