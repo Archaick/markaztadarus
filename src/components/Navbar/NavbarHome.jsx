@@ -18,7 +18,7 @@ export default function NavbarHome() {
     { id: "home", key: "menu.home" },
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
-    { id: "hidayah", key: "menu.hidayah", highlighted: true },
+    // { id: "hidayah", key: "menu.hidayah", highlighted: true },
   ];
 
   const [timeLeft, setTimeLeft] = useState("");

@@ -20,7 +20,7 @@ import Ilmiah from "./components/Ilmiah/Ilmiah";
 import Pelatihan from "./components/Pelatihan/Pelatihan";
 import Seminar from "./components/Seminar/Seminar";
 import Majelis from "./components/Majelis/Majelis";
-import Hidayah from "./components/Hidayah/Hidayah";
+// import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
 import Admin from "./components/Certify/Admin";
@@ -64,7 +64,7 @@ const App = () => {
           <Route path="/Pelatihan" element={<Pelatihan />} />
           <Route path="/Seminar" element={<Seminar />} />
           <Route path="/Majelis" element={<Majelis />} />
-          <Route path="/hidayah" element={<Hidayah />} />
+          {/* <Route path="/hidayah" element={<Hidayah />} /> */}
 
           {/* 🔐 Protected Route for Admin Panel */}
           <Route
