@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebaseConfig";
 import { TextInput, PasswordInput, Button, Card, Stack, Title, Text } from "@mantine/core";
-import { IconLock, IconAlertCircle } from "@tabler/icons-react";
+import { IconLock, IconAlertCircle, IconHome2 } from "@tabler/icons-react";
 import styles from "./AdminLogin.module.css";
 
 const AdminLogin = ({ onLoginSuccess }) => {
@@ -48,6 +48,10 @@ const AdminLogin = ({ onLoginSuccess }) => {
   return (
     <div className={styles.container}>
       <div className={styles.backgroundPattern}></div>
+      <a href="/" className={styles.homeButton}>
+        <IconHome2 size={16} />
+        <span>Home</span>
+      </a>
 
       <Card className={styles.loginCard}>
         <div className={styles.header}>
