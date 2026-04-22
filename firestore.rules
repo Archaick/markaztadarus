@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Certificates collection
+    match /certificates/{certId} {
+      // Public read for QR verification
+      allow read: if true;
+
+      // Authenticated users can manage certificates
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Redirect manager collection
+    match /redirect_manager_links/{redirectId} {
+      // Public read so short-link resolver can fetch destination
+      allow read: if true;
+
+      // Authenticated users can manage redirects
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

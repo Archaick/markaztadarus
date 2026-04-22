@@ -21,6 +21,9 @@ import Pelatihan from "./components/Pelatihan/Pelatihan";
 import Seminar from "./components/Seminar/Seminar";
 import Majelis from "./components/Majelis/Majelis";
 import LinkTree from "./components/LinkTree/LinkTree";
+import InternalHub from "./components/Internal/InternalHub";
+import RedirectAdmin from "./components/RedirectManager/RedirectAdmin";
+import RedirectAdminLogin from "./components/RedirectManager/RedirectAdminLogin";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
@@ -82,8 +85,16 @@ const App = () => {
 
           {/* 📜 Certificate Verification - Public Route */}
           <Route path="/verify/:code" element={<CertificateVerify />} />
+          <Route path="/internal" element={<InternalHub />} />
+          <Route
+            path="/internal/redirect-manager"
+            element={user ? <RedirectAdmin /> : <Navigate to="/internal/redirect-login" />}
+          />
+          <Route
+            path="/internal/redirect-login"
+            element={<RedirectAdminLogin onLoginSuccess={() => (window.location.href = "/internal/redirect-manager")} />}
+          />
 
-          {/* Other redirects */}
           <Route path="/:shortCode" element={<Redirects />} />
 
           <Route path="*" element={<ErrorPage />} />

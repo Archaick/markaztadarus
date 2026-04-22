@@ -18,6 +18,7 @@ export default function NavbarHome() {
     { id: "home", key: "menu.home" },
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
+    { id: "internal", key: "menu.internal", href: "/internal" },
     // { id: "hidayah", key: "menu.hidayah", highlighted: true },
   ];
 
@@ -84,7 +85,7 @@ export default function NavbarHome() {
         <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
           {navItems.map((item) => {
             const isHidayahLink = item.id === "hidayah";
-            const href = isHidayahLink ? (isClosed ? "#" : "/hidayah") : `#${item.id}`;
+            const href = item.href || (isHidayahLink ? (isClosed ? "#" : "/hidayah") : `#${item.id}`);
             const linkClass = [styles.navLink, item.highlighted ? styles.highlighted : "", isHidayahLink && isClosed ? styles.disabledLink : ""].filter(Boolean).join(" ");
             return (
               <a
@@ -181,7 +182,7 @@ export default function NavbarHome() {
           <nav className={styles.mobileNav}>
             {navItems.map((item) => {
               const isHidayahLink = item.id === "hidayah";
-              const href = isHidayahLink ? (isClosed ? "#" : "/hidayah") : `#${item.id}`;
+              const href = item.href || (isHidayahLink ? (isClosed ? "#" : "/hidayah") : `#${item.id}`);
               const linkClass = [styles.navLink, item.highlighted ? styles.highlighted : "", isHidayahLink && isClosed ? styles.disabledLink : ""].filter(Boolean).join(" ");
               return (
                 <a
