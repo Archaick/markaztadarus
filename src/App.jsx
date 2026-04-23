@@ -31,9 +31,15 @@ import Admin from "./components/Certify/Admin";
 import AdminLogin from "./components/Certify/AdminLogin";
 import CertificateVerify from "./components/Certify/CertificateVerify";
 
+const CERTIFICATE_ADMIN_EMAIL = "saeedhareez@gmail.com";
+const REDIRECT_ADMIN_EMAIL = "info@markazalhijaz.org";
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const normalizedUserEmail = (user?.email || "").toLowerCase();
+  const isCertificateAdmin = normalizedUserEmail === CERTIFICATE_ADMIN_EMAIL;
+  const isRedirectAdmin = normalizedUserEmail === REDIRECT_ADMIN_EMAIL;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
@@ -74,7 +80,7 @@ const App = () => {
           {/* 🔐 Protected Route for Admin Panel */}
           <Route
             path="/cert-admin"
-            element={user ? <Admin /> : <Navigate to="/cert-login" />}
+            element={isCertificateAdmin ? <Admin /> : <Navigate to="/cert-login" />}
           />
 
           {/* Login page */}
@@ -88,7 +94,7 @@ const App = () => {
           <Route path="/internal" element={<InternalHub />} />
           <Route
             path="/internal/redirect-manager"
-            element={user ? <RedirectAdmin /> : <Navigate to="/internal/redirect-login" />}
+            element={isRedirectAdmin ? <RedirectAdmin /> : <Navigate to="/internal/redirect-login" />}
           />
           <Route
             path="/internal/redirect-login"

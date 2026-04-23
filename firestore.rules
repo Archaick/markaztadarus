@@ -1,14 +1,27 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isCertificateAdminUser() {
+      return isSignedIn()
+        && request.auth.token.email == "saeedhareez@gmail.com";
+    }
+
+    function isRedirectAdminUser() {
+      return isSignedIn()
+        && request.auth.token.email == "info@markazalhijaz.org";
+    }
 
     // Certificates collection
     match /certificates/{certId} {
       // Public read for QR verification
       allow read: if true;
 
-      // Authenticated users can manage certificates
-      allow create, update, delete: if request.auth != null;
+      // Only certificate admin user can manage certificates
+      allow create, update, delete: if isCertificateAdminUser();
     }
 
     // Redirect manager collection
@@ -16,8 +29,8 @@ service cloud.firestore {
       // Public read so short-link resolver can fetch destination
       allow read: if true;
 
-      // Authenticated users can manage redirects
-      allow create, update, delete: if request.auth != null;
+      // Only redirect admin user can manage redirects
+      allow create, update, delete: if isRedirectAdminUser();
     }
 
     // Deny everything else
