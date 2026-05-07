@@ -4,14 +4,13 @@ import { Button, Text } from "@mantine/core";
 import Autoplay from "embla-carousel-autoplay";
 import { useTranslation } from "react-i18next";
 import styles from "./Programs.module.css";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 
 import Seminar from "../../../assets/imgs/homepage/programs/seminar.jpg";
 import Pelatihan from "../../../assets/imgs/homepage/programs/pelatihan.jpg";
 import Majelis from "../../../assets/imgs/homepage/hero.jpg";
 import Karya from "../../../assets/imgs/homepage/programs/karya.jpg";
 import Umrah from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
-// import Diploma from "../../../assets/imgs/homepage/programs/diploma.png";
 
 const Programs = () => {
   const { t } = useTranslation("homepage/Programs");
@@ -48,29 +47,24 @@ const Programs = () => {
       description: t("programs.umrah.description"),
       link: "/umrah",
     },
-    // {
-    //   src: Diploma,
-    //   title: t("programs.hidayah.title"),
-    //   description: t("programs.hidayah.description"),
-    //   link: "/hidayah",
-    // },
   ];
 
   return (
     <section className={styles.programsSection} id="programs">
-      <h2 className={styles.header}>{t("header")}</h2>
+      <div className={styles.headerContainer}>
+        <h2 className={styles.header}>{t("header")}</h2>
+      </div>
 
       <Carousel
-        slideSize="100%"
+        slideSize="33.33%"
         slideGap="md"
         loop
         align="start"
         plugins={[autoplay.current]}
         withControls={true}
         breakpoints={[
-          { maxWidth: "sm", slideSize: "100%", slidesToScroll: 1 },
           { maxWidth: "md", slideSize: "50%", slidesToScroll: 2 },
-          { minWidth: "md", slideSize: "33.33%", slidesToScroll: 3 },
+          { maxWidth: "sm", slideSize: "100%", slidesToScroll: 1 },
         ]}
         className={styles.carousel}
       >
@@ -95,13 +89,16 @@ const ProgramCard = ({ program }) => {
           alt={program.title}
           className={styles.cardImage}
         />
+        {/* Floating Category Label */}
         <div className={styles.titleOverlay}>{program.title}</div>
       </div>
+      
       <div className={styles.cardContent}>
-        <div className={styles.cardDescription}>{program.description}</div>
-        <Button
-          component="a"
-          href={program.link}
+        <h3 className={styles.cardTitleMain}>{program.title}</h3>
+        <p className={styles.cardDescription}>{program.description}</p>
+        
+        <button
+          onClick={() => { if (program.link !== "#") window.location.href = program.link; }}
           className={`${styles.cardButton} ${
             program.link === "#" ? styles.inactiveButton : ""
           }`}
@@ -109,9 +106,9 @@ const ProgramCard = ({ program }) => {
         >
           {program.link === "#" ? t("inDevelopment") : t("learnMore")}
           <span className={styles.iconWrapper}>
-            <IconExternalLink size={16} />
+             <IconArrowRight size={18} />
           </span>
-        </Button>
+        </button>
       </div>
     </div>
   );

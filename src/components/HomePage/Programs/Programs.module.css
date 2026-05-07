@@ -1,166 +1,167 @@
 .programsSection {
-  text-align: center;
-  padding: 4rem 1rem;
-  background-color: #f9f9f9;
+  padding: 8rem 0;
+  background-color: #f8f9fa; /* Subtle off-white for contrast */
+  font-family: "Outfit", "Inter", sans-serif;
 }
 
-.header {
-  font-size: 2rem;
+.headerContainer {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.headerTag {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #b37d08;
+  color: #ab8b2b;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  display: block;
   margin-bottom: 1rem;
 }
 
+.header {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #1a4970;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
 .carousel {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 10px; /* Add padding to prevent cards from touching */
+  padding: 1rem 0.5rem;
 }
 
 .card {
-  background: white;
+  background: #ffffff;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-  width: 80%; /* Ensure cards take full width of their container */
-  height: 400px; /* Fixed height for consistency */
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 100%;
   display: flex;
   flex-direction: column;
-}
-
-/* Increase card height on larger screens */
-@media (min-width: 768px) {
-  .card {
-    height: 450px; /* Increased height for larger screens */
-  }
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .card:hover {
-  transform: scale(0.99); /* Zoom in by 10% */
+  transform: translateY(-8px);
+  border-color: rgba(171, 139, 43, 0.15);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.05);
 }
 
 .cardImageWrapper {
   position: relative;
   width: 100%;
-  height: 300px; /* Fixed height for images */
-  overflow: hidden; /* Ensure the zoomed image doesn't overflow */
+  height: 400px; /* Tall poster style */
+  overflow: hidden;
 }
 
 .cardImage {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensure images cover the container */
-  transition: transform 0.5s ease; /* Smooth zoom transition */
+  object-fit: cover;
+  transition: transform 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .card:hover .cardImage {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .titleOverlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 15%; /* Cover the bottom part of the image */
-  background: #001b36de;
+  top: 12px;
+  left: 12px;
+  background: rgba(26, 73, 112, 0.9);
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
   color: white;
-  font-size: 1.5rem;
-  font-weight: 800;
-  display: flex;
-  justify-content: center; /* Center text horizontally */
-  align-items: center; /* Center text vertically */
-  text-align: center; /* Center text alignment */
-  overflow: hidden; /* Required for shine effect */
-}
-
-@media (max-width: 768px) {
-  .titleOverlay {
-    font-size: 1.1rem;
-  }
-}
-
-/* Shine effect for overlay */
-.titleOverlay::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  animation: shine 3s infinite; /* Continuous shine animation */
-}
-
-@keyframes shine {
-  0% {
-    left: -100%; /* Start from the left */
-  }
-  100% {
-    left: 100%; /* Move to the right */
-  }
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 2;
 }
 
 .cardContent {
-  padding: 1.5rem;
-  text-align: left;
-  flex: 1; /* Ensure content takes remaining space */
+  padding: 1rem 1.2rem 1.5rem 1.2rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center content vertically */
-  align-items: center; /* Center content horizontally */
+  gap: 0.8rem;
+}
+
+.cardTitleMain {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1a4970;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .cardDescription {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #003366;
-  margin-bottom: 1.5rem;
-  text-align: center; /* Center text */
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #718096;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cardButton {
-  background-color: #a67d00;
-  color: white;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  padding: 0.5rem 1rem; /* Reduce button size */
-  font-size: 0.9rem; /* Reduce font size */
-  border-radius: 4px; /* Add slight border radius */
+  margin-top: auto;
+  background-color: transparent;
+  color: #ab8b2b;
+  font-weight: 700;
+  padding: 0;
+  height: auto;
+  width: fit-content;
+  font-size: 0.8rem;
   display: flex;
-  align-items: center; /* Align icon and text vertically */
-  gap: 8px; /* Add space between text and icon */
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .cardButton:hover {
-  background-color: #007bff; /* Accent blue on hover */
-  transform: scale(1.05); /* Slight scale effect on hover */
-}
-
-/* Inactive button style */
-.inactiveButton {
-  background-color: #cccccc; /* Grey background */
-  color: #666666; /* Darker grey text */
-  cursor: not-allowed; /* Show disabled cursor */
-}
-
-.inactiveButton:hover {
-  background-color: #cccccc; /* Keep grey background on hover */
-  transform: none; /* Disable hover effect */
+  color: #1a4970;
+  transform: translateX(3px);
 }
 
 .iconWrapper {
   display: flex;
-  align-items: center; /* Align icon vertically */
+  align-items: center;
 }
+
+/* Inactive button style */
+.inactiveButton {
+  color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/* Customizing Mantine Carousel Controls - More Minimalist */
+.carousel :global(.mantine-Carousel-control) {
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  width: 40px;
+  height: 40px;
+  color: #1a4970;
+  opacity: 0.8;
+}
+
+.carousel :global(.mantine-Carousel-control:hover) {
+  opacity: 1;
+  background: #f8fafc;
+}
+
