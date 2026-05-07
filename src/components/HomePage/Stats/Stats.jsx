@@ -103,24 +103,26 @@ const Stats = () => {
 
   return (
     <div
-      className={`${styles.statisticsContainer} ${Bokeh.bokeh}`}
+      className={styles.statisticsContainer}
       ref={containerRef}
     >
-      <div className={styles.watermark}></div>
-
       <div className={styles.statisticsContent}>
         <h2 className={styles.statisticsTitle}>{t("achievementsTitle")}</h2>
         <div className={styles.statisticsGrid}>
           {statsData.map((stat, index) => (
             <div key={index} className={styles.statisticCard}>
-              <div className={styles.statisticIcon}>{stat.icon}</div>
+              <div className={styles.statisticIcon}>
+                {stat.icon.type && typeof stat.icon.type !== "string" 
+                  ? React.cloneElement(stat.icon, { size: 32 }) 
+                  : stat.icon}
+              </div>
               <div className={styles.statisticData}>
                 {isVisible ? (
                   <CountUp
                     end={stat.value}
-                    duration={5}
+                    duration={4}
                     className={styles.statisticValue}
-                    delay={0.5}
+                    delay={0.2}
                   />
                 ) : (
                   <span className={styles.statisticValue}>0</span>
@@ -140,5 +142,6 @@ const Stats = () => {
     </div>
   );
 };
+
 
 export default Stats;
