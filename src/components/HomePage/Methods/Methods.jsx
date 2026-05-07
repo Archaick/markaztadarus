@@ -3,52 +3,42 @@ import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useTranslation } from "react-i18next";
 import styles from "./Methods.module.css";
-import Tamhid from "../../../assets/imgs/homepage/methods/tamhid.png";
-import Tilawah from "../../../assets/imgs/homepage/methods/tilawah.png";
-import Tafsir from "../../../assets/imgs/homepage/methods/tafsir.png";
-import Tadabbur from "../../../assets/imgs/homepage/methods/tadabbur.png";
-import Tazkiyah from "../../../assets/imgs/homepage/methods/tazkiyah.png";
 
 const methodKeys = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
+const delays = ["1s", "2s", "3s", "4s", "5s"]; // Adjusted for better flow
 
 const Methods = () => {
   const { t, i18n } = useTranslation("homepage/Methods");
 
   return (
-    <div className={styles.methods}>
+    <section className={styles.methods}>
       <div className={styles.container}>
         <h2 className={styles.header}>{t("header")}</h2>
-        <div
-          className={styles.grid}
-          dir={i18n.language === "ar" ? "rtl" : "ltr"}
-        >
-          {methodKeys.map((key, index) => (
-            <MethodItem
-              key={key}
-              methodKey={key}
-              image={getMethodImage(key)}
-              number={index + 1}
-            />
-          ))}
+        
+        <div className={styles.timelineWrapper} dir={i18n.language === "ar" ? "rtl" : "ltr"}>
+          {/* Central Track */}
+          <div className={styles.timelineTrack}>
+            <div className={styles.scannerStream}></div>
+          </div>
+
+          <div className={styles.timelineItems}>
+            {methodKeys.map((key, index) => (
+              <MethodTimelineItem
+                key={key}
+                methodKey={key}
+                number={index + 1}
+                delay={delays[index]}
+                isEven={index % 2 !== 0}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-// Helper function to get correct image
-function getMethodImage(key) {
-  const images = {
-    tamhid: Tamhid,
-    tilawah: Tilawah,
-    tafsir: Tafsir,
-    tadabbur: Tadabbur,
-    tazkiyah: Tazkiyah,
-  };
-  return images[key];
-}
-
-const MethodItem = ({ methodKey, image, number }) => {
+const MethodTimelineItem = ({ methodKey, number, delay, isEven }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const { t } = useTranslation("homepage/Methods");
 
@@ -63,7 +53,7 @@ const MethodItem = ({ methodKey, image, number }) => {
           </div>
         }
         centered
-        size="lg"
+        size="md"
         classNames={{
           header: styles.modalHeader,
           content: styles.modalContent,
@@ -71,41 +61,35 @@ const MethodItem = ({ methodKey, image, number }) => {
         }}
       >
         <div className={styles.modalContentWrapper}>
-          <img
-            src={image}
-            alt={t(`methods.${methodKey}.title`)}
-            className={styles.modalIcon}
-          />
           <p className={styles.modalDescription}>
             {t(`methods.${methodKey}.description`)}
           </p>
-          {/* Video Container - Commented for future use dont erase this */}
-          {/* <div className={styles.videoContainer}>
-            <iframe
-              src="https://www.youtube.com/embed/8k7H8Crot-s"
-              title="Method Video"
-              allowFullScreen
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
-          </div> */}
         </div>
       </Modal>
 
-      <div className={styles.methodItem}>
-        <div className={styles.numberRibbon}>{number}</div>
-        <img
-          src={image}
-          alt={t(`methods.${methodKey}.title`)}
-          className={styles.image}
-        />
-        <h3 className={styles.title}>{t(`methods.${methodKey}.title`)}</h3>
-        <button className={styles.modalButton} onClick={open}>
-          {t("learn_more")}
-        </button>
+      <div 
+        className={`${styles.timelineItem} ${isEven ? styles.even : styles.odd}`}
+        style={{ "--anim-delay": delay }}
+      >
+        {/* The Node on the line */}
+        <div className={styles.timelineNode}></div>
+
+        {/* The Caret/Arrow */}
+        <div className={styles.timelineCaret}></div>
+
+        {/* The Card */}
+        <div className={styles.methodCard} onClick={open}>
+          <div className={styles.cardContent}>
+            <span className={styles.numberBadge}>{number}</span>
+            <h3 className={styles.cardTitle}>{t(`methods.${methodKey}.title`)}</h3>
+          </div>
+          <span className={styles.learnMore}>{t("learn_more")}</span>
+        </div>
       </div>
     </>
   );
 };
 
+
 export default Methods;
+
