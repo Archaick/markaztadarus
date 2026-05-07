@@ -5,7 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: transparent;
   overflow: hidden;
   font-family: "Outfit", "Inter", sans-serif;
 }
@@ -15,12 +15,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 500px; /* Reduced from 700px */
-  height: 500px;
+  width: 550px;
+  height: 550px;
   transform: translate(-50%, -50%);
   z-index: 1;
   pointer-events: none;
-  animation: rotateOrbit 80s linear infinite; /* Slower, more serene rotation */
+  animation: rotateOrbit 80s linear infinite;
 }
 
 .orbitPath {
@@ -35,50 +35,48 @@
 
 .nodeWrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 85px; /* Reduced from 110px */
-  height: 85px;
-  margin-top: -42.5px;
-  margin-left: -42.5px;
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
 }
 
 .node {
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.6); /* Lighter transparency */
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(171, 139, 43, 0.15);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
   animation: counterRotate 80s linear infinite;
 }
 
 .number {
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   font-weight: 800;
   color: #ab8b2b;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 
 .label {
-  font-size: 0.7rem; /* Smaller labels */
+  font-size: 0.75rem;
   font-weight: 700;
   color: #1a4970;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 }
 
-/* Stable Distribution 72 degrees apart with 250px radius (500px/2) */
-.wrapper1 { transform: rotate(0deg) translate(250px) rotate(0deg); }
-.wrapper2 { transform: rotate(72deg) translate(250px) rotate(-72deg); }
-.wrapper3 { transform: rotate(144deg) translate(250px) rotate(-144deg); }
-.wrapper4 { transform: rotate(216deg) translate(250px) rotate(-216deg); }
-.wrapper5 { transform: rotate(288deg) translate(250px) rotate(-288deg); }
+/* Upright XY Positioning (Pentagon Distribution) */
+.wrapper1 { top: 0%; left: 50%; }
+.wrapper2 { top: 34.5%; left: 97.5%; }
+.wrapper3 { top: 90.5%; left: 79.5%; }
+.wrapper4 { top: 90.5%; left: 20.5%; }
+.wrapper5 { top: 34.5%; left: 2.5%; }
 
 @keyframes rotateOrbit {
   from { transform: translate(-50%, -50%) rotate(0deg); }
@@ -110,56 +108,55 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 1rem;
 }
 
 .tagline {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #ab8b2b;
   text-transform: uppercase;
   letter-spacing: 5px;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .title {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 800;
   color: #1a4970;
   line-height: 1.1;
-  letter-spacing: -1.5px;
+  letter-spacing: -2.2px;
   margin-bottom: 1.5rem;
 }
 
 .subtitle {
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
   color: #64748b;
-  max-width: 550px;
-  line-height: 1.6;
-  margin-bottom: 2.5rem;
+  max-width: 650px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
   font-weight: 500;
 }
 
 .button {
   background-color: #1a4970;
-  height: 55px;
-  padding: 0 2.2rem;
+  height: 60px;
+  padding: 0 2.5rem;
   border-radius: 100px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 10px 30px rgba(26, 73, 112, 0.15);
-}
-
-@media (max-width: 1024px) {
-  .orbitContainer { width: 400px; height: 400px; }
-  .nodeWrapper { width: 70px; height: 70px; margin-top: -35px; margin-left: -35px; }
-  .wrapper1 { transform: rotate(0deg) translate(200px) rotate(0deg); }
-  .wrapper2 { transform: rotate(72deg) translate(200px) rotate(-72deg); }
-  .wrapper3 { transform: rotate(144deg) translate(200px) rotate(-144deg); }
-  .wrapper4 { transform: rotate(216deg) translate(200px) rotate(-216deg); }
-  .wrapper5 { transform: rotate(288deg) translate(200px) rotate(-288deg); }
+  box-shadow: 0 15px 40px rgba(26, 73, 112, 0.2);
 }
 
 @media (max-width: 768px) {
-  .orbitContainer { display: none; }
+  .orbitContainer { width: 380px; height: 380px; }
+  .nodeWrapper { width: 70px; height: 70px; margin-top: -35px; margin-left: -35px; }
+  
+  .number { font-size: 0.55rem; }
+  .label { font-size: 0.6rem; }
+  
+  .tagline { font-size: 0.75rem; letter-spacing: 3px; }
+  .title { font-size: 2.2rem; margin-bottom: 1rem; }
+  .subtitle { font-size: 0.95rem; line-height: 1.5; margin-bottom: 2rem; }
 }
