@@ -71,7 +71,7 @@
   letter-spacing: 0.5px;
 }
 
-/* Upright XY Positioning (Pentagon Distribution) */
+/* Upright XY Positioning */
 .wrapper1 { top: 0%; left: 50%; }
 .wrapper2 { top: 34.5%; left: 97.5%; }
 .wrapper3 { top: 90.5%; left: 79.5%; }
@@ -98,6 +98,20 @@
   height: 400px;
   background: radial-gradient(circle, rgba(171, 139, 43, 0.03) 0%, transparent 70%);
   z-index: 1;
+}
+
+/* Watermark Logo Cube */
+.watermark {
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 550px; /* Increased from 400px */
+  height: 550px;
+  opacity: 0.04; /* Softened for subtle institutional feel */
+  filter: grayscale(100%);
+  z-index: 0;
+  pointer-events: none;
+  transform: none; /* Removed tilt */
 }
 
 .content {
@@ -153,6 +167,13 @@
   .orbitContainer { width: 380px; height: 380px; }
   .nodeWrapper { width: 70px; height: 70px; margin-top: -35px; margin-left: -35px; }
   
+  .watermark {
+    width: 350px;
+    height: 350px;
+    bottom: -40px;
+    left: -40px;
+  }
+
   .number { font-size: 0.55rem; }
   .label { font-size: 0.6rem; }
   

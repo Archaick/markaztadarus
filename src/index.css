@@ -1,6 +1,6 @@
 /* Global Sacred Texture */
 body {
-  background-color: #ffffff;
+  background-color: #fcfaf7; /* Sanctuary Beige - Warmer and more premium */
   /* Sacred Grid Pattern - Mathematical precision */
   background-image: radial-gradient(rgba(171, 139, 43, 0.08) 1px, transparent 1px);
   background-size: 40px 40px; 

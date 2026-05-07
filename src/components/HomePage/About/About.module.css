@@ -1,7 +1,7 @@
 .about {
   position: relative;
   padding: 8rem 0;
-  background: #ffffff;
+  background: transparent;
   overflow: hidden;
   font-family: "Outfit", "Inter", sans-serif;
 }

@@ -74,6 +74,9 @@ const Hero = () => {
       <div className={styles.orb1}></div>
       <div className={styles.orb2}></div>
 
+      {/* Institutional Watermark */}
+      <img src="/MTIFavicon.png" alt="" className={styles.watermark} />
+
       <Container className={styles.content}>
         <span className={styles.tagline}>{t("tagline") || "Markaz Tadarus"}</span>
         <Title order={1} className={styles.title}>
