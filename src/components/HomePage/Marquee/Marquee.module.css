@@ -1,71 +1,104 @@
 .marqueeContainer {
   position: relative;
   text-align: center;
-  padding: 2rem 1rem;
-  background-color: #f9f9f9; /* Light background for contrast */
+  padding: 3rem 2rem; /* Reduced from 6rem */
+  background-color: #f8f9fa;
+  font-family: "Outfit", "Inter", sans-serif;
+  overflow: hidden;
 }
 
 .title {
-  color: #b37d08; /* Title color */
-  font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
-  font-weight: 700;
-  margin-bottom: 0.8rem;
+  font-size: clamp(2rem, 4vw, 2.5rem); /* Scaled down header */
+  font-weight: 800;
+  color: #1a4970;
+  margin: 0;
+  letter-spacing: -1px;
 }
 
 .textcontainer {
   display: flex;
   justify-content: center;
+  margin-bottom: 2rem; /* Reduced from 4rem */
+  margin-top: 0.5rem;
 }
 
 .text {
-  color: #003366; /* Text color */
-  font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
-  max-width: 780px;
+  color: #64748b;
+  font-size: 0.95rem; /* Smaller text */
+  max-width: 600px;
+  line-height: 1.5;
   font-weight: 500;
-  margin-bottom: 2rem;
 }
 
 .marqueeRow {
-  margin: 1.7rem 0;
+  margin: 0.5rem 0; /* Reduced margin */
   padding: 0.5rem 0;
   position: relative;
-  overflow: hidden;
 }
 
+/* Enhanced Edge Fading */
 .marqueeRow::before,
 .marqueeRow::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 100px; /* Adjust the width of the gradient */
+  width: 150px;
   z-index: 2;
+  pointer-events: none;
 }
 
 .marqueeRow::before {
   left: 0;
-  background: linear-gradient(to right, #f9f9f9, rgba(249, 249, 249, 0));
+  background: linear-gradient(to right, #f8f9fa, transparent);
 }
 
 .marqueeRow::after {
   right: 0;
-  background: linear-gradient(to left, #f9f9f9, rgba(249, 249, 249, 0));
+  background: linear-gradient(to left, #f8f9fa, transparent);
+}
+
+.logoWrapper {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem; /* Reduced from 1.5rem 2.5rem */
+  margin: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .logo {
-  height: 70px; /* Adjust logo height */
-  margin: 0 2rem; /* Spacing between logos */
-  transition: filter 0.3s ease;
+  height: 40px; /* Reduced from 60px */
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(100%) opacity(0.6);
+  transition: all 0.5s ease;
 }
 
-.logo:hover {
-  filter: grayscale(100%);
+.logoWrapper:hover {
+  transform: translateY(-3px);
+  border-color: rgba(171, 139, 43, 0.2);
 }
 
-/* Responsive adjustments */
+.logoWrapper:hover .logo {
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.05);
+}
+
 @media (max-width: 768px) {
+  .marqueeContainer {
+    padding: 2.5rem 1.2rem;
+  }
+  
+  .logoWrapper {
+    padding: 0.6rem 1rem;
+  }
+  
   .logo {
-    height: 60px; /* Smaller logos on mobile */
-    margin: 0 1rem; /* Less spacing on mobile */
+    height: 32px;
   }
 }

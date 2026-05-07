@@ -33,8 +33,8 @@ const Gallery = () => {
         <h2 className={styles.title}>{t("title")}</h2>
       </div>
 
-      <Tabs radius="xs" defaultValue="kaderisasi" className={styles.tabs} variant="pills" color="#1a4970">
-        <Tabs.List className={styles.tabsList}>
+      <Tabs defaultValue="kaderisasi" className={styles.tabs} color="#1a4970">
+        <Tabs.List>
           <Tabs.Tab value="umrah">{t("tabs.umrah")}</Tabs.Tab>
           <Tabs.Tab value="kaderisasi">{t("tabs.kaderisasi")}</Tabs.Tab>
           <Tabs.Tab value="majelis">{t("tabs.majelis")}</Tabs.Tab>
@@ -45,12 +45,13 @@ const Gallery = () => {
           <Tabs.Panel key={key} value={key} className={styles.tabContent}>
             <div className={styles.imageGrid}>
               {images.map((image, index) => (
-                <img
-                  key={`${key}-${index}`}
-                  src={image}
-                  alt={t(`alt.${key}`, { number: index + 1 })}
-                  className={styles.image}
-                />
+                <div key={`${key}-${index}`} className={styles.imageWrapper}>
+                  <img
+                    src={image}
+                    alt={t(`alt.${key}`, { number: index + 1 })}
+                    className={styles.image}
+                  />
+                </div>
               ))}
             </div>
           </Tabs.Panel>

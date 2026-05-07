@@ -51,65 +51,68 @@ const MarqueeComponent = () => {
       <Marquee
         direction="right"
         speed={30}
-        gradient={false} // Disable default gradient
+        gradient={false}
         className={styles.marqueeRow}
       >
         {logosLeft.map((logo, index) => (
-          <img
-            key={index}
-            src={logo}
-            alt={`Logo ${index + 1}`}
-            className={styles.logo}
-          />
+          <div key={index} className={styles.logoWrapper}>
+            <img
+              src={logo}
+              alt={`Logo ${index + 1}`}
+              className={styles.logo}
+            />
+          </div>
         ))}
       </Marquee>
 
-      {/* Second Row (Left to Right) */}
       <Marquee
         direction="left"
         speed={30}
-        gradient={false} // Disable default gradient
+        gradient={false}
         className={styles.marqueeRow}
       >
         {logosRight.map((logo, index) => (
-          <img
-            key={index}
-            src={logo}
-            alt={`Logo ${index + 1}`}
-            className={styles.logo}
-          />
+          <div key={index} className={styles.logoWrapper}>
+            <img
+              src={logo}
+              alt={`Logo ${index + 1}`}
+              className={styles.logo}
+            />
+          </div>
         ))}
       </Marquee>
 
       <Marquee
         direction="right"
         speed={30}
-        gradient={false} // Disable default gradient
+        gradient={false}
         className={styles.marqueeRow}
       >
         {logosLeftBtm.map((logo, index) => (
-          <img
-            key={index}
-            src={logo}
-            alt={`Logo ${index + 1}`}
-            className={styles.logo}
-          />
+          <div key={index} className={styles.logoWrapper}>
+            <img
+              src={logo}
+              alt={`Logo ${index + 1}`}
+              className={styles.logo}
+            />
+          </div>
         ))}
       </Marquee>
 
       <Marquee
         direction="left"
         speed={30}
-        gradient={false} // Disable default gradient
+        gradient={false}
         className={styles.marqueeRow}
       >
         {logosRightBtm.map((logo, index) => (
-          <img
-            key={index}
-            src={logo}
-            alt={`Logo ${index + 1}`}
-            className={styles.logo}
-          />
+          <div key={index} className={styles.logoWrapper}>
+            <img
+              src={logo}
+              alt={`Logo ${index + 1}`}
+              className={styles.logo}
+            />
+          </div>
         ))}
       </Marquee>
     </div>

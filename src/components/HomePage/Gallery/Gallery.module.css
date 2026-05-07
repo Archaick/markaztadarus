@@ -1,83 +1,111 @@
 .galleryContainer {
-  text-align: center;
-  padding: 4rem 1rem;
-  background-color: #f9f9f9;
+  padding: 8rem 2rem;
+  background-color: #ffffff;
+  font-family: "Outfit", "Inter", sans-serif;
 }
 
 .header {
-  margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 4rem;
 }
 
 .title {
-  color: #b37d08; /* Header color */
-  font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.subtitle {
-  color: #003366; /* Subheader color */
-  font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
-  font-weight: 500;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #1a4970;
+  margin: 0;
+  letter-spacing: -1px;
 }
 
 .tabs {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-.tabsList {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns by default */
-  gap: 0.3rem;
+/* Customizing Mantine Tabs to be more Sanctuary-like */
+.tabs :global(.mantine-Tabs-list) {
+  border: none;
   justify-content: center;
-  text-align: center;
-  font-weight: 700;
+  gap: 1rem;
+  margin-bottom: 3rem;
 }
 
-
-@media (max-width: 768px) {
-  .tabsList {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
-  }
+.tabs :global(.mantine-Tabs-tab) {
+  background: #f8f9fa;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 100px;
+  padding: 0.8rem 1.5rem;
+  color: #64748b;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-@media (max-width: 480px) {
-  .tabsList {
-    grid-template-columns: repeat(
-      1,
-      1fr
-    ); /* Stack in a single column on very small screens */
-  }
+.tabs :global(.mantine-Tabs-tab[data-active]) {
+  background: #1a4970;
+  color: #ffffff;
+  border-color: #1a4970;
+  box-shadow: 0 10px 20px rgba(26, 73, 112, 0.15);
+}
+
+.tabs :global(.mantine-Tabs-tab:hover:not([data-active])) {
+  background: #f1f5f9;
+  border-color: rgba(171, 139, 43, 0.2);
 }
 
 .tabContent {
-  padding: 1rem 0;
+  padding-top: 1rem;
 }
 
 .imageGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
 }
 
 .imageWrapper {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  border-radius: 24px;
   overflow: hidden;
-  border-radius: 8px;
+  aspect-ratio: 4 / 3;
+  background: #f1f5f9;
 }
 
 .image {
   width: 100%;
-  height: 280px; /* Fixed height */
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-.image:hover {
-  transform: scale(1.05);
+.imageWrapper:hover .image {
+  transform: scale(1.08);
+}
+
+/* Glass Overlay on Hover */
+.imageWrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(26, 73, 112, 0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.imageWrapper:hover::after {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .galleryContainer {
+    padding: 5rem 1.5rem;
+  }
+  
+  .imageGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
 }
