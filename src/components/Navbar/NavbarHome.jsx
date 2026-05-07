@@ -19,7 +19,6 @@ export default function NavbarHome() {
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
     { id: "internal", key: "menu.internal", href: "/internal" },
-    // { id: "hidayah", key: "menu.hidayah", highlighted: true },
   ];
 
   const [timeLeft, setTimeLeft] = useState("");
@@ -77,7 +76,7 @@ export default function NavbarHome() {
     <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
       <div className={styles.container}>
         <img
-          src={scrolled ? whiteLogo : logo}
+          src={whiteLogo}
           alt="Markaz Tadarus"
           className={styles.logoImage}
         />
@@ -155,7 +154,7 @@ export default function NavbarHome() {
             onClick={toggle}
             className={styles.burger}
             hiddenFrom="sm"
-            color={scrolled ? "black" : "white"}
+            color="black"
           />
         </div>
 
@@ -170,7 +169,7 @@ export default function NavbarHome() {
         >
           <div className={styles.drawerHeader}>
             <img
-              src={scrolled ? whiteLogo : logo}
+              src={whiteLogo}
               alt="Markaz Tadarus"
               className={styles.logoImage}
             />

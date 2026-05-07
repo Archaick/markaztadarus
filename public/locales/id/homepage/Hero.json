@@ -1,5 +1,13 @@
 {
+  "tagline": "Pelopor Metode Quranic",
   "title": "Markaz Tadarus Indonesia",
   "subtitle": "\"Menyatukan Hati Dengan al-Qur'an\"",
-  "cta_button": "Program Kami"
+  "cta_button": "Program Kami",
+  "pillars": {
+    "t1": "Tamhid",
+    "t2": "Tilawah",
+    "t3": "Tafsir",
+    "t4": "Tadabbur",
+    "t5": "Tazkiyah"
+  }
 }

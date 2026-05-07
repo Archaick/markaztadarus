@@ -1,5 +1,13 @@
 {
+  "tagline": "Pioneer of Quranic Methods",
   "title": "Markaz Tadarus Indonesia",
   "subtitle": "\"Unifying Hearts with the Qur'an\"",
-  "cta_button": "Our Programs"
+  "cta_button": "Our Programs",
+  "pillars": {
+    "t1": "Tamhid",
+    "t2": "Tilawah",
+    "t3": "Tafsir",
+    "t4": "Tadabbur",
+    "t5": "Tazkiyah"
+  }
 }

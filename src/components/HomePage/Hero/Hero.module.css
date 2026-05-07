@@ -3,73 +3,163 @@
   width: 100%;
   min-height: 100vh;
   display: flex;
-  justify-content: flex-start; /* Align content to the left */
+  justify-content: center;
   align-items: center;
-  padding-left: 5%; /* Ensure spacing from the left */
-  background: center/cover no-repeat;
+  background-color: #ffffff;
   overflow: hidden;
-  background-attachment: fixed;
+  font-family: "Outfit", "Inter", sans-serif;
 }
 
-/* Target Safari specifically */
-@supports (-webkit-touch-callout: none) {
-  .hero {
-    background-attachment: scroll;
-  }
+/* 5T Methodology Sacred Orbit */
+.orbitContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px; /* Reduced from 700px */
+  height: 500px;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  animation: rotateOrbit 80s linear infinite; /* Slower, more serene rotation */
+}
+
+.orbitPath {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(171, 139, 43, 0.08);
+  border-radius: 50%;
+}
+
+.nodeWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 85px; /* Reduced from 110px */
+  height: 85px;
+  margin-top: -42.5px;
+  margin-left: -42.5px;
+}
+
+.node {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6); /* Lighter transparency */
+  border: 1px solid rgba(171, 139, 43, 0.15);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.02);
+  animation: counterRotate 80s linear infinite;
+}
+
+.number {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #ab8b2b;
+  margin-bottom: 1px;
+}
+
+.label {
+  font-size: 0.7rem; /* Smaller labels */
+  font-weight: 700;
+  color: #1a4970;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Stable Distribution 72 degrees apart with 250px radius (500px/2) */
+.wrapper1 { transform: rotate(0deg) translate(250px) rotate(0deg); }
+.wrapper2 { transform: rotate(72deg) translate(250px) rotate(-72deg); }
+.wrapper3 { transform: rotate(144deg) translate(250px) rotate(-144deg); }
+.wrapper4 { transform: rotate(216deg) translate(250px) rotate(-216deg); }
+.wrapper5 { transform: rotate(288deg) translate(250px) rotate(-288deg); }
+
+@keyframes rotateOrbit {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes counterRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+/* Ambient Orbs */
+.orb1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(171, 139, 43, 0.03) 0%, transparent 70%);
+  z-index: 1;
 }
 
 .content {
   position: relative;
-  text-align: left; /* Align text to the left */
-  color: white;
+  text-align: center;
   z-index: 2;
+  max-width: 900px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tagline {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ab8b2b;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  margin-bottom: 1.2rem;
 }
 
 .title {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #1a4970;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
 }
 
 .subtitle {
-  font-size: clamp(1.5rem, 2vw, 1.2rem);
-  color: rgb(220, 220, 220);
-  max-width: 600px;
-  margin-bottom: 1.7rem;
-}
-
-.subtitle[dir="rtl"] {
-  text-align: right;
-}
-
-.subtitle[dir="ltr"] {
-  text-align: left;
-}
-
-@media (max-width: 768px) {
-  .subtitle {
-    font-size: 1.13rem;
-  }
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: #64748b;
+  max-width: 550px;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  font-weight: 500;
 }
 
 .button {
-  width: 200px;
-  background-color: #b37d08;
-  display: flex;
-  align-items: center; /* Ensures proper vertical alignment */
-  justify-content: center;
-  gap: 8px; /* Adds spacing between text and icon */
-  transition: transform 0.2s ease;
+  background-color: #1a4970;
+  height: 55px;
+  padding: 0 2.2rem;
+  border-radius: 100px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 10px 30px rgba(26, 73, 112, 0.15);
 }
 
-.button:hover {
-  transform: scale(1.05);
+@media (max-width: 1024px) {
+  .orbitContainer { width: 400px; height: 400px; }
+  .nodeWrapper { width: 70px; height: 70px; margin-top: -35px; margin-left: -35px; }
+  .wrapper1 { transform: rotate(0deg) translate(200px) rotate(0deg); }
+  .wrapper2 { transform: rotate(72deg) translate(200px) rotate(-72deg); }
+  .wrapper3 { transform: rotate(144deg) translate(200px) rotate(-144deg); }
+  .wrapper4 { transform: rotate(216deg) translate(200px) rotate(-216deg); }
+  .wrapper5 { transform: rotate(288deg) translate(200px) rotate(-288deg); }
 }
 
-.button span {
-  padding-right: 6px;
-}
-
-.chevron {
-  margin-top: 2px; /* Adjusts vertical alignment slightly */
+@media (max-width: 768px) {
+  .orbitContainer { display: none; }
 }

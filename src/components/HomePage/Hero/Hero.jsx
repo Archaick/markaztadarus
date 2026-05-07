@@ -30,18 +30,52 @@ const Hero = () => {
   }, [currentIndex, subtitle, i18n.language]);
 
   return (
-    <div
-      id="home"
-      className={styles.hero}
-      style={{ backgroundImage: `url(${HeroImage})` }}
-    >
-      <Overlay
-        gradient="linear-gradient(to bottom, rgba(10, 20, 50, 0.7), rgba(10, 20, 50, 0.9))"
-        opacity={1}
-        zIndex={1}
-      />
+    <div id="home" className={styles.hero}>
+      {/* 5T Methodology Sacred Orbit */}
+      <div className={styles.orbitContainer}>
+        <div className={styles.orbitPath}></div>
+        
+        <div className={`${styles.nodeWrapper} ${styles.wrapper1}`}>
+          <div className={styles.node}>
+            <span className={styles.number}>1</span>
+            <span className={styles.label}>{t("pillars.t1")}</span>
+          </div>
+        </div>
+
+        <div className={`${styles.nodeWrapper} ${styles.wrapper2}`}>
+          <div className={styles.node}>
+            <span className={styles.number}>2</span>
+            <span className={styles.label}>{t("pillars.t2")}</span>
+          </div>
+        </div>
+
+        <div className={`${styles.nodeWrapper} ${styles.wrapper3}`}>
+          <div className={styles.node}>
+            <span className={styles.number}>3</span>
+            <span className={styles.label}>{t("pillars.t3")}</span>
+          </div>
+        </div>
+
+        <div className={`${styles.nodeWrapper} ${styles.wrapper4}`}>
+          <div className={styles.node}>
+            <span className={styles.number}>4</span>
+            <span className={styles.label}>{t("pillars.t4")}</span>
+          </div>
+        </div>
+
+        <div className={`${styles.nodeWrapper} ${styles.wrapper5}`}>
+          <div className={styles.node}>
+            <span className={styles.number}>5</span>
+            <span className={styles.label}>{t("pillars.t5")}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.orb1}></div>
+      <div className={styles.orb2}></div>
 
       <Container className={styles.content}>
+        <span className={styles.tagline}>{t("tagline") || "Markaz Tadarus"}</span>
         <Title order={1} className={styles.title}>
           {t("title")}
         </Title>
@@ -50,19 +84,16 @@ const Hero = () => {
           dir={i18n.language === "ar" ? "rtl" : "ltr"}
         >
           {displayedSubtitle}
-          {/* Blinking cursor effect - optional */}
         </Text>
-        {/* Don't remove the Button */}
-        {/* <Button
+        
+        <Button
           size="lg"
-          radius="md"
           className={styles.button}
           component="a"
           href="#programs"
         >
-          <span>{t("cta_button")}</span>
-          <IconChevronCompactDown size={20} className={styles.chevron} />
-        </Button> */}
+          {t("cta_button")}
+        </Button>
       </Container>
     </div>
   );
