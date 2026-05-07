@@ -1,247 +1,224 @@
 .about {
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
   position: relative;
-  padding-top: 64px;
-  background-color: #f9f9f9;
+  padding: 8rem 0;
+  background: #ffffff;
+  overflow: hidden;
+  font-family: "Outfit", "Inter", sans-serif;
 }
 
-.imageCard {
-  width: 40%; /* Smaller image width */
+/* Background Decorative Elements */
+.about::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(254, 214, 91, 0.08) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 6rem;
   position: relative;
-  text-align: center;
-  z-index: 1; /* Lift the image above the divider */
-  margin-bottom: -50px; /* Overlap the divider */
+  z-index: 1;
+}
+
+/* Image Section with Floating Effect */
+.imageSection {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  z-index: 2;
 }
 
 .image {
-  width: 290px;
-  height: 340px;
-  border-radius: 8px; /* Rounded corners for the image */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* Decorative background behind image - Removed as requested */
+.imageBackdrop {
+  display: none;
+}
+
+.glassElement {
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 120px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Content Section */
 .content {
-  width: 55%; /* Content takes 60% width */
-  padding: 10px;
-  padding-left: 2rem; /* Spacing between image and content */
+  flex: 1.2;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center text vertically */
-  margin-bottom: 24px;
+  gap: 1.5rem;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ab8b2b;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0;
 }
 
 .title {
-  color: #ab8b2b; /* Title color */
-  font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
-  font-weight: 700;
-  margin-bottom: 1rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: #1a4970;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -1px;
 }
 
 .text {
-  color: #333; /* Text color */
-  font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive font size */
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-/* Automatically handles RTL languages */
-[dir="rtl"] .title,
-[dir="rtl"] .text {
-  text-align: right;
-}
-
-/* Default LTR styles */
-.title,
-.text {
-  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin: 0;
 }
 
 .highlight {
-  font-weight: 700;
-  color: #1a4970; /* Highlight color */
-}
-
-.link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem; /* Spacing between text and icon */
   color: #1a4970;
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.3s ease;
+  font-weight: 700;
+  background: linear-gradient(120deg, rgba(254, 214, 91, 0.2) 0%, rgba(254, 214, 91, 0.2) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 80%;
 }
 
-.link span {
-  display: flex; /* Ensures both text and icon align */
+/* CTA Section */
+.ctaContainer {
+  margin-top: 1rem;
+  display: flex;
   align-items: center;
-}
-
-.link:hover {
-  color: #ab8b2b;
+  gap: 1.5rem;
 }
 
 .modalButton {
-  background: #b37d08;
+  background: #1a4970;
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 1rem 2rem;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin: 1rem auto 0;
-  width: fit-content;
-  display: block;
-  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .modalButton:hover {
-  background: #1e88e5; /* Nice blue hover */
-  color: #fff;
-  transform: translateY(-2px);
+  background: #ab8b2b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(171, 139, 43, 0.2);
 }
 
+/* Video Modal Styling */
 .modalContent {
-  max-width: 600px;
-  overflow: hidden;
+  background: #0f172a !important;
   border: none !important;
-  padding: 0 !important;
-  background: rgba(16, 33, 65, 0.7) !important;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 16px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 32px !important;
+  overflow: hidden !important;
 }
 
 .modalHeader {
-  background: rgba(206, 206, 206, 0.7) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 1.5rem;
-  text-align: center;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  position: relative;
-}
-
-.modalHeader::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("/common/cubes.png");
-  background-color: #1f3e79;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  opacity: 0.4;
-  z-index: -1;
-}
-
-.modalHeader button {
-  color: rgba(255, 255, 255, 0.9) !important;
-  transition: all 0.3s ease;
-}
-
-.modalHeader button:hover {
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: scale(1.1);
-}
-
-.videoContainer iframe {
-  width: 100%;
-  height: 315px;
-  border-radius: 8px;
+  background: transparent !important;
+  border: none !important;
+  padding: 2rem !important;
 }
 
 .modalTitle {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
-  text-align: center;
-  line-height: 1.4;
+  color: white !important;
+  font-weight: 800;
+  font-size: 1.5rem;
 }
 
-.divider {
+.videoContainer {
   position: relative;
-  width: 100%; /* Divider takes full width */
-  height: 65px;
-  background: linear-gradient(to bottom, #1a1a2e, #102141);
-  margin-top: -30px; /* Overlap with the image */
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  margin: 0 2rem 2rem 2rem;
 }
 
-.divider::before {
-  content: "";
+.videoContainer iframe {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("/common/cubes.png");
-  background-repeat: no-repeat;
-  background-position: right center; /* 👈 anchor the cubes to the right */
-  background-color: #1f3e79;
-  opacity: 0.4;
-  z-index: 0;
+  border: none;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .imageCard {
-    width: 100%; /* Image takes full width on smaller screens */
-    margin-bottom: 0; /* Remove overlap */
+/* Responsive */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    gap: 4rem;
+    text-align: center;
   }
 
-  .image {
-    width: 265px;
-    height: 270px;
+  .imageSection {
+    order: 2;
   }
 
   .content {
-    width: 100%; /* Content takes full width */
-    padding-left: 0; /* Remove spacing */
-    margin-top: 2rem; /* Add spacing between image and content */
-    text-align: center; /* Center-align text on smaller screens */
+    order: 1;
+    align-items: center;
   }
-  .divider {
-    margin-top: 0; /* Remove overlap */
+
+  .ctaContainer {
+    justify-content: center;
   }
+}
+
+@media (max-width: 576px) {
   .about {
-    padding: 2rem 0 0 0;
+    padding: 4rem 0;
+  }
+  
+  .imageWrapper {
+    max-width: 300px;
+  }
+
+  .glassElement {
+    display: none;
   }
 }
 
-@media (max-width: 768px) {
-  .modalContent {
-    width: 90vw !important; /* override Mantine width */
-    max-width: 90vw !important;
-    padding: 0 !important;
-  }
-
-  .videoContainer iframe {
-    height: 200px; /* smaller height for mobile */
-  }
-
-  .modalTitle {
-    font-size: 1.2rem;
-    padding: 0.5rem;
-  }
-
-  .modalBody {
-    padding: 0 !important;
-  }
-}
