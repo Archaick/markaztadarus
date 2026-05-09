@@ -54,7 +54,7 @@ const MarqueeComponent = () => {
         gradient={false}
         className={styles.marqueeRow}
       >
-        {logosLeft.map((logo, index) => (
+        {[...logosLeft, ...logosRight].map((logo, index) => (
           <div key={index} className={styles.logoWrapper}>
             <img
               src={logo}
@@ -71,41 +71,7 @@ const MarqueeComponent = () => {
         gradient={false}
         className={styles.marqueeRow}
       >
-        {logosRight.map((logo, index) => (
-          <div key={index} className={styles.logoWrapper}>
-            <img
-              src={logo}
-              alt={`Logo ${index + 1}`}
-              className={styles.logo}
-            />
-          </div>
-        ))}
-      </Marquee>
-
-      <Marquee
-        direction="right"
-        speed={30}
-        gradient={false}
-        className={styles.marqueeRow}
-      >
-        {logosLeftBtm.map((logo, index) => (
-          <div key={index} className={styles.logoWrapper}>
-            <img
-              src={logo}
-              alt={`Logo ${index + 1}`}
-              className={styles.logo}
-            />
-          </div>
-        ))}
-      </Marquee>
-
-      <Marquee
-        direction="left"
-        speed={30}
-        gradient={false}
-        className={styles.marqueeRow}
-      >
-        {logosRightBtm.map((logo, index) => (
+        {[...logosLeftBtm, ...logosRightBtm].map((logo, index) => (
           <div key={index} className={styles.logoWrapper}>
             <img
               src={logo}

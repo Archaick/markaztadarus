@@ -38,35 +38,35 @@ const Hero = () => {
         <div className={`${styles.nodeWrapper} ${styles.wrapper1}`}>
           <div className={styles.node}>
             <span className={styles.number}>1</span>
-            <span className={styles.label}>{t("pillars.t1")}</span>
+            <span className={styles.label} data-lang={i18n.language}>{t("pillars.t1")}</span>
           </div>
         </div>
 
         <div className={`${styles.nodeWrapper} ${styles.wrapper2}`}>
           <div className={styles.node}>
             <span className={styles.number}>2</span>
-            <span className={styles.label}>{t("pillars.t2")}</span>
+            <span className={styles.label} data-lang={i18n.language}>{t("pillars.t2")}</span>
           </div>
         </div>
 
         <div className={`${styles.nodeWrapper} ${styles.wrapper3}`}>
           <div className={styles.node}>
             <span className={styles.number}>3</span>
-            <span className={styles.label}>{t("pillars.t3")}</span>
+            <span className={styles.label} data-lang={i18n.language}>{t("pillars.t3")}</span>
           </div>
         </div>
 
         <div className={`${styles.nodeWrapper} ${styles.wrapper4}`}>
           <div className={styles.node}>
             <span className={styles.number}>4</span>
-            <span className={styles.label}>{t("pillars.t4")}</span>
+            <span className={styles.label} data-lang={i18n.language}>{t("pillars.t4")}</span>
           </div>
         </div>
 
         <div className={`${styles.nodeWrapper} ${styles.wrapper5}`}>
           <div className={styles.node}>
             <span className={styles.number}>5</span>
-            <span className={styles.label}>{t("pillars.t5")}</span>
+            <span className={styles.label} data-lang={i18n.language}>{t("pillars.t5")}</span>
           </div>
         </div>
       </div>

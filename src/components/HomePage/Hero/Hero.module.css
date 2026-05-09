@@ -64,28 +64,63 @@
 }
 
 .label {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 800;
   color: #1a4970;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
+.label[data-lang="ar"] {
+  font-size: 1.1rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
 /* Upright XY Positioning */
-.wrapper1 { top: 0%; left: 50%; }
-.wrapper2 { top: 34.5%; left: 97.5%; }
-.wrapper3 { top: 90.5%; left: 79.5%; }
-.wrapper4 { top: 90.5%; left: 20.5%; }
-.wrapper5 { top: 34.5%; left: 2.5%; }
+.wrapper1 {
+  top: 0%;
+  left: 50%;
+}
+
+.wrapper2 {
+  top: 34.5%;
+  left: 97.5%;
+}
+
+.wrapper3 {
+  top: 90.5%;
+  left: 79.5%;
+}
+
+.wrapper4 {
+  top: 90.5%;
+  left: 20.5%;
+}
+
+.wrapper5 {
+  top: 34.5%;
+  left: 2.5%;
+}
 
 @keyframes rotateOrbit {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 @keyframes counterRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 /* Ambient Orbs */
@@ -105,13 +140,16 @@
   position: absolute;
   bottom: -80px;
   left: -80px;
-  width: 550px; /* Increased from 400px */
-  height: 550px;
-  opacity: 0.04; /* Softened for subtle institutional feel */
-  filter: grayscale(100%);
+  width: 400px;
+  /* Increased from 400px */
+  height: 400px;
+  opacity: 0.05;
+  /* Softened for subtle institutional feel */
+  /* filter: grayscale(100%); */
   z-index: 0;
   pointer-events: none;
-  transform: none; /* Removed tilt */
+  transform: none;
+  /* Removed tilt */
 }
 
 .content {
@@ -164,9 +202,18 @@
 }
 
 @media (max-width: 768px) {
-  .orbitContainer { width: 380px; height: 380px; }
-  .nodeWrapper { width: 70px; height: 70px; margin-top: -35px; margin-left: -35px; }
-  
+  .orbitContainer {
+    width: 380px;
+    height: 380px;
+  }
+
+  .nodeWrapper {
+    width: 70px;
+    height: 70px;
+    margin-top: -35px;
+    margin-left: -35px;
+  }
+
   .watermark {
     width: 350px;
     height: 350px;
@@ -174,10 +221,32 @@
     left: -40px;
   }
 
-  .number { font-size: 0.55rem; }
-  .label { font-size: 0.6rem; }
-  
-  .tagline { font-size: 0.75rem; letter-spacing: 3px; }
-  .title { font-size: 2.2rem; margin-bottom: 1rem; }
-  .subtitle { font-size: 0.95rem; line-height: 1.5; margin-bottom: 2rem; }
+  .number {
+    font-size: 0.65rem;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .label[data-lang="ar"] {
+    font-size: 0.95rem;
+  }
+
+  .tagline {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+  }
+
+  .title {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
 }

@@ -15,7 +15,7 @@ const Home = () => {
       <Methods />
       <About />
       <Programs />
-      {/* <Map /> */}
+      <Map />
       <Stats />
       <Gallery />
       <MarqueeComponent />
