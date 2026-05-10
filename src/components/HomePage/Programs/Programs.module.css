@@ -165,3 +165,30 @@
   background: #f8fafc;
 }
 
+@media (max-width: 768px) {
+  .programsSection {
+    padding: 5rem 0;
+  }
+
+  .cardImageWrapper {
+    height: 300px; /* Shorter for better proportion on mobile */
+  }
+
+  .cardTitleMain {
+    font-size: 1.2rem;
+  }
+
+  .cardDescription {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardImageWrapper {
+    height: 240px;
+  }
+  
+  .slide {
+    padding: 0.5rem 0.3rem;
+  }
+}

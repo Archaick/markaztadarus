@@ -63,8 +63,9 @@ const Programs = () => {
         plugins={[autoplay.current]}
         withControls={true}
         breakpoints={[
-          { maxWidth: "md", slideSize: "50%", slidesToScroll: 2 },
-          { maxWidth: "sm", slideSize: "100%", slidesToScroll: 1 },
+          { maxWidth: "md", slideSize: "50%", slidesToScroll: 1 },
+          { maxWidth: "sm", slideSize: "50%", slidesToScroll: 1 },
+          { maxWidth: "xs", slideSize: "80%", slidesToScroll: 1 },
         ]}
         className={styles.carousel}
       >
