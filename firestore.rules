@@ -24,6 +24,15 @@ service cloud.firestore {
       allow create, update, delete: if isCertificateAdminUser();
     }
 
+    // Signers (signature + stamp) shown on verified certificates
+    match /certificate_signers/{signerId} {
+      // Public read so the verification page can show signatures
+      allow read: if true;
+
+      // Only certificate admin user can manage signers
+      allow create, update, delete: if isCertificateAdminUser();
+    }
+
     // Redirect manager collection
     match /redirect_manager_links/{redirectId} {
       // Public read so short-link resolver can fetch destination

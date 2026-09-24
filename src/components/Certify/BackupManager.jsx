@@ -60,6 +60,7 @@ const BackupManager = ({ onImportComplete }) => {
                 name: doc.data().name,
                 program: doc.data().program,
                 code: doc.data().code,
+                signerIds: doc.data().signerIds || [],
                 createdAt:
                     doc.data().createdAt?.toDate?.()?.toISOString() ||
                     new Date().toISOString(),
@@ -156,6 +157,7 @@ const BackupManager = ({ onImportComplete }) => {
                             name: cert.name,
                             program: cert.program,
                             code: cert.code,
+                            signerIds: Array.isArray(cert.signerIds) ? cert.signerIds : [],
                             createdAt: cert.createdAt
                                 ? new Date(cert.createdAt)
                                 : new Date(),

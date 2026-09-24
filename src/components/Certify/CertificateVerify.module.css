@@ -239,6 +239,47 @@
 }
 
 /* -------------------------------------------------------
+   SIGNATURES
+------------------------------------------------------- */
+.signaturesSection {
+    position: relative;
+    z-index: 1;
+    padding: 1.25rem 1rem 1.5rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fffdf8, #fbf8f1);
+    border: 1px solid #efe6d2;
+}
+
+.signaturesTitle {
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #92742d;
+    margin-bottom: 0.75rem;
+}
+
+.signaturesGrid {
+    display: grid;
+    grid-template-columns: repeat(var(--sig-cols, 1), minmax(0, 1fr));
+    gap: 1.5rem 1rem;
+    justify-items: center;
+}
+
+@media (max-width: 600px) {
+    .signaturesGrid {
+        grid-template-columns: repeat(min(var(--sig-cols, 1), 2), minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 400px) {
+    .signaturesGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* -------------------------------------------------------
    ERROR TEXT
 ------------------------------------------------------- */
 .errorTitle {

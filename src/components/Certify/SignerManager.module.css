@@ -1,0 +1,178 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 1.5rem;
+}
+
+.cardHeader {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.cardHeader svg {
+    color: #7c3aed;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 1.5rem;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.fields :global(label) {
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.slot {
+    min-width: 0;
+}
+
+.slotPreview {
+    position: relative;
+    height: 110px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    /* checkerboard shows transparency */
+    background-color: #fff;
+    background-image:
+        linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+        linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+        linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+    background-size: 16px 16px;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+.slotPreview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.slotClear {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}
+
+.primaryBtn {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    border: none;
+}
+
+.previewPane {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.previewPaper {
+    flex: 1;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fbfdff, #f6f9fb);
+    border: 1px solid #e6eef7;
+}
+
+/* ---------- LIST ---------- */
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.row:hover {
+    background: rgba(37, 99, 235, 0.04);
+}
+
+.inactive {
+    opacity: 0.55;
+}
+
+.rowImages {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    width: 104px;
+}
+
+.rowImages img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+}
+
+.rowInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.rowActions {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: 1rem;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .row {
+        flex-wrap: wrap;
+    }
+
+    .rowActions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

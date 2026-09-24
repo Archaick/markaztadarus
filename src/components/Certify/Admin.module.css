@@ -63,6 +63,59 @@
     border-color: transparent !important;
 }
 
+/* ========== TABS ========== */
+.tabList {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 6px;
+    gap: 6px;
+    backdrop-filter: blur(10px);
+}
+
+.tabList::before {
+    display: none;
+}
+
+.tabList :global(.mantine-Tabs-tab) {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.tabList :global(.mantine-Tabs-tab:hover) {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+}
+
+.tabList :global(.mantine-Tabs-tab[data-active]) {
+    background: rgba(255, 255, 255, 0.98);
+    color: #4c1d95;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.searchBox {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.875rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.searchBox :global(input) {
+    border: 2px solid #e2e8f0;
+    font-size: 0.95rem;
+}
+
+.searchBox :global(input:focus) {
+    border-color: #2563eb;
+}
+
 /* ========== FORM & INPUTS ========== */
 .form,
 .container> :global(div[class*="mantine-TextInput-root"]) {
@@ -107,6 +160,17 @@
     font-size: 0.875rem;
 }
 
+/* MultiSelect: undo the generic input/button styles above for its inner parts */
+.form :global(.mantine-MultiSelect-inputField) {
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.form :global(.mantine-MultiSelect-input) {
+    border: 2px solid #e2e8f0;
+}
+
 /* ========== BUTTONS ========== */
 .form :global(button) {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
@@ -121,6 +185,14 @@
 .form :global(button:hover:not(:disabled)) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+.form :global(.mantine-CloseButton-root),
+.form :global(.mantine-CloseButton-root:hover:not(:disabled)) {
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    transform: none;
 }
 
 .form :global(button:disabled),

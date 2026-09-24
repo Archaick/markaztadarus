@@ -4,12 +4,15 @@ import styles from "./Admin.module.css";
 import { db, auth } from "../../../firebaseConfig";
 import QrStats from "./QrStats";
 import BackupManager from "./BackupManager";
+import SignerManager from "./SignerManager";
+import { resolveCertificateSigners } from "./signerUtils";
 import {
     collection,
     addDoc,
     getDocs,
     deleteDoc,
     doc,
+    updateDoc,
     query,
     orderBy,
     startAfter,
@@ -28,8 +31,11 @@ import {
     Text,
     PasswordInput,
     Alert,
+    Tabs,
+    MultiSelect,
+    Badge,
 } from "@mantine/core";
-import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle, IconDownload, IconTrash } from '@tabler/icons-react';
+import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle, IconDownload, IconTrash, IconCertificate, IconSignature } from '@tabler/icons-react';
 import QRCode from "qrcode";
 import LoadingOverlay from "../LoadingOverlay";
 import {
@@ -44,7 +50,7 @@ const INPUT_MAX_LENGTH = 200;
 
 const Admin = () => {
     const [certificates, setCertificates] = useState([]);
-    const [newCert, setNewCert] = useState({ name: "", program: "" });
+    const [newCert, setNewCert] = useState({ name: "", program: "", signerIds: [] });
     const [searchTerm, setSearchTerm] = useState("");
     const [qrCodes, setQrCodes] = useState({});
     const [loading, setLoading] = useState(false);
@@ -56,6 +62,9 @@ const Admin = () => {
     const [deleteTargetId, setDeleteTargetId] = useState(null);
     const [reauthPassword, setReauthPassword] = useState("");
     const [notification, setNotification] = useState(null);
+    const [activeTab, setActiveTab] = useState("certificates");
+    const [signers, setSigners] = useState([]);
+    const [signerEdit, setSignerEdit] = useState(null); // { cert, signerIds }
 
     const certCollection = collection(db, "certificates");
 
@@ -190,6 +199,7 @@ const Admin = () => {
                 name: sanitizedName,
                 program: sanitizedProgram,
                 code,
+                signerIds: newCert.signerIds,
                 createdAt: new Date(),
                 createdBy: auth.currentUser.email,
             };
@@ -204,7 +214,7 @@ const Admin = () => {
 
             setCertificates((prev) => [addedCert, ...prev.slice(0, ITEMS_PER_PAGE - 1)]);
             setQrCodes((prev) => ({ ...prev, [docRef.id]: qrDataUrl }));
-            setNewCert({ name: "", program: "" });
+            setNewCert({ name: "", program: "", signerIds: [] });
 
             showNotification("success", "Certificate Added", `Certificate for ${sanitizedName} created successfully!`);
         } catch (err) {
@@ -291,6 +301,38 @@ const Admin = () => {
         cert.program.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // ========== SIGNERS ==========
+    const signerOptions = signers
+        .filter((s) => s.active !== false)
+        .map((s) => ({ value: s.id, label: `${s.name} — ${s.position}` }));
+
+    const defaultSignerNames = signers
+        .filter((s) => s.active !== false && s.isDefault)
+        .map((s) => s.name)
+        .join(", ");
+
+    const signerPlaceholder = defaultSignerNames
+        ? `Leave empty to use default signers (${defaultSignerNames})`
+        : "No default signers yet — add them in the Signers & Stamps tab";
+
+    const handleSaveCertSigners = async () => {
+        if (!signerEdit || !verifyAdminAuth()) return;
+        setActionLoading(true);
+        try {
+            await updateDoc(doc(db, "certificates", signerEdit.cert.id), { signerIds: signerEdit.signerIds });
+            setCertificates((prev) =>
+                prev.map((c) => (c.id === signerEdit.cert.id ? { ...c, signerIds: signerEdit.signerIds } : c))
+            );
+            setSignerEdit(null);
+            showNotification("success", "Signers Updated", "The verification page now shows the new signers.");
+        } catch (err) {
+            console.error("Error updating signers:", err);
+            showNotification("error", "Update Failed", err.message || "Could not update signers.");
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
     return (
         <div className={styles.container}>
             <Title order={2}>Admin Certificate Panel</Title>
@@ -328,6 +370,24 @@ const Admin = () => {
                 </Button>
             </div>
 
+            <Tabs value={activeTab} onChange={setActiveTab} className={styles.tabs} keepMounted>
+                <Tabs.List className={styles.tabList} grow>
+                    <Tabs.Tab value="certificates" leftSection={<IconCertificate size={18} />}>
+                        Certificates
+                    </Tabs.Tab>
+                    <Tabs.Tab value="signers" leftSection={<IconSignature size={18} />}>
+                        Signers & Stamps
+                        {signers.length > 0 && (
+                            <Badge size="xs" ml={6} variant="white" color="violet">{signers.length}</Badge>
+                        )}
+                    </Tabs.Tab>
+                </Tabs.List>
+
+                <Tabs.Panel value="signers" pt="lg">
+                    <SignerManager notify={showNotification} onSignersChange={setSigners} />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="certificates" pt="lg">
             <BackupManager onImportComplete={() => { setPage(1); fetchCertificates(1); }} />
 
             <div className={styles.form}>
@@ -347,12 +407,24 @@ const Admin = () => {
                     disabled={actionLoading}
                     maxLength={INPUT_MAX_LENGTH}
                 />
+                <MultiSelect
+                    label="Signers"
+                    placeholder={newCert.signerIds.length ? "" : signerPlaceholder}
+                    data={signerOptions}
+                    value={newCert.signerIds}
+                    onChange={(ids) => setNewCert({ ...newCert, signerIds: ids })}
+                    disabled={actionLoading}
+                    clearable
+                    searchable
+                    nothingFoundMessage="No signers — add them in the Signers & Stamps tab"
+                />
                 <Button mt="sm" onClick={handleAdd} loading={actionLoading}>
                     Add Certificate
                 </Button>
             </div>
 
             <TextInput
+                className={styles.searchBox}
                 placeholder="Search by name or program..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -370,13 +442,14 @@ const Admin = () => {
                                 <th>Program</th>
                                 <th>Code</th>
                                 <th>QR</th>
+                                <th>Signers</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredCertificates.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} style={{ padding: "2rem", textAlign: "center" }}>
+                                    <td colSpan={6} style={{ padding: "2rem", textAlign: "center" }}>
                                         No certificates found
                                     </td>
                                 </tr>
@@ -392,6 +465,9 @@ const Admin = () => {
                                             )}
                                         </td>
                                         <td>
+                                            <SignerSummary cert={cert} signers={signers} />
+                                        </td>
+                                        <td>
                                             <Group spacing="xs" justify="center">
                                                 <Button
                                                     color="blue"
@@ -401,6 +477,15 @@ const Admin = () => {
                                                     p="xs"
                                                 >
                                                     <IconDownload size={16} />
+                                                </Button>
+                                                <Button
+                                                    color="violet"
+                                                    size="s"
+                                                    onClick={() => setSignerEdit({ cert, signerIds: cert.signerIds || [] })}
+                                                    title="Choose Signers"
+                                                    p="xs"
+                                                >
+                                                    <IconSignature size={16} />
                                                 </Button>
                                                 <Button
                                                     color="red"
@@ -434,6 +519,33 @@ const Admin = () => {
                     )}
                 </>
             )}
+                </Tabs.Panel>
+            </Tabs>
+
+            <Modal
+                opened={!!signerEdit}
+                onClose={() => setSignerEdit(null)}
+                title={`Signers — ${signerEdit?.cert.name || ""}`}
+                centered
+                size="md"
+            >
+                <MultiSelect
+                    label="Who signed this certificate?"
+                    placeholder={signerEdit?.signerIds.length ? "" : signerPlaceholder}
+                    data={signerOptions}
+                    value={signerEdit?.signerIds || []}
+                    onChange={(ids) => setSignerEdit((prev) => ({ ...prev, signerIds: ids }))}
+                    clearable
+                    searchable
+                />
+                <Text size="xs" c="dimmed" mt="xs">
+                    Leave empty to always show the current default signers.
+                </Text>
+                <Group justify="flex-end" mt="md">
+                    <Button variant="default" onClick={() => setSignerEdit(null)}>Cancel</Button>
+                    <Button loading={actionLoading} onClick={handleSaveCertSigners}>Save</Button>
+                </Group>
+            </Modal>
 
             <Modal
                 opened={deleteModalOpen}
@@ -457,6 +569,18 @@ const Admin = () => {
                 </Group>
             </Modal>
         </div>
+    );
+};
+
+const SignerSummary = ({ cert, signers }) => {
+    const resolved = resolveCertificateSigners(cert, signers);
+    const usesDefault = !(Array.isArray(cert.signerIds) && cert.signerIds.length > 0);
+    if (resolved.length === 0) return <Text size="xs" c="dimmed">—</Text>;
+    return (
+        <Text size="xs" title={resolved.map((s) => s.name).join(", ")}>
+            {resolved.length === 1 ? resolved[0].name : `${resolved[0].name} +${resolved.length - 1}`}
+            {usesDefault && <Text span size="xs" c="dimmed"> (default)</Text>}
+        </Text>
     );
 };
 

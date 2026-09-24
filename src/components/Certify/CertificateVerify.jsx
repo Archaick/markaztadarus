@@ -7,6 +7,8 @@ import { IconCertificate, IconAlertCircle, IconCheck, IconWorld } from "@tabler/
 import { useTranslation } from "react-i18next";
 import styles from "./CertificateVerify.module.css";
 import stampImg from "../../assets/imgs/stamp.png"
+import SignatureBlock from "./SignatureBlock";
+import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
 
 
 const CertificateVerify = () => {
@@ -14,6 +16,7 @@ const CertificateVerify = () => {
     const [certificate, setCertificate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [signers, setSigners] = useState([]);
 
     const { t, i18n } = useTranslation("verification/CertificateVerify");
 
@@ -38,10 +41,19 @@ const CertificateVerify = () => {
                     return;
                 }
 
-                setCertificate({
+                const cert = {
                     id: snapshot.docs[0].id,
                     ...snapshot.docs[0].data(),
-                });
+                };
+
+                // Signers are optional: a failure here must not invalidate the certificate
+                try {
+                    setSigners(resolveCertificateSigners(cert, await fetchAllSigners()));
+                } catch (signerErr) {
+                    console.error("Could not load signers:", signerErr);
+                }
+
+                setCertificate(cert);
 
             } catch (err) {
                 console.error(err);
@@ -189,8 +201,24 @@ const CertificateVerify = () => {
                         )}
                     </Stack>
 
+                    {signers.length > 0 && (
+                        <div className={styles.signaturesSection}>
+                            <Text className={styles.signaturesTitle}>{t("signatures_title")}</Text>
+                            <div
+                                className={styles.signaturesGrid}
+                                style={{ "--sig-cols": Math.min(signers.length, 3) }}
+                            >
+                                {signers.map((s) => (
+                                    <SignatureBlock key={s.id} signer={s} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <Center className={styles.footerWrapper}>
-                        <img src={stampImg} alt="Stamp" className={styles.stamp} />
+                        {signers.length === 0 && (
+                            <img src={stampImg} alt="Stamp" className={styles.stamp} />
+                        )}
                         <Text size="xs" color="dimmed">{t("footer_text")}</Text>
                     </Center>
 

@@ -13,5 +13,6 @@
     "program": "Program:",
     "document_code": "Document Code:",
     "issued_on": "Issued On:",
-    "footer_text": "This document has been verified as an authentic record issued by MTI."
+    "footer_text": "This document has been verified as an authentic record issued by MTI.",
+    "signatures_title": "Authorized Signatures"
 }
