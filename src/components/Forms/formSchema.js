@@ -1,55 +1,49 @@
 export const FORMS_COLLECTION = "forms";
 export const RESPONSES = "responses";
 
-export const FIELD_TYPES = [
-  { value: "short", label: "Short answer" },
-  { value: "long", label: "Paragraph" },
-  { value: "number", label: "Number" },
-  { value: "phone", label: "WhatsApp / phone" },
-  { value: "date", label: "Date" },
-  { value: "choice", label: "Multiple choice (one)" },
-  { value: "checkbox", label: "Checkboxes (many)" },
-];
+// Labels live in public/locales/*/internal/Forms.json under types.<value>.
+export const FIELD_TYPES = ["short", "long", "number", "phone", "date", "choice", "checkbox"];
 
 export const HAS_OPTIONS = new Set(["choice", "checkbox"]);
 
-export const STATUS = {
-  draft: { label: "Draft", color: "gray", hint: "Only admins can see it." },
-  open: { label: "Open", color: "teal", hint: "Anyone with the link can answer." },
-  closed: { label: "Closed", color: "red", hint: "The link shows the form is closed." },
-};
+// Labels and hints live under status.<key> in the Forms translations.
+export const STATUS_COLORS = { draft: "gray", open: "teal", closed: "red" };
+export const STATUSES = Object.keys(STATUS_COLORS);
 
 export const MAX_LENGTH = { short: 300, long: 3000, phone: 30, number: 30, date: 20 };
 
 const randomId = () => Math.random().toString(36).slice(2, 10);
 
-export const newField = (type = "short") => ({
+export const newId = randomId;
+
+// `optionLabel(n)` names the starter options in the admin's language.
+export const newField = (type = "short", optionLabel = (n) => `Option ${n}`) => ({
   id: randomId(),
   type,
   label: "",
   required: true,
-  ...(HAS_OPTIONS.has(type) ? { options: ["Option 1"] } : {}),
+  ...(HAS_OPTIONS.has(type) ? { options: [optionLabel(1)] } : {}),
 });
 
 const field = (type, label, extra = {}) => ({ ...newField(type), label, ...extra });
 
+// Picker labels live under templates.<key> in the Forms translations; the
+// questions themselves are content, written in the form's own language.
 export const TEMPLATES = [
   {
     key: "blank",
-    title: "Blank form",
-    description: "Start from nothing.",
-    build: () => ({
-      title: "Untitled form",
+    build: (language) => ({
+      title: "",
       description: "",
+      language,
       fields: [newField("short")],
     }),
   },
   {
     key: "komitmen-tadarus",
-    title: "Komitmen Pelaksanaan Tadarus",
-    description: "Identitas peserta Duta Qur'an dan rencana Tadarus di Indonesia.",
     build: () => ({
       title: "Komitmen Pelaksanaan Tadarus",
+      language: "id",
       description:
         "Formulir komitmen bagi peserta Program Duta Qur'an Mekah untuk melaksanakan Tadarus di Indonesia.",
       fields: [
@@ -92,15 +86,15 @@ export const isEmptyAnswer = (value) =>
 
 const digits = (value) => String(value || "").replace(/\D/g, "");
 
-// Returns an Indonesian-language error for one answer, or "" when it is fine.
+// Returns the public.errors.<key> for one answer, or "" when it is fine.
 export const answerError = (fieldDef, value) => {
-  if (isEmptyAnswer(value)) return fieldDef.required ? "Pertanyaan ini wajib diisi." : "";
+  if (isEmptyAnswer(value)) return fieldDef.required ? "required" : "";
   if (fieldDef.type === "number" && !/^-?\d+([.,]\d+)?$/.test(String(value).trim())) {
-    return "Masukkan angka saja.";
+    return "number";
   }
   if (fieldDef.type === "phone") {
     const count = digits(value).length;
-    if (count < 8 || count > 15) return "Nomor WhatsApp tidak valid.";
+    if (count < 8 || count > 15) return "phone";
   }
   return "";
 };
@@ -137,12 +131,13 @@ const csvCell = (value) => {
   return /[",;]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 };
 
-export const responsesToCsv = (fields, responses, formatTime) => {
+// `labels` = { submitted, removed: (id) => string } in the admin's language
+export const responsesToCsv = (fields, responses, formatTime, labels) => {
   const known = new Set(fields.map((f) => f.id));
   const extra = Array.from(
     new Set(responses.flatMap((r) => Object.keys(r.answers || {}).filter((k) => !known.has(k))))
   );
-  const header = ["Submitted at", ...fields.map((f) => f.label || "(untitled)"), ...extra.map((k) => `Removed question ${k}`)];
+  const header = [labels.submitted, ...fields.map((f) => f.label || "—"), ...extra.map(labels.removed)];
   const rows = responses.map((r) => [
     formatTime(r.submittedAt),
     ...fields.map((f) => r.answers?.[f.id]),
@@ -160,4 +155,56 @@ export const downloadText = (filename, text, type = "text/csv;charset=utf-8") =>
   link.download = filename;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+// --- cover image ----------------------------------------------------------------
+
+// Stored as a JPEG data URL in forms/{id}/media/cover (no Storage bucket on
+// this project). The form keeps coverVersion so pages know to load it.
+export const MEDIA = "media";
+export const COVER_DOC = "cover";
+export const COVER_MAX_CHARS = 700000; // well under Firestore's 1 MiB per document
+
+export const COVER_POSITIONS = ["top", "center", "bottom"]; // labels: cover.<value>
+
+const loadImage = (file) =>
+  new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("unreadable"));
+    };
+    img.src = url;
+  });
+
+// Scales a photo down and re-encodes it as JPEG until it fits COVER_MAX_CHARS.
+export const compressCover = async (file) => {
+  const img = await loadImage(file);
+  let width = img.naturalWidth;
+  let height = img.naturalHeight;
+  const fit = Math.min(1, 1800 / width, 1200 / height);
+  width = Math.round(width * fit);
+  height = Math.round(height * fit);
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    canvas.width = width;
+    canvas.height = height;
+    ctx.fillStyle = "#ffffff"; // transparent PNGs would turn black as JPEG
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(img, 0, 0, width, height);
+    for (let quality = 0.85; quality >= 0.55; quality -= 0.1) {
+      const dataUrl = canvas.toDataURL("image/jpeg", quality);
+      if (dataUrl.length <= COVER_MAX_CHARS) return dataUrl;
+    }
+    width = Math.round(width * 0.8);
+    height = Math.round(height * 0.8);
+  }
+  throw new Error("too-large");
 };

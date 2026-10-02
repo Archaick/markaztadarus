@@ -1,0 +1,204 @@
+{
+  "title": "Formulir",
+  "intro": "Buat formulir, bagikan tautannya, dan baca semua jawaban di sini.",
+  "newForm": "Formulir baru",
+  "untitled": "Formulir tanpa judul",
+  "allForms": "Semua formulir",
+  "loadFailed": "Tidak dapat memuat formulir. Pastikan aturan Firestore sudah di-deploy.",
+  "empty": {
+    "title": "Belum ada formulir",
+    "text": "Buat dari templat Komitmen Pelaksanaan Tadarus atau mulai dari kosong.",
+    "button": "Buat formulir pertama"
+  },
+  "card": {
+    "responses_other": "{{count}} jawaban",
+    "questions_other": "{{count}} pertanyaan",
+    "updated": "diperbarui {{time}}",
+    "copyLink": "Salin tautan",
+    "copied": "Tersalin",
+    "openForm": "Buka formulir"
+  },
+  "create": {
+    "title": "Formulir baru",
+    "startFrom": "Mulai dari",
+    "formTitle": "Judul",
+    "formTitlePlaceholder": "Judul formulir",
+    "link": "Tautan",
+    "linkHint": "Huruf, angka, dan tanda hubung. Tidak dapat diubah nanti.",
+    "cancel": "Batal",
+    "submit": "Buat formulir",
+    "errors": {
+      "noTitle": "Beri judul untuk formulir ini.",
+      "badLink": "Tautan harus 3–60 karakter berupa huruf, angka, atau tanda hubung.",
+      "taken": "/form/{{id}} sudah dipakai. Pilih tautan lain.",
+      "failed": "Tidak dapat membuat formulir. Periksa koneksi lalu coba lagi."
+    }
+  },
+  "templates": {
+    "blank": {
+      "title": "Formulir kosong",
+      "description": "Mulai dari nol."
+    },
+    "komitmen-tadarus": {
+      "title": "Komitmen Pelaksanaan Tadarus",
+      "description": "Identitas peserta Duta Qur'an dan rencana Tadarus di Indonesia."
+    }
+  },
+  "status": {
+    "draft": "Draf",
+    "open": "Dibuka",
+    "closed": "Ditutup",
+    "hint": {
+      "draft": "Hanya admin yang dapat melihatnya.",
+      "open": "Siapa pun yang memiliki tautan dapat menjawab.",
+      "closed": "Tautan menampilkan bahwa formulir sudah ditutup."
+    },
+    "failed": "Tidak dapat mengubah status. Coba lagi."
+  },
+  "detail": {
+    "notFoundTitle": "Formulir tidak ditemukan",
+    "notFoundText": "/form/{{id}} tidak ada atau sudah dihapus.",
+    "tabs": {
+      "questions": "Pertanyaan",
+      "responses": "Jawaban",
+      "share": "Bagikan"
+    }
+  },
+  "builder": {
+    "formTitle": "Judul formulir",
+    "description": "Deskripsi di bawah judul (opsional)",
+    "formLanguage": "Bahasa formulir",
+    "formLanguageHint": "Bahasa yang pertama kali dilihat saat tautan dibuka. Pengisi tetap dapat menggantinya.",
+    "question": "Pertanyaan",
+    "questionN": "Pertanyaan {{n}}",
+    "answerType": "Jenis jawaban",
+    "optionN": "Opsi {{n}}",
+    "addOption": "Tambah opsi",
+    "removeOption": "Hapus opsi",
+    "placeholder": "Contoh jawaban di kotak kosong (opsional)",
+    "required": "Wajib",
+    "moveUp": "Pindah ke atas",
+    "moveDown": "Pindah ke bawah",
+    "duplicate": "Duplikat",
+    "deleteQuestion": "Hapus pertanyaan",
+    "addQuestion": "Tambah pertanyaan",
+    "deletedNote": "Jawaban yang sudah masuk untuk pertanyaan yang dihapus tetap ada di ekspor CSV.",
+    "unsaved": "Ada perubahan belum disimpan",
+    "allSaved": "Semua perubahan tersimpan",
+    "discard": "Batalkan",
+    "save": "Simpan",
+    "saved": "Tersimpan.",
+    "saveFailed": "Tidak dapat menyimpan. Periksa koneksi lalu coba lagi.",
+    "problems": {
+      "noTitle": "Formulir perlu judul.",
+      "noQuestions": "Tambahkan setidaknya satu pertanyaan.",
+      "noLabel": "Pertanyaan {{n}} belum berisi teks.",
+      "emptyOption": "Pertanyaan {{n}} memiliki opsi kosong.",
+      "duplicateOption": "Pertanyaan {{n}} memiliki opsi yang sama dua kali."
+    }
+  },
+  "types": {
+    "short": "Jawaban singkat",
+    "long": "Paragraf",
+    "number": "Angka",
+    "phone": "WhatsApp / telepon",
+    "date": "Tanggal",
+    "choice": "Pilihan ganda (satu)",
+    "checkbox": "Kotak centang (banyak)"
+  },
+  "cover": {
+    "tag": "Sampul",
+    "showThe": "Tampilkan bagian",
+    "ofImage": "gambar",
+    "top": "Atas",
+    "center": "Tengah",
+    "bottom": "Bawah",
+    "change": "Ganti",
+    "remove": "Hapus",
+    "add": "Tambah gambar sampul",
+    "saving": "Menyimpan sampul…",
+    "hint": "Tampil di bagian atas formulir menggantikan spanduk hijau. Foto lebar paling cocok.",
+    "errors": {
+      "unreadable": "Berkas ini tidak dapat dibuka sebagai gambar. Coba JPG atau PNG.",
+      "tooLarge": "Gambar ini terlalu besar meski sudah diperkecil. Coba yang lebih kecil.",
+      "saveFailed": "Tidak dapat menyimpan sampul. Periksa koneksi lalu coba lagi.",
+      "removeFailed": "Tidak dapat menghapus sampul. Coba lagi.",
+      "moveFailed": "Tidak dapat mengubah posisi. Coba lagi."
+    }
+  },
+  "responses": {
+    "count": "jawaban",
+    "latest": "terbaru",
+    "export": "Ekspor CSV",
+    "loadFailed": "Tidak dapat memuat jawaban.",
+    "limit": "Menampilkan {{max}} jawaban terbaru.",
+    "emptyTitle": "Belum ada jawaban",
+    "emptyOpen": "Bagikan tautan dari tab Bagikan — jawaban akan langsung muncul di sini.",
+    "emptyClosed": "Buka formulir (kanan atas) lalu bagikan tautannya untuk mulai mengumpulkan jawaban.",
+    "search": "Cari jawaban",
+    "noMatch": "Tidak ada jawaban yang cocok dengan “{{term}}”.",
+    "response": "Jawaban",
+    "responseN": "Jawaban #{{n}}",
+    "noAnswer": "Tidak dijawab",
+    "chat": "Chat",
+    "removedQuestion": "Pertanyaan yang dihapus",
+    "delete": "Hapus",
+    "newer": "Lebih baru",
+    "older": "Lebih lama",
+    "deleteTitle": "Hapus jawaban",
+    "deleteText": "Jawaban ini akan dihapus permanen.",
+    "cancel": "Batal",
+    "deleteFailed": "Tidak dapat menghapus jawaban itu.",
+    "csvSubmitted": "Waktu kirim",
+    "csvRemoved": "Pertanyaan dihapus {{id}}"
+  },
+  "share": {
+    "draftTitle": "Formulir ini masih draf",
+    "draftText": "Orang yang membuka tautan akan melihat “formulir tidak ditemukan” sampai Anda membukanya.",
+    "closedTitle": "Formulir ini ditutup",
+    "closedText": "Orang yang membuka tautan akan diberi tahu bahwa formulir tidak lagi menerima jawaban.",
+    "openNow": "Buka formulir untuk menerima jawaban",
+    "link": "Tautan formulir",
+    "copyLink": "Salin tautan",
+    "copied": "Tersalin",
+    "open": "Buka",
+    "whatsappMessage": "Pesan WhatsApp",
+    "shareWhatsapp": "Bagikan ke WhatsApp",
+    "copyMessage": "Salin pesan",
+    "shortLink": "Ingin tautan yang lebih pendek? Buat di <a>Pengelola Tautan</a> yang mengarah ke formulir ini.",
+    "downloadQr": "Unduh QR",
+    "deleteTitle": "Hapus formulir ini",
+    "deleteText": "Menghapus formulir dan semua jawabannya. Tidak dapat dibatalkan — ekspor CSV terlebih dahulu.",
+    "deleteButton": "Hapus formulir",
+    "deleteModalTitle": "Hapus formulir dan semua jawaban",
+    "deleteConfirm": "Ketik <b>{{id}}</b> untuk mengonfirmasi.",
+    "cancel": "Batal",
+    "deleteForever": "Hapus permanen",
+    "deleteFailed": "Tidak dapat menghapus formulir. Coba lagi.",
+    "message": "Assalamu'alaikum.\n\nMohon kesediaannya untuk mengisi formulir *{{title}}* melalui tautan berikut:\n{{link}}\n\nJazakumullahu khairan."
+  },
+  "public": {
+    "yourAnswer": "Jawaban Anda",
+    "number": "Angka",
+    "requiredNote": "Wajib diisi",
+    "submit": "Kirim",
+    "submitting": "Mengirim…",
+    "clear": "Kosongkan formulir",
+    "notFoundTitle": "Formulir tidak ditemukan",
+    "notFoundText": "Tautan ini mungkin salah, atau formulirnya belum dibuka. Silakan hubungi pengirim tautan.",
+    "closedText": "Formulir ini sudah tidak menerima jawaban. Terima kasih atas perhatian Anda.",
+    "thanksTitle": "Terima kasih!",
+    "thanksText": "Jawaban Anda telah kami terima. Jazakumullahu khairan.",
+    "another": "Kirim jawaban lain",
+    "preview": "Pratinjau untuk admin — formulir ini {{status}}, jadi jawaban tidak dapat dikirim.",
+    "previewDraft": "masih draf",
+    "previewClosed": "sudah ditutup",
+    "closedError": "Formulir ini sudah ditutup. Jawaban tidak dapat dikirim.",
+    "sendError": "Gagal mengirim. Periksa koneksi internet Anda lalu coba lagi.",
+    "errors": {
+      "required": "Pertanyaan ini wajib diisi.",
+      "number": "Masukkan angka saja.",
+      "phone": "Nomor WhatsApp tidak valid."
+    }
+  }
+}

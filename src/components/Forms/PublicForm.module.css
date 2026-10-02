@@ -29,6 +29,20 @@
   pointer-events: none;
 }
 
+.heroCover {
+  height: 260px;
+  background-color: #0b6e4f;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* soft fade at the top so the logo badge always reads well */
+.heroCover::after {
+  opacity: 1;
+  background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.25) 0%, transparent 45%);
+  background-size: auto;
+}
+
 .logoLink {
   position: relative;
   z-index: 1;
@@ -37,6 +51,17 @@
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.langCorner {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 2;
+}
+
+:global([dir="rtl"]) .sendIcon {
+  transform: scaleX(-1);
 }
 
 .logo {
@@ -312,8 +337,24 @@
     height: 140px;
   }
 
+  .heroCover {
+    height: 190px;
+  }
+
   .logo {
     height: 28px;
+  }
+
+  /* on phones the logo and the switch share one row */
+  .hero {
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem 0;
+  }
+
+  .langCorner {
+    position: static;
   }
 
   .main {

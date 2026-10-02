@@ -19,6 +19,7 @@ import {
   IconSearch,
   IconTrash,
 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   collection,
   deleteDoc,
@@ -30,6 +31,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { formatDateTime, timeAgo } from "../Internal/timeAgo";
+import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
 import {
   FORMS_COLLECTION,
@@ -44,9 +46,10 @@ import {
 const MAX_RESPONSES = 2000;
 
 export default function ResponsesPanel({ form }) {
+  const { t } = useTranslation("internal/Forms");
   const fields = useMemo(() => form.fields || [], [form.fields]);
   const [responses, setResponses] = useState(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // a responses.<key>
   const [search, setSearch] = useState("");
   const [openIndex, setOpenIndex] = useState(-1);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -66,7 +69,7 @@ export default function ResponsesPanel({ form }) {
         },
         (err) => {
           console.error("Could not load responses:", err);
-          setError("Could not load responses.");
+          setError("loadFailed");
           setResponses([]);
         }
       ),
@@ -110,7 +113,10 @@ export default function ResponsesPanel({ form }) {
   const open = openIndex >= 0 ? filtered[openIndex] : null;
 
   const exportCsv = () => {
-    const csv = responsesToCsv(fields, responses || [], formatDateTime);
+    const csv = responsesToCsv(fields, responses || [], formatDateTime, {
+      submitted: t("responses.csvSubmitted"),
+      removed: (id) => t("responses.csvRemoved", { id }),
+    });
     const date = new Date().toISOString().slice(0, 10);
     downloadText(`${form.id}-responses-${date}.csv`, csv);
   };
@@ -124,7 +130,7 @@ export default function ResponsesPanel({ form }) {
       setOpenIndex(-1);
     } catch (err) {
       console.error("Could not delete response:", err);
-      setError("Could not delete that response.");
+      setError("deleteFailed");
     } finally {
       setDeleting(false);
     }
@@ -143,11 +149,11 @@ export default function ResponsesPanel({ form }) {
       <div className={styles.statRow}>
         <div className={styles.statBox}>
           <span className={styles.statNumber}>{responses.length}</span>
-          <span className={styles.statLabel}>responses</span>
+          <span className={styles.statLabel}>{t("responses.count")}</span>
         </div>
         <div className={styles.statBox}>
           <span className={styles.statNumber}>{responses[0] ? timeAgo(responses[0].submittedAt) : "—"}</span>
-          <span className={styles.statLabel}>latest</span>
+          <span className={styles.statLabel}>{t("responses.latest")}</span>
         </div>
         <Button
           variant="light"
@@ -157,19 +163,19 @@ export default function ResponsesPanel({ form }) {
           disabled={responses.length === 0}
           className={styles.exportButton}
         >
-          Export CSV
+          {t("responses.export")}
         </Button>
       </div>
 
       {error && (
         <Alert color="red" mt="sm">
-          {error}
+          {t(`responses.${error}`)}
         </Alert>
       )}
 
       {responses.length >= MAX_RESPONSES && (
         <Alert color="yellow" mt="sm">
-          Showing the latest {MAX_RESPONSES} responses.
+          {t("responses.limit", { max: MAX_RESPONSES })}
         </Alert>
       )}
 
@@ -202,11 +208,9 @@ export default function ResponsesPanel({ form }) {
       {responses.length === 0 ? (
         <div className={styles.empty}>
           <IconInbox size={34} />
-          <Text fw={600}>No responses yet</Text>
+          <Text fw={600}>{t("responses.emptyTitle")}</Text>
           <Text size="sm" c="dimmed">
-            {form.status === "open"
-              ? "Share the link from the Share tab — answers appear here live."
-              : "Open the form (top right) and share its link to start collecting answers."}
+            {form.status === "open" ? t("responses.emptyOpen") : t("responses.emptyClosed")}
           </Text>
         </div>
       ) : (
@@ -214,7 +218,7 @@ export default function ResponsesPanel({ form }) {
           <TextInput
             mt="lg"
             leftSection={<IconSearch size={16} />}
-            placeholder="Search answers"
+            placeholder={t("responses.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -223,20 +227,20 @@ export default function ResponsesPanel({ form }) {
               <button type="button" className={styles.responseRow} key={r.id} onClick={() => setOpenIndex(index)}>
                 <span className={styles.responseIndex}>{responses.length - responses.indexOf(r)}</span>
                 <span className={styles.responseMain}>
-                  <span className={styles.responseTitle}>
-                    {primary ? displayAnswer(r.answers?.[primary.id]) || "—" : "Response"}
+                  <span className={styles.responseTitle} dir="auto">
+                    {primary ? displayAnswer(r.answers?.[primary.id]) || "—" : t("responses.response")}
                   </span>
                   {secondary && (
-                    <span className={styles.responseSub}>{displayAnswer(r.answers?.[secondary.id]) || "—"}</span>
+                    <span className={styles.responseSub} dir="auto">{displayAnswer(r.answers?.[secondary.id]) || "—"}</span>
                   )}
                 </span>
                 <span className={styles.responseTime}>{timeAgo(r.submittedAt)}</span>
-                <IconChevronRight size={16} className={styles.responseChevron} />
+                <IconChevronRight size={16} className={`${styles.responseChevron} ${portal.flipRtl}`} />
               </button>
             ))}
             {filtered.length === 0 && (
               <Text c="dimmed" ta="center" py="lg" size="sm">
-                No response matches “{search}”.
+                {t("responses.noMatch", { term: search })}
               </Text>
             )}
           </div>
@@ -251,7 +255,7 @@ export default function ResponsesPanel({ form }) {
         title={
           open && (
             <Group gap="xs">
-              <Text fw={700}>Response #{responses.length - responses.indexOf(open)}</Text>
+              <Text fw={700}>{t("responses.responseN", { n: responses.length - responses.indexOf(open) })}</Text>
               <Text size="sm" c="dimmed">
                 {formatDateTime(open.submittedAt)}
               </Text>
@@ -270,7 +274,7 @@ export default function ResponsesPanel({ form }) {
                       {i + 1}. {f.label}
                     </p>
                     <div className={styles.answerValueRow}>
-                      <p className={styles.answerValue}>{displayAnswer(value) || <em>No answer</em>}</p>
+                      <p className={styles.answerValue} dir="auto">{displayAnswer(value) || <em>{t("responses.noAnswer")}</em>}</p>
                       {f.type === "phone" && value && (
                         <Button
                           size="compact-xs"
@@ -282,7 +286,7 @@ export default function ResponsesPanel({ form }) {
                           rel="noreferrer"
                           leftSection={<IconBrandWhatsapp size={14} />}
                         >
-                          Chat
+                          {t("responses.chat")}
                         </Button>
                       )}
                     </div>
@@ -293,8 +297,8 @@ export default function ResponsesPanel({ form }) {
                 .filter((k) => !fields.some((f) => f.id === k))
                 .map((k) => (
                   <div className={styles.answerItem} key={k}>
-                    <p className={styles.answerQuestion}>Removed question</p>
-                    <p className={styles.answerValue}>{displayAnswer(open.answers[k])}</p>
+                    <p className={styles.answerQuestion}>{t("responses.removedQuestion")}</p>
+                    <p className={styles.answerValue} dir="auto">{displayAnswer(open.answers[k])}</p>
                   </div>
                 ))}
             </div>
@@ -306,27 +310,27 @@ export default function ResponsesPanel({ form }) {
                 leftSection={<IconTrash size={15} />}
                 onClick={() => setConfirmDelete(true)}
               >
-                Delete
+                {t("responses.delete")}
               </Button>
               <Group gap={4}>
-                <Tooltip label="Newer">
+                <Tooltip label={t("responses.newer")}>
                   <ActionIcon
                     variant="default"
                     disabled={openIndex <= 0}
                     onClick={() => setOpenIndex((i) => i - 1)}
-                    aria-label="Newer response"
+                    aria-label={t("responses.newer")}
                   >
-                    <IconChevronLeft size={16} />
+                    <IconChevronLeft size={16} className={portal.flipRtl} />
                   </ActionIcon>
                 </Tooltip>
-                <Tooltip label="Older">
+                <Tooltip label={t("responses.older")}>
                   <ActionIcon
                     variant="default"
                     disabled={openIndex >= filtered.length - 1}
                     onClick={() => setOpenIndex((i) => i + 1)}
-                    aria-label="Older response"
+                    aria-label={t("responses.older")}
                   >
-                    <IconChevronRight size={16} />
+                    <IconChevronRight size={16} className={portal.flipRtl} />
                   </ActionIcon>
                 </Tooltip>
               </Group>
@@ -335,14 +339,14 @@ export default function ResponsesPanel({ form }) {
         )}
       </Modal>
 
-      <Modal opened={confirmDelete} onClose={() => setConfirmDelete(false)} title="Delete response" centered size="sm">
-        <Text size="sm">This response will be removed permanently.</Text>
+      <Modal opened={confirmDelete} onClose={() => setConfirmDelete(false)} title={t("responses.deleteTitle")} centered size="sm">
+        <Text size="sm">{t("responses.deleteText")}</Text>
         <Group justify="flex-end" mt="lg">
           <Button variant="default" onClick={() => setConfirmDelete(false)}>
-            Cancel
+            {t("responses.cancel")}
           </Button>
           <Button color="red" loading={deleting} onClick={deleteOpen}>
-            Delete
+            {t("responses.delete")}
           </Button>
         </Group>
       </Modal>

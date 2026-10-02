@@ -1,0 +1,90 @@
+{
+  "home": "Beranda",
+  "language": "Bahasa",
+  "productBy": "Produk Markaz Tadarus Indonesia",
+  "superAdmin": "Super admin",
+  "signOut": "Keluar",
+  "backToHub": "Akses Internal",
+  "google": {
+    "continue": "Lanjutkan dengan Google",
+    "opening": "Membuka Google…",
+    "errors": {
+      "network": "Gangguan jaringan. Periksa koneksi Anda lalu coba lagi.",
+      "unauthorizedDomain": "Domain ini belum diizinkan untuk masuk. Tambahkan di Firebase Authentication → Settings → Authorized domains.",
+      "notEnabled": "Login Google belum diaktifkan untuk proyek Firebase ini.",
+      "generic": "Gagal masuk. Silakan coba lagi."
+    }
+  },
+  "gate": {
+    "title": "Akses Internal",
+    "subtitle": "Masuk dengan akun Google yang diundang.",
+    "featureSubtitle": "Masuk untuk membuka {{title}}.",
+    "inviteOnly": "Akses hanya melalui undangan.",
+    "noAccessTitle": "Akun ini tidak memiliki akses",
+    "noAccessText": "<b>{{email}}</b> belum diundang ke dasbor ini. Minta super admin untuk mengundang email ini, atau ganti ke akun Google lain.",
+    "noEmail": "Akun ini tidak memiliki email terverifikasi. Keluar lalu lanjutkan dengan Google.",
+    "switchAccount": "Keluar dan ganti akun"
+  },
+  "features": {
+    "access": {
+      "title": "Kontrol Akses",
+      "description": "Undang admin dan pilih dasbor yang boleh mereka buka."
+    },
+    "certificates": {
+      "title": "Dasbor Sertifikat",
+      "description": "Terbitkan sertifikat, kode QR, penanda tangan, dan stempel."
+    },
+    "redirects": {
+      "title": "Pengelola Tautan",
+      "description": "Tautan pendek yang mengarah ke URL mana pun."
+    },
+    "forms": {
+      "title": "Formulir",
+      "description": "Buat formulir, bagikan tautannya, dan baca jawabannya."
+    }
+  },
+  "hub": {
+    "pick": "Pilih sistem internal di bawah ini.",
+    "single": "Dasbor Anda:"
+  },
+  "access": {
+    "intro": "Undang akun Google dan pilih dasbor yang boleh dibukanya. Perubahan langsung berlaku — tanpa berbagi kata sandi.",
+    "inviteTitle": "Undang admin",
+    "dashboards": "Dasbor",
+    "invite": "Undang",
+    "admins": "Admin ({{count}})",
+    "superRow": "Super admin · semua dasbor · dapat mengundang",
+    "empty": "Belum ada admin. Undang admin pertama di atas.",
+    "active": "Aktif · terakhir masuk {{time}}",
+    "pending": "Menunggu · diundang {{time}}",
+    "give": "Beri akses {{title}}",
+    "take": "Cabut akses {{title}}",
+    "removeTip": "Cabut akses",
+    "footnote": "Admin tanpa dasbor yang dicentang tetap terundang tetapi tidak dapat membuka apa pun.",
+    "messageFor": "Pesan undangan untuk {{email}}",
+    "copyMessage": "Salin pesan",
+    "copied": "Tersalin",
+    "whatsapp": "WhatsApp",
+    "removeTitle": "Cabut akses",
+    "removeText": "<b>{{email}}</b> akan langsung kehilangan akses ke semua dasbor internal. Anda dapat mengundangnya lagi nanti.",
+    "cancel": "Batal",
+    "remove": "Cabut",
+    "notices": {
+      "invalidEmail": "Masukkan alamat email yang valid.",
+      "isSuper": "Itu adalah super admin, yang sudah memiliki semua dasbor.",
+      "pickOne": "Pilih setidaknya satu dasbor untuk admin ini.",
+      "updated": "{{email}} sudah diundang — dasbor diperbarui.",
+      "invited": "{{email}} telah diundang. Kirimkan pesan di bawah ini.",
+      "inviteFailed": "Gagal mengundang. Periksa koneksi dan aturan Firestore.",
+      "updateFailed": "Tidak dapat memperbarui {{email}}.",
+      "removed": "{{email}} tidak lagi memiliki akses.",
+      "removeFailed": "Tidak dapat mencabut akses {{email}}.",
+      "loadFailed": "Tidak dapat memuat daftar admin. Pastikan aturan Firestore sudah di-deploy."
+    },
+    "message": {
+      "greeting": "Assalamu'alaikum,",
+      "body": "Anda telah diberi akses ke dasbor internal Markaz Tadarus ({{dashboards}}).",
+      "howTo": "Buka {{link}} lalu pilih \"Lanjutkan dengan Google\" menggunakan akun ini: {{email}}"
+    }
+  }
+}

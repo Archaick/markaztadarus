@@ -2,23 +2,27 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Alert, Badge, Card, Group, Loader, SegmentedControl, Tabs, Text, Title } from "@mantine/core";
 import { IconArrowLeft, IconListDetails, IconMessages, IconShare } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import { doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import layout from "../Internal/AccessControl.module.css";
+import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
-import { FORMS_COLLECTION, STATUS } from "./formSchema";
+import { FORMS_COLLECTION, STATUSES, STATUS_COLORS } from "./formSchema";
 import FormBuilder from "./FormBuilder";
+import FormCoverEditor from "./FormCoverEditor";
 import ResponsesPanel from "./ResponsesPanel";
 import SharePanel from "./SharePanel";
 
 export default function FormDetail() {
+  const { t } = useTranslation("internal/Forms");
   const { formId } = useParams();
   const { email } = useAccess();
   const [form, setForm] = useState(undefined);
   const [tab, setTab] = useState("questions");
-  const [statusError, setStatusError] = useState("");
+  const [statusError, setStatusError] = useState(false);
 
   useEffect(
     () =>
@@ -34,7 +38,7 @@ export default function FormDetail() {
   );
 
   const changeStatus = async (status) => {
-    setStatusError("");
+    setStatusError(false);
     try {
       await updateDoc(doc(db, FORMS_COLLECTION, formId), {
         status,
@@ -43,7 +47,7 @@ export default function FormDetail() {
       });
     } catch (err) {
       console.error("Could not change status:", err);
-      setStatusError("Could not change the status. Try again.");
+      setStatusError(true);
     }
   };
 
@@ -51,7 +55,7 @@ export default function FormDetail() {
     <InternalLayout align="top">
       <div className={layout.page}>
         <a href="/internal/forms" className={layout.back}>
-          <IconArrowLeft size={16} /> All forms
+          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("allForms")}
         </a>
 
         <Card className={layout.panel}>
@@ -64,8 +68,8 @@ export default function FormDetail() {
           )}
 
           {form === null && (
-            <Alert color="red" mt="lg" title="Form not found">
-              /form/{formId} does not exist, or it was deleted.
+            <Alert color="red" mt="lg" title={t("detail.notFoundTitle")}>
+              {t("detail.notFoundText", { id: formId })}
             </Alert>
           )}
 
@@ -74,51 +78,52 @@ export default function FormDetail() {
               <div className={styles.detailHeader}>
                 <div className={styles.detailTitleWrap}>
                   <Title order={2} className={layout.headingTitle}>
-                    {form.title || "Untitled form"}
+                    {form.title || t("untitled")}
                   </Title>
                   <Text size="sm" c="dimmed">
-                    /form/{form.id}
+                    <bdi>/form/{form.id}</bdi>
                   </Text>
                 </div>
                 <div className={styles.statusBox}>
                   <SegmentedControl
                     value={form.status || "draft"}
                     onChange={changeStatus}
-                    data={Object.entries(STATUS).map(([value, s]) => ({ value, label: s.label }))}
-                    color={STATUS[form.status]?.color || "gray"}
+                    data={STATUSES.map((value) => ({ value, label: t(`status.${value}`) }))}
+                    color={STATUS_COLORS[form.status] || "gray"}
                     size="sm"
                   />
                   <Text size="xs" c="dimmed" mt={4}>
-                    {STATUS[form.status]?.hint || STATUS.draft.hint}
+                    {t(`status.hint.${STATUS_COLORS[form.status] ? form.status : "draft"}`)}
                   </Text>
                 </div>
               </div>
 
               {statusError && (
                 <Alert color="red" mt="sm">
-                  {statusError}
+                  {t("status.failed")}
                 </Alert>
               )}
 
               <Tabs value={tab} onChange={setTab} mt="lg" keepMounted={false} color="teal">
                 <Tabs.List grow>
                   <Tabs.Tab value="questions" leftSection={<IconListDetails size={16} />}>
-                    Questions
+                    {t("detail.tabs.questions")}
                   </Tabs.Tab>
                   <Tabs.Tab value="responses" leftSection={<IconMessages size={16} />}>
-                    Responses
+                    {t("detail.tabs.responses")}
                   </Tabs.Tab>
                   <Tabs.Tab value="share" leftSection={<IconShare size={16} />}>
-                    Share
+                    {t("detail.tabs.share")}
                     {form.status !== "open" && (
-                      <Badge size="xs" color="gray" variant="light" ml={6}>
-                        {STATUS[form.status]?.label || "Draft"}
+                      <Badge size="xs" color="gray" variant="light" ms={6}>
+                        {t(`status.${STATUS_COLORS[form.status] ? form.status : "draft"}`)}
                       </Badge>
                     )}
                   </Tabs.Tab>
                 </Tabs.List>
 
                 <Tabs.Panel value="questions" pt="lg">
+                  <FormCoverEditor form={form} editorEmail={email} />
                   <FormBuilder form={form} editorEmail={email} />
                 </Tabs.Panel>
                 <Tabs.Panel value="responses" pt="lg">

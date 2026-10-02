@@ -65,7 +65,7 @@
 .homeButton {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  inset-inline-start: 1rem;
   z-index: 3;
   text-decoration: none;
   color: white;
@@ -276,7 +276,7 @@
   display: flex;
   gap: 0.5rem;
   align-items: flex-start;
-  text-align: left;
+  text-align: start;
   padding: 0.7rem 0.85rem;
   border-radius: 10px;
   background: #fef2f2;
@@ -295,7 +295,7 @@
   margin-top: 1.25rem;
   display: flex;
   gap: 0.7rem;
-  text-align: left;
+  text-align: start;
   padding: 0.9rem 1rem;
   border-radius: 12px;
   background: #fffbeb;
@@ -376,10 +376,57 @@
   background: #faf5ff;
 }
 
+/* ---------- language switch ---------- */
+
+.langSwitch {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.langSwitch button {
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.langSwitch button:hover {
+  color: white;
+}
+
+.langSwitch .langOn {
+  background: white;
+  color: #0f2558;
+}
+
+.langCorner {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  z-index: 3;
+}
+
 @media (max-width: 768px) {
   .homeButton {
     top: 0.75rem;
-    left: 0.75rem;
+    inset-inline-start: 0.75rem;
+  }
+
+  .langCorner {
+    top: 0.75rem;
+    inset-inline-end: 0.75rem;
   }
 
   .card {
@@ -390,4 +437,9 @@
     align-items: center;
     gap: 0.75rem;
   }
+}
+
+/* direction arrows point the other way in Arabic */
+:global([dir="rtl"]) .flipRtl {
+  transform: scaleX(-1);
 }

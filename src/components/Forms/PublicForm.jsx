@@ -2,21 +2,39 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Loader, Radio, TextInput, Textarea } from "@mantine/core";
 import { IconAlertCircle, IconCircleCheck, IconEye, IconLock, IconSend } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { LanguageSwitcher } from "../Internal/InternalUI";
+import { useLanguageDirection } from "../Internal/language";
 // Despite its name this file is the navy logo; it sits on a white badge.
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./PublicForm.module.css";
-import { FORMS_COLLECTION, MAX_LENGTH, RESPONSES, answerError, cleanAnswers } from "./formSchema";
+import {
+  COVER_DOC,
+  FORMS_COLLECTION,
+  MAX_LENGTH,
+  MEDIA,
+  RESPONSES,
+  answerError,
+  cleanAnswers,
+} from "./formSchema";
 
-function Shell({ children }) {
+const NS = "internal/Forms";
+
+function Shell({ children, language, cover, coverPosition }) {
   return (
     <div className={styles.page}>
-      <header className={styles.hero}>
+      <header
+        className={`${styles.hero} ${cover ? styles.heroCover : ""}`}
+        style={cover ? { backgroundImage: `url(${cover})`, backgroundPosition: `center ${coverPosition || "center"}` } : undefined}
+      >
         <a href="/" className={styles.logoLink}>
           <img src={logo} alt="Markaz Tadarus Indonesia" className={styles.logo} />
         </a>
+        {/* Visitors switch for this visit only; the form's own language comes first. */}
+        <LanguageSwitcher language={language} remember={false} className={styles.langCorner} />
       </header>
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>Markaz Tadarus Indonesia</footer>
@@ -30,7 +48,9 @@ function StateCard({ icon: Icon, tone, title, text, children }) {
       <span className={`${styles.stateIcon} ${styles[tone]}`}>
         <Icon size={30} />
       </span>
-      <h1 className={styles.stateTitle}>{title}</h1>
+      <h1 className={styles.stateTitle} dir="auto">
+        {title}
+      </h1>
       {text && <p className={styles.stateText}>{text}</p>}
       {children}
     </div>
@@ -38,7 +58,9 @@ function StateCard({ icon: Icon, tone, title, text, children }) {
 }
 
 function FieldInput({ field, value, onChange, error }) {
-  const common = { error: error || undefined, size: "md", classNames: { input: styles.input } };
+  const { t } = useTranslation(NS);
+  // Answers are typed in whatever language the person uses.
+  const common = { error: error || undefined, size: "md", dir: "auto", classNames: { input: styles.input } };
 
   switch (field.type) {
     case "long":
@@ -48,7 +70,7 @@ function FieldInput({ field, value, onChange, error }) {
           autosize
           minRows={3}
           maxLength={MAX_LENGTH.long}
-          placeholder={field.placeholder || "Jawaban Anda"}
+          placeholder={field.placeholder || t("public.yourAnswer")}
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -59,7 +81,7 @@ function FieldInput({ field, value, onChange, error }) {
           {...common}
           inputMode="decimal"
           maxLength={MAX_LENGTH.number}
-          placeholder={field.placeholder || "Angka"}
+          placeholder={field.placeholder || t("public.number")}
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -68,6 +90,7 @@ function FieldInput({ field, value, onChange, error }) {
       return (
         <TextInput
           {...common}
+          dir="ltr"
           type="tel"
           inputMode="tel"
           autoComplete="tel"
@@ -86,7 +109,7 @@ function FieldInput({ field, value, onChange, error }) {
             {(field.options || []).map((option) => (
               <label key={option} className={`${styles.option} ${value === option ? styles.optionOn : ""}`}>
                 <Radio value={option} color="teal" />
-                <span>{option}</span>
+                <span dir="auto">{option}</span>
               </label>
             ))}
           </div>
@@ -102,7 +125,7 @@ function FieldInput({ field, value, onChange, error }) {
                 className={`${styles.option} ${(value || []).includes(option) ? styles.optionOn : ""}`}
               >
                 <Checkbox value={option} color="teal" />
-                <span>{option}</span>
+                <span dir="auto">{option}</span>
               </label>
             ))}
           </div>
@@ -113,7 +136,7 @@ function FieldInput({ field, value, onChange, error }) {
         <TextInput
           {...common}
           maxLength={MAX_LENGTH.short}
-          placeholder={field.placeholder || "Jawaban Anda"}
+          placeholder={field.placeholder || t("public.yourAnswer")}
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -122,16 +145,19 @@ function FieldInput({ field, value, onChange, error }) {
 }
 
 export default function PublicForm() {
+  const { t } = useTranslation(NS);
   const { formId } = useParams();
   const { hasFeature, loading: accessLoading } = useAccess();
   const isFormAdmin = hasFeature("forms");
   const [form, setForm] = useState(undefined);
   const [answers, setAnswers] = useState({});
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); // fieldId → public.errors.<key>
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [cover, setCover] = useState(null);
   const questionRefs = useRef({});
+  const language = useLanguageDirection(form?.language);
 
   useEffect(() => {
     if (accessLoading) return;
@@ -149,9 +175,24 @@ export default function PublicForm() {
     if (form?.title) document.title = `${form.title} · Markaz Tadarus`;
   }, [form?.title]);
 
+  // The cover lives in its own document; the form shows without waiting for it.
+  const coverVersion = form?.coverVersion;
+  useEffect(() => {
+    if (!coverVersion) return undefined;
+    let alive = true;
+    getDoc(doc(db, FORMS_COLLECTION, formId, MEDIA, COVER_DOC))
+      .then((snap) => alive && snap.exists() && setCover(snap.data().dataUrl))
+      .catch((err) => console.error("Could not load cover:", err));
+    return () => {
+      alive = false;
+    };
+  }, [formId, coverVersion]);
+
+  const shellProps = { language, cover, coverPosition: form?.coverPosition };
+
   if (form === undefined) {
     return (
-      <Shell>
+      <Shell language={language}>
         <div className={styles.loading}>
           <Loader color="teal" />
         </div>
@@ -161,12 +202,12 @@ export default function PublicForm() {
 
   if (form === null) {
     return (
-      <Shell>
+      <Shell language={language}>
         <StateCard
           icon={IconAlertCircle}
           tone="toneGray"
-          title="Formulir tidak ditemukan"
-          text="Tautan ini mungkin salah, atau formulirnya belum dibuka. Silakan hubungi pengirim tautan."
+          title={t("public.notFoundTitle")}
+          text={t("public.notFoundText")}
         />
       </Shell>
     );
@@ -176,26 +217,16 @@ export default function PublicForm() {
 
   if (!isOpen && !isFormAdmin) {
     return (
-      <Shell>
-        <StateCard
-          icon={IconLock}
-          tone="toneRed"
-          title={form.title}
-          text="Formulir ini sudah tidak menerima jawaban. Terima kasih atas perhatian Anda."
-        />
+      <Shell {...shellProps}>
+        <StateCard icon={IconLock} tone="toneRed" title={form.title} text={t("public.closedText")} />
       </Shell>
     );
   }
 
   if (submitted) {
     return (
-      <Shell>
-        <StateCard
-          icon={IconCircleCheck}
-          tone="toneGreen"
-          title="Terima kasih!"
-          text="Jawaban Anda telah kami terima. Jazakumullahu khairan."
-        >
+      <Shell {...shellProps}>
+        <StateCard icon={IconCircleCheck} tone="toneGreen" title={t("public.thanksTitle")} text={t("public.thanksText")}>
           <button
             type="button"
             className={styles.linkButton}
@@ -206,7 +237,7 @@ export default function PublicForm() {
               window.scrollTo({ top: 0 });
             }}
           >
-            Kirim jawaban lain
+            {t("public.another")}
           </button>
         </StateCard>
       </Shell>
@@ -226,8 +257,8 @@ export default function PublicForm() {
 
     const nextErrors = {};
     fields.forEach((f) => {
-      const message = answerError(f, answers[f.id]);
-      if (message) nextErrors[f.id] = message;
+      const key = answerError(f, answers[f.id]);
+      if (key) nextErrors[f.id] = key;
     });
     setErrors(nextErrors);
 
@@ -248,11 +279,7 @@ export default function PublicForm() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("Submit failed:", err);
-      setSubmitError(
-        err.code === "permission-denied"
-          ? "Formulir ini sudah ditutup. Jawaban tidak dapat dikirim."
-          : "Gagal mengirim. Periksa koneksi internet Anda lalu coba lagi."
-      );
+      setSubmitError(err.code === "permission-denied" ? "closedError" : "sendError");
     } finally {
       setSubmitting(false);
     }
@@ -261,21 +288,29 @@ export default function PublicForm() {
   const hasRequired = fields.some((f) => f.required);
 
   return (
-    <Shell>
+    <Shell {...shellProps}>
       {!isOpen && (
         <div className={styles.previewBanner}>
           <IconEye size={16} />
-          Preview for admins — this form is {form.status === "closed" ? "closed" : "a draft"}, so answers cannot be sent.
+          {t("public.preview", {
+            status: form.status === "closed" ? t("public.previewClosed") : t("public.previewDraft"),
+          })}
         </div>
       )}
 
       <form onSubmit={handleSubmit} noValidate>
         <div className={`${styles.card} ${styles.titleCard}`}>
-          <h1 className={styles.title}>{form.title}</h1>
-          {form.description && <p className={styles.description}>{form.description}</p>}
+          <h1 className={styles.title} dir="auto">
+            {form.title}
+          </h1>
+          {form.description && (
+            <p className={styles.description} dir="auto">
+              {form.description}
+            </p>
+          )}
           {hasRequired && (
             <p className={styles.requiredNote}>
-              <span className={styles.star}>*</span> Wajib diisi
+              <span className={styles.star}>*</span> {t("public.requiredNote")}
             </p>
           )}
         </div>
@@ -290,26 +325,31 @@ export default function PublicForm() {
           >
             <label className={styles.questionLabel}>
               <span className={styles.questionNumber}>{index + 1}</span>
-              <span>
+              <span dir="auto">
                 {f.label}
                 {f.required && <span className={styles.star}> *</span>}
               </span>
             </label>
-            <FieldInput field={f} value={answers[f.id]} onChange={(v) => setAnswer(f.id, v)} error={errors[f.id]} />
+            <FieldInput
+              field={f}
+              value={answers[f.id]}
+              onChange={(v) => setAnswer(f.id, v)}
+              error={errors[f.id] ? t(`public.errors.${errors[f.id]}`) : ""}
+            />
           </div>
         ))}
 
         {submitError && (
           <div className={styles.submitError}>
             <IconAlertCircle size={18} />
-            {submitError}
+            {t(`public.${submitError}`)}
           </div>
         )}
 
         <div className={styles.submitRow}>
           <button type="submit" className={styles.submitButton} disabled={submitting || !isOpen}>
-            {submitting ? <Loader size={18} color="white" /> : <IconSend size={18} />}
-            {submitting ? "Mengirim…" : "Kirim"}
+            {submitting ? <Loader size={18} color="white" /> : <IconSend size={18} className={styles.sendIcon} />}
+            {submitting ? t("public.submitting") : t("public.submit")}
           </button>
           <button
             type="button"
@@ -319,7 +359,7 @@ export default function PublicForm() {
               setErrors({});
             }}
           >
-            Kosongkan formulir
+            {t("public.clear")}
           </button>
         </div>
       </form>

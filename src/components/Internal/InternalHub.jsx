@@ -1,5 +1,6 @@
 import { Card, Stack, Text, Title } from "@mantine/core";
 import { IconArrowRight, IconShieldLock, IconUsersGroup } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { FEATURES } from "./access";
 import { AccessGate, AccountBar, FullPageLoader, InternalLayout } from "./InternalUI";
@@ -8,13 +9,12 @@ import styles from "./InternalPortal.module.css";
 const accessControlLink = {
   key: "access",
   href: "/internal/access",
-  title: "Access Control",
-  description: "Invite admins and choose which dashboards they can open.",
   icon: IconUsersGroup,
   color: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
 };
 
 export default function InternalHub() {
+  const { t } = useTranslation("internal/Internal");
   const { loading, user, isSuperAdmin, features } = useAccess();
 
   if (loading) return <FullPageLoader />;
@@ -42,11 +42,9 @@ export default function InternalHub() {
             <IconShieldLock size={36} />
           </div>
           <Title order={1} className={styles.title}>
-            Internal Access
+            {t("gate.title")}
           </Title>
-          <Text className={styles.subtitle}>
-            {links.length === 1 ? "Your dashboard:" : "Select an internal system below."}
-          </Text>
+          <Text className={styles.subtitle}>{links.length === 1 ? t("hub.single") : t("hub.pick")}</Text>
         </Stack>
 
         <div className={styles.links}>
@@ -61,12 +59,12 @@ export default function InternalHub() {
                   <link.icon size={19} />
                 </span>
                 <div>
-                  <p className={styles.linkTitle}>{link.title}</p>
-                  <p className={styles.linkDesc}>{link.description}</p>
+                  <p className={styles.linkTitle}>{t(`features.${link.key}.title`)}</p>
+                  <p className={styles.linkDesc}>{t(`features.${link.key}.description`)}</p>
                 </div>
               </div>
               <div className={styles.linkArrow}>
-                <IconArrowRight size={18} className={styles.arrow} />
+                <IconArrowRight size={18} className={`${styles.arrow} ${styles.flipRtl}`} />
               </div>
             </a>
           ))}

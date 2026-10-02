@@ -10,26 +10,28 @@ import {
   IconExternalLink,
   IconTrash,
 } from "@tabler/icons-react";
+import { Trans, useTranslation } from "react-i18next";
 import QRCode from "qrcode";
 import { collection, deleteDoc, doc, getDocs, limit, query, writeBatch } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import styles from "./Forms.module.css";
-import { FORMS_COLLECTION, RESPONSES, formLink } from "./formSchema";
-
-const shareMessage = (form) =>
-  `Assalamu'alaikum.\n\nMohon kesediaannya untuk mengisi formulir *${form.title}* melalui tautan berikut:\n${formLink(form.id)}\n\nJazakumullahu khairan.`;
+import { COVER_DOC, FORMS_COLLECTION, MEDIA, RESPONSES, formLink } from "./formSchema";
 
 export default function SharePanel({ form, onOpen }) {
+  const { t } = useTranslation("internal/Forms");
   const navigate = useNavigate();
   const { hasFeature } = useAccess();
   const link = formLink(form.id);
   const [qr, setQr] = useState("");
-  const [message, setMessage] = useState(() => shareMessage(form));
+  // The invitation is read by respondents, so it is written in the form's language.
+  const [message, setMessage] = useState(() =>
+    t("share.message", { lng: form.language || "id", title: form.title, link })
+  );
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
   const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState("");
+  const [deleteError, setDeleteError] = useState(false);
 
   useEffect(() => {
     QRCode.toDataURL(link, { errorCorrectionLevel: "M", margin: 2, width: 480 })
@@ -46,7 +48,7 @@ export default function SharePanel({ form, onOpen }) {
 
   const deleteForm = async () => {
     setDeleting(true);
-    setDeleteError("");
+    setDeleteError(false);
     try {
       // Responses live in a subcollection, which Firestore does not remove
       // with the parent, so clear them first in batches.
@@ -57,40 +59,41 @@ export default function SharePanel({ form, onOpen }) {
         snap.docs.forEach((d) => batch.delete(d.ref));
         await batch.commit();
       }
+      await deleteDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
       await deleteDoc(doc(db, FORMS_COLLECTION, form.id));
       navigate("/internal/forms", { replace: true });
     } catch (err) {
       console.error("Could not delete form:", err);
-      setDeleteError("Could not delete the form. Try again.");
+      setDeleteError(true);
       setDeleting(false);
     }
   };
+
+  const closed = form.status === "closed";
 
   return (
     <div className={styles.share}>
       {form.status !== "open" && (
         <Alert
-          color={form.status === "closed" ? "red" : "yellow"}
+          color={closed ? "red" : "yellow"}
           icon={<IconAlertTriangle size={18} />}
-          title={form.status === "closed" ? "This form is closed" : "This form is still a draft"}
+          title={closed ? t("share.closedTitle") : t("share.draftTitle")}
           mb="lg"
         >
-          <Text size="sm">
-            {form.status === "closed"
-              ? "People who open the link are told it no longer accepts answers."
-              : "People who open the link will see “form not found” until you open it."}
-          </Text>
+          <Text size="sm">{closed ? t("share.closedText") : t("share.draftText")}</Text>
           <Button size="xs" mt="sm" color="teal" onClick={onOpen}>
-            Open the form for answers
+            {t("share.openNow")}
           </Button>
         </Alert>
       )}
 
       <div className={styles.shareGrid}>
         <div>
-          <Text className={styles.shareLabel}>Form link</Text>
+          <Text className={styles.shareLabel}>{t("share.link")}</Text>
           <div className={styles.linkBox}>
-            <span className={styles.linkBoxText}>{link}</span>
+            <span className={styles.linkBoxText}>
+              <bdi>{link}</bdi>
+            </span>
           </div>
           <Group gap="xs" mt="xs">
             <CopyButton value={link}>
@@ -102,7 +105,7 @@ export default function SharePanel({ form, onOpen }) {
                   leftSection={copied ? <IconCheck size={15} /> : <IconCopy size={15} />}
                   onClick={copy}
                 >
-                  {copied ? "Copied" : "Copy link"}
+                  {copied ? t("share.copied") : t("share.copyLink")}
                 </Button>
               )}
             </CopyButton>
@@ -115,14 +118,20 @@ export default function SharePanel({ form, onOpen }) {
               rel="noreferrer"
               leftSection={<IconExternalLink size={15} />}
             >
-              Open
+              {t("share.open")}
             </Button>
           </Group>
 
           <Text className={styles.shareLabel} mt="lg">
-            WhatsApp message
+            {t("share.whatsappMessage")}
           </Text>
-          <Textarea autosize minRows={4} value={message} onChange={(e) => setMessage(e.target.value)} />
+          <Textarea
+            autosize
+            minRows={4}
+            dir={form.language === "ar" ? "rtl" : "ltr"}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
           <Group gap="xs" mt="xs">
             <Button
               size="sm"
@@ -133,12 +142,17 @@ export default function SharePanel({ form, onOpen }) {
               rel="noreferrer"
               leftSection={<IconBrandWhatsapp size={16} />}
             >
-              Share on WhatsApp
+              {t("share.shareWhatsapp")}
             </Button>
             <CopyButton value={message}>
               {({ copied, copy }) => (
-                <Button size="sm" variant="default" onClick={copy} leftSection={copied ? <IconCheck size={15} /> : <IconCopy size={15} />}>
-                  {copied ? "Copied" : "Copy message"}
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={copy}
+                  leftSection={copied ? <IconCheck size={15} /> : <IconCopy size={15} />}
+                >
+                  {copied ? t("share.copied") : t("share.copyMessage")}
                 </Button>
               )}
             </CopyButton>
@@ -146,19 +160,19 @@ export default function SharePanel({ form, onOpen }) {
 
           {hasFeature("redirects") && (
             <Text size="xs" c="dimmed" mt="md">
-              Want a shorter link? Create one in the{" "}
-              <a href="/internal/redirect-manager" className={styles.inlineLink}>
-                Redirect Manager
-              </a>{" "}
-              pointing to this form.
+              <Trans
+                t={t}
+                i18nKey="share.shortLink"
+                components={{ a: <a href="/internal/redirect-manager" className={styles.inlineLink} /> }}
+              />
             </Text>
           )}
         </div>
 
         <div className={styles.qrBox}>
-          {qr ? <img src={qr} alt={`QR code for ${link}`} className={styles.qrImage} /> : <div className={styles.qrImage} />}
+          {qr ? <img src={qr} alt={link} className={styles.qrImage} /> : <div className={styles.qrImage} />}
           <Button size="xs" variant="light" leftSection={<IconDownload size={14} />} onClick={downloadQr} disabled={!qr}>
-            Download QR
+            {t("share.downloadQr")}
           </Button>
         </div>
       </div>
@@ -166,14 +180,14 @@ export default function SharePanel({ form, onOpen }) {
       <div className={styles.dangerZone}>
         <div>
           <Text fw={700} size="sm">
-            Delete this form
+            {t("share.deleteTitle")}
           </Text>
           <Text size="xs" c="dimmed">
-            Removes the form and every response. This cannot be undone — export the CSV first.
+            {t("share.deleteText")}
           </Text>
         </div>
         <Button color="red" variant="light" leftSection={<IconTrash size={15} />} onClick={() => setDeleteOpen(true)}>
-          Delete form
+          {t("share.deleteButton")}
         </Button>
       </div>
 
@@ -183,24 +197,30 @@ export default function SharePanel({ form, onOpen }) {
           setDeleteOpen(false);
           setConfirmText("");
         }}
-        title="Delete form and all responses"
+        title={t("share.deleteModalTitle")}
         centered
       >
         <Text size="sm">
-          Type <strong>{form.id}</strong> to confirm.
+          <Trans t={t} i18nKey="share.deleteConfirm" values={{ id: form.id }} components={{ b: <strong dir="ltr" /> }} />
         </Text>
-        <TextInput mt="sm" value={confirmText} onChange={(e) => setConfirmText(e.target.value)} placeholder={form.id} />
+        <TextInput
+          mt="sm"
+          dir="ltr"
+          value={confirmText}
+          onChange={(e) => setConfirmText(e.target.value)}
+          placeholder={form.id}
+        />
         {deleteError && (
           <Alert color="red" mt="sm">
-            {deleteError}
+            {t("share.deleteFailed")}
           </Alert>
         )}
         <Group justify="flex-end" mt="lg">
           <Button variant="default" onClick={() => setDeleteOpen(false)}>
-            Cancel
+            {t("share.cancel")}
           </Button>
           <Button color="red" disabled={confirmText.trim() !== form.id} loading={deleting} onClick={deleteForm}>
-            Delete forever
+            {t("share.deleteForever")}
           </Button>
         </Group>
       </Modal>

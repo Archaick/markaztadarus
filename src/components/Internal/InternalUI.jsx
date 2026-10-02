@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Avatar, Button, Card, Loader, Text, Title } from "@mantine/core";
 import { IconAlertCircle, IconHome2, IconLogout, IconShieldLock } from "@tabler/icons-react";
+import { Trans, useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
+import { LANGUAGES, changeLanguage, savedLanguage, useLanguageDirection } from "./language";
 import styles from "./InternalPortal.module.css";
+
+const NS = "internal/Internal";
 
 const particles = [
   { left: "4%", top: "78%", size: 8, delay: "0s", duration: "16s" },
@@ -20,7 +24,34 @@ const particles = [
   { left: "96%", top: "93%", size: 6, delay: "4.5s", duration: "18s" },
 ];
 
+// ID · EN · AR pill. `remember` stores the choice for the internal pages;
+// public forms switch for the visit only.
+export function LanguageSwitcher({ language, remember = true, className = "" }) {
+  const { t } = useTranslation(NS);
+  return (
+    <div className={`${styles.langSwitch} ${className}`} role="group" aria-label={t("language")}>
+      {LANGUAGES.map((l) => (
+        <button
+          type="button"
+          key={l.code}
+          lang={l.code}
+          title={l.name}
+          aria-pressed={language.startsWith(l.code)}
+          className={language.startsWith(l.code) ? styles.langOn : ""}
+          onClick={() => changeLanguage(l.code, { remember })}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function InternalLayout({ children, align = "center" }) {
+  const { t } = useTranslation(NS);
+  const [initial] = useState(savedLanguage);
+  const language = useLanguageDirection(initial);
+
   return (
     <div className={`${styles.container} ${align === "top" ? styles.containerTop : ""}`}>
       <div className={styles.backgroundPattern} />
@@ -42,8 +73,9 @@ export function InternalLayout({ children, align = "center" }) {
       </div>
       <a href="/" className={styles.homeButton}>
         <IconHome2 size={16} />
-        <span>Home</span>
+        <span>{t("home")}</span>
       </a>
+      <LanguageSwitcher language={language} className={styles.langCorner} />
       {children}
     </div>
   );
@@ -66,35 +98,36 @@ const GoogleLogo = () => (
   </svg>
 );
 
-const signInMessage = (err) => {
+const signInErrorKey = (err) => {
   switch (err?.code) {
     case "auth/popup-closed-by-user":
     case "auth/cancelled-popup-request":
       return "";
     case "auth/network-request-failed":
-      return "Network error. Check your connection and try again.";
+      return "google.errors.network";
     case "auth/unauthorized-domain":
-      return "This domain is not allowed to sign in yet. Add it under Firebase Authentication → Settings → Authorized domains.";
+      return "google.errors.unauthorizedDomain";
     case "auth/operation-not-allowed":
-      return "Google sign-in is not enabled for this Firebase project yet.";
+      return "google.errors.notEnabled";
     default:
-      return "Sign-in failed. Please try again.";
+      return "google.errors.generic";
   }
 };
 
-export function GoogleButton({ label = "Continue with Google" }) {
+export function GoogleButton() {
+  const { t } = useTranslation(NS);
   const { signInWithGoogle } = useAccess();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  const [errorKey, setErrorKey] = useState("");
 
   const handleClick = async () => {
-    setError("");
+    setErrorKey("");
     setBusy(true);
     try {
       await signInWithGoogle();
     } catch (err) {
       console.error("Google sign-in error:", err);
-      setError(signInMessage(err));
+      setErrorKey(signInErrorKey(err));
     } finally {
       setBusy(false);
     }
@@ -102,21 +135,22 @@ export function GoogleButton({ label = "Continue with Google" }) {
 
   return (
     <>
-      {error && (
+      {errorKey && (
         <div className={styles.errorBox}>
           <IconAlertCircle size={18} />
-          <span>{error}</span>
+          <span>{t(errorKey)}</span>
         </div>
       )}
       <button type="button" className={styles.googleButton} onClick={handleClick} disabled={busy}>
         {busy ? <Loader size={18} /> : <GoogleLogo />}
-        <span>{busy ? "Opening Google…" : label}</span>
+        <span>{busy ? t("google.opening") : t("google.continue")}</span>
       </button>
     </>
   );
 }
 
 export function AccountBar() {
+  const { t } = useTranslation(NS);
   const { user, isSuperAdmin, signOutUser } = useAccess();
   if (!user) return null;
 
@@ -128,9 +162,11 @@ export function AccountBar() {
       <div className={styles.accountText}>
         <span className={styles.accountName}>
           {user.displayName || user.email}
-          {isSuperAdmin && <span className={styles.superBadge}>Super admin</span>}
+          {isSuperAdmin && <span className={styles.superBadge}>{t("superAdmin")}</span>}
         </span>
-        <span className={styles.accountEmail}>{user.email}</span>
+        <span className={styles.accountEmail}>
+          <bdi>{user.email}</bdi>
+        </span>
       </div>
       <Button
         variant="subtle"
@@ -139,7 +175,7 @@ export function AccountBar() {
         leftSection={<IconLogout size={15} />}
         onClick={signOutUser}
       >
-        Sign out
+        {t("signOut")}
       </Button>
     </div>
   );
@@ -147,7 +183,8 @@ export function AccountBar() {
 
 // Shown in place of a dashboard when nobody is signed in, or the signed-in
 // account has not been given that dashboard.
-export function AccessGate({ title = "Internal Access", subtitle, icon: Icon = IconShieldLock, color }) {
+export function AccessGate({ title, subtitle, icon: Icon = IconShieldLock, color }) {
+  const { t } = useTranslation(NS);
   const { user, email, signOutUser } = useAccess();
 
   return (
@@ -156,46 +193,41 @@ export function AccessGate({ title = "Internal Access", subtitle, icon: Icon = I
         <Icon size={34} />
       </div>
       <Title order={1} className={styles.title}>
-        {title}
+        {title || t("gate.title")}
       </Title>
 
       {!user ? (
         <>
-          <Text className={styles.subtitle}>
-            {subtitle || "Sign in with the Google account you were invited with."}
-          </Text>
+          <Text className={styles.subtitle}>{subtitle || t("gate.subtitle")}</Text>
           <div className={styles.gateActions}>
             <GoogleButton />
           </div>
-          <Text className={styles.finePrint}>Access is by invitation only.</Text>
+          <Text className={styles.finePrint}>{t("gate.inviteOnly")}</Text>
         </>
       ) : (
         <>
           <div className={styles.noAccess}>
             <IconAlertCircle size={20} />
             <div>
-              <p className={styles.noAccessTitle}>No access for this account</p>
+              <p className={styles.noAccessTitle}>{t("gate.noAccessTitle")}</p>
               <p className={styles.noAccessText}>
                 {email ? (
-                  <>
-                    <strong>{email}</strong> has not been invited to this dashboard. Ask the
-                    super admin to invite this email, or switch to another Google account.
-                  </>
+                  <Trans t={t} i18nKey="gate.noAccessText" values={{ email }} components={{ b: <strong dir="ltr" /> }} />
                 ) : (
-                  <>This account has no verified email. Sign out and continue with Google instead.</>
+                  t("gate.noEmail")
                 )}
               </p>
             </div>
           </div>
           <div className={styles.gateActions}>
             <Button variant="default" leftSection={<IconLogout size={16} />} onClick={signOutUser}>
-              Sign out and switch account
+              {t("gate.switchAccount")}
             </Button>
           </div>
         </>
       )}
 
-      <Text className={styles.footerText}>Product by Markaz Tadarus Indonesia</Text>
+      <Text className={styles.footerText}>{t("productBy")}</Text>
     </Card>
   );
 }

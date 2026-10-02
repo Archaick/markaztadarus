@@ -1,0 +1,90 @@
+{
+  "home": "Home",
+  "language": "Language",
+  "productBy": "Product by Markaz Tadarus Indonesia",
+  "superAdmin": "Super admin",
+  "signOut": "Sign out",
+  "backToHub": "Internal Access",
+  "google": {
+    "continue": "Continue with Google",
+    "opening": "Opening Google…",
+    "errors": {
+      "network": "Network error. Check your connection and try again.",
+      "unauthorizedDomain": "This domain is not allowed to sign in yet. Add it under Firebase Authentication → Settings → Authorized domains.",
+      "notEnabled": "Google sign-in is not enabled for this Firebase project yet.",
+      "generic": "Sign-in failed. Please try again."
+    }
+  },
+  "gate": {
+    "title": "Internal Access",
+    "subtitle": "Sign in with the Google account you were invited with.",
+    "featureSubtitle": "Sign in to open the {{title}}.",
+    "inviteOnly": "Access is by invitation only.",
+    "noAccessTitle": "No access for this account",
+    "noAccessText": "<b>{{email}}</b> has not been invited to this dashboard. Ask the super admin to invite this email, or switch to another Google account.",
+    "noEmail": "This account has no verified email. Sign out and continue with Google instead.",
+    "switchAccount": "Sign out and switch account"
+  },
+  "features": {
+    "access": {
+      "title": "Access Control",
+      "description": "Invite admins and choose which dashboards they can open."
+    },
+    "certificates": {
+      "title": "Certificate Dashboard",
+      "description": "Issue certificates, QR codes, signers and stamps."
+    },
+    "redirects": {
+      "title": "Redirect Manager",
+      "description": "Short links that forward to any URL."
+    },
+    "forms": {
+      "title": "Forms",
+      "description": "Build forms, share a link, and read the responses."
+    }
+  },
+  "hub": {
+    "pick": "Select an internal system below.",
+    "single": "Your dashboard:"
+  },
+  "access": {
+    "intro": "Invite a Google account and choose the dashboards it can open. Changes apply instantly — no password is ever shared.",
+    "inviteTitle": "Invite an admin",
+    "dashboards": "Dashboards",
+    "invite": "Invite",
+    "admins": "Admins ({{count}})",
+    "superRow": "Super admin · every dashboard · can invite",
+    "empty": "No admins yet. Invite the first one above.",
+    "active": "Active · last sign-in {{time}}",
+    "pending": "Pending · invited {{time}}",
+    "give": "Give {{title}}",
+    "take": "Remove {{title}}",
+    "removeTip": "Remove access",
+    "footnote": "An admin with no dashboards ticked keeps their invite but cannot open anything.",
+    "messageFor": "Invite message for {{email}}",
+    "copyMessage": "Copy message",
+    "copied": "Copied",
+    "whatsapp": "WhatsApp",
+    "removeTitle": "Remove access",
+    "removeText": "<b>{{email}}</b> will lose access to every internal dashboard straight away. You can invite them again later.",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "notices": {
+      "invalidEmail": "Enter a valid email address.",
+      "isSuper": "That is the super admin, who already has every dashboard.",
+      "pickOne": "Pick at least one dashboard for this admin.",
+      "updated": "{{email}} was already invited — dashboards updated.",
+      "invited": "{{email}} is invited. Send them the message below.",
+      "inviteFailed": "Invite failed. Check your connection and the Firestore rules.",
+      "updateFailed": "Could not update {{email}}.",
+      "removed": "{{email}} no longer has access.",
+      "removeFailed": "Could not remove {{email}}.",
+      "loadFailed": "Could not load admins. Check the Firestore rules are deployed."
+    },
+    "message": {
+      "greeting": "Assalamu'alaikum,",
+      "body": "You have been given access to the Markaz Tadarus internal dashboard ({{dashboards}}).",
+      "howTo": "Open {{link}} and choose \"Continue with Google\" with this account: {{email}}"
+    }
+  }
+}

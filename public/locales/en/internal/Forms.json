@@ -1,0 +1,206 @@
+{
+  "title": "Forms",
+  "intro": "Build a form, share its link, and read every response here.",
+  "newForm": "New form",
+  "untitled": "Untitled form",
+  "allForms": "All forms",
+  "loadFailed": "Could not load forms. Check the Firestore rules are deployed.",
+  "empty": {
+    "title": "No forms yet",
+    "text": "Create one from the Komitmen Pelaksanaan Tadarus template or start blank.",
+    "button": "Create the first form"
+  },
+  "card": {
+    "responses_one": "{{count}} response",
+    "responses_other": "{{count}} responses",
+    "questions_one": "{{count}} question",
+    "questions_other": "{{count}} questions",
+    "updated": "updated {{time}}",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "openForm": "Open form"
+  },
+  "create": {
+    "title": "New form",
+    "startFrom": "Start from",
+    "formTitle": "Title",
+    "formTitlePlaceholder": "Form title",
+    "link": "Link",
+    "linkHint": "Letters, numbers and dashes. This cannot be changed later.",
+    "cancel": "Cancel",
+    "submit": "Create form",
+    "errors": {
+      "noTitle": "Give the form a title.",
+      "badLink": "The link needs 3–60 letters, numbers or dashes.",
+      "taken": "/form/{{id}} is already used. Pick another link.",
+      "failed": "Could not create the form. Check your connection and try again."
+    }
+  },
+  "templates": {
+    "blank": {
+      "title": "Blank form",
+      "description": "Start from nothing."
+    },
+    "komitmen-tadarus": {
+      "title": "Komitmen Pelaksanaan Tadarus",
+      "description": "Duta Qur'an participant details and their Tadarus plan in Indonesia."
+    }
+  },
+  "status": {
+    "draft": "Draft",
+    "open": "Open",
+    "closed": "Closed",
+    "hint": {
+      "draft": "Only admins can see it.",
+      "open": "Anyone with the link can answer.",
+      "closed": "The link shows the form is closed."
+    },
+    "failed": "Could not change the status. Try again."
+  },
+  "detail": {
+    "notFoundTitle": "Form not found",
+    "notFoundText": "/form/{{id}} does not exist, or it was deleted.",
+    "tabs": {
+      "questions": "Questions",
+      "responses": "Responses",
+      "share": "Share"
+    }
+  },
+  "builder": {
+    "formTitle": "Form title",
+    "description": "Description shown under the title (optional)",
+    "formLanguage": "Form language",
+    "formLanguageHint": "The language people see first when they open the link. They can still switch.",
+    "question": "Question",
+    "questionN": "Question {{n}}",
+    "answerType": "Answer type",
+    "optionN": "Option {{n}}",
+    "addOption": "Add option",
+    "removeOption": "Remove option",
+    "placeholder": "Example answer shown in the empty box (optional)",
+    "required": "Required",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "duplicate": "Duplicate",
+    "deleteQuestion": "Delete question",
+    "addQuestion": "Add question",
+    "deletedNote": "Answers already collected for a deleted question stay in the CSV export.",
+    "unsaved": "Unsaved changes",
+    "allSaved": "All changes saved",
+    "discard": "Discard",
+    "save": "Save",
+    "saved": "Saved.",
+    "saveFailed": "Could not save. Check your connection and try again.",
+    "problems": {
+      "noTitle": "The form needs a title.",
+      "noQuestions": "Add at least one question.",
+      "noLabel": "Question {{n}} has no text.",
+      "emptyOption": "Question {{n}} has an empty option.",
+      "duplicateOption": "Question {{n}} has the same option twice."
+    }
+  },
+  "types": {
+    "short": "Short answer",
+    "long": "Paragraph",
+    "number": "Number",
+    "phone": "WhatsApp / phone",
+    "date": "Date",
+    "choice": "Multiple choice (one)",
+    "checkbox": "Checkboxes (many)"
+  },
+  "cover": {
+    "tag": "Cover",
+    "showThe": "Show the",
+    "ofImage": "of the image",
+    "top": "Top",
+    "center": "Middle",
+    "bottom": "Bottom",
+    "change": "Change",
+    "remove": "Remove",
+    "add": "Add a cover image",
+    "saving": "Saving cover…",
+    "hint": "Shown across the top of the form instead of the green banner. A wide photo works best.",
+    "errors": {
+      "unreadable": "This file could not be opened as an image. Try a JPG or PNG.",
+      "tooLarge": "This image is too large even after shrinking. Try a smaller one.",
+      "saveFailed": "Could not save the cover. Check your connection and try again.",
+      "removeFailed": "Could not remove the cover. Try again.",
+      "moveFailed": "Could not change the position. Try again."
+    }
+  },
+  "responses": {
+    "count": "responses",
+    "latest": "latest",
+    "export": "Export CSV",
+    "loadFailed": "Could not load responses.",
+    "limit": "Showing the latest {{max}} responses.",
+    "emptyTitle": "No responses yet",
+    "emptyOpen": "Share the link from the Share tab — answers appear here live.",
+    "emptyClosed": "Open the form (top right) and share its link to start collecting answers.",
+    "search": "Search answers",
+    "noMatch": "No response matches “{{term}}”.",
+    "response": "Response",
+    "responseN": "Response #{{n}}",
+    "noAnswer": "No answer",
+    "chat": "Chat",
+    "removedQuestion": "Removed question",
+    "delete": "Delete",
+    "newer": "Newer",
+    "older": "Older",
+    "deleteTitle": "Delete response",
+    "deleteText": "This response will be removed permanently.",
+    "cancel": "Cancel",
+    "deleteFailed": "Could not delete that response.",
+    "csvSubmitted": "Submitted at",
+    "csvRemoved": "Removed question {{id}}"
+  },
+  "share": {
+    "draftTitle": "This form is still a draft",
+    "draftText": "People who open the link will see “form not found” until you open it.",
+    "closedTitle": "This form is closed",
+    "closedText": "People who open the link are told it no longer accepts answers.",
+    "openNow": "Open the form for answers",
+    "link": "Form link",
+    "copyLink": "Copy link",
+    "copied": "Copied",
+    "open": "Open",
+    "whatsappMessage": "WhatsApp message",
+    "shareWhatsapp": "Share on WhatsApp",
+    "copyMessage": "Copy message",
+    "shortLink": "Want a shorter link? Create one in the <a>Redirect Manager</a> pointing to this form.",
+    "downloadQr": "Download QR",
+    "deleteTitle": "Delete this form",
+    "deleteText": "Removes the form and every response. This cannot be undone — export the CSV first.",
+    "deleteButton": "Delete form",
+    "deleteModalTitle": "Delete form and all responses",
+    "deleteConfirm": "Type <b>{{id}}</b> to confirm.",
+    "cancel": "Cancel",
+    "deleteForever": "Delete forever",
+    "deleteFailed": "Could not delete the form. Try again.",
+    "message": "Assalamu'alaikum.\n\nPlease take a moment to fill in the form *{{title}}* using this link:\n{{link}}\n\nJazakumullahu khairan."
+  },
+  "public": {
+    "yourAnswer": "Your answer",
+    "number": "Number",
+    "requiredNote": "Required",
+    "submit": "Submit",
+    "submitting": "Sending…",
+    "clear": "Clear form",
+    "notFoundTitle": "Form not found",
+    "notFoundText": "This link may be wrong, or the form has not been opened yet. Please contact whoever sent you the link.",
+    "closedText": "This form is no longer accepting answers. Thank you for your interest.",
+    "thanksTitle": "Thank you!",
+    "thanksText": "Your answer has been received. Jazakumullahu khairan.",
+    "another": "Submit another answer",
+    "preview": "Preview for admins — this form is {{status}}, so answers cannot be sent.",
+    "previewDraft": "a draft",
+    "previewClosed": "closed",
+    "closedError": "This form is closed. Your answer could not be sent.",
+    "sendError": "Could not send. Check your internet connection and try again.",
+    "errors": {
+      "required": "This question is required.",
+      "number": "Enter numbers only.",
+      "phone": "This WhatsApp number is not valid."
+    }
+  }
+}

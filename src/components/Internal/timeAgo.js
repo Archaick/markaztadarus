@@ -1,4 +1,5 @@
-const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+import i18n from "../../i18n";
+import { intlLocale } from "./language";
 
 const STEPS = [
   ["year", 365 * 24 * 3600],
@@ -9,21 +10,26 @@ const STEPS = [
   ["minute", 60],
 ];
 
-// Firestore Timestamp, Date, or millis → "3 days ago"
+const formatters = {};
+const relative = (locale) =>
+  (formatters[locale] ||= new Intl.RelativeTimeFormat(locale, { numeric: "auto" }));
+
+const toDate = (value) => (typeof value.toDate === "function" ? value.toDate() : new Date(value));
+
+// Firestore Timestamp, Date, or millis → "3 days ago" in the current language
 export const timeAgo = (value) => {
   if (!value) return "";
-  const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
-  const seconds = Math.round((date.getTime() - Date.now()) / 1000);
+  const rtf = relative(intlLocale(i18n.language));
+  const seconds = Math.round((toDate(value).getTime() - Date.now()) / 1000);
   for (const [unit, size] of STEPS) {
     if (Math.abs(seconds) >= size) return rtf.format(Math.round(seconds / size), unit);
   }
-  return "just now";
+  return rtf.format(0, "second");
 };
 
 export const formatDateTime = (value) => {
   if (!value) return "";
-  const date = typeof value.toDate === "function" ? value.toDate() : new Date(value);
-  return date.toLocaleString("en-GB", {
+  return toDate(value).toLocaleString(intlLocale(i18n.language), {
     day: "numeric",
     month: "short",
     year: "numeric",

@@ -1,21 +1,24 @@
 import { Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { featureByKey } from "./access";
 import { AccessGate, FullPageLoader, InternalLayout } from "./InternalUI";
 
-const gateFor = (feature) => {
+function FeatureGate({ feature }) {
+  const { t } = useTranslation("internal/Internal");
   const meta = featureByKey(feature);
+  const title = meta ? t(`features.${meta.key}.title`) : undefined;
   return (
     <InternalLayout>
       <AccessGate
-        title={meta?.title}
-        subtitle={meta ? `Sign in to open the ${meta.title}.` : undefined}
+        title={title}
+        subtitle={meta ? t("gate.featureSubtitle", { title }) : undefined}
         icon={meta?.icon}
         color={meta?.color}
       />
     </InternalLayout>
   );
-};
+}
 
 // Renders the dashboard for an admin who has `feature`, the sign-in gate
 // for everyone else. `feature="super"` means the super admin only.
@@ -28,17 +31,16 @@ export default function RequireFeature({ feature, children }) {
   if (allowed) return children;
 
   if (feature === "super") {
-    return user ? <Navigate to="/internal" replace /> : gateFor(null);
+    return user ? <Navigate to="/internal" replace /> : <FeatureGate />;
   }
-  return gateFor(feature);
+  return <FeatureGate feature={feature} />;
 }
 
 // The old /cert-login style URLs: sign in here, then go on to the dashboard.
 export function FeatureLogin({ feature }) {
   const { loading, hasFeature } = useAccess();
-  const meta = featureByKey(feature);
 
   if (loading) return <FullPageLoader />;
-  if (hasFeature(feature)) return <Navigate to={meta.href} replace />;
-  return gateFor(feature);
+  if (hasFeature(feature)) return <Navigate to={featureByKey(feature).href} replace />;
+  return <FeatureGate feature={feature} />;
 }

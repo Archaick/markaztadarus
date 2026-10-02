@@ -97,6 +97,20 @@ service cloud.firestore {
         && request.resource.data.fields.size() <= 100;
       allow delete: if hasFeature("forms");
 
+      // The cover image, as a JPEG data URL (this project has no Storage
+      // bucket). Readable wherever the form itself is.
+      match /media/{mediaId} {
+        allow read: if hasFeature("forms")
+          || get(/databases/$(database)/documents/forms/$(formId)).data.status in ["open", "closed"];
+        allow create, update: if hasFeature("forms")
+          && mediaId == "cover"
+          && request.resource.data.keys().hasOnly(["dataUrl", "updatedAt"])
+          && request.resource.data.dataUrl is string
+          && request.resource.data.dataUrl.size() <= 700000
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+");
+        allow delete: if hasFeature("forms");
+      }
+
       match /responses/{responseId} {
         // Anyone may answer an open form, once per write, with only answers.
         allow create: if get(/databases/$(database)/documents/forms/$(formId)).data.status == "open"

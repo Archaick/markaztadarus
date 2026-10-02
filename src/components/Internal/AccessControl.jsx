@@ -26,6 +26,7 @@ import {
   IconUserPlus,
   IconUsersGroup,
 } from "@tabler/icons-react";
+import { Trans, useTranslation } from "react-i18next";
 import {
   collection,
   deleteDoc,
@@ -44,7 +45,6 @@ import {
   ADMINS_COLLECTION,
   FEATURES,
   SUPER_ADMIN_EMAIL,
-  featureByKey,
   isValidEmail,
   normalizeEmail,
 } from "./access";
@@ -53,21 +53,11 @@ import { timeAgo } from "./timeAgo";
 import portal from "./InternalPortal.module.css";
 import styles from "./AccessControl.module.css";
 
-const inviteMessage = (email, features) => {
-  const names = features.map((key) => featureByKey(key)?.title).filter(Boolean);
-  return [
-    "Assalamu'alaikum,",
-    "",
-    `You have been given access to the Markaz Tadarus internal dashboard${names.length ? ` (${names.join(", ")})` : ""}.`,
-    "",
-    `Open ${window.location.origin}/internal and choose "Continue with Google" with this account: ${email}`,
-  ].join("\n");
-};
-
 export default function AccessControl() {
+  const { t } = useTranslation("internal/Internal");
   const { email: myEmail } = useAccess();
   const [admins, setAdmins] = useState(null);
-  const [listError, setListError] = useState("");
+  const [listError, setListError] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteFeatures, setInviteFeatures] = useState([]);
   const [inviting, setInviting] = useState(false);
@@ -76,17 +66,28 @@ export default function AccessControl() {
   const [removeTarget, setRemoveTarget] = useState(null);
   const [busyEmail, setBusyEmail] = useState("");
 
+  const featureTitle = (key) => t(`features.${key}.title`);
+
+  const inviteMessage = (email, features) =>
+    [
+      t("access.message.greeting"),
+      "",
+      t("access.message.body", { dashboards: features.map(featureTitle).join(", ") }),
+      "",
+      t("access.message.howTo", { link: `${window.location.origin}/internal`, email }),
+    ].join("\n");
+
   useEffect(
     () =>
       onSnapshot(
         query(collection(db, ADMINS_COLLECTION), orderBy("invitedAt", "desc")),
         (snap) => {
           setAdmins(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-          setListError("");
+          setListError(false);
         },
         (err) => {
           console.error("Could not load admins:", err);
-          setListError("Could not load admins. Check the Firestore rules are deployed.");
+          setListError(true);
           setAdmins([]);
         }
       ),
@@ -99,15 +100,15 @@ export default function AccessControl() {
     const email = normalizeEmail(inviteEmail);
 
     if (!isValidEmail(email)) {
-      setNotice({ color: "red", text: "Enter a valid email address." });
+      setNotice({ color: "red", key: "invalidEmail" });
       return;
     }
     if (email === SUPER_ADMIN_EMAIL) {
-      setNotice({ color: "yellow", text: "That is the super admin, who already has every dashboard." });
+      setNotice({ color: "yellow", key: "isSuper" });
       return;
     }
     if (inviteFeatures.length === 0) {
-      setNotice({ color: "yellow", text: "Pick at least one dashboard for this admin." });
+      setNotice({ color: "yellow", key: "pickOne" });
       return;
     }
 
@@ -118,7 +119,7 @@ export default function AccessControl() {
       if (existing.exists()) {
         const merged = Array.from(new Set([...(existing.data().features || []), ...inviteFeatures]));
         await updateDoc(ref, { features: merged, updatedAt: serverTimestamp() });
-        setNotice({ color: "teal", text: `${email} was already invited — dashboards updated.` });
+        setNotice({ color: "teal", key: "updated", email });
         setLastInvite({ email, features: merged });
       } else {
         await setDoc(ref, {
@@ -128,14 +129,14 @@ export default function AccessControl() {
           invitedAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         });
-        setNotice({ color: "teal", text: `${email} is invited. Send them the message below.` });
+        setNotice({ color: "teal", key: "invited", email });
         setLastInvite({ email, features: inviteFeatures });
       }
       setInviteEmail("");
       setInviteFeatures([]);
     } catch (err) {
       console.error("Invite failed:", err);
-      setNotice({ color: "red", text: "Invite failed. Check your connection and the Firestore rules." });
+      setNotice({ color: "red", key: "inviteFailed" });
     } finally {
       setInviting(false);
     }
@@ -152,7 +153,7 @@ export default function AccessControl() {
       });
     } catch (err) {
       console.error("Could not update access:", err);
-      setNotice({ color: "red", text: `Could not update ${admin.id}.` });
+      setNotice({ color: "red", key: "updateFailed", email: admin.id });
     } finally {
       setBusyEmail("");
     }
@@ -163,22 +164,24 @@ export default function AccessControl() {
     setBusyEmail(removeTarget.id);
     try {
       await deleteDoc(doc(db, ADMINS_COLLECTION, removeTarget.id));
-      setNotice({ color: "teal", text: `${removeTarget.id} no longer has access.` });
+      setNotice({ color: "teal", key: "removed", email: removeTarget.id });
       if (lastInvite?.email === removeTarget.id) setLastInvite(null);
     } catch (err) {
       console.error("Could not remove admin:", err);
-      setNotice({ color: "red", text: `Could not remove ${removeTarget.id}.` });
+      setNotice({ color: "red", key: "removeFailed", email: removeTarget.id });
     } finally {
       setBusyEmail("");
       setRemoveTarget(null);
     }
   };
 
+  const shareText = lastInvite ? inviteMessage(lastInvite.email, lastInvite.features) : "";
+
   return (
     <InternalLayout align="top">
       <div className={styles.page}>
         <a href="/internal" className={styles.back}>
-          <IconArrowLeft size={16} /> Internal Access
+          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("backToHub")}
         </a>
 
         <Card className={styles.panel}>
@@ -190,20 +193,18 @@ export default function AccessControl() {
             </span>
             <div>
               <Title order={2} className={styles.headingTitle}>
-                Access Control
+                {t("features.access.title")}
               </Title>
-              <Text className={styles.headingText}>
-                Invite a Google account and choose the dashboards it can open. Changes apply
-                instantly — no password is ever shared.
-              </Text>
+              <Text className={styles.headingText}>{t("access.intro")}</Text>
             </div>
           </div>
 
           {/* ---------- Invite ---------- */}
           <form className={styles.inviteBox} onSubmit={handleInvite}>
-            <Text className={styles.sectionLabel}>Invite an admin</Text>
+            <Text className={styles.sectionLabel}>{t("access.inviteTitle")}</Text>
             <TextInput
               type="email"
+              dir="ltr"
               placeholder="name@gmail.com"
               leftSection={<IconMail size={16} />}
               value={inviteEmail}
@@ -213,13 +214,13 @@ export default function AccessControl() {
               autoComplete="off"
             />
             <Text size="sm" c="dimmed" mt="sm" mb={6}>
-              Dashboards
+              {t("access.dashboards")}
             </Text>
             <Chip.Group multiple value={inviteFeatures} onChange={setInviteFeatures}>
               <Group gap="xs">
                 {FEATURES.map((f) => (
                   <Chip key={f.key} value={f.key} variant="light" radius="sm">
-                    {f.title}
+                    {featureTitle(f.key)}
                   </Chip>
                 ))}
               </Group>
@@ -231,24 +232,24 @@ export default function AccessControl() {
               loading={inviting}
               className={styles.inviteButton}
             >
-              Invite
+              {t("access.invite")}
             </Button>
           </form>
 
           {notice && (
             <Alert color={notice.color} mt="md" withCloseButton onClose={() => setNotice(null)}>
-              {notice.text}
+              {t(`access.notices.${notice.key}`, { email: notice.email })}
             </Alert>
           )}
 
           {lastInvite && (
             <div className={styles.shareBox}>
               <Text size="sm" fw={600}>
-                Invite message for {lastInvite.email}
+                {t("access.messageFor", { email: lastInvite.email })}
               </Text>
-              <pre className={styles.shareText}>{inviteMessage(lastInvite.email, lastInvite.features)}</pre>
+              <pre className={styles.shareText}>{shareText}</pre>
               <Group gap="xs">
-                <CopyButton value={inviteMessage(lastInvite.email, lastInvite.features)}>
+                <CopyButton value={shareText}>
                   {({ copied, copy }) => (
                     <Button
                       size="xs"
@@ -257,7 +258,7 @@ export default function AccessControl() {
                       leftSection={copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
                       onClick={copy}
                     >
-                      {copied ? "Copied" : "Copy message"}
+                      {copied ? t("access.copied") : t("access.copyMessage")}
                     </Button>
                   )}
                 </CopyButton>
@@ -268,10 +269,10 @@ export default function AccessControl() {
                   component="a"
                   target="_blank"
                   rel="noreferrer"
-                  href={`https://wa.me/?text=${encodeURIComponent(inviteMessage(lastInvite.email, lastInvite.features))}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
                   leftSection={<IconBrandWhatsapp size={14} />}
                 >
-                  WhatsApp
+                  {t("access.whatsapp")}
                 </Button>
               </Group>
             </div>
@@ -279,12 +280,12 @@ export default function AccessControl() {
 
           {/* ---------- Admins ---------- */}
           <Text className={styles.sectionLabel} mt="xl">
-            Admins {admins ? `(${admins.length + 1})` : ""}
+            {t("access.admins", { count: admins ? admins.length + 1 : 1 })}
           </Text>
 
           {listError && (
             <Alert color="red" mb="sm">
-              {listError}
+              {t("access.notices.loadFailed")}
             </Alert>
           )}
 
@@ -295,12 +296,14 @@ export default function AccessControl() {
                   S
                 </Avatar>
                 <div className={styles.personText}>
-                  <span className={styles.personEmail}>{SUPER_ADMIN_EMAIL}</span>
-                  <span className={styles.personMeta}>Super admin · every dashboard · can invite</span>
+                  <span className={styles.personEmail}>
+                    <bdi>{SUPER_ADMIN_EMAIL}</bdi>
+                  </span>
+                  <span className={styles.personMeta}>{t("access.superRow")}</span>
                 </div>
               </div>
               <Badge color="violet" variant="light">
-                Super admin
+                {t("superAdmin")}
               </Badge>
             </div>
 
@@ -312,7 +315,7 @@ export default function AccessControl() {
 
             {admins?.length === 0 && !listError && (
               <Text c="dimmed" ta="center" py="lg" size="sm">
-                No admins yet. Invite the first one above.
+                {t("access.empty")}
               </Text>
             )}
 
@@ -325,16 +328,16 @@ export default function AccessControl() {
                   <div className={styles.personText}>
                     <span className={styles.personEmail}>
                       {admin.displayName ? `${admin.displayName} · ` : ""}
-                      {admin.id}
+                      <bdi>{admin.id}</bdi>
                     </span>
                     <span className={styles.personMeta}>
                       {admin.lastLoginAt ? (
                         <Badge size="xs" color="teal" variant="dot">
-                          Active · last sign-in {timeAgo(admin.lastLoginAt)}
+                          {t("access.active", { time: timeAgo(admin.lastLoginAt) })}
                         </Badge>
                       ) : (
                         <Badge size="xs" color="gray" variant="dot">
-                          Pending · invited {timeAgo(admin.invitedAt)}
+                          {t("access.pending", { time: timeAgo(admin.invitedAt) })}
                         </Badge>
                       )}
                     </span>
@@ -345,6 +348,7 @@ export default function AccessControl() {
                   <Group gap={6} className={styles.featureChips}>
                     {FEATURES.map((f) => {
                       const on = (admin.features || []).includes(f.key);
+                      const title = featureTitle(f.key);
                       return (
                         <button
                           type="button"
@@ -353,21 +357,21 @@ export default function AccessControl() {
                           onClick={() => toggleFeature(admin, f.key)}
                           disabled={busyEmail === admin.id}
                           aria-pressed={on}
-                          title={on ? `Remove ${f.title}` : `Give ${f.title}`}
+                          title={on ? t("access.take", { title }) : t("access.give", { title })}
                         >
                           {on ? <IconCheck size={13} /> : null}
-                          {f.title}
+                          {title}
                         </button>
                       );
                     })}
                   </Group>
-                  <Tooltip label="Remove access">
+                  <Tooltip label={t("access.removeTip")}>
                     <ActionIcon
                       variant="subtle"
                       color="red"
                       onClick={() => setRemoveTarget(admin)}
                       loading={busyEmail === admin.id}
-                      aria-label={`Remove ${admin.id}`}
+                      aria-label={t("access.removeTip")}
                     >
                       <IconTrash size={17} />
                     </ActionIcon>
@@ -377,23 +381,25 @@ export default function AccessControl() {
             ))}
           </div>
 
-          <Text className={portal.footerText}>
-            An admin with no dashboards ticked keeps their invite but cannot open anything.
-          </Text>
+          <Text className={portal.footerText}>{t("access.footnote")}</Text>
         </Card>
       </div>
 
-      <Modal opened={!!removeTarget} onClose={() => setRemoveTarget(null)} title="Remove access" centered>
+      <Modal opened={!!removeTarget} onClose={() => setRemoveTarget(null)} title={t("access.removeTitle")} centered>
         <Text size="sm">
-          <strong>{removeTarget?.id}</strong> will lose access to every internal dashboard straight away.
-          You can invite them again later.
+          <Trans
+            t={t}
+            i18nKey="access.removeText"
+            values={{ email: removeTarget?.id }}
+            components={{ b: <strong dir="ltr" /> }}
+          />
         </Text>
         <Group justify="flex-end" mt="lg">
           <Button variant="default" onClick={() => setRemoveTarget(null)}>
-            Cancel
+            {t("access.cancel")}
           </Button>
           <Button color="red" onClick={confirmRemove} loading={!!busyEmail}>
-            Remove
+            {t("access.remove")}
           </Button>
         </Group>
       </Modal>

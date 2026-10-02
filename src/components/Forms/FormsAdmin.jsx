@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  ActionIcon,
   Alert,
   Badge,
   Button,
@@ -13,7 +14,6 @@ import {
   TextInput,
   Title,
   Tooltip,
-  ActionIcon,
 } from "@mantine/core";
 import {
   IconArrowLeft,
@@ -24,6 +24,7 @@ import {
   IconMessages,
   IconPlus,
 } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 import {
   collection,
   doc,
@@ -40,23 +41,27 @@ import { useAccess } from "../Internal/accessContext";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { timeAgo } from "../Internal/timeAgo";
 import layout from "../Internal/AccessControl.module.css";
+import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
 import {
   FORMS_COLLECTION,
   RESPONSES,
-  STATUS,
+  STATUS_COLORS,
   TEMPLATES,
   formLink,
   isValidSlug,
   slugify,
 } from "./formSchema";
 
+const NS = ["internal/Forms", "internal/Internal"];
+
 export default function FormsAdmin() {
+  const { t } = useTranslation(NS);
   const navigate = useNavigate();
   const { email } = useAccess();
   const [forms, setForms] = useState(null);
   const [counts, setCounts] = useState({});
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [creating, setCreating] = useState(false);
 
   useEffect(
@@ -66,7 +71,7 @@ export default function FormsAdmin() {
         (snap) => setForms(snap.docs.map((d) => ({ id: d.id, ...d.data() }))),
         (err) => {
           console.error("Could not load forms:", err);
-          setError("Could not load forms. Check the Firestore rules are deployed.");
+          setError(true);
           setForms([]);
         }
       ),
@@ -94,7 +99,7 @@ export default function FormsAdmin() {
     <InternalLayout align="top">
       <div className={layout.page}>
         <a href="/internal" className={layout.back}>
-          <IconArrowLeft size={16} /> Internal Access
+          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
         </a>
 
         <Card className={layout.panel}>
@@ -107,11 +112,9 @@ export default function FormsAdmin() {
               </span>
               <div>
                 <Title order={2} className={layout.headingTitle}>
-                  Forms
+                  {t("title")}
                 </Title>
-                <Text className={layout.headingText}>
-                  Build a form, share its link, and read every response here.
-                </Text>
+                <Text className={layout.headingText}>{t("intro")}</Text>
               </div>
             </div>
             <Button
@@ -119,13 +122,13 @@ export default function FormsAdmin() {
               className={styles.primaryButton}
               onClick={() => setCreating(true)}
             >
-              New form
+              {t("newForm")}
             </Button>
           </div>
 
           {error && (
             <Alert color="red" mt="md">
-              {error}
+              {t("loadFailed")}
             </Alert>
           )}
 
@@ -139,18 +142,18 @@ export default function FormsAdmin() {
             {forms?.length === 0 && !error && (
               <div className={styles.empty}>
                 <IconClipboardText size={34} />
-                <Text fw={600}>No forms yet</Text>
+                <Text fw={600}>{t("empty.title")}</Text>
                 <Text size="sm" c="dimmed">
-                  Create one from the Komitmen Pelaksanaan Tadarus template or start blank.
+                  {t("empty.text")}
                 </Text>
                 <Button mt="sm" variant="light" color="teal" onClick={() => setCreating(true)}>
-                  Create the first form
+                  {t("empty.button")}
                 </Button>
               </div>
             )}
 
             {forms?.map((form) => {
-              const status = STATUS[form.status] || STATUS.draft;
+              const status = STATUS_COLORS[form.status] ? form.status : "draft";
               return (
                 <div
                   key={form.id}
@@ -161,30 +164,38 @@ export default function FormsAdmin() {
                   onKeyDown={(e) => e.key === "Enter" && navigate(`/internal/forms/${form.id}`)}
                 >
                   <div className={styles.formCardTop}>
-                    <Badge color={status.color} variant="light">
-                      {status.label}
+                    <Badge color={STATUS_COLORS[status]} variant="light">
+                      {t(`status.${status}`)}
                     </Badge>
                     <span className={styles.responsePill}>
                       <IconMessages size={14} />
-                      {counts[form.id] ?? "…"} responses
+                      {counts[form.id] === undefined ? "…" : t("card.responses", { count: counts[form.id] })}
                     </span>
                   </div>
-                  <p className={styles.formCardTitle}>{form.title || "Untitled form"}</p>
+                  <p className={styles.formCardTitle}>{form.title || t("untitled")}</p>
                   <p className={styles.formCardMeta}>
-                    {(form.fields || []).length} questions · updated {timeAgo(form.updatedAt)}
+                    {t("card.questions", { count: (form.fields || []).length })} ·{" "}
+                    {t("card.updated", { time: timeAgo(form.updatedAt) })}
                   </p>
                   <div className={styles.formCardLink} onClick={(e) => e.stopPropagation()}>
-                    <span className={styles.linkText}>/form/{form.id}</span>
+                    <span className={styles.linkText}>
+                      <bdi>/form/{form.id}</bdi>
+                    </span>
                     <CopyButton value={formLink(form.id)}>
                       {({ copied, copy }) => (
-                        <Tooltip label={copied ? "Copied" : "Copy link"}>
-                          <ActionIcon variant="subtle" color={copied ? "teal" : "gray"} onClick={copy} aria-label="Copy link">
+                        <Tooltip label={copied ? t("card.copied") : t("card.copyLink")}>
+                          <ActionIcon
+                            variant="subtle"
+                            color={copied ? "teal" : "gray"}
+                            onClick={copy}
+                            aria-label={t("card.copyLink")}
+                          >
                             {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
                           </ActionIcon>
                         </Tooltip>
                       )}
                     </CopyButton>
-                    <Tooltip label="Open form">
+                    <Tooltip label={t("card.openForm")}>
                       <ActionIcon
                         variant="subtle"
                         color="gray"
@@ -192,7 +203,7 @@ export default function FormsAdmin() {
                         href={`/form/${form.id}`}
                         target="_blank"
                         rel="noreferrer"
-                        aria-label="Open form"
+                        aria-label={t("card.openForm")}
                       >
                         <IconExternalLink size={16} />
                       </ActionIcon>
@@ -216,17 +227,17 @@ export default function FormsAdmin() {
 }
 
 function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
+  const { t, i18n } = useTranslation(NS);
   const [templateKey, setTemplateKey] = useState("komitmen-tadarus");
   const [title, setTitle] = useState("Komitmen Pelaksanaan Tadarus");
   const [slug, setSlug] = useState("komitmen-tadarus");
   const [slugTouched, setSlugTouched] = useState(false);
-  const [error, setError] = useState("");
+  const [errorKey, setErrorKey] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const pickTemplate = (template) => {
     setTemplateKey(template.key);
-    const built = template.build();
-    setTitle(built.title === "Untitled form" ? "" : built.title);
+    setTitle(template.build(i18n.language).title);
     if (!slugTouched) setSlug(template.key === "blank" ? "" : template.key);
   };
 
@@ -236,20 +247,20 @@ function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
   };
 
   const handleCreate = async () => {
-    setError("");
+    setErrorKey(null);
     const id = slugify(slug);
-    if (!title.trim()) return setError("Give the form a title.");
-    if (!isValidSlug(id)) return setError("The link needs 3–60 letters, numbers or dashes.");
+    if (!title.trim()) return setErrorKey({ key: "noTitle" });
+    if (!isValidSlug(id)) return setErrorKey({ key: "badLink" });
 
     setSaving(true);
     try {
       const ref = doc(db, FORMS_COLLECTION, id);
       if ((await getDoc(ref)).exists()) {
-        setError(`/form/${id} is already used. Pick another link.`);
+        setErrorKey({ key: "taken", id });
         return;
       }
-      const template = TEMPLATES.find((t) => t.key === templateKey) || TEMPLATES[0];
-      const built = template.build();
+      const template = TEMPLATES.find((tpl) => tpl.key === templateKey) || TEMPLATES[0];
+      const built = template.build(i18n.language.slice(0, 2));
       await setDoc(ref, {
         ...built,
         title: title.trim(),
@@ -262,42 +273,43 @@ function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
       onCreated(id);
     } catch (err) {
       console.error("Could not create form:", err);
-      setError("Could not create the form. Check your connection and try again.");
+      setErrorKey({ key: "failed" });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title="New form" centered size="lg">
+    <Modal opened={opened} onClose={onClose} title={t("create.title")} centered size="lg">
       <Text size="sm" fw={600} mb={8}>
-        Start from
+        {t("create.startFrom")}
       </Text>
       <div className={styles.templateGrid}>
-        {TEMPLATES.map((t) => (
+        {TEMPLATES.map((tpl) => (
           <button
             type="button"
-            key={t.key}
-            className={`${styles.templateCard} ${templateKey === t.key ? styles.templateActive : ""}`}
-            onClick={() => pickTemplate(t)}
+            key={tpl.key}
+            className={`${styles.templateCard} ${templateKey === tpl.key ? styles.templateActive : ""}`}
+            onClick={() => pickTemplate(tpl)}
           >
-            <span className={styles.templateTitle}>{t.title}</span>
-            <span className={styles.templateDesc}>{t.description}</span>
+            <span className={styles.templateTitle}>{t(`templates.${tpl.key}.title`)}</span>
+            <span className={styles.templateDesc}>{t(`templates.${tpl.key}.description`)}</span>
           </button>
         ))}
       </div>
 
       <TextInput
         mt="md"
-        label="Title"
+        label={t("create.formTitle")}
         value={title}
         onChange={(e) => handleTitle(e.target.value)}
-        placeholder="Form title"
+        placeholder={t("create.formTitlePlaceholder")}
       />
       <TextInput
         mt="sm"
-        label="Link"
-        description="Letters, numbers and dashes. This cannot be changed later."
+        dir="ltr"
+        label={t("create.link")}
+        description={t("create.linkHint")}
         leftSection={<Text size="xs" c="dimmed" pl={6}>/form/</Text>}
         leftSectionWidth={56}
         value={slug}
@@ -307,18 +319,18 @@ function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
         }}
       />
 
-      {error && (
+      {errorKey && (
         <Alert color="red" mt="md">
-          {error}
+          {t(`create.errors.${errorKey.key}`, { id: errorKey.id })}
         </Alert>
       )}
 
       <Group justify="flex-end" mt="lg">
         <Button variant="default" onClick={onClose}>
-          Cancel
+          {t("create.cancel")}
         </Button>
         <Button className={styles.primaryButton} loading={saving} onClick={handleCreate}>
-          Create form
+          {t("create.submit")}
         </Button>
       </Group>
     </Modal>
