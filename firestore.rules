@@ -1,45 +1,111 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // ---------- Who is signed in ----------
+
     function isSignedIn() {
       return request.auth != null;
     }
 
-    function isCertificateAdminUser() {
+    // Google accounts always carry a verified email; requiring it stops
+    // anyone registering an invited address with a password they made up.
+    function hasVerifiedEmail() {
       return isSignedIn()
-        && request.auth.token.email == "saeedhareez@gmail.com";
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
     }
 
-    function isRedirectAdminUser() {
-      return isSignedIn()
-        && request.auth.token.email == "info@markazalhijaz.org";
+    function signedInEmail() {
+      return request.auth.token.email.lower();
     }
 
-    // Certificates collection
+    // The only account that can invite admins. Mirrored in
+    // src/components/Internal/access.js.
+    function isSuperAdmin() {
+      return hasVerifiedEmail() && signedInEmail() == "saeedhareez@gmail.com";
+    }
+
+    function adminPath() {
+      return /databases/$(database)/documents/internal_admins/$(signedInEmail());
+    }
+
+    // An invited admin who was given this dashboard (or the super admin).
+    function hasFeature(feature) {
+      return isSuperAdmin()
+        || (hasVerifiedEmail()
+          && exists(adminPath())
+          && get(adminPath()).data.features.hasAny([feature]));
+    }
+
+    // ---------- Internal admins (invites) ----------
+
+    // Keep this list in step with FEATURES in src/components/Internal/access.js.
+    function validAdmin(email) {
+      let data = request.resource.data;
+      return data.email == email
+        && email == email.lower()
+        && data.features is list
+        && data.features.hasOnly(["certificates", "redirects", "forms"]);
+    }
+
+    match /internal_admins/{email} {
+      allow read: if isSuperAdmin() || (hasVerifiedEmail() && signedInEmail() == email);
+      allow create, update: if isSuperAdmin() && validAdmin(email);
+      allow delete: if isSuperAdmin();
+
+      // An admin may stamp their own sign-in, so the super admin can see
+      // who has accepted an invite. Nothing else on their own record.
+      allow update: if hasVerifiedEmail()
+        && signedInEmail() == email
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(["lastLoginAt", "displayName", "photoURL"]);
+    }
+
+    // ---------- Certificates ----------
+
     match /certificates/{certId} {
       // Public read for QR verification
       allow read: if true;
-
-      // Only certificate admin user can manage certificates
-      allow create, update, delete: if isCertificateAdminUser();
+      allow create, update, delete: if hasFeature("certificates");
     }
 
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
       // Public read so the verification page can show signatures
       allow read: if true;
-
-      // Only certificate admin user can manage signers
-      allow create, update, delete: if isCertificateAdminUser();
+      allow create, update, delete: if hasFeature("certificates");
     }
 
-    // Redirect manager collection
+    // ---------- Redirect manager ----------
+
     match /redirect_manager_links/{redirectId} {
       // Public read so short-link resolver can fetch destination
       allow read: if true;
+      allow create, update, delete: if hasFeature("redirects");
+    }
 
-      // Only redirect admin user can manage redirects
-      allow create, update, delete: if isRedirectAdminUser();
+    // ---------- Forms ----------
+
+    match /forms/{formId} {
+      // Anyone with the link can load an open or closed form; drafts stay
+      // with the admins.
+      allow read: if hasFeature("forms") || resource.data.status in ["open", "closed"];
+      allow create, update: if hasFeature("forms")
+        && request.resource.data.status in ["draft", "open", "closed"]
+        && request.resource.data.fields is list
+        && request.resource.data.fields.size() <= 100;
+      allow delete: if hasFeature("forms");
+
+      match /responses/{responseId} {
+        // Anyone may answer an open form, once per write, with only answers.
+        allow create: if get(/databases/$(database)/documents/forms/$(formId)).data.status == "open"
+          && request.resource.data.keys().hasOnly(["answers", "submittedAt"])
+          && request.resource.data.answers is map
+          && request.resource.data.answers.size() <= 100
+          && request.resource.data.submittedAt == request.time;
+        allow read, delete: if hasFeature("forms");
+      }
     }
 
     // Deny everything else

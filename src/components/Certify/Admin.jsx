@@ -29,7 +29,6 @@ import {
     Pagination,
     Modal,
     Text,
-    PasswordInput,
     Alert,
     Tabs,
     MultiSelect,
@@ -39,8 +38,8 @@ import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle, IconDownload, Icon
 import QRCode from "qrcode";
 import LoadingOverlay from "../LoadingOverlay";
 import {
-    reauthenticateWithCredential,
-    EmailAuthProvider,
+    reauthenticateWithPopup,
+    GoogleAuthProvider,
     signOut,
 } from "firebase/auth";
 
@@ -60,7 +59,6 @@ const Admin = () => {
     const [lastVisible, setLastVisible] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState(null);
-    const [reauthPassword, setReauthPassword] = useState("");
     const [notification, setNotification] = useState(null);
     const [activeTab, setActiveTab] = useState("certificates");
     const [signers, setSigners] = useState([]);
@@ -231,7 +229,6 @@ const Admin = () => {
     // ========== DELETE CERTIFICATE ==========
     const closeDeleteModal = () => {
         setDeleteModalOpen(false);
-        setReauthPassword("");
         setDeleteTargetId(null);
     };
 
@@ -247,15 +244,12 @@ const Admin = () => {
             return;
         }
 
-        if (!reauthPassword) {
-            showNotification("warning", "Password Required", "Enter your password to confirm.");
-            return;
-        }
-
         setActionLoading(true);
         try {
-            const cred = EmailAuthProvider.credential(currentUser.email, reauthPassword);
-            await reauthenticateWithCredential(currentUser, cred);
+            // Confirm it is really the signed-in admin before a permanent delete.
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ login_hint: currentUser.email || "" });
+            await reauthenticateWithPopup(currentUser, provider);
             await deleteDoc(doc(db, "certificates", deleteTargetId));
 
             setCertificates((prev) => prev.filter((c) => c.id !== deleteTargetId));
@@ -268,8 +262,9 @@ const Admin = () => {
             showNotification("success", "Certificate Deleted", "Certificate removed successfully.");
         } catch (err) {
             console.error("Delete error:", err);
-            const errorMessage = err.code === "auth/wrong-password"
-                ? "Incorrect password. Please try again."
+            if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") return;
+            const errorMessage = err.code === "auth/user-mismatch"
+                ? "Choose the same Google account you are signed in with."
                 : err.code === "permission-denied"
                     ? "Permission denied. Check Firestore security rules."
                     : err.message || "Deletion failed.";
@@ -492,7 +487,6 @@ const Admin = () => {
                                                     size="s"
                                                     onClick={() => {
                                                         setDeleteTargetId(cert.id);
-                                                        setReauthPassword("");
                                                         setDeleteModalOpen(true);
                                                     }}
                                                     title="Delete Certificate"
@@ -550,21 +544,18 @@ const Admin = () => {
             <Modal
                 opened={deleteModalOpen}
                 onClose={closeDeleteModal}
-                title="Confirm Delete — re-enter password"
+                title="Confirm Delete"
                 centered
                 size="sm"
             >
-                <Text mb="sm">To delete this certificate, re-enter your admin password.</Text>
-                <PasswordInput
-                    placeholder="Your password"
-                    value={reauthPassword}
-                    onChange={(e) => setReauthPassword(e.target.value)}
-                    required
-                />
+                <Text mb="sm">
+                    This certificate will be deleted permanently. Google will ask you to confirm
+                    your account once more.
+                </Text>
                 <Group justify="flex-end" mt="md">
                     <Button variant="default" onClick={closeDeleteModal}>Cancel</Button>
                     <Button color="red" loading={actionLoading} onClick={handleConfirmDelete}>
-                        Confirm Delete
+                        Confirm with Google & delete
                     </Button>
                 </Group>
             </Modal>

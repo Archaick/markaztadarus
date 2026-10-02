@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-// add firebase auth
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebaseConfig";
 
 // Components
 import NavbarHome from "./components/Navbar/NavbarHome";
@@ -22,90 +19,82 @@ import Seminar from "./components/Seminar/Seminar";
 import Majelis from "./components/Majelis/Majelis";
 import LinkTree from "./components/LinkTree/LinkTree";
 import InternalHub from "./components/Internal/InternalHub";
+import AccessProvider from "./components/Internal/AccessProvider";
+import AccessControl from "./components/Internal/AccessControl";
+import RequireFeature, { FeatureLogin } from "./components/Internal/RequireFeature";
 import RedirectAdmin from "./components/RedirectManager/RedirectAdmin";
-import RedirectAdminLogin from "./components/RedirectManager/RedirectAdminLogin";
+import FormsAdmin from "./components/Forms/FormsAdmin";
+import FormDetail from "./components/Forms/FormDetail";
+import PublicForm from "./components/Forms/PublicForm";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
 import Admin from "./components/Certify/Admin";
-import AdminLogin from "./components/Certify/AdminLogin";
 import CertificateVerify from "./components/Certify/CertificateVerify";
 
-const CERTIFICATE_ADMIN_EMAIL = "saeedhareez@gmail.com";
-const REDIRECT_ADMIN_EMAIL = "info@markazalhijaz.org";
-
 const App = () => {
-  const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const normalizedUserEmail = (user?.email || "").toLowerCase();
-  const isCertificateAdmin = normalizedUserEmail === CERTIFICATE_ADMIN_EMAIL;
-  const isRedirectAdmin = normalizedUserEmail === REDIRECT_ADMIN_EMAIL;
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setCheckingAuth(false);
-    });
-    return unsubscribe;
-  }, []);
-
-  if (checkingAuth) return null; // optional: show a loading spinner
-
   return (
     <MantineProvider>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <NavbarHome />
-                <Home />
-                <Footer />
-              </>
-            }
-          />
-          <Route path="/umrah" element={<Umrah />} />
-          <Route path="/ut" element={<UT />} />
-          <Route path="/ts" element={<DS />} />
-          <Route path="/dq" element={<DQ />} />
+      <AccessProvider>
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <NavbarHome />
+                  <Home />
+                  <Footer />
+                </>
+              }
+            />
+            <Route path="/umrah" element={<Umrah />} />
+            <Route path="/ut" element={<UT />} />
+            <Route path="/ts" element={<DS />} />
+            <Route path="/dq" element={<DQ />} />
 
-          <Route path="/ilmiah" element={<Ilmiah />} />
-          <Route path="/Pelatihan" element={<Pelatihan />} />
-          <Route path="/Seminar" element={<Seminar />} />
-          <Route path="/Majelis" element={<Majelis />} />
-          <Route path="/linktree" element={<LinkTree />} />
-          {/* <Route path="/hidayah" element={<Hidayah />} /> */}
+            <Route path="/ilmiah" element={<Ilmiah />} />
+            <Route path="/Pelatihan" element={<Pelatihan />} />
+            <Route path="/Seminar" element={<Seminar />} />
+            <Route path="/Majelis" element={<Majelis />} />
+            <Route path="/linktree" element={<LinkTree />} />
+            {/* <Route path="/hidayah" element={<Hidayah />} /> */}
 
-          {/* 🔐 Protected Route for Admin Panel */}
-          <Route
-            path="/cert-admin"
-            element={isCertificateAdmin ? <Admin /> : <Navigate to="/cert-login" />}
-          />
+            {/* 🔐 Internal dashboards — Google sign-in, access granted per feature */}
+            <Route path="/internal" element={<InternalHub />} />
+            <Route
+              path="/internal/access"
+              element={<RequireFeature feature="super"><AccessControl /></RequireFeature>}
+            />
+            <Route
+              path="/cert-admin"
+              element={<RequireFeature feature="certificates"><Admin /></RequireFeature>}
+            />
+            <Route path="/cert-login" element={<FeatureLogin feature="certificates" />} />
+            <Route
+              path="/internal/redirect-manager"
+              element={<RequireFeature feature="redirects"><RedirectAdmin /></RequireFeature>}
+            />
+            <Route path="/internal/redirect-login" element={<FeatureLogin feature="redirects" />} />
+            <Route
+              path="/internal/forms"
+              element={<RequireFeature feature="forms"><FormsAdmin /></RequireFeature>}
+            />
+            <Route
+              path="/internal/forms/:formId"
+              element={<RequireFeature feature="forms"><FormDetail /></RequireFeature>}
+            />
 
-          {/* Login page */}
-          <Route
-            path="/cert-login"
-            element={<AdminLogin onLoginSuccess={() => window.location.href = "/cert-admin"} />}
-          />
+            {/* 📜 Public pages */}
+            <Route path="/verify/:code" element={<CertificateVerify />} />
+            <Route path="/form/:formId" element={<PublicForm />} />
 
-          {/* 📜 Certificate Verification - Public Route */}
-          <Route path="/verify/:code" element={<CertificateVerify />} />
-          <Route path="/internal" element={<InternalHub />} />
-          <Route
-            path="/internal/redirect-manager"
-            element={isRedirectAdmin ? <RedirectAdmin /> : <Navigate to="/internal/redirect-login" />}
-          />
-          <Route
-            path="/internal/redirect-login"
-            element={<RedirectAdminLogin onLoginSuccess={() => (window.location.href = "/internal/redirect-manager")} />}
-          />
+            <Route path="/:shortCode" element={<Redirects />} />
 
-          <Route path="/:shortCode" element={<Redirects />} />
-
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </Router>
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </Router>
+      </AccessProvider>
     </MantineProvider>
   );
 };

@@ -1,90 +1,63 @@
 import { Card, Stack, Text, Title } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconBarcode,
-  IconHome2,
-  IconLink,
-  IconShieldLock,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconShieldLock, IconUsersGroup } from "@tabler/icons-react";
+import { useAccess } from "./accessContext";
+import { FEATURES } from "./access";
+import { AccessGate, AccountBar, FullPageLoader, InternalLayout } from "./InternalUI";
 import styles from "./InternalPortal.module.css";
 
-const internalLinks = [
-  {
-    href: "/cert-admin",
-    title: "Certificate Dashboard",
-    description: "Login to the certificate admin dashboard.",
-    icon: IconBarcode,
-    iconClass: styles.certificateIcon,
-  },
-  {
-    href: "/internal/redirect-manager",
-    title: "Redirect Manager",
-    description: "Open the internal short-link and redirect manager.",
-    icon: IconLink,
-    iconClass: styles.redirectIcon,
-  },
-];
-
-const particles = [
-  { left: "4%", top: "78%", size: 8, delay: "0s", duration: "16s" },
-  { left: "11%", top: "90%", size: 4, delay: "1.8s", duration: "14s" },
-  { left: "19%", top: "84%", size: 6, delay: "3.2s", duration: "17s" },
-  { left: "27%", top: "88%", size: 5, delay: "0.5s", duration: "15s" },
-  { left: "35%", top: "94%", size: 7, delay: "2.6s", duration: "18s" },
-  { left: "43%", top: "82%", size: 4, delay: "4.1s", duration: "13s" },
-  { left: "52%", top: "89%", size: 8, delay: "1.2s", duration: "20s" },
-  { left: "60%", top: "86%", size: 5, delay: "2.2s", duration: "14s" },
-  { left: "68%", top: "92%", size: 6, delay: "0.8s", duration: "17s" },
-  { left: "75%", top: "84%", size: 4, delay: "3.8s", duration: "12s" },
-  { left: "82%", top: "90%", size: 7, delay: "1.6s", duration: "19s" },
-  { left: "90%", top: "87%", size: 5, delay: "2.9s", duration: "16s" },
-  { left: "96%", top: "93%", size: 6, delay: "4.5s", duration: "18s" },
-];
+const accessControlLink = {
+  key: "access",
+  href: "/internal/access",
+  title: "Access Control",
+  description: "Invite admins and choose which dashboards they can open.",
+  icon: IconUsersGroup,
+  color: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+};
 
 export default function InternalHub() {
-  return (
-    <div className={styles.container}>
-      <div className={styles.backgroundPattern} />
-      <div className={styles.particles} aria-hidden="true">
-        {particles.map((particle, index) => (
-          <span
-            key={`particle-${index}`}
-            className={styles.particle}
-            style={{
-              left: particle.left,
-              top: particle.top,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDelay: particle.delay,
-              animationDuration: particle.duration,
-            }}
-          />
-        ))}
-      </div>
-      <a href="/" className={styles.homeButton}>
-        <IconHome2 size={16} />
-        <span>Home</span>
-      </a>
+  const { loading, user, isSuperAdmin, features } = useAccess();
 
+  if (loading) return <FullPageLoader />;
+
+  const links = [
+    ...(isSuperAdmin ? [accessControlLink] : []),
+    ...FEATURES.filter((f) => features.includes(f.key)),
+  ];
+
+  if (!user || links.length === 0) {
+    return (
+      <InternalLayout>
+        <AccessGate />
+      </InternalLayout>
+    );
+  }
+
+  return (
+    <InternalLayout>
       <Card className={styles.card}>
-        <Stack gap="sm">
+        <AccountBar />
+
+        <Stack gap="sm" mt="lg">
           <div className={styles.iconWrap}>
             <IconShieldLock size={36} />
           </div>
-
           <Title order={1} className={styles.title}>
             Internal Access
           </Title>
           <Text className={styles.subtitle}>
-            Select an internal system below.
+            {links.length === 1 ? "Your dashboard:" : "Select an internal system below."}
           </Text>
         </Stack>
 
         <div className={styles.links}>
-          {internalLinks.map((link) => (
-            <a href={link.href} key={link.href} className={styles.linkCard}>
+          {links.map((link) => (
+            <a
+              href={link.href}
+              key={link.key}
+              className={`${styles.linkCard} ${link.key === "access" ? styles.linkCardSuper : ""}`}
+            >
               <div className={styles.linkMeta}>
-                <span className={`${styles.linkIcon} ${link.iconClass}`}>
+                <span className={styles.linkIcon} style={{ background: link.color }}>
                   <link.icon size={19} />
                 </span>
                 <div>
@@ -99,6 +72,6 @@ export default function InternalHub() {
           ))}
         </div>
       </Card>
-    </div>
+    </InternalLayout>
   );
 }
