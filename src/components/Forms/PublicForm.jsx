@@ -23,11 +23,12 @@ import {
 
 const NS = "internal/Forms";
 
-function Shell({ children, language, cover, coverPosition }) {
+// `hasCover` comes with the form, so the layout is right before the photo loads.
+function Shell({ children, language, hasCover, cover, coverPosition }) {
   return (
     <div className={styles.page}>
       <header
-        className={`${styles.hero} ${cover ? styles.heroCover : ""}`}
+        className={`${styles.hero} ${hasCover ? styles.heroCover : ""}`}
         style={cover ? { backgroundImage: `url(${cover})`, backgroundPosition: `center ${coverPosition || "center"}` } : undefined}
       >
         <a href="/" className={styles.logoLink}>
@@ -36,7 +37,7 @@ function Shell({ children, language, cover, coverPosition }) {
         {/* Visitors switch for this visit only; the form's own language comes first. */}
         <LanguageSwitcher language={language} remember={false} className={styles.langCorner} />
       </header>
-      <main className={styles.main}>{children}</main>
+      <main className={`${styles.main} ${hasCover ? styles.mainBelowCover : ""}`}>{children}</main>
       <footer className={styles.footer}>Markaz Tadarus Indonesia</footer>
     </div>
   );
@@ -188,7 +189,12 @@ export default function PublicForm() {
     };
   }, [formId, coverVersion]);
 
-  const shellProps = { language, cover, coverPosition: form?.coverPosition };
+  const shellProps = {
+    language,
+    hasCover: !!form?.coverVersion,
+    cover,
+    coverPosition: form?.coverPosition,
+  };
 
   if (form === undefined) {
     return (
