@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useInView, useReducedMotion } from "framer-motion";
 import CountUp from "react-countup";
 import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -7,15 +7,19 @@ import { IconHandFinger, IconPointer, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
 import MapCanvas from "./MapCanvas";
-import { ALL_PROVINCES, WIDTH, fitProjection } from "./mapGeometry";
+import GlobeIntro from "./GlobeIntro";
 import { ProvinceChips, ProvinceDetail } from "./ProvinceDetail";
+import { ALL_PROVINCES, WIDTH, fitProjection } from "./mapGeometry";
+import { useBoxSize } from "./useBoxSize";
 import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 
 const Map = () => {
   const { t, i18n } = useTranslation("homepage/Map");
   const isPhone = useMediaQuery("(max-width: 640px)");
+  const isWide = useMediaQuery("(min-width: 901px)");
   const canHover = useMediaQuery("(hover: hover)");
+  const reduceMotion = useReducedMotion();
 
   // Provinces come from the Website dashboard once an admin has saved them.
   const stored = useSiteContent(SITE_DOCS.map);
@@ -34,14 +38,23 @@ const Map = () => {
     if (!picked) setSelected(list[0]?.name || null);
   }, [list, picked]);
 
-  const statsRef = useRef(null);
-  const statsInView = useInView(statsRef, { once: true, amount: 0.5 });
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { once: true, amount: 0.45 });
 
-  // Phones zoom in on where the programs are; wider screens show all of Indonesia.
-  const { projection, height } = useMemo(() => {
+  // On wide screens the map fills whatever height the section leaves it;
+  // on phones it zooms in on the active provinces at their natural shape.
+  const box = useBoxSize();
+  const fit = useMemo(() => {
     const active = ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]);
-    return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
-  }, [isPhone, provinces]);
+    if (!isWide) return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
+    if (!box.width || !box.height) return null;
+    const h = Math.max(260, Math.round((WIDTH * box.height) / box.width));
+    return fitProjection(ALL_PROVINCES, 16, h);
+  }, [isWide, isPhone, provinces, box.width, box.height]);
+
+  // The globe intro plays once, the first time the map comes into view.
+  const [phase, setPhase] = useState("globe");
+  const showGlobe = phase === "globe" && !reduceMotion;
 
   const select = useCallback((name) => {
     setSelected(name);
@@ -63,49 +76,52 @@ const Map = () => {
   const shared = { list, provinces, totals, selected };
 
   return (
-    <section className={styles.section} dir={rtl ? "rtl" : "ltr"} id="map">
-      <motion.div
-        className={styles.header}
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <span className={styles.eyebrow}>{t("eyebrow")}</span>
-        <h2 className={styles.title}>{t("title")}</h2>
-        <p className={styles.subtitle}>{t("subtitle")}</p>
-      </motion.div>
-
-      <div className={styles.stats} ref={statsRef}>
-        {stats.map((s) => (
-          <div className={styles.stat} key={s.label}>
-            {statsInView ? (
-              <CountUp end={s.value} duration={2} className={styles.statValue} />
-            ) : (
-              <span className={styles.statValue}>0</span>
-            )}
-            <span className={styles.statLabel}>{s.label}</span>
-          </div>
-        ))}
-      </div>
+    <section className={styles.section} dir={rtl ? "rtl" : "ltr"} id="map" ref={sectionRef}>
+      <header className={styles.topRow}>
+        <div>
+          <h2 className={styles.title}>{t("title")}</h2>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
+        </div>
+        <div className={styles.stats}>
+          {stats.map((s) => (
+            <div className={styles.stat} key={s.label}>
+              {inView ? (
+                <CountUp end={s.value} duration={2} className={styles.statValue} />
+              ) : (
+                <span className={styles.statValue}>0</span>
+              )}
+              <span className={styles.statLabel}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </header>
 
       <div className={styles.board}>
-        <motion.div
-          className={styles.mapPanel}
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <MapCanvas
-            {...shared}
-            projection={projection}
-            height={height}
-            onSelect={select}
-            onHover={canHover ? setHovered : undefined}
-            pinScale={isPhone ? 1.8 : 1}
-            onExpand={() => setExpanded(true)}
-          />
+        <div className={styles.mapPanel}>
+          <div className={styles.mapArea} ref={isWide ? box.ref : undefined}>
+            {fit &&
+              (showGlobe ? (
+                <GlobeIntro
+                  target={fit.projection}
+                  height={fit.height}
+                  provinces={provinces}
+                  go={inView}
+                  onDone={() => setPhase("map")}
+                />
+              ) : (
+                <div className={`${styles.mapFill} ${reduceMotion ? "" : styles.mapArrive}`}>
+                  <MapCanvas
+                    {...shared}
+                    projection={fit.projection}
+                    height={fit.height}
+                    onSelect={select}
+                    onHover={canHover ? setHovered : undefined}
+                    pinScale={isPhone ? 1.8 : 1}
+                    onExpand={() => setExpanded(true)}
+                  />
+                </div>
+              ))}
+          </div>
 
           <div className={styles.mapFooter}>
             <span className={styles.hint}>
@@ -114,9 +130,9 @@ const Map = () => {
             </span>
             <Legend />
           </div>
-        </motion.div>
+        </div>
 
-        <ProvinceChips {...shared} onPick={select} />
+        <ProvinceChips {...shared} onPick={select} className={styles.boardChips} />
 
         <aside className={styles.detail} aria-live="polite">
           <ProvinceDetail shown={shown} provinces={provinces} />
@@ -146,26 +162,6 @@ function Legend() {
       <span className={styles.legendLabel}>{t("legend_inactive")}</span>
     </span>
   );
-}
-
-// Size of an element, measured as soon as it mounts and again on resize.
-function useBoxSize() {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const observer = useRef(null);
-  const ref = useCallback((node) => {
-    observer.current?.disconnect();
-    if (!node) return;
-    const measure = () => {
-      const rect = node.getBoundingClientRect();
-      const next = { width: Math.round(rect.width), height: Math.round(rect.height) };
-      setSize((prev) => (prev.width === next.width && prev.height === next.height ? prev : next));
-    };
-    measure();
-    observer.current = new ResizeObserver(measure);
-    observer.current.observe(node);
-  }, []);
-  useEffect(() => () => observer.current?.disconnect(), []);
-  return { ref, ...size };
 }
 
 // Full-screen map: every gesture moves the map, and picking a province from
@@ -201,10 +197,7 @@ function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSel
     >
       <div className={styles.expandedLayout} dir={rtl ? "rtl" : "ltr"}>
         <header className={styles.expandedHeader}>
-          <div>
-            <span className={styles.expandedEyebrow}>{t("eyebrow")}</span>
-            <h2 className={styles.expandedTitle}>{t("title")}</h2>
-          </div>
+          <h2 className={styles.expandedTitle}>{t("title")}</h2>
           <button type="button" className={styles.expandedClose} onClick={onClose} aria-label={t("close")}>
             <IconX size={22} />
           </button>
