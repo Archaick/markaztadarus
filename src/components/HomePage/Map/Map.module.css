@@ -152,6 +152,7 @@
   display: block;
   width: 100%;
   height: 100%;
+  cursor: pointer; /* a tap skips to the map */
 }
 
 .svg {
@@ -223,6 +224,47 @@
   fill: #102141;
   stroke: #f1c94b;
   transition: fill 0.2s ease;
+}
+
+/* partner institutions with coordinates */
+.place {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.place circle {
+  fill: #ffffff;
+  stroke: #102141;
+  transition: fill 0.2s ease;
+}
+
+.place:hover circle,
+.placeSelected circle {
+  fill: #f1c94b;
+}
+
+.legendPlace {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #102141;
+  margin-inline-end: 0.1rem;
+}
+
+.mapsLink {
+  margin-inline-start: auto;
+  align-self: center;
+  display: inline-flex;
+  padding: 0.3rem;
+  border-radius: 8px;
+  color: #25475e;
+  transition: background 0.15s ease;
+}
+
+.mapsLink:hover {
+  background: #e7eef6;
+  color: #102141;
 }
 
 .pinSelected {
@@ -468,18 +510,46 @@
 }
 
 .locations li {
+  border-radius: 12px;
+  background: #f7f9fc;
+  color: #b8960c;
+  overflow: hidden;
+}
+
+.locationRow {
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
   padding: 0.6rem 0.7rem;
-  border-radius: 12px;
-  background: #f7f9fc;
-  color: #b8960c;
 }
 
-.locations li div {
+.locationRow > div {
   display: flex;
   flex-direction: column;
+}
+
+.locationButton {
+  cursor: pointer;
+}
+
+.locationButton:hover,
+.locationOpen .locationRow {
+  background: #eef3f9;
+}
+
+.locationButton:focus-visible {
+  outline: 2px solid #b8960c;
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+
+/* the live Google map of the place, under its row */
+.placeMap {
+  display: block;
+  width: 100%;
+  height: 190px;
+  border: 0;
+  background: #e4edf7;
 }
 
 .institution {

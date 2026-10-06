@@ -38,8 +38,15 @@
     "empty": "No provinces yet. Add the first one above.",
     "problems": {
       "noCity": "{{province}}: every location needs a city or regency.",
-      "badNumber": "{{province}}: numbers cannot be negative."
-    }
+      "badNumber": "{{province}}: numbers cannot be negative.",
+      "badCoords": "{{province}}: some coordinates could not be read.",
+      "outsideCoords": "{{province}}: some coordinates are outside Indonesia."
+    },
+    "coords": "Coordinates",
+    "coordsPlaceholder": "Coordinates / Google Maps link (optional)",
+    "coordsHint": "Coordinates show the institution as a point on the map. In Google Maps, right-click the place and click the numbers to copy them, or copy the place link from the browser, then paste it here.",
+    "coords_bad": "These coordinates could not be read. Paste numbers like -6.9175, 107.6191.",
+    "coords_outside": "This point is outside Indonesia — please check it."
   },
   "stats": {
     "add": "Add achievement",

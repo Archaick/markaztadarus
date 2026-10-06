@@ -1,5 +1,5 @@
 {
-  "title": "مركز تدارس إندونيسيا",
+  "title": "انتشارنا",
   "subtitle": "١٤٤٦ هـ | ٢٠٢٥ م",
   "stat_provinces": "محافظة نشطة",
   "stat_locations": "موقع برنامج",
@@ -19,5 +19,7 @@
   "expand": "ملء الشاشة",
   "close": "إغلاق",
   "news_title": "أخبار هذه المحافظة",
-  "news_more": "عرض كل الأخبار"
+  "news_more": "عرض كل الأخبار",
+  "open_in_maps": "فتح في خرائط Google",
+  "places_legend": "المؤسسات الشريكة"
 }

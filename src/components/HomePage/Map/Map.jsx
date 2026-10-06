@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { animate, useInView, useMotionValue, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import CountUp from "react-countup";
 import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
@@ -13,6 +13,11 @@ import { ALL_PROVINCES, WIDTH, fitProjection } from "./mapGeometry";
 import { useBoxSize } from "./useBoxSize";
 import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../siteContent";
+import { hasCoords } from "../../../data/coords";
+
+const NAVBAR = 76;
+const FLY_IN_S = 2.6;
+const FLY_OUT_S = 1.4;
 
 const Map = () => {
   const { t, i18n } = useTranslation("homepage/Map");
@@ -40,24 +45,52 @@ const Map = () => {
 
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: true, amount: 0.45 });
+  const onScreen = useInView(sectionRef);
+
+  // The globe flies to Indonesia on its own, but only once the map is (almost)
+  // fully on screen, so it is never missed and needs no extra scrolling. When
+  // the visitor scrolls back up and the map mostly leaves the screen below,
+  // it flies back out to the globe, ready to play again. A tap skips ahead.
+  const areaRef = useRef(null);
+  const mapInView = useInView(areaRef, { amount: 0.8 });
+  const mapMostlyGone = !useInView(areaRef, { amount: 0.35 });
+  const flight = useMotionValue(0);
+  const [progress, setProgress] = useState(0);
+  useMotionValueEvent(flight, "change", setProgress);
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+    let controls;
+    if (mapInView) {
+      controls = animate(flight, 1, { duration: FLY_IN_S * (1 - flight.get()), ease: "linear" });
+    } else if (mapMostlyGone && (areaRef.current?.getBoundingClientRect().top ?? 0) > NAVBAR) {
+      controls = animate(flight, 0, { duration: FLY_OUT_S * flight.get(), ease: "linear" });
+    }
+    return () => controls?.stop();
+  }, [mapInView, mapMostlyGone, reduceMotion, flight]);
+  const skipFlight = () => {
+    if (flight.get() < 1) animate(flight, 1, { duration: 0.5 * (1 - flight.get()), ease: "linear" });
+  };
 
   // On wide screens the map fills whatever height the section leaves it;
   // on phones it zooms in on the active provinces at their natural shape.
   const box = useBoxSize();
   const fit = useMemo(() => {
     const active = ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]);
-    if (!isWide) return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
+    if (!isWide)
+      return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
     if (!box.width || !box.height) return null;
     const h = Math.max(260, Math.round((WIDTH * box.height) / box.width));
     return fitProjection(ALL_PROVINCES, 16, h);
   }, [isWide, isPhone, provinces, box.width, box.height]);
 
-  // The globe intro plays once, the first time the map comes into view.
-  const [phase, setPhase] = useState("globe");
-  const showGlobe = phase === "globe" && !reduceMotion;
+  // Close enough to flat that the interactive map can take over.
+  const showGlobe = !reduceMotion && progress < 0.985;
 
-  const select = useCallback((name) => {
+  // `place` is the location whose dot was clicked, to open it in the side card.
+  const [place, setPlace] = useState(null);
+  const select = useCallback((name, placeIndex = null) => {
     setSelected(name);
+    setPlace(placeIndex);
     setPicked(true);
     setHovered(null);
   }, []);
@@ -74,6 +107,7 @@ const Map = () => {
   ];
 
   const shared = { list, provinces, totals, selected };
+  const hasPlaces = list.some((p) => (p.locations || []).some(hasCoords));
 
   return (
     <section className={styles.section} dir={rtl ? "rtl" : "ltr"} id="map" ref={sectionRef}>
@@ -98,15 +132,22 @@ const Map = () => {
 
       <div className={styles.board}>
         <div className={styles.mapPanel}>
-          <div className={styles.mapArea} ref={isWide ? box.ref : undefined}>
+          <div
+            className={styles.mapArea}
+            ref={(node) => {
+              areaRef.current = node;
+              if (isWide) box.ref(node);
+            }}
+          >
             {fit &&
               (showGlobe ? (
                 <GlobeIntro
                   target={fit.projection}
                   height={fit.height}
                   provinces={provinces}
-                  go={inView}
-                  onDone={() => setPhase("map")}
+                  progress={progress}
+                  spinning={onScreen}
+                  onSkip={skipFlight}
                 />
               ) : (
                 <div className={`${styles.mapFill} ${reduceMotion ? "" : styles.mapArrive}`}>
@@ -128,14 +169,19 @@ const Map = () => {
               {canHover ? <IconPointer size={14} /> : <IconHandFinger size={14} />}{" "}
               {canHover ? t("hint_mouse") : t("hint_touch")}
             </span>
-            <Legend />
+            <Legend withPlaces={hasPlaces} />
           </div>
         </div>
 
         <ProvinceChips {...shared} onPick={select} className={styles.boardChips} />
 
         <aside className={styles.detail} aria-live="polite">
-          <ProvinceDetail shown={shown} provinces={provinces} />
+          <ProvinceDetail
+            shown={shown}
+            provinces={provinces}
+            place={shown?.name === selected ? place : null}
+            withMaps={shown?.name === selected}
+          />
         </aside>
       </div>
 
@@ -145,16 +191,23 @@ const Map = () => {
         {...shared}
         onSelect={select}
         shown={shownOf(selected)}
+        place={place}
         rtl={rtl}
       />
     </section>
   );
 };
 
-function Legend() {
+function Legend({ withPlaces = false }) {
   const { t } = useTranslation("homepage/Map");
   return (
     <span className={styles.legend}>
+      {withPlaces && (
+        <>
+          <span className={styles.legendPlace} />
+          <span className={styles.legendLabel}>{t("places_legend")}</span>
+        </>
+      )}
       <span className={styles.legendLabel}>{t("legend_low")}</span>
       <span className={styles.legendScale} />
       <span className={styles.legendLabel}>{t("legend_high")}</span>
@@ -166,7 +219,7 @@ function Legend() {
 
 // Full-screen map: every gesture moves the map, and picking a province from
 // the chips flies to it.
-function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSelect, shown, rtl }) {
+function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSelect, shown, place, rtl }) {
   const { t } = useTranslation("homepage/Map");
   const isPhone = useMediaQuery("(max-width: 640px)");
   const { ref, width, height } = useBoxSize();
@@ -230,7 +283,7 @@ function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSel
               className={styles.expandedChips}
             />
             <div className={styles.expandedDetail} aria-live="polite">
-              <ProvinceDetail shown={shown} provinces={provinces} />
+              <ProvinceDetail shown={shown} provinces={provinces} place={place} />
             </div>
             <div className={styles.expandedLegend}>
               <Legend />

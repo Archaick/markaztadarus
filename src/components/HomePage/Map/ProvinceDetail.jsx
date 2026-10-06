@@ -1,9 +1,18 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { IconArrowRight, IconBuildingCommunity, IconMapPin, IconMapPinOff, IconNews } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconBuildingCommunity,
+  IconExternalLink,
+  IconMapPin,
+  IconMapPinOff,
+  IconNews,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
 import { getDisplayName } from "../../../data/mtiProvinceData";
+import { embedLink, hasCoords, mapsLink } from "../../../data/coords";
 import { useProvinceNews } from "../../Blog/useProvinceNews";
 import { formatPostDate } from "../../Blog/blogSchema";
 
@@ -38,14 +47,88 @@ function ProvinceNews({ province }) {
   );
 }
 
+// The province's locations. One with coordinates opens a live Google map of
+// the spot under it (the first one, or the dot the visitor clicked on the map).
+function Locations({ locations, place, withMaps }) {
+  const { t, i18n } = useTranslation("homepage/Map");
+  const first = locations.findIndex(hasCoords);
+  const [open, setOpen] = useState(place ?? first);
+  useEffect(() => {
+    if (place != null) setOpen(place);
+  }, [place]);
+
+  return (
+    <ul className={styles.locations}>
+      {locations.map((loc, i) => {
+        const located = hasCoords(loc);
+        const isOpen = withMaps && located && open === i;
+        return (
+          <li key={`${loc.city}-${i}`} className={isOpen ? styles.locationOpen : undefined}>
+            <div
+              className={`${styles.locationRow} ${located ? styles.locationButton : ""}`}
+              {...(located && {
+                role: "button",
+                tabIndex: 0,
+                "aria-expanded": isOpen,
+                onClick: () => setOpen(isOpen ? -1 : i),
+                onKeyDown: (e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setOpen(isOpen ? -1 : i);
+                  }
+                },
+              })}
+            >
+              {loc.institution ? <IconBuildingCommunity size={18} /> : <IconMapPin size={18} />}
+              <div>
+                {loc.institution && <span className={styles.institution}>{loc.institution}</span>}
+                <span className={styles.city}>{loc.city}</span>
+              </div>
+              {located && (
+                <a
+                  href={mapsLink(loc)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.mapsLink}
+                  aria-label={t("open_in_maps")}
+                  title={t("open_in_maps")}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <IconExternalLink size={16} />
+                </a>
+              )}
+            </div>
+            {isOpen && (
+              <iframe
+                className={styles.placeMap}
+                src={embedLink(loc, i18n.language)}
+                title={loc.institution || loc.city}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 // The card for one province: programs, participants, its locations and news.
-export function ProvinceDetail({ shown, provinces }) {
+// `withMaps` is off while a mouse only hovers, so passing over the map does not
+// load a Google map for every province.
+export function ProvinceDetail({ shown, provinces, place = null, withMaps = true }) {
   const { t } = useTranslation("homepage/Map");
   if (!shown) return null;
 
   return (
     // Swaps at once and fades in, so the card is never left empty.
-    <motion.div key={shown.name} initial={{ opacity: 0.4, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+    <motion.div
+      key={shown.name}
+      initial={{ opacity: 0.4, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       {shown.inactive ? (
         <div className={styles.empty}>
           <IconMapPinOff size={28} />
@@ -75,17 +158,7 @@ export function ProvinceDetail({ shown, provinces }) {
           {(shown.locations || []).length > 0 && (
             <>
               <p className={styles.listTitle}>{t("locations_title")}</p>
-              <ul className={styles.locations}>
-                {shown.locations.map((loc, i) => (
-                  <li key={`${loc.city}-${i}`}>
-                    {loc.institution ? <IconBuildingCommunity size={18} /> : <IconMapPin size={18} />}
-                    <div>
-                      {loc.institution && <span className={styles.institution}>{loc.institution}</span>}
-                      <span className={styles.city}>{loc.city}</span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <Locations locations={shown.locations} place={place} withMaps={withMaps} />
             </>
           )}
 

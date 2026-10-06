@@ -97,7 +97,7 @@
 
 .locationRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1.1fr) auto;
   gap: 0.5rem;
   align-items: center;
 }
@@ -411,6 +411,16 @@
   .locationRow .institutionInput {
     grid-column: 1 / 2;
     grid-row: 2;
+  }
+
+  .locationRow .coordsInput {
+    grid-column: 1 / 2;
+    grid-row: 3;
+  }
+
+  .locationRow {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed #e2e8f0;
   }
 
   .fieldGrid3 {

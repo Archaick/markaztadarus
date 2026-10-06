@@ -1,10 +1,20 @@
-import { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
 import { IconArrowsMaximize, IconFocusCentered, IconMinus, IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
 import { ALL_PROVINCES, PROVINCE_COLLECTION, WIDTH } from "./mapGeometry";
+import { hasCoords } from "../../../data/coords";
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 8;
@@ -26,7 +36,16 @@ const shade = (ratio) => {
 
 const PROVINCE_STYLE = { outline: "none", vectorEffect: "non-scaling-stroke", cursor: "pointer" };
 
-const Province = memo(function Province({ geo, name, fill, hoverFill, selected, onEnter, onLeave, onSelect }) {
+const Province = memo(function Province({
+  geo,
+  name,
+  fill,
+  hoverFill,
+  selected,
+  onEnter,
+  onLeave,
+  onSelect,
+}) {
   return (
     <Geography
       geography={geo}
@@ -41,7 +60,12 @@ const Province = memo(function Province({ geo, name, fill, hoverFill, selected, 
           strokeWidth: selected ? 1.6 : 0.5,
           transition: "fill 0.2s ease",
         },
-        hover: { ...PROVINCE_STYLE, fill: hoverFill, stroke: selected ? COLORS.selected : COLORS.stroke, strokeWidth: selected ? 1.6 : 0.8 },
+        hover: {
+          ...PROVINCE_STYLE,
+          fill: hoverFill,
+          stroke: selected ? COLORS.selected : COLORS.stroke,
+          strokeWidth: selected ? 1.6 : 0.8,
+        },
         pressed: { ...PROVINCE_STYLE, fill: hoverFill },
       }}
     />
@@ -57,7 +81,19 @@ const easeOut = (p) => 1 - Math.pow(1 - p, 3);
  * so scrolling past the map keeps working.
  */
 const MapCanvas = forwardRef(function MapCanvas(
-  { list, provinces, totals, projection, height, selected, onSelect, onHover, pinScale = 1, free = false, onExpand },
+  {
+    list,
+    provinces,
+    totals,
+    projection,
+    height,
+    selected,
+    onSelect,
+    onHover,
+    pinScale = 1,
+    free = false,
+    onExpand,
+  },
   ref
 ) {
   const { t } = useTranslation("homepage/Map");
@@ -134,8 +170,32 @@ const MapCanvas = forwardRef(function MapCanvas(
   }, []);
 
   const markers = useMemo(
-    () => list.filter((p) => centroids[p.name]).map((p) => ({ name: p.name, coordinates: centroids[p.name], programs: p.programs })),
+    () =>
+      list
+        .filter((p) => centroids[p.name])
+        .map((p) => ({ name: p.name, coordinates: centroids[p.name], programs: p.programs })),
     [list, centroids]
+  );
+
+  // Partner institutions an admin gave coordinates to, as small dots.
+  const places = useMemo(
+    () =>
+      list.flatMap((p) =>
+        (p.locations || []).flatMap((l, i) =>
+          hasCoords(l)
+            ? [
+                {
+                  key: `${p.name}-${i}`,
+                  province: p.name,
+                  index: i,
+                  name: [l.institution, l.city].filter(Boolean).join(" · "),
+                  coordinates: [l.lng, l.lat],
+                },
+              ]
+            : []
+        )
+      ),
+    [list]
   );
 
   // Pins and labels stay the same size on screen while the map zooms.
@@ -165,7 +225,11 @@ const MapCanvas = forwardRef(function MapCanvas(
               geographies.map((geo) => {
                 const name = geo.properties.PROVINSI;
                 const data = provinces[name] ? list.find((p) => p.name === name) : null;
-                const ratio = data ? (totals.maxPrograms > 1 ? (data.programs - 1) / (totals.maxPrograms - 1) : 1) : 0;
+                const ratio = data
+                  ? totals.maxPrograms > 1
+                    ? (data.programs - 1) / (totals.maxPrograms - 1)
+                    : 1
+                  : 0;
                 return (
                   <Province
                     key={geo.rsmKey}
@@ -182,6 +246,19 @@ const MapCanvas = forwardRef(function MapCanvas(
               })
             }
           </Geographies>
+
+          {places.map((place) => (
+            <Marker
+              key={place.key}
+              coordinates={place.coordinates}
+              onClick={() => onSelect(place.province, place.index)}
+            >
+              <g className={`${styles.place} ${place.province === selected ? styles.placeSelected : ""}`}>
+                <title>{place.name}</title>
+                <circle r={4.2 * k} strokeWidth={1.5 * k} />
+              </g>
+            </Marker>
+          ))}
 
           {markers.map((m) => (
             <Marker key={m.name} coordinates={m.coordinates} onClick={() => onSelect(m.name)}>
@@ -214,11 +291,23 @@ const MapCanvas = forwardRef(function MapCanvas(
         >
           <IconMinus size={18} />
         </button>
-        <button type="button" onClick={() => flyTo(home)} aria-label={t("reset")} title={t("reset")} disabled={!zoomed}>
+        <button
+          type="button"
+          onClick={() => flyTo(home)}
+          aria-label={t("reset")}
+          title={t("reset")}
+          disabled={!zoomed}
+        >
           <IconFocusCentered size={18} />
         </button>
         {onExpand && (
-          <button type="button" onClick={onExpand} aria-label={t("expand")} title={t("expand")} className={styles.expandButton}>
+          <button
+            type="button"
+            onClick={onExpand}
+            aria-label={t("expand")}
+            title={t("expand")}
+            className={styles.expandButton}
+          >
             <IconArrowsMaximize size={18} />
           </button>
         )}

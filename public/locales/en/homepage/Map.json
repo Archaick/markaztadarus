@@ -1,5 +1,5 @@
 {
-  "title": "Markaz Tadarus Indonesia",
+  "title": "Our Reach",
   "subtitle": "1446 H | 2025 AD",
   "stat_provinces": "Active provinces",
   "stat_locations": "Program locations",
@@ -19,5 +19,7 @@
   "expand": "Full screen",
   "close": "Close",
   "news_title": "News from this province",
-  "news_more": "See all news"
+  "news_more": "See all news",
+  "open_in_maps": "Open in Google Maps",
+  "places_legend": "Partner institutions"
 }

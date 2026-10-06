@@ -1,5 +1,5 @@
 {
-  "title": "Markaz Tadarus Indonesia",
+  "title": "Jangkauan Kami",
   "subtitle": "Tahun 1446 H | 2025 M",
   "stat_provinces": "Provinsi aktif",
   "stat_locations": "Lokasi program",
@@ -19,5 +19,7 @@
   "expand": "Layar penuh",
   "close": "Tutup",
   "news_title": "Berita dari provinsi ini",
-  "news_more": "Lihat semua berita"
+  "news_more": "Lihat semua berita",
+  "open_in_maps": "Buka di Google Maps",
+  "places_legend": "Lembaga mitra"
 }

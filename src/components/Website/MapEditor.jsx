@@ -14,10 +14,20 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { IconBuildingCommunity, IconMapPin, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import {
+  IconBuildingCommunity,
+  IconCircleCheck,
+  IconCircleX,
+  IconCurrentLocation,
+  IconMapPin,
+  IconPlus,
+  IconTrash,
+  IconX,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import topoData from "../../data/indonesia-provinces.topo.json";
 import { mtiProvinces, programCount } from "../../data/mtiProvinceData";
+import { formatCoords, inIndonesia, parseCoords } from "../../data/coords";
 import { SITE_DOCS } from "../HomePage/siteContent";
 import { useSiteDraft } from "./useSiteDraft";
 import SaveBar from "./SaveBar";
@@ -40,7 +50,7 @@ const ISLANDS = [
   "Kepulauan Riau",
 ];
 
-const emptyLocation = () => ({ city: "", institution: "" });
+const emptyLocation = () => ({ city: "", institution: "", coords: "" });
 const NO_ROWS = [];
 
 // Stored { [province]: {...} } ↔ editor rows sorted by name.
@@ -51,15 +61,29 @@ const toRows = (provinces) =>
       island: d.island || "",
       programs: Number.isFinite(d.programs) ? d.programs : "",
       participants: Number.isFinite(d.participants) ? d.participants : "",
-      locations: (d.locations || []).map((l) => ({ city: l.city || "", institution: l.institution || "" })),
+      locations: (d.locations || []).map((l) => ({
+        city: l.city || "",
+        institution: l.institution || "",
+        coords: formatCoords(l),
+      })),
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
 const toDraft = (stored) => toRows(stored?.provinces || mtiProvinces);
 
+// "" when empty, "ok", "bad" (not readable) or "outside" (not in Indonesia)
+const coordsState = (text) => {
+  if (!text.trim()) return "";
+  const point = parseCoords(text);
+  if (!point) return "bad";
+  return inIndonesia(point) ? "ok" : "outside";
+};
+
 const problemIn = (rows) => {
   for (const row of rows) {
     if (row.locations.some((l) => !l.city.trim() && l.institution.trim())) return { key: "noCity", province: row.name };
+    if (row.locations.some((l) => coordsState(l.coords) === "bad")) return { key: "badCoords", province: row.name };
+    if (row.locations.some((l) => coordsState(l.coords) === "outside")) return { key: "outsideCoords", province: row.name };
     if ((row.programs !== "" && row.programs < 0) || (row.participants !== "" && row.participants < 0)) {
       return { key: "badNumber", province: row.name };
     }
@@ -73,7 +97,11 @@ const toStored = (rows) =>
       const data = {
         island: row.island.trim(),
         locations: row.locations
-          .map((l) => ({ city: l.city.trim(), institution: l.institution.trim() }))
+          .map((l) => {
+            const place = { city: l.city.trim(), institution: l.institution.trim() };
+            const point = parseCoords(l.coords);
+            return point ? { ...place, ...point } : place;
+          })
           .filter((l) => l.city),
       };
       if (row.programs !== "") data.programs = Number(row.programs);
@@ -246,6 +274,10 @@ export default function MapEditor({ editorEmail }) {
                           onChange={(e) => setLocation(row.name, i, { institution: e.target.value })}
                           className={styles.institutionInput}
                         />
+                        <CoordsInput
+                          value={loc.coords}
+                          onChange={(coords) => setLocation(row.name, i, { coords })}
+                        />
                         <Tooltip label={t("map.removeLocation")}>
                           <ActionIcon
                             variant="subtle"
@@ -261,6 +293,10 @@ export default function MapEditor({ editorEmail }) {
                       </div>
                     ))}
                   </div>
+
+                  <Text size="xs" c="dimmed" mt={6}>
+                    {t("map.coordsHint")}
+                  </Text>
 
                   <Group justify="space-between" mt="sm">
                     <Button
@@ -302,5 +338,37 @@ export default function MapEditor({ editorEmail }) {
         onSave={save}
       />
     </div>
+  );
+}
+
+// A place's position: paste coordinates or a Google Maps link; on leaving the
+// field it is tidied into plain numbers.
+function CoordsInput({ value, onChange }) {
+  const { t } = useTranslation("internal/Website");
+  const state = coordsState(value);
+  return (
+    <TextInput
+      leftSection={<IconCurrentLocation size={15} />}
+      rightSection={
+        state === "ok" ? (
+          <IconCircleCheck size={16} color="var(--mantine-color-teal-6)" />
+        ) : state ? (
+          <Tooltip label={t(`map.coords_${state}`)}>
+            <IconCircleX size={16} color="var(--mantine-color-red-6)" />
+          </Tooltip>
+        ) : null
+      }
+      placeholder={t("map.coordsPlaceholder")}
+      aria-label={t("map.coords")}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onBlur={() => {
+        const point = parseCoords(value);
+        if (point) onChange(formatCoords(point));
+      }}
+      error={state === "bad" || state === "outside"}
+      className={styles.coordsInput}
+      dir="ltr"
+    />
   );
 }
