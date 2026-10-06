@@ -1,76 +1,16 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
-import { geoCentroid, geoMercator, geoPath } from "d3-geo";
-import { feature } from "topojson-client";
 import CountUp from "react-countup";
+import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconBuildingCommunity, IconMapPin, IconMapPinOff, IconPointer } from "@tabler/icons-react";
+import { IconHandFinger, IconPointer, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
-
-import topoData from "../../../data/indonesia-provinces.topo.json";
-import { mtiProvinces, getDisplayName, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
+import MapCanvas from "./MapCanvas";
+import { ALL_PROVINCES, WIDTH, fitProjection } from "./mapGeometry";
+import { ProvinceChips, ProvinceDetail } from "./ProvinceDetail";
+import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../siteContent";
-
-const ALL_PROVINCES = feature(topoData, topoData.objects["indonesia-38-prov-topo"]).features;
-const PROVINCE_COLLECTION = { type: "FeatureCollection", features: ALL_PROVINCES };
-const WIDTH = 800;
-
-/* ——— brand colours: gold for active, deeper gold for more programs ——— */
-const COLORS = {
-  low: [246, 220, 140],
-  high: [168, 122, 0],
-  inactive: "#d7e3ef",
-  inactiveHover: "#c7d7e7",
-  stroke: "#ffffff",
-  selected: "#102141",
-};
-
-const shade = (ratio) => {
-  const [r, g, b] = COLORS.low.map((c, i) => Math.round(c + (COLORS.high[i] - c) * ratio));
-  return `rgb(${r}, ${g}, ${b})`;
-};
-
-// Fits the features to the full width and makes the map exactly as tall as
-// they need, so no band of empty sea is left under the islands.
-const fitToWidth = (features, pad) => {
-  const collection = { type: "FeatureCollection", features };
-  const probe = geoMercator().fitWidth(WIDTH - pad * 2, collection);
-  const [[, top], [, bottom]] = geoPath(probe).bounds(collection);
-  const height = Math.ceil(bottom - top) + pad * 2;
-  const projection = geoMercator().fitExtent(
-    [
-      [pad, pad],
-      [WIDTH - pad, height - pad],
-    ],
-    collection
-  );
-  return { projection, height };
-};
-
-const Province = memo(function Province({ geo, fill, hoverFill, selected, onEnter, onLeave, onSelect }) {
-  return (
-    <Geography
-      geography={geo}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      onClick={onSelect}
-      style={{
-        default: {
-          fill,
-          stroke: selected ? COLORS.selected : COLORS.stroke,
-          strokeWidth: selected ? 1.6 : 0.5,
-          outline: "none",
-          transition: "fill 0.2s ease",
-          cursor: "pointer",
-        },
-        hover: { fill: hoverFill, stroke: selected ? COLORS.selected : COLORS.stroke, strokeWidth: selected ? 1.6 : 0.8, outline: "none", cursor: "pointer" },
-        pressed: { fill: hoverFill, outline: "none" },
-      }}
-    />
-  );
-});
 
 const Map = () => {
   const { t, i18n } = useTranslation("homepage/Map");
@@ -87,46 +27,31 @@ const Map = () => {
   const [selected, setSelected] = useState(() => list[0]?.name || null);
   const [picked, setPicked] = useState(false);
   const [hovered, setHovered] = useState(null);
-
-  // Links to /#map land here; the browser's own jump runs before the page renders.
-  useEffect(() => {
-    if (window.location.hash === "#map") {
-      document.getElementById("map")?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
+  const [expanded, setExpanded] = useState(false);
 
   // Until the visitor picks one, keep the busiest province selected as data arrives.
   useEffect(() => {
     if (!picked) setSelected(list[0]?.name || null);
   }, [list, picked]);
+
   const statsRef = useRef(null);
   const statsInView = useInView(statsRef, { once: true, amount: 0.5 });
 
   // Phones zoom in on where the programs are; wider screens show all of Indonesia.
   const { projection, height } = useMemo(() => {
     const active = ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]);
-    return isPhone && active.length ? fitToWidth(active, 40) : fitToWidth(ALL_PROVINCES, 16);
+    return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
   }, [isPhone, provinces]);
 
-  const markers = useMemo(
-    () =>
-      ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]).map((f) => {
-        const name = f.properties.PROVINSI;
-        return { name, coordinates: geoCentroid(f), programs: list.find((p) => p.name === name)?.programs || 0 };
-      }),
-    [list, provinces]
-  );
-
-  const select = (name) => {
+  const select = useCallback((name) => {
     setSelected(name);
     setPicked(true);
     setHovered(null);
-  };
+  }, []);
 
   // On a mouse, hovering previews a province; a tap or click keeps it.
-  const shownName = (canHover && hovered) || selected;
-  const shown = shownName ? list.find((p) => p.name === shownName) || { name: shownName, inactive: true } : null;
-  const k = isPhone ? 1.8 : 1; // keeps pins finger-sized when the map is scaled down
+  const shownOf = (name) => (name ? list.find((p) => p.name === name) || { name, inactive: true } : null);
+  const shown = shownOf((canHover && hovered) || selected);
   const rtl = i18n.language === "ar";
 
   const stats = [
@@ -134,6 +59,8 @@ const Map = () => {
     { value: totals.locations, label: t("stat_locations") },
     { value: totals.islands, label: t("stat_islands") },
   ];
+
+  const shared = { list, provinces, totals, selected };
 
   return (
     <section className={styles.section} dir={rtl ? "rtl" : "ltr"} id="map">
@@ -170,130 +97,156 @@ const Map = () => {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <ComposableMap projection={projection} width={WIDTH} height={height} className={styles.svg}>
-            <Geographies geography={PROVINCE_COLLECTION}>
-              {({ geographies }) =>
-                geographies.map((geo) => {
-                  const name = geo.properties.PROVINSI;
-                  const data = list.find((p) => p.name === name);
-                  const ratio = data ? (totals.maxPrograms > 1 ? (data.programs - 1) / (totals.maxPrograms - 1) : 1) : 0;
-                  return (
-                    <Province
-                      key={geo.rsmKey}
-                      geo={geo}
-                      fill={data ? shade(ratio) : COLORS.inactive}
-                      hoverFill={data ? shade(Math.min(1, ratio + 0.25)) : COLORS.inactiveHover}
-                      selected={name === selected}
-                      onEnter={canHover ? () => setHovered(name) : undefined}
-                      onLeave={canHover ? () => setHovered(null) : undefined}
-                      onSelect={() => select(name)}
-                    />
-                  );
-                })
-              }
-            </Geographies>
-
-            {markers.map((m) => (
-              <Marker key={m.name} coordinates={m.coordinates} onClick={() => select(m.name)}>
-                <g className={styles.marker} style={{ cursor: "pointer" }}>
-                  <circle r={11 * k} className={styles.pulse} />
-                  <circle
-                    r={(9 + Math.min(m.programs, 9) * 0.5) * k}
-                    className={`${styles.pin} ${m.name === selected ? styles.pinSelected : ""}`}
-                  />
-                  <text textAnchor="middle" dy="0.35em" className={styles.pinText} style={{ fontSize: 10 * k }}>
-                    {m.programs}
-                  </text>
-                </g>
-              </Marker>
-            ))}
-          </ComposableMap>
+          <MapCanvas
+            {...shared}
+            projection={projection}
+            height={height}
+            onSelect={select}
+            onHover={canHover ? setHovered : undefined}
+            pinScale={isPhone ? 1.8 : 1}
+            onExpand={() => setExpanded(true)}
+          />
 
           <div className={styles.mapFooter}>
             <span className={styles.hint}>
-              <IconPointer size={14} /> {t("hint")}
+              {canHover ? <IconPointer size={14} /> : <IconHandFinger size={14} />}{" "}
+              {canHover ? t("hint_mouse") : t("hint_touch")}
             </span>
-            <span className={styles.legend}>
-              <span className={styles.legendLabel}>{t("legend_low")}</span>
-              <span className={styles.legendScale} />
-              <span className={styles.legendLabel}>{t("legend_high")}</span>
-              <span className={styles.legendSwatch} />
-              <span className={styles.legendLabel}>{t("legend_inactive")}</span>
-            </span>
+            <Legend />
           </div>
         </motion.div>
 
-        <div className={styles.chips} role="list">
-          {list.map((p) => (
-            <button
-              type="button"
-              role="listitem"
-              key={p.name}
-              className={`${styles.chip} ${p.name === selected ? styles.chipOn : ""}`}
-              onClick={() => select(p.name)}
-              aria-pressed={p.name === selected}
-            >
-              <span>{getDisplayName(p.name, provinces)}</span>
-              <span className={styles.chipCount}>{p.programs}</span>
-            </button>
-          ))}
-        </div>
+        <ProvinceChips {...shared} onPick={select} />
 
         <aside className={styles.detail} aria-live="polite">
-          {/* swaps at once and fades in, so the card is never left empty */}
-          {shown && (
-              <motion.div
-                key={shown.name}
-                initial={{ opacity: 0.4, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {shown.inactive ? (
-                  <div className={styles.empty}>
-                    <IconMapPinOff size={28} />
-                    <h3 className={styles.detailTitle}>{shown.name}</h3>
-                    <p className={styles.emptyTitle}>{t("no_program_title")}</p>
-                    <p className={styles.emptyText}>{t("no_program_text", { province: shown.name })}</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className={styles.detailHead}>
-                      <div>
-                        <h3 className={styles.detailTitle}>{getDisplayName(shown.name, provinces)}</h3>
-                        {shown.island && <span className={styles.island}>{shown.island}</span>}
-                      </div>
-                      <div className={styles.bigNumber}>
-                        <strong>{shown.programs}</strong>
-                        <span>{t("stat_locations")}</span>
-                      </div>
-                    </div>
-
-                    {shown.participants ? (
-                      <p className={styles.participants}>
-                        {t("participants")}: <strong>{shown.participants}</strong>
-                      </p>
-                    ) : null}
-
-                    <p className={styles.listTitle}>{t("locations_title")}</p>
-                    <ul className={styles.locations}>
-                      {(shown.locations || []).map((loc, i) => (
-                        <li key={`${loc.city}-${i}`}>
-                          {loc.institution ? <IconBuildingCommunity size={18} /> : <IconMapPin size={18} />}
-                          <div>
-                            {loc.institution && <span className={styles.institution}>{loc.institution}</span>}
-                            <span className={styles.city}>{loc.city}</span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </motion.div>
-          )}
+          <ProvinceDetail shown={shown} provinces={provinces} />
         </aside>
       </div>
+
+      <ExpandedMap
+        opened={expanded}
+        onClose={() => setExpanded(false)}
+        {...shared}
+        onSelect={select}
+        shown={shownOf(selected)}
+        rtl={rtl}
+      />
     </section>
   );
 };
+
+function Legend() {
+  const { t } = useTranslation("homepage/Map");
+  return (
+    <span className={styles.legend}>
+      <span className={styles.legendLabel}>{t("legend_low")}</span>
+      <span className={styles.legendScale} />
+      <span className={styles.legendLabel}>{t("legend_high")}</span>
+      <span className={styles.legendSwatch} />
+      <span className={styles.legendLabel}>{t("legend_inactive")}</span>
+    </span>
+  );
+}
+
+// Size of an element, measured as soon as it mounts and again on resize.
+function useBoxSize() {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  const observer = useRef(null);
+  const ref = useCallback((node) => {
+    observer.current?.disconnect();
+    if (!node) return;
+    const measure = () => {
+      const rect = node.getBoundingClientRect();
+      const next = { width: Math.round(rect.width), height: Math.round(rect.height) };
+      setSize((prev) => (prev.width === next.width && prev.height === next.height ? prev : next));
+    };
+    measure();
+    observer.current = new ResizeObserver(measure);
+    observer.current.observe(node);
+  }, []);
+  useEffect(() => () => observer.current?.disconnect(), []);
+  return { ref, ...size };
+}
+
+// Full-screen map: every gesture moves the map, and picking a province from
+// the chips flies to it.
+function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSelect, shown, rtl }) {
+  const { t } = useTranslation("homepage/Map");
+  const isPhone = useMediaQuery("(max-width: 640px)");
+  const { ref, width, height } = useBoxSize();
+  const canvasRef = useRef(null);
+
+  // Fit Indonesia to whatever shape the screen gives the map.
+  const fit = useMemo(() => {
+    if (!width || !height) return null;
+    const h = Math.max(240, Math.round((WIDTH * height) / width));
+    return fitProjection(ALL_PROVINCES, 24, h);
+  }, [width, height]);
+
+  const pick = (name) => {
+    onSelect(name);
+    canvasRef.current?.focus(name, isPhone ? 3.5 : 3);
+  };
+
+  return (
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      fullScreen
+      withCloseButton={false}
+      padding={0}
+      zIndex={1200} // above the site's fixed navbar (z-index 1000)
+      classNames={{ content: styles.expanded, body: styles.expandedBody }}
+      transitionProps={{ transition: "fade", duration: 150 }}
+    >
+      <div className={styles.expandedLayout} dir={rtl ? "rtl" : "ltr"}>
+        <header className={styles.expandedHeader}>
+          <div>
+            <span className={styles.expandedEyebrow}>{t("eyebrow")}</span>
+            <h2 className={styles.expandedTitle}>{t("title")}</h2>
+          </div>
+          <button type="button" className={styles.expandedClose} onClick={onClose} aria-label={t("close")}>
+            <IconX size={22} />
+          </button>
+        </header>
+
+        <div className={styles.expandedMain}>
+          <div className={styles.expandedMap} ref={ref}>
+            {fit && (
+              <MapCanvas
+                ref={canvasRef}
+                list={list}
+                provinces={provinces}
+                totals={totals}
+                selected={selected}
+                projection={fit.projection}
+                height={fit.height}
+                onSelect={onSelect}
+                pinScale={isPhone ? 1.6 : 1}
+                free
+              />
+            )}
+          </div>
+
+          <div className={styles.expandedSide}>
+            <ProvinceChips
+              list={list}
+              provinces={provinces}
+              selected={selected}
+              onPick={pick}
+              className={styles.expandedChips}
+            />
+            <div className={styles.expandedDetail} aria-live="polite">
+              <ProvinceDetail shown={shown} provinces={provinces} />
+            </div>
+            <div className={styles.expandedLegend}>
+              <Legend />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  );
+}
 
 export default Map;

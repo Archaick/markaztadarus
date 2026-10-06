@@ -5,12 +5,18 @@
   "stat_provinces": "محافظة نشطة",
   "stat_locations": "موقع برنامج",
   "stat_islands": "جزر",
-  "hint": "اختر محافظة على الخريطة",
   "legend_low": "أقل",
   "legend_high": "برامج أكثر",
   "legend_inactive": "لا برامج بعد",
   "locations_title": "المواقع والمؤسسات",
   "no_program_title": "لا توجد برامج بعد",
   "no_program_text": "قريبًا في {{province}} إن شاء الله.",
-  "participants": "المشاركون"
+  "participants": "المشاركون",
+  "hint_mouse": "انقر على محافظة · اسحب للتحريك · Ctrl + التمرير للتكبير",
+  "hint_touch": "اضغط على محافظة · باعد بإصبعين للتكبير",
+  "zoom_in": "تكبير",
+  "zoom_out": "تصغير",
+  "reset": "العودة للعرض الأصلي",
+  "expand": "ملء الشاشة",
+  "close": "إغلاق"
 }

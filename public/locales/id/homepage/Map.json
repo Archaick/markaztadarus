@@ -5,12 +5,18 @@
   "stat_provinces": "Provinsi aktif",
   "stat_locations": "Lokasi program",
   "stat_islands": "Pulau",
-  "hint": "Pilih provinsi pada peta",
   "legend_low": "Sedikit",
   "legend_high": "Banyak program",
   "legend_inactive": "Belum ada program",
   "locations_title": "Lokasi & lembaga",
   "no_program_title": "Belum ada program",
   "no_program_text": "Insya Allah segera hadir di {{province}}.",
-  "participants": "Peserta"
+  "participants": "Peserta",
+  "hint_mouse": "Klik provinsi · seret untuk menggeser · Ctrl + gulir untuk zoom",
+  "hint_touch": "Ketuk provinsi · cubit dua jari untuk zoom",
+  "zoom_in": "Perbesar",
+  "zoom_out": "Perkecil",
+  "reset": "Kembali ke awal",
+  "expand": "Layar penuh",
+  "close": "Tutup"
 }
