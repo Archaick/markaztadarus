@@ -18,5 +18,7 @@
   "zoom_out": "Zoom out",
   "reset": "Reset view",
   "expand": "Full screen",
-  "close": "Close"
+  "close": "Close",
+  "news_title": "News from this province",
+  "news_more": "See all news"
 }

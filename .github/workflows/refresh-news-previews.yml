@@ -1,0 +1,56 @@
+# Rebuilds and redeploys the site every few hours so that news published from
+# the Website dashboard gets its own WhatsApp/Facebook link preview
+# (scripts/prerender-posts.mjs runs as part of `npm run build`).
+#
+# It deploys whatever is on main, hosting only. Until the repository secret
+# FIREBASE_SERVICE_ACCOUNT_MARKAZ_TADARUS exists it does nothing and passes.
+# It can also be started by hand: Actions → Refresh news previews → Run workflow.
+name: Refresh news previews
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: refresh-news-previews
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for the deploy key
+        id: key
+        env:
+          SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MARKAZ_TADARUS }}
+        run: |
+          if [ -n "$SERVICE_ACCOUNT" ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "No FIREBASE_SERVICE_ACCOUNT_MARKAZ_TADARUS secret yet — skipping."
+          fi
+
+      - if: steps.key.outputs.present == 'yes'
+        uses: actions/checkout@v4
+
+      - if: steps.key.outputs.present == 'yes'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - if: steps.key.outputs.present == 'yes'
+        run: npm ci
+
+      - if: steps.key.outputs.present == 'yes'
+        run: npm run build
+
+      - if: steps.key.outputs.present == 'yes'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MARKAZ_TADARUS }}
+          channelId: live
+          projectId: markaz-tadarus

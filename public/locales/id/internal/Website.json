@@ -143,6 +143,14 @@
         "noTitle": "Berita perlu judul.",
         "noDate": "Pilih tanggal kegiatan."
       }
+    },
+    "import": {
+      "title": "Pindahkan galeri lama ke Berita",
+      "text": "Mengubah {{count}} foto galeri lama menjadi 4 berita (Umrah, Pelatihan, Majelis, Seminar) yang langsung terbit. Setelah itu bisa diubah atau dihapus seperti berita lain.",
+      "button": "Impor galeri lama",
+      "progress": "Mengimpor foto {{done}}/{{total}}…",
+      "done_other": "{{count}} berita dibuat dari galeri lama.",
+      "failed": "Impor terhenti. Coba lagi — berita yang sudah dibuat tidak akan diduplikasi."
     }
   }
 }

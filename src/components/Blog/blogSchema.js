@@ -68,9 +68,11 @@ export const makeImage = (file) => compressImage(file, IMAGE_LIMITS);
 export const makeThumb = async (source) => (await compressImage(source, THUMB_LIMITS)).dataUrl;
 
 // Published posts, newest first; pass the last doc to get the next page.
-export const fetchPublished = async ({ category, after, size = PAGE_SIZE } = {}) => {
+// Each filter combination needs its index in firestore.indexes.json.
+export const fetchPublished = async ({ category, province, after, size = PAGE_SIZE } = {}) => {
   const parts = [where("status", "==", "published")];
   if (category) parts.push(where("category", "==", category));
+  if (province) parts.push(where("province", "==", province));
   parts.push(orderBy("date", "desc"));
   if (after) parts.push(startAfter(after));
   parts.push(firestoreLimit(size));

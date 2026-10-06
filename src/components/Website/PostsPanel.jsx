@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Button, Group, Loader, Modal, Text, TextInput } from "@mantine/core";
-import { IconCalendar, IconNews, IconPhoto, IconPlus } from "@tabler/icons-react";
+import { IconCalendar, IconNews, IconPhoto, IconPhotoDown, IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { isValidSlug, slugify } from "../Forms/formSchema";
 import { POSTS, formatPostDate, todayIso } from "../Blog/blogSchema";
 import styles from "./Website.module.css";
+import { LEGACY_PHOTO_COUNT, LEGACY_SLUGS, importLegacyGallery } from "./importGallery";
 
 const STATUS_COLORS = { draft: "gray", published: "teal" };
 
@@ -17,6 +18,27 @@ export default function PostsPanel({ editorEmail }) {
   const [posts, setPosts] = useState(null);
   const [failed, setFailed] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(null); // { done, total }
+  const [importResult, setImportResult] = useState(null);
+
+  const legacyLeft = posts ? LEGACY_SLUGS.filter((slug) => !posts.some((p) => p.id === slug)).length : 0;
+
+  const runImport = async () => {
+    setImportResult(null);
+    setImporting({ done: 0, total: LEGACY_PHOTO_COUNT });
+    try {
+      const count = await importLegacyGallery({
+        editorEmail,
+        onPhoto: () => setImporting((s) => ({ ...s, done: s.done + 1 })),
+      });
+      setImportResult({ color: "teal", text: t("blog.import.done", { count }) });
+    } catch (err) {
+      console.error("Gallery import failed:", err);
+      setImportResult({ color: "red", text: t("blog.import.failed") });
+    } finally {
+      setImporting(null);
+    }
+  };
 
   useEffect(
     () =>
@@ -47,6 +69,31 @@ export default function PostsPanel({ editorEmail }) {
       </div>
 
       {failed && <Alert color="red">{t("loadFailed")}</Alert>}
+
+      {legacyLeft > 0 && (
+        <div className={styles.importBox}>
+          <IconPhotoDown size={26} />
+          <div className={styles.importText}>
+            <Text fw={700}>{t("blog.import.title")}</Text>
+            <Text size="sm" c="dimmed">
+              {t("blog.import.text", { count: LEGACY_PHOTO_COUNT })}
+            </Text>
+          </div>
+          <Button className={styles.goldButton} loading={!!importing} onClick={runImport}>
+            {t("blog.import.button")}
+          </Button>
+        </div>
+      )}
+      {importing && (
+        <Text size="sm" c="yellow.8" fw={600}>
+          {t("blog.import.progress", importing)}
+        </Text>
+      )}
+      {importResult && (
+        <Alert color={importResult.color} withCloseButton onClose={() => setImportResult(null)}>
+          {importResult.text}
+        </Alert>
+      )}
 
       {posts === null ? (
         <Group justify="center" py="xl">

@@ -144,6 +144,15 @@
         "noTitle": "The news item needs a title.",
         "noDate": "Choose the activity date."
       }
+    },
+    "import": {
+      "title": "Move the old gallery into News",
+      "text": "Turns the {{count}} old gallery photos into 4 published news items (Umrah, Training, Assembly, Seminar). They can be edited or deleted like any other news.",
+      "button": "Import old gallery",
+      "progress": "Importing photo {{done}}/{{total}}…",
+      "done_one": "{{count}} news item created from the old gallery.",
+      "done_other": "{{count}} news items created from the old gallery.",
+      "failed": "The import stopped. Try again — items already created are not duplicated."
     }
   }
 }

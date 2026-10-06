@@ -1,10 +1,44 @@
 import { motion } from "framer-motion";
-import { IconBuildingCommunity, IconMapPin, IconMapPinOff } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
+import { IconArrowRight, IconBuildingCommunity, IconMapPin, IconMapPinOff, IconNews } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
 import { getDisplayName } from "../../../data/mtiProvinceData";
+import { useProvinceNews } from "../../Blog/useProvinceNews";
+import { formatPostDate } from "../../Blog/blogSchema";
 
-// The card for one province: programs, participants and its locations.
+// The newest news tagged with this province, linking to each post.
+function ProvinceNews({ province }) {
+  const { t, i18n } = useTranslation("homepage/Map");
+  const posts = useProvinceNews(province);
+  if (!posts.length) return null;
+
+  return (
+    <div className={styles.news}>
+      <p className={styles.listTitle}>
+        <IconNews size={14} className={styles.inlineIcon} /> {t("news_title")}
+      </p>
+      <ul className={styles.newsList}>
+        {posts.map((post) => (
+          <li key={post.id}>
+            <Link to={`/berita/${post.id}`} className={styles.newsItem}>
+              {post.coverThumb && <img src={post.coverThumb} alt="" loading="lazy" />}
+              <span className={styles.newsText}>
+                <span className={styles.newsTitle} dir="auto">
+                  {post.title}
+                </span>
+                <span className={styles.newsDate}>{formatPostDate(post.date, i18n.language)}</span>
+              </span>
+              <IconArrowRight size={15} className={styles.newsArrow} />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// The card for one province: programs, participants, its locations and news.
 export function ProvinceDetail({ shown, provinces }) {
   const { t } = useTranslation("homepage/Map");
   if (!shown) return null;
@@ -54,6 +88,8 @@ export function ProvinceDetail({ shown, provinces }) {
               </ul>
             </>
           )}
+
+          <ProvinceNews province={shown.name} />
         </>
       )}
     </motion.div>

@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import Gallery from "../HomePage/Gallery/Gallery";
 import PostCard from "./PostCard";
 import styles from "./Blog.module.css";
 import { fetchPublished } from "./blogSchema";
 
-// Home page section with the newest posts. Until anything is published (or
-// if loading fails) the old photo gallery keeps its place.
+// Home page section with the newest posts; hidden until something is published.
 export default function LatestNews() {
   const { t, i18n } = useTranslation("blog/Blog");
   const [posts, setPosts] = useState(undefined);
@@ -27,7 +25,7 @@ export default function LatestNews() {
   }, []);
 
   if (posts === undefined) return <div className={styles.latestPlaceholder} id="news" />;
-  if (posts.length === 0) return <Gallery />;
+  if (posts.length === 0) return null;
 
   return (
     <section className={styles.latest} id="news" dir={i18n.language === "ar" ? "rtl" : "ltr"}>

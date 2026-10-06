@@ -20,7 +20,6 @@ i18n
       "homepage/Methods",
       "homepage/About",
       "homepage/Map",
-      "homepage/Gallery",
       "homepage/Programs",
       "homepage/Stats",
       "certify/CertificateVerify",
