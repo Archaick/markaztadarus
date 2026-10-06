@@ -3,7 +3,8 @@
   "intro": "Ubah apa yang dilihat pengunjung di beranda. Perubahan langsung tampil setelah disimpan.",
   "tabs": {
     "map": "Peta",
-    "stats": "Pencapaian"
+    "stats": "Pencapaian",
+    "blog": "Berita"
   },
   "viewOnSite": "Lihat di situs",
   "builtIn": "Menampilkan data bawaan situs. Simpan sekali agar tersimpan di sini untuk diubah.",
@@ -75,5 +76,73 @@
     "location": "Lokasi",
     "kaabah": "Umrah (Ka'bah)",
     "goat": "Qurban"
+  },
+  "blog": {
+    "tab": "Berita",
+    "newPost": "Tulis berita",
+    "empty": "Belum ada berita. Tulis berita pertama.",
+    "untitled": "Berita tanpa judul",
+    "noPhoto": "Belum ada foto",
+    "status": {
+      "draft": "Draf",
+      "published": "Terbit"
+    },
+    "statusHint": {
+      "draft": "Hanya admin yang dapat melihatnya.",
+      "published": "Tampil di situs untuk semua orang."
+    },
+    "statusFailed": "Tidak dapat mengubah status. Coba lagi.",
+    "create": {
+      "title": "Berita baru",
+      "postTitle": "Judul",
+      "link": "Tautan",
+      "linkHint": "Huruf, angka, dan tanda hubung. Tidak dapat diubah nanti.",
+      "submit": "Buat berita",
+      "cancel": "Batal",
+      "errors": {
+        "noTitle": "Beri judul untuk berita ini.",
+        "badLink": "Tautan harus 3–60 karakter berupa huruf, angka, atau tanda hubung.",
+        "taken": "/berita/{{id}} sudah dipakai. Pilih tautan lain.",
+        "failed": "Tidak dapat membuat berita. Periksa koneksi lalu coba lagi."
+      }
+    },
+    "editor": {
+      "back": "Semua berita",
+      "notFound": "Berita ini tidak ada atau sudah dihapus.",
+      "title": "Judul",
+      "category": "Kategori",
+      "province": "Provinsi (opsional)",
+      "provinceHint": "Menghubungkan berita dengan provinsi di peta.",
+      "date": "Tanggal kegiatan",
+      "excerpt": "Ringkasan (opsional)",
+      "excerptHint": "Tampil di kartu berita. Jika kosong, diambil dari awal isi.",
+      "body": "Isi berita",
+      "bodyHint": "Pisahkan paragraf dengan baris kosong.",
+      "photos": "Foto",
+      "photosHint": "Foto otomatis diperkecil. Bintang = foto sampul. Maks. {{max}} foto.",
+      "addPhotos": "Tambah foto",
+      "uploading": "Mengunggah {{done}}/{{total}}…",
+      "setCover": "Jadikan sampul",
+      "cover": "Sampul",
+      "moveLeft": "Geser ke kiri",
+      "moveRight": "Geser ke kanan",
+      "deletePhoto": "Hapus foto",
+      "tooMany": "Maksimal {{max}} foto per berita.",
+      "photoErrors": {
+        "unreadable": "{{name}} tidak dapat dibuka sebagai gambar.",
+        "tooLarge": "{{name}} terlalu besar.",
+        "failed": "{{name}} gagal diunggah."
+      },
+      "view": "Lihat di situs",
+      "delete": "Hapus berita",
+      "deleteTitle": "Hapus berita ini?",
+      "deleteText": "Berita dan semua fotonya akan dihapus permanen.",
+      "deleteConfirm": "Hapus permanen",
+      "deleteFailed": "Tidak dapat menghapus berita. Coba lagi.",
+      "problems": {
+        "noTitle": "Berita perlu judul.",
+        "noDate": "Pilih tanggal kegiatan."
+      }
+    }
   }
 }

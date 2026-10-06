@@ -1,0 +1,32 @@
+{
+  "sectionTitle": "Berita & Kegiatan",
+  "sectionSubtitle": "Kabar terbaru dari program Markaz Tadarus di seluruh Indonesia.",
+  "seeAll": "Lihat semua berita",
+  "pageTitle": "Berita & Kegiatan",
+  "pageSubtitle": "Kabar dan dokumentasi kegiatan Markaz Tadarus Indonesia.",
+  "all": "Semua",
+  "categories": {
+    "umrah": "Umrah",
+    "pelatihan": "Pelatihan",
+    "majelis": "Majelis Tadarus",
+    "seminar": "Seminar",
+    "lainnya": "Lainnya"
+  },
+  "readMore": "Baca selengkapnya",
+  "loadMore": "Muat lebih banyak",
+  "empty": "Belum ada berita di kategori ini.",
+  "loadFailed": "Tidak dapat memuat berita. Silakan muat ulang halaman.",
+  "back": "Semua berita",
+  "photos_other": "{{count}} foto",
+  "gallery": "Galeri foto",
+  "share": "Bagikan",
+  "copyLink": "Salin tautan",
+  "copied": "Tersalin",
+  "related": "Berita lainnya",
+  "notFoundTitle": "Berita tidak ditemukan",
+  "notFoundText": "Tautan ini mungkin salah, atau beritanya sudah dihapus.",
+  "close": "Tutup",
+  "prev": "Sebelumnya",
+  "next": "Berikutnya",
+  "draftBanner": "Pratinjau untuk admin — berita ini masih draf dan belum terlihat oleh publik."
+}

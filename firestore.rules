@@ -102,6 +102,36 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ---------- News posts (photos as JPEG data URLs; no Storage bucket) ----------
+
+    function validPost() {
+      let data = request.resource.data;
+      return data.status in ["draft", "published"]
+        && data.title is string && data.title.size() <= 200
+        && data.body is string && data.body.size() <= 50000
+        && data.date is string && data.date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")
+        && data.images is list && data.images.size() <= 30
+        && data.coverThumb is string && data.coverThumb.size() <= 120000;
+    }
+
+    match /posts/{postId} {
+      // Visitors only ever see published posts; drafts stay with the editors.
+      allow read: if hasFeature("site") || resource.data.status == "published";
+      allow create, update: if hasFeature("site") && validPost();
+      allow delete: if hasFeature("site");
+
+      match /images/{imageId} {
+        allow read: if hasFeature("site")
+          || get(/databases/$(database)/documents/posts/$(postId)).data.status == "published";
+        allow create, update: if hasFeature("site")
+          && request.resource.data.keys().hasOnly(["dataUrl", "width", "height", "createdAt"])
+          && request.resource.data.dataUrl is string
+          && request.resource.data.dataUrl.size() <= 460000
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+");
+        allow delete: if hasFeature("site");
+      }
+    }
+
     // ---------- Forms ----------
 
     match /forms/{formId} {

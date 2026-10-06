@@ -1,5 +1,6 @@
+import { useSearchParams } from "react-router-dom";
 import { Button, Card, Tabs, Text, Title } from "@mantine/core";
-import { IconArrowLeft, IconExternalLink, IconMap2, IconTrophy, IconWorldWww } from "@tabler/icons-react";
+import { IconArrowLeft, IconExternalLink, IconMap2, IconNews, IconTrophy, IconWorldWww } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
@@ -8,10 +9,15 @@ import portal from "../Internal/InternalPortal.module.css";
 import formStyles from "../Forms/Forms.module.css";
 import MapEditor from "./MapEditor";
 import StatsEditor from "./StatsEditor";
+import PostsPanel from "./PostsPanel";
+
+const TABS = ["map", "stats", "blog"];
 
 export default function WebsiteAdmin() {
   const { t } = useTranslation(["internal/Website", "internal/Internal"]);
   const { email } = useAccess();
+  const [params, setParams] = useSearchParams();
+  const tab = TABS.includes(params.get("tab")) ? params.get("tab") : "map";
 
   return (
     <InternalLayout align="top">
@@ -48,8 +54,8 @@ export default function WebsiteAdmin() {
             </Button>
           </div>
 
-          {/* Both editors stay mounted, so switching tabs keeps unsaved edits. */}
-          <Tabs defaultValue="map" mt="lg" color="yellow">
+          {/* The editors stay mounted, so switching tabs keeps unsaved edits. */}
+          <Tabs value={tab} onChange={(value) => setParams({ tab: value }, { replace: true })} mt="lg" color="yellow">
             <Tabs.List grow>
               <Tabs.Tab value="map" leftSection={<IconMap2 size={16} />}>
                 {t("tabs.map")}
@@ -57,12 +63,18 @@ export default function WebsiteAdmin() {
               <Tabs.Tab value="stats" leftSection={<IconTrophy size={16} />}>
                 {t("tabs.stats")}
               </Tabs.Tab>
+              <Tabs.Tab value="blog" leftSection={<IconNews size={16} />}>
+                {t("tabs.blog")}
+              </Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="map" pt="lg">
               <MapEditor editorEmail={email} />
             </Tabs.Panel>
             <Tabs.Panel value="stats" pt="lg">
               <StatsEditor editorEmail={email} />
+            </Tabs.Panel>
+            <Tabs.Panel value="blog" pt="lg">
+              <PostsPanel editorEmail={email} />
             </Tabs.Panel>
           </Tabs>
         </Card>

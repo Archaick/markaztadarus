@@ -1,3 +1,5 @@
+import { compressImage } from "../Internal/images";
+
 export const FORMS_COLLECTION = "forms";
 export const RESPONSES = "responses";
 
@@ -167,44 +169,6 @@ export const COVER_MAX_CHARS = 700000; // well under Firestore's 1 MiB per docum
 
 export const COVER_POSITIONS = ["top", "center", "bottom"]; // labels: cover.<value>
 
-const loadImage = (file) =>
-  new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(img);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("unreadable"));
-    };
-    img.src = url;
-  });
-
-// Scales a photo down and re-encodes it as JPEG until it fits COVER_MAX_CHARS.
-export const compressCover = async (file) => {
-  const img = await loadImage(file);
-  let width = img.naturalWidth;
-  let height = img.naturalHeight;
-  const fit = Math.min(1, 1800 / width, 1200 / height);
-  width = Math.round(width * fit);
-  height = Math.round(height * fit);
-
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  for (let attempt = 0; attempt < 6; attempt += 1) {
-    canvas.width = width;
-    canvas.height = height;
-    ctx.fillStyle = "#ffffff"; // transparent PNGs would turn black as JPEG
-    ctx.fillRect(0, 0, width, height);
-    ctx.drawImage(img, 0, 0, width, height);
-    for (let quality = 0.85; quality >= 0.55; quality -= 0.1) {
-      const dataUrl = canvas.toDataURL("image/jpeg", quality);
-      if (dataUrl.length <= COVER_MAX_CHARS) return dataUrl;
-    }
-    width = Math.round(width * 0.8);
-    height = Math.round(height * 0.8);
-  }
-  throw new Error("too-large");
-};
+// Shrinks a photo to a JPEG that fits COVER_MAX_CHARS.
+export const compressCover = async (file) =>
+  (await compressImage(file, { maxWidth: 1800, maxHeight: 1200, maxChars: COVER_MAX_CHARS })).dataUrl;

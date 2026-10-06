@@ -3,7 +3,8 @@
   "intro": "Edit what visitors see on the home page. Changes go live as soon as you save.",
   "tabs": {
     "map": "Map",
-    "stats": "Achievements"
+    "stats": "Achievements",
+    "blog": "News"
   },
   "viewOnSite": "View on site",
   "builtIn": "Showing the site's built-in data. Save once and it is stored here for editing.",
@@ -76,5 +77,73 @@
     "location": "Location",
     "kaabah": "Umrah (Ka'bah)",
     "goat": "Qurban"
+  },
+  "blog": {
+    "tab": "News",
+    "newPost": "Write news",
+    "empty": "No news yet. Write the first one.",
+    "untitled": "Untitled news",
+    "noPhoto": "No photo yet",
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "statusHint": {
+      "draft": "Only admins can see it.",
+      "published": "Shown on the website to everyone."
+    },
+    "statusFailed": "Could not change the status. Try again.",
+    "create": {
+      "title": "New news item",
+      "postTitle": "Title",
+      "link": "Link",
+      "linkHint": "Letters, numbers and dashes. This cannot be changed later.",
+      "submit": "Create",
+      "cancel": "Cancel",
+      "errors": {
+        "noTitle": "Give the news item a title.",
+        "badLink": "The link needs 3–60 letters, numbers or dashes.",
+        "taken": "/berita/{{id}} is already used. Pick another link.",
+        "failed": "Could not create it. Check your connection and try again."
+      }
+    },
+    "editor": {
+      "back": "All news",
+      "notFound": "This news item does not exist or was deleted.",
+      "title": "Title",
+      "category": "Category",
+      "province": "Province (optional)",
+      "provinceHint": "Links the news to a province on the map.",
+      "date": "Activity date",
+      "excerpt": "Summary (optional)",
+      "excerptHint": "Shown on the news card. When empty, the start of the text is used.",
+      "body": "Text",
+      "bodyHint": "Separate paragraphs with an empty line.",
+      "photos": "Photos",
+      "photosHint": "Photos are shrunk automatically. Star = cover photo. Up to {{max}} photos.",
+      "addPhotos": "Add photos",
+      "uploading": "Uploading {{done}}/{{total}}…",
+      "setCover": "Use as cover",
+      "cover": "Cover",
+      "moveLeft": "Move left",
+      "moveRight": "Move right",
+      "deletePhoto": "Delete photo",
+      "tooMany": "Up to {{max}} photos per news item.",
+      "photoErrors": {
+        "unreadable": "{{name}} could not be opened as an image.",
+        "tooLarge": "{{name}} is too large.",
+        "failed": "{{name}} could not be uploaded."
+      },
+      "view": "View on site",
+      "delete": "Delete news item",
+      "deleteTitle": "Delete this news item?",
+      "deleteText": "The news item and all its photos will be removed permanently.",
+      "deleteConfirm": "Delete forever",
+      "deleteFailed": "Could not delete it. Try again.",
+      "problems": {
+        "noTitle": "The news item needs a title.",
+        "noDate": "Choose the activity date."
+      }
+    }
   }
 }

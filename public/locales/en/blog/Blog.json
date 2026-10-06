@@ -1,0 +1,33 @@
+{
+  "sectionTitle": "News & Activities",
+  "sectionSubtitle": "The latest from Markaz Tadarus programs across Indonesia.",
+  "seeAll": "See all news",
+  "pageTitle": "News & Activities",
+  "pageSubtitle": "News and photos from Markaz Tadarus Indonesia's activities.",
+  "all": "All",
+  "categories": {
+    "umrah": "Umrah",
+    "pelatihan": "Training",
+    "majelis": "Tadarus Assembly",
+    "seminar": "Seminar",
+    "lainnya": "Other"
+  },
+  "readMore": "Read more",
+  "loadMore": "Load more",
+  "empty": "No news in this category yet.",
+  "loadFailed": "Could not load the news. Please reload the page.",
+  "back": "All news",
+  "photos_one": "{{count}} photo",
+  "photos_other": "{{count}} photos",
+  "gallery": "Photo gallery",
+  "share": "Share",
+  "copyLink": "Copy link",
+  "copied": "Copied",
+  "related": "More news",
+  "notFoundTitle": "News not found",
+  "notFoundText": "This link may be wrong, or the news item was removed.",
+  "close": "Close",
+  "prev": "Previous",
+  "next": "Next",
+  "draftBanner": "Admin preview — this news item is still a draft and not visible to the public."
+}

@@ -27,6 +27,9 @@ import FormsAdmin from "./components/Forms/FormsAdmin";
 import FormDetail from "./components/Forms/FormDetail";
 import PublicForm from "./components/Forms/PublicForm";
 import WebsiteAdmin from "./components/Website/WebsiteAdmin";
+import PostEditor from "./components/Website/PostEditor";
+import BlogList from "./components/Blog/BlogList";
+import BlogPost from "./components/Blog/BlogPost";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
@@ -89,10 +92,16 @@ const App = () => {
               path="/internal/website"
               element={<RequireFeature feature="site"><WebsiteAdmin /></RequireFeature>}
             />
+            <Route
+              path="/internal/website/berita/:postId"
+              element={<RequireFeature feature="site"><PostEditor /></RequireFeature>}
+            />
 
             {/* 📜 Public pages */}
             <Route path="/verify/:code" element={<CertificateVerify />} />
             <Route path="/form/:formId" element={<PublicForm />} />
+            <Route path="/berita" element={<BlogList />} />
+            <Route path="/berita/:slug" element={<BlogPost />} />
 
             <Route path="/:shortCode" element={<Redirects />} />
 
