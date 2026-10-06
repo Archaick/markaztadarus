@@ -1,10 +1,16 @@
 {
+  "eyebrow": "Our Reach",
   "title": "Markaz Tadarus Indonesia",
   "subtitle": "1446 H | 2025 AD",
-  "city": "City",
-  "island": "Island",
-  "programs": "Programs",
-  "locations": "locations",
-  "legend_active": "MTI Active Province",
-  "legend_inactive": "Other Provinces"
+  "stat_provinces": "Active provinces",
+  "stat_locations": "Program locations",
+  "stat_islands": "Islands",
+  "hint": "Select a province on the map",
+  "legend_low": "Fewer",
+  "legend_high": "More programs",
+  "legend_inactive": "No program yet",
+  "locations_title": "Locations & institutions",
+  "no_program_title": "No programs yet",
+  "no_program_text": "Coming to {{province}} soon, in shaa Allah.",
+  "participants": "Participants"
 }

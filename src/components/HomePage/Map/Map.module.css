@@ -1,283 +1,485 @@
 /* ═══════════════════════════════════════════════════
-   Interactive Indonesia Map — Styles
-   Brand: Gold (#b8960c) + Navy (#1a1a2e / #102141)
+   Interactive Indonesia Map
+   Brand: Gold (#b8960c / #a67d00) + Navy (#102141 / #25475e)
    ═══════════════════════════════════════════════════ */
 
-.mapContainer {
-  text-align: center;
-  padding: 3rem 1rem 2rem;
-  margin: 40px 0;
+.section {
   position: relative;
+  max-width: 1180px;
+  margin: 40px auto;
+  padding: 3rem 1.25rem 2.5rem;
 }
 
 /* ── Header ────────────────────────────────────── */
 
 .header {
-  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(184, 150, 12, 0.12);
+  color: #8a6b08;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .title {
   color: #a67d00;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 800;
+  margin: 0.6rem 0 0.35rem;
   letter-spacing: -0.01em;
 }
 
 .subtitle {
   color: #25475e;
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   font-weight: 500;
   opacity: 0.85;
+  margin: 0;
 }
 
-/* ── Map SVG Wrapper ───────────────────────────── */
+/* ── Summary counters ──────────────────────────── */
 
-.mapSvgWrapper {
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  max-width: 640px;
+  margin: 1.75rem auto 1.5rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.9rem 0.5rem;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #102141 0%, #1d3a66 100%);
+  color: white;
+  box-shadow: 0 10px 24px rgba(16, 33, 65, 0.18);
+}
+
+.statValue {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #f1c94b;
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  margin-top: 0.2rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0.85;
+  text-align: center;
+}
+
+/* ── Board: map, chips and detail ──────────────── */
+
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-areas:
+    "map detail"
+    "chips detail";
+  gap: 1rem;
+  align-items: start;
+}
+
+.mapPanel {
+  grid-area: map;
   position: relative;
-  display: inline-block;
-  max-width: 960px;
-  width: 100%;
-  margin: 0 auto;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 55%),
+    linear-gradient(160deg, #eef5fb 0%, #dfeaf5 100%);
+  border: 1px solid #dbe6f1;
+  box-shadow: 0 18px 40px rgba(16, 33, 65, 0.08);
 }
 
-.mapSvgWrapper svg {
+.mapPanel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(37, 71, 94, 0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+.svg {
+  position: relative;
   display: block;
   width: 100%;
   height: auto;
 }
 
-/* ── Tooltip ───────────────────────────────────── */
+/* city pins */
+.marker {
+  pointer-events: all;
+}
 
-.tooltip {
-  position: absolute;
-  z-index: 100;
+.pin {
+  fill: #102141;
+  stroke: #f1c94b;
+  stroke-width: 2;
+  transition: fill 0.2s ease;
+}
+
+.pinSelected {
+  fill: #a67d00;
+  stroke: white;
+}
+
+.pinText {
+  fill: white;
+  font-weight: 800;
   pointer-events: none;
-  transform: translate(-50%, calc(-100% - 14px));
-  min-width: 180px;
-  max-width: 240px;
-  background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(184, 150, 12, 0.15);
-  padding: 14px 16px;
-  opacity: 1;
-  animation: tooltipFadeIn 0.18s ease-out;
+  font-family: inherit;
 }
 
-.tooltip::after {
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  width: 12px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.06);
+.pulse {
+  fill: rgba(241, 201, 75, 0.45);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2.4s ease-out infinite;
+  pointer-events: none;
 }
 
-@keyframes tooltipFadeIn {
-  from {
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
     opacity: 0;
-    transform: translate(-50%, calc(-100% - 20px));
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, calc(-100% - 14px));
   }
 }
 
-.tooltipHeader {
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.mapFooter {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-
-.tooltipDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #b8960c;
-  flex-shrink: 0;
-  box-shadow: 0 0 6px rgba(184, 150, 12, 0.5);
-}
-
-.tooltipName {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #1a1a2e;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-
-.tooltipDivider {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(184, 150, 12, 0.3),
-    transparent
-  );
-  margin-bottom: 8px;
-}
-
-.tooltipBody {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.tooltipRow {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 1rem 0.8rem;
 }
 
-.tooltipLabel {
-  font-size: 0.78rem;
-  color: #7a8a9e;
-  font-weight: 500;
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #25475e;
+  font-weight: 600;
+}
+
+.legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: #4a6478;
+}
+
+.legendLabel {
   white-space: nowrap;
 }
 
-.tooltipValue {
-  font-size: 0.8rem;
-  color: #25475e;
-  font-weight: 600;
-  text-align: right;
+.legendScale {
+  width: 64px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgb(246, 220, 140), rgb(168, 122, 0));
 }
 
-.tooltipValue strong {
-  color: #b8960c;
-  font-weight: 800;
-  font-size: 0.9rem;
-}
-
-/* ── Legend ─────────────────────────────────────── */
-
-.legend {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.legendItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+:global([dir="rtl"]) .legendScale {
+  background: linear-gradient(270deg, rgb(246, 220, 140), rgb(168, 122, 0));
 }
 
 .legendSwatch {
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #d7e3ef;
+  border: 1px solid #c3d3e3;
+  margin-inline-start: 0.5rem;
+}
+
+/* province chips */
+.chips {
+  grid-area: chips;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem 0.45rem 0.85rem;
+  padding-inline: 0.85rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid #e3d6a8;
+  background: white;
+  color: #25475e;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip:hover {
+  border-color: #b8960c;
+  background: #fffaf0;
+}
+
+.chipOn {
+  background: #102141;
+  border-color: #102141;
+  color: white;
+}
+
+.chipOn:hover {
+  background: #1d3a66;
+}
+
+.chipCount {
+  min-width: 1.5rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(184, 150, 12, 0.15);
+  color: #8a6b08;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.chipOn .chipCount {
+  background: #f1c94b;
+  color: #102141;
+}
+
+/* detail card */
+.detail {
+  grid-area: detail;
+  position: sticky;
+  top: 90px;
+  min-height: 220px;
+  padding: 1.25rem;
+  border-radius: 22px;
+  background: white;
+  border: 1px solid #ece3c4;
+  box-shadow: 0 18px 40px rgba(16, 33, 65, 0.1);
+  text-align: start;
+}
+
+.detailHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #102141;
+  line-height: 1.25;
+}
+
+.island {
   display: inline-block;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 0.35rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #eef5fb;
+  color: #25475e;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
-.legendText {
-  font-size: 0.82rem;
-  color: #556677;
-  font-weight: 500;
+.bigNumber {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 82px;
+  padding: 0.5rem 0.6rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fff6d8 0%, #f6e6ad 100%);
+  color: #8a6b08;
 }
 
-/* ── Responsive ────────────────────────────────── */
+.bigNumber strong {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: #a67d00;
+}
 
-@media (max-width: 768px) {
-  .mapContainer {
-    padding: 2rem 0.5rem 1.5rem;
-    margin: 20px 0;
+.bigNumber span {
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.participants {
+  margin: 0.75rem 0 0;
+  color: #25475e;
+  font-size: 0.9rem;
+}
+
+.listTitle {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a9aa8;
+}
+
+.locations {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.locations li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  background: #f7f9fc;
+  color: #b8960c;
+}
+
+.locations li div {
+  display: flex;
+  flex-direction: column;
+}
+
+.institution {
+  font-weight: 700;
+  color: #102141;
+  font-size: 0.92rem;
+}
+
+.city {
+  color: #4a6478;
+  font-size: 0.86rem;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 1rem 0.5rem;
+  color: #8a9aa8;
+}
+
+.emptyTitle {
+  margin: 0.25rem 0 0;
+  font-weight: 700;
+  color: #25475e;
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ── Tablet & phone ────────────────────────────── */
+
+@media (max-width: 900px) {
+  .board {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "map"
+      "chips"
+      "detail";
   }
 
-  .mapSvgWrapper {
-    max-width: 100%;
-  }
-
-  .tooltip {
-    min-width: 160px;
-    max-width: 200px;
-    padding: 10px 12px;
-    border-radius: 10px;
-  }
-
-  .tooltipName {
-    font-size: 0.85rem;
-  }
-
-  .tooltipLabel,
-  .tooltipValue {
-    font-size: 0.75rem;
-  }
-
-  .legend {
-    gap: 16px;
-    margin-top: 8px;
-  }
-
-  .legendText {
-    font-size: 0.76rem;
+  .detail {
+    position: static;
+    min-height: 0;
   }
 }
 
-@media (max-width: 540px) {
-  .mapContainer {
-    padding: 1.5rem 0.25rem 1rem;
-    margin: 10px 0;
+@media (max-width: 640px) {
+  .section {
+    margin: 16px auto;
+    padding: 2rem 0.75rem 1.5rem;
   }
 
-  .title {
-    font-size: 1.35rem;
+  .stats {
+    gap: 0.5rem;
+    margin: 1.25rem auto 1rem;
   }
 
-  .subtitle {
-    font-size: 0.9rem;
+  .stat {
+    padding: 0.7rem 0.35rem;
+    border-radius: 14px;
   }
 
-  .tooltip {
-    min-width: 140px;
-    max-width: 180px;
-    padding: 8px 10px;
-    border-radius: 8px;
-  }
-
-  .tooltipName {
-    font-size: 0.8rem;
-  }
-
-  .tooltipDot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .tooltipLabel,
-  .tooltipValue {
+  .statLabel {
     font-size: 0.72rem;
   }
 
-  .legendSwatch {
-    width: 12px;
-    height: 12px;
+  .mapPanel {
+    border-radius: 18px;
   }
 
-  .legendText {
-    font-size: 0.72rem;
+  .mapFooter {
+    padding: 0.5rem 0.75rem 0.7rem;
   }
-}
 
-@media (max-width: 380px) {
-  .legend {
-    flex-direction: column;
-    gap: 6px;
+  /* one swipeable row of provinces instead of a tall wrap */
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    margin: 0 -0.75rem;
+    padding: 0.15rem 0.75rem 0.4rem;
+    scrollbar-width: none;
+  }
+
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip {
+    scroll-snap-align: start;
+  }
+
+  .detail {
+    padding: 1rem;
+    border-radius: 18px;
   }
 }

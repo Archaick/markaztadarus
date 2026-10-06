@@ -1,10 +1,16 @@
 {
+  "eyebrow": "Jangkauan Kami",
   "title": "Markaz Tadarus Indonesia",
   "subtitle": "Tahun 1446 H | 2025 M",
-  "city": "Kota",
-  "island": "Pulau",
-  "programs": "Program",
-  "locations": "lokasi",
-  "legend_active": "Provinsi Aktif MTI",
-  "legend_inactive": "Provinsi Lainnya"
+  "stat_provinces": "Provinsi aktif",
+  "stat_locations": "Lokasi program",
+  "stat_islands": "Pulau",
+  "hint": "Pilih provinsi pada peta",
+  "legend_low": "Sedikit",
+  "legend_high": "Banyak program",
+  "legend_inactive": "Belum ada program",
+  "locations_title": "Lokasi & lembaga",
+  "no_program_title": "Belum ada program",
+  "no_program_text": "Insya Allah segera hadir di {{province}}.",
+  "participants": "Peserta"
 }

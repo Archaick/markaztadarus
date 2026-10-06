@@ -1,10 +1,16 @@
 {
+  "eyebrow": "انتشارنا",
   "title": "مركز تدارس إندونيسيا",
   "subtitle": "١٤٤٦ هـ | ٢٠٢٥ م",
-  "city": "المدينة",
-  "island": "الجزيرة",
-  "programs": "البرامج",
-  "locations": "مواقع",
-  "legend_active": "المحافظات النشطة",
-  "legend_inactive": "محافظات أخرى"
+  "stat_provinces": "محافظة نشطة",
+  "stat_locations": "موقع برنامج",
+  "stat_islands": "جزر",
+  "hint": "اختر محافظة على الخريطة",
+  "legend_low": "أقل",
+  "legend_high": "برامج أكثر",
+  "legend_inactive": "لا برامج بعد",
+  "locations_title": "المواقع والمؤسسات",
+  "no_program_title": "لا توجد برامج بعد",
+  "no_program_text": "قريبًا في {{province}} إن شاء الله.",
+  "participants": "المشاركون"
 }
