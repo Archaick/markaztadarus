@@ -11,7 +11,8 @@ i18n
     fallbackLng: "id",
     supportedLngs: ["id", "en", "ar"],
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json",
+      // ?v= is the build id, so every deploy fetches its own translations.
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${import.meta.env.VITE_BUILD_ID}`,
     },
     ns: [
       "common/Footer",
