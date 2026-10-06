@@ -1,0 +1,79 @@
+{
+  "title": "Situs Web",
+  "intro": "Ubah apa yang dilihat pengunjung di beranda. Perubahan langsung tampil setelah disimpan.",
+  "tabs": {
+    "map": "Peta",
+    "stats": "Pencapaian"
+  },
+  "viewOnSite": "Lihat di situs",
+  "builtIn": "Menampilkan data bawaan situs. Simpan sekali agar tersimpan di sini untuk diubah.",
+  "loadFailed": "Tidak dapat memuat bagian ini. Periksa koneksi Anda.",
+  "unsaved": "Ada perubahan belum disimpan",
+  "allSaved": "Semua perubahan tersimpan",
+  "discard": "Batalkan",
+  "save": "Simpan",
+  "saved": "Tersimpan — situs sudah diperbarui.",
+  "saveFailed": "Tidak dapat menyimpan. Periksa koneksi lalu coba lagi.",
+  "moveUp": "Pindah ke atas",
+  "moveDown": "Pindah ke bawah",
+  "optional": "opsional",
+  "map": {
+    "summary": "{{provinces}} provinsi · {{locations}} lokasi program",
+    "addProvince": "Tambah provinsi",
+    "pickProvince": "Pilih provinsi",
+    "island": "Pulau / wilayah",
+    "programs": "Lokasi program",
+    "programsHint": "Kosongkan untuk menghitung dari daftar lokasi di bawah.",
+    "participants": "Peserta",
+    "locations": "Lokasi & lembaga",
+    "city": "Kota / kabupaten",
+    "institution": "Lembaga",
+    "institutionPlaceholder": "mis. Pondok Pesantren …",
+    "addLocation": "Tambah lokasi",
+    "removeLocation": "Hapus lokasi",
+    "removeProvince": "Hapus provinsi",
+    "count_other": "{{count}} lokasi",
+    "empty": "Belum ada provinsi. Tambahkan provinsi pertama di atas.",
+    "problems": {
+      "noCity": "{{province}}: setiap lokasi harus memiliki kota atau kabupaten.",
+      "badNumber": "{{province}}: angka tidak boleh negatif."
+    }
+  },
+  "stats": {
+    "add": "Tambah pencapaian",
+    "icon": "Ikon",
+    "value": "Angka",
+    "visible": "Tampilkan di situs",
+    "label": "Judul",
+    "suffix": "Satuan",
+    "suffixPlaceholder": "mis. orang",
+    "description": "Keterangan",
+    "translations": "Bahasa Inggris & Arab",
+    "translationsHint": "Opsional — teks bahasa Indonesia ditampilkan jika kosong.",
+    "en": "Inggris",
+    "ar": "Arab",
+    "delete": "Hapus pencapaian",
+    "hiddenBadge": "Disembunyikan",
+    "untitled": "Pencapaian baru",
+    "problems": {
+      "noLabel": "Pencapaian {{n}} memerlukan judul bahasa Indonesia.",
+      "badValue": "Pencapaian {{n}} memerlukan angka 0 atau lebih."
+    }
+  },
+  "icons": {
+    "users": "Orang",
+    "group": "Kelompok",
+    "school": "Pelatihan",
+    "partners": "Lembaga",
+    "book": "Buku / Al-Qur'an",
+    "script": "Kitab",
+    "mosque": "Masjid",
+    "certificate": "Sertifikat",
+    "seminar": "Seminar",
+    "event": "Kegiatan",
+    "charity": "Sosial",
+    "location": "Lokasi",
+    "kaabah": "Umrah (Ka'bah)",
+    "goat": "Qurban"
+  }
+}

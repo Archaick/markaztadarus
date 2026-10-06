@@ -26,6 +26,7 @@ import RedirectAdmin from "./components/RedirectManager/RedirectAdmin";
 import FormsAdmin from "./components/Forms/FormsAdmin";
 import FormDetail from "./components/Forms/FormDetail";
 import PublicForm from "./components/Forms/PublicForm";
+import WebsiteAdmin from "./components/Website/WebsiteAdmin";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
@@ -83,6 +84,10 @@ const App = () => {
             <Route
               path="/internal/forms/:formId"
               element={<RequireFeature feature="forms"><FormDetail /></RequireFeature>}
+            />
+            <Route
+              path="/internal/website"
+              element={<RequireFeature feature="site"><WebsiteAdmin /></RequireFeature>}
             />
 
             {/* 📜 Public pages */}

@@ -1,31 +1,22 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import CountUp from "react-countup";
-import {
-  IconUsers,
-  IconSchool,
-  IconBuildingCommunity,
-  IconBook,
-  IconScript,
-  IconBuildingMosque,
-} from "@tabler/icons-react";
-import qurban from "../../../assets/imgs/stats/goat.png";
-import kaabah from "../../../assets/imgs/stats/kaabah.png";
-import styles from "./Stats.module.css";
-import Bokeh from "./Bokeh.module.css";
 import { useTranslation } from "react-i18next";
+import styles from "./Stats.module.css";
+import StatIcon from "./StatIcon";
+import { DEFAULT_STATS, localized } from "../../../data/defaultStats";
+import { SITE_DOCS, useSiteContent } from "../siteContent";
+
 const Stats = () => {
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef(null);
-  const { t } = useTranslation("homepage/Stats");
+  const { t, i18n } = useTranslation("homepage/Stats");
+  const stored = useSiteContent(SITE_DOCS.stats);
 
   useEffect(() => {
+    const node = containerRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
+        setIsVisible(entry.isIntersecting);
       },
       {
         threshold: 0.3,
@@ -33,107 +24,37 @@ const Stats = () => {
       }
     );
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
+    if (node) observer.observe(node);
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
+      if (node) observer.unobserve(node);
     };
   }, []);
 
-  const statsData = [
-    {
-      icon: <IconUsers size={28} />,
-      value: 1087,
-      title: t("seminarParticipants"),
-      suffix: t("people"),
-    },
-    {
-      icon: <IconSchool size={28} />,
-      value: 536,
-      title: t("trainingParticipants"),
-      suffix: t("people"),
-    },
-    {
-      icon: <IconBuildingCommunity size={28} />,
-      value: 40,
-      title: t("partners"),
-      suffix: t("institutions"),
-    },
-    {
-      icon: <IconBook size={28} />,
-      value: 418,
-      title: t("tadarusParticipants"),
-      suffix: t("people"),
-    },
-    {
-      icon: (
-        <img src={kaabah} alt={t("umrahAlt")} className={styles.customIcon} />
-      ),
-      value: 5,
-      title: t("umrahPrograms"),
-      suffix: t("umrah"),
-    },
-    {
-      icon: <IconScript size={28} />,
-      value: 1443,
-      title: t("booksDistributed"),
-      suffix: t("copies"),
-      description: t("booksDescription"),
-    },
-    // {
-    //   icon: (
-    //     <img src={qurban} alt={t("qurbanAlt")} className={styles.customIcon} />
-    //   ),
-    //   value: 77,
-    //   title: t("qurbanTitle"),
-    //   suffix: t("animals"),
-    //   description: t("qurbanDescription"),
-    // },
-    // {
-    //   icon: <IconBuildingMosque size={28} />,
-    //   value: 2,
-    //   title: t("masjidsBuilt"),
-    //   suffix: t("masjids"),
-    // },
-  ];
+  // Numbers come from the Website dashboard once an admin has saved them.
+  const items = (Array.isArray(stored?.items) ? stored.items : DEFAULT_STATS).filter((s) => s.visible !== false);
+  const lng = i18n.language;
 
   return (
-    <div
-      className={styles.statisticsContainer}
-      ref={containerRef}
-    >
+    <div className={styles.statisticsContainer} ref={containerRef}>
       <div className={styles.statisticsContent}>
         <h2 className={styles.statisticsTitle}>{t("achievementsTitle")}</h2>
         <div className={styles.statisticsGrid}>
-          {statsData.map((stat, index) => (
-            <div key={index} className={styles.statisticCard}>
+          {items.map((stat) => (
+            <div key={stat.id} className={styles.statisticCard}>
               <div className={styles.statisticIcon}>
-                {stat.icon.type && typeof stat.icon.type !== "string" 
-                  ? React.cloneElement(stat.icon, { size: 32 }) 
-                  : stat.icon}
+                <StatIcon name={stat.icon} size={32} className={styles.customIcon} />
               </div>
               <div className={styles.statisticData}>
                 {isVisible ? (
-                  <CountUp
-                    end={stat.value}
-                    duration={4}
-                    className={styles.statisticValue}
-                    delay={0.2}
-                  />
+                  <CountUp end={Number(stat.value) || 0} duration={4} className={styles.statisticValue} delay={0.2} />
                 ) : (
                   <span className={styles.statisticValue}>0</span>
                 )}
-                <span className={styles.statisticSuffix}>{stat.suffix}</span>
+                <span className={styles.statisticSuffix}>{localized(stat.suffix, lng)}</span>
               </div>
-              <h3 className={styles.statisticTitle}>{stat.title}</h3>
-              {stat.description && (
-                <p className={styles.statisticDescription}>
-                  {stat.description}
-                </p>
+              <h3 className={styles.statisticTitle}>{localized(stat.label, lng)}</h3>
+              {localized(stat.description, lng) && (
+                <p className={styles.statisticDescription}>{localized(stat.description, lng)}</p>
               )}
             </div>
           ))}
@@ -142,6 +63,5 @@ const Stats = () => {
     </div>
   );
 };
-
 
 export default Stats;

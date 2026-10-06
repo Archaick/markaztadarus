@@ -41,6 +41,10 @@
     "forms": {
       "title": "Formulir",
       "description": "Buat formulir, bagikan tautannya, dan baca jawabannya."
+    },
+    "site": {
+      "title": "Situs Web",
+      "description": "Peta beranda, pencapaian, dan (segera) berita."
     }
   },
   "hub": {

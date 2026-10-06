@@ -2,6 +2,7 @@ import {
   IconBarcode,
   IconClipboardText,
   IconLink,
+  IconWorldWww,
 } from "@tabler/icons-react";
 
 // The one account that can invite admins. Mirrored in firestore.rules.
@@ -31,6 +32,12 @@ export const FEATURES = [
     href: "/internal/forms",
     icon: IconClipboardText,
     color: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+  },
+  {
+    key: "site",
+    href: "/internal/website",
+    icon: IconWorldWww,
+    color: "linear-gradient(135deg, #b8960c 0%, #102141 100%)",
   },
 ];
 

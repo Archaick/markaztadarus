@@ -41,6 +41,10 @@
     "forms": {
       "title": "Forms",
       "description": "Build forms, share a link, and read the responses."
+    },
+    "site": {
+      "title": "Website",
+      "description": "Home page map, achievements and (soon) news."
     }
   },
   "hub": {

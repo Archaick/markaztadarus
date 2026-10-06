@@ -1,0 +1,230 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.goldButton {
+  background: linear-gradient(135deg, #b8960c 0%, #8a6b08 100%);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffaf0 0%, #ffffff 100%);
+  border: 1px solid #f0e3b8;
+}
+
+.summary {
+  color: #102141;
+}
+
+.addRow {
+  flex-wrap: nowrap;
+}
+
+.addSelect {
+  width: 240px;
+}
+
+.accordion :global(.mantine-Accordion-item) {
+  border: 1px solid #e2e8f0;
+}
+
+.accordion :global(.mantine-Accordion-item[data-active]) {
+  border-color: #e3d6a8;
+  box-shadow: 0 8px 22px rgba(16, 33, 65, 0.06);
+}
+
+/* province header */
+.provinceHead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.provinceName {
+  font-weight: 700;
+  color: #102141;
+}
+
+.provinceIsland {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.provinceCount {
+  margin-inline-start: auto;
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.fieldGrid + .fieldGrid {
+  margin-top: 0.75rem;
+}
+
+.fieldGrid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.sectionLabel {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a9aa8;
+}
+
+.locationList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.locationRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* achievement header */
+.statHead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.statIcon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f1c94b;
+  background: linear-gradient(160deg, #102141 0%, #1d3a66 100%);
+}
+
+.statIconImage {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.selectIconImage {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.statValue {
+  font-weight: 800;
+  color: #a67d00;
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  font-weight: 600;
+  color: #102141;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visibleSwitch {
+  align-self: end;
+  padding-bottom: 0.5rem;
+}
+
+.translations {
+  margin-top: 0.9rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.translations summary {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: #25475e;
+}
+
+.translations[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+.translationBlock + .translationBlock {
+  margin-top: 0.6rem;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  border: 2px dashed #e3d6a8;
+  background: #fffaf0;
+  color: #8a6b08;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.addButton:hover {
+  border-color: #b8960c;
+  background: #fff3d6;
+}
+
+@media (max-width: 640px) {
+  .addRow {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .addRow > * {
+    flex: 1 1 100%;
+  }
+
+  .addSelect {
+    width: 100%;
+  }
+
+  .locationRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .locationRow .institutionInput {
+    grid-column: 1 / 2;
+    grid-row: 2;
+  }
+
+  .fieldGrid3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

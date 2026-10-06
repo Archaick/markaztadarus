@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { LANGUAGES } from "../Internal/language";
+import { stableKey } from "../Internal/stableKey";
 import styles from "./Forms.module.css";
 import { FIELD_TYPES, FORMS_COLLECTION, HAS_OPTIONS, newField, newId } from "./formSchema";
 
@@ -34,14 +35,6 @@ const editableOf = (form) => ({
   language: form.language || "id",
   fields: form.fields || [],
 });
-
-// JSON with sorted keys: Firestore does not keep map key order.
-const stableKey = (value) =>
-  JSON.stringify(value, (_, v) =>
-    v && typeof v === "object" && !Array.isArray(v)
-      ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, v[k]]))
-      : v
-  );
 
 // Returns { key, n } for builder.problems.<key>, or null when the form is fine.
 const problemIn = (draft) => {

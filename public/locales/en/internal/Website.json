@@ -1,0 +1,80 @@
+{
+  "title": "Website",
+  "intro": "Edit what visitors see on the home page. Changes go live as soon as you save.",
+  "tabs": {
+    "map": "Map",
+    "stats": "Achievements"
+  },
+  "viewOnSite": "View on site",
+  "builtIn": "Showing the site's built-in data. Save once and it is stored here for editing.",
+  "loadFailed": "Could not load this section. Check your connection.",
+  "unsaved": "Unsaved changes",
+  "allSaved": "All changes saved",
+  "discard": "Discard",
+  "save": "Save",
+  "saved": "Saved — the website is updated.",
+  "saveFailed": "Could not save. Check your connection and try again.",
+  "moveUp": "Move up",
+  "moveDown": "Move down",
+  "optional": "optional",
+  "map": {
+    "summary": "{{provinces}} provinces · {{locations}} program locations",
+    "addProvince": "Add province",
+    "pickProvince": "Choose a province",
+    "island": "Island / region",
+    "programs": "Program locations",
+    "programsHint": "Leave empty to count the locations listed below.",
+    "participants": "Participants",
+    "locations": "Locations & institutions",
+    "city": "City / regency",
+    "institution": "Institution",
+    "institutionPlaceholder": "e.g. Pondok Pesantren …",
+    "addLocation": "Add location",
+    "removeLocation": "Remove location",
+    "removeProvince": "Remove province",
+    "count_one": "{{count}} location",
+    "count_other": "{{count}} locations",
+    "empty": "No provinces yet. Add the first one above.",
+    "problems": {
+      "noCity": "{{province}}: every location needs a city or regency.",
+      "badNumber": "{{province}}: numbers cannot be negative."
+    }
+  },
+  "stats": {
+    "add": "Add achievement",
+    "icon": "Icon",
+    "value": "Number",
+    "visible": "Show on the website",
+    "label": "Title",
+    "suffix": "Unit",
+    "suffixPlaceholder": "e.g. people",
+    "description": "Note",
+    "translations": "English & Arabic",
+    "translationsHint": "Optional — the Indonesian text is shown when these are empty.",
+    "en": "English",
+    "ar": "Arabic",
+    "delete": "Delete achievement",
+    "hiddenBadge": "Hidden",
+    "untitled": "New achievement",
+    "problems": {
+      "noLabel": "Achievement {{n}} needs an Indonesian title.",
+      "badValue": "Achievement {{n}} needs a number of 0 or more."
+    }
+  },
+  "icons": {
+    "users": "People",
+    "group": "Group",
+    "school": "Training",
+    "partners": "Institutions",
+    "book": "Book / Qur'an",
+    "script": "Kitab",
+    "mosque": "Masjid",
+    "certificate": "Certificate",
+    "seminar": "Seminar",
+    "event": "Event",
+    "charity": "Social",
+    "location": "Location",
+    "kaabah": "Umrah (Ka'bah)",
+    "goat": "Qurban"
+  }
+}

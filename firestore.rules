@@ -46,7 +46,7 @@ service cloud.firestore {
       return data.email == email
         && email == email.lower()
         && data.features is list
-        && data.features.hasOnly(["certificates", "redirects", "forms"]);
+        && data.features.hasOnly(["certificates", "redirects", "forms", "site"]);
     }
 
     match /internal_admins/{email} {
@@ -83,6 +83,23 @@ service cloud.firestore {
       // Public read so short-link resolver can fetch destination
       allow read: if true;
       allow create, update, delete: if hasFeature("redirects");
+    }
+
+    // ---------- Website content (home page map and achievements) ----------
+
+    match /site_content/{docId} {
+      // The home page reads these for every visitor.
+      allow read: if true;
+      allow write: if hasFeature("site")
+        && (
+          (docId == "map"
+            && request.resource.data.provinces is map
+            && request.resource.data.provinces.size() <= 40)
+          || (docId == "stats"
+            && request.resource.data.items is list
+            && request.resource.data.items.size() <= 30)
+        );
+      allow delete: if false;
     }
 
     // ---------- Forms ----------

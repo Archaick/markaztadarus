@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import { geoCentroid, geoMercator, geoPath } from "d3-geo";
@@ -11,6 +11,7 @@ import styles from "./Map.module.css";
 
 import topoData from "../../../data/indonesia-provinces.topo.json";
 import { mtiProvinces, getDisplayName, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
+import { SITE_DOCS, useSiteContent } from "../siteContent";
 
 const ALL_PROVINCES = feature(topoData, topoData.objects["indonesia-38-prov-topo"]).features;
 const PROVINCE_COLLECTION = { type: "FeatureCollection", features: ALL_PROVINCES };
@@ -76,30 +77,49 @@ const Map = () => {
   const isPhone = useMediaQuery("(max-width: 640px)");
   const canHover = useMediaQuery("(hover: hover)");
 
-  const list = useMemo(() => provinceList(mtiProvinces), []);
-  const totals = useMemo(() => provinceTotals(mtiProvinces), []);
+  // Provinces come from the Website dashboard once an admin has saved them.
+  const stored = useSiteContent(SITE_DOCS.map);
+  const provinces =
+    stored?.provinces && Object.keys(stored.provinces).length ? stored.provinces : mtiProvinces;
+
+  const list = useMemo(() => provinceList(provinces), [provinces]);
+  const totals = useMemo(() => provinceTotals(provinces), [provinces]);
   const [selected, setSelected] = useState(() => list[0]?.name || null);
+  const [picked, setPicked] = useState(false);
   const [hovered, setHovered] = useState(null);
+
+  // Links to /#map land here; the browser's own jump runs before the page renders.
+  useEffect(() => {
+    if (window.location.hash === "#map") {
+      document.getElementById("map")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
+  // Until the visitor picks one, keep the busiest province selected as data arrives.
+  useEffect(() => {
+    if (!picked) setSelected(list[0]?.name || null);
+  }, [list, picked]);
   const statsRef = useRef(null);
   const statsInView = useInView(statsRef, { once: true, amount: 0.5 });
 
   // Phones zoom in on where the programs are; wider screens show all of Indonesia.
   const { projection, height } = useMemo(() => {
-    const active = ALL_PROVINCES.filter((f) => mtiProvinces[f.properties.PROVINSI]);
+    const active = ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]);
     return isPhone && active.length ? fitToWidth(active, 40) : fitToWidth(ALL_PROVINCES, 16);
-  }, [isPhone]);
+  }, [isPhone, provinces]);
 
   const markers = useMemo(
     () =>
-      ALL_PROVINCES.filter((f) => mtiProvinces[f.properties.PROVINSI]).map((f) => {
+      ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]).map((f) => {
         const name = f.properties.PROVINSI;
         return { name, coordinates: geoCentroid(f), programs: list.find((p) => p.name === name)?.programs || 0 };
       }),
-    [list]
+    [list, provinces]
   );
 
   const select = (name) => {
     setSelected(name);
+    setPicked(true);
     setHovered(null);
   };
 
@@ -213,7 +233,7 @@ const Map = () => {
               onClick={() => select(p.name)}
               aria-pressed={p.name === selected}
             >
-              <span>{getDisplayName(p.name)}</span>
+              <span>{getDisplayName(p.name, provinces)}</span>
               <span className={styles.chipCount}>{p.programs}</span>
             </button>
           ))}
@@ -239,7 +259,7 @@ const Map = () => {
                   <>
                     <div className={styles.detailHead}>
                       <div>
-                        <h3 className={styles.detailTitle}>{getDisplayName(shown.name)}</h3>
+                        <h3 className={styles.detailTitle}>{getDisplayName(shown.name, provinces)}</h3>
                         {shown.island && <span className={styles.island}>{shown.island}</span>}
                       </div>
                       <div className={styles.bigNumber}>
