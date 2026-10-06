@@ -1,139 +1,261 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600;700&display=swap");
+/* "Pencapaian Kami" — intro beside an open grid of figures */
 
-.statisticsContainer {
+.section {
+  position: relative;
+  padding: 4rem 1.25rem;
+  background: #0b1630;
+  color: white;
   font-family: "Outfit", "Inter", sans-serif;
-  position: relative;
-  width: 100%;
-  background: radial-gradient(circle at top right, #1e293b, #0f172a);
-  padding: 4rem 2rem; /* Reduced from 8rem */
-  color: white;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Subtle Golden Dust Effect */
-.statisticsContainer::before {
-  content: "";
+/* two soft glows drifting behind everything */
+.aurora {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(254, 214, 91, 0.05) 1px, transparent 1px);
-  background-size: 50px 50px;
-  opacity: 0.5;
-  z-index: 1;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 }
 
-.statisticsContent {
-  position: relative;
-  z-index: 2;
-  max-width: 1200px;
-  margin: 0 auto;
+.aurora span {
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  max-width: 720px;
+  max-height: 720px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
 }
 
-.statisticsTitle {
-  text-align: center;
-  font-size: clamp(2rem, 4vw, 2.5rem); /* Reduced size */
-  font-weight: 800;
-  margin-bottom: 3rem; /* Reduced from 5rem */
-  color: white;
-  letter-spacing: -1px;
+.aurora span:first-child {
+  top: -35%;
+  left: -10%;
+  background: radial-gradient(circle, #b8960c 0%, transparent 65%);
+  animation: drift 18s ease-in-out infinite alternate;
 }
 
-.statisticsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+.aurora span:last-child {
+  bottom: -40%;
+  right: -10%;
+  background: radial-gradient(circle, #2f6bd6 0%, transparent 65%);
+  animation: drift 22s ease-in-out infinite alternate-reverse;
 }
 
-@media (min-width: 1024px) {
-  .statisticsGrid {
-    grid-template-columns: repeat(3, 1fr);
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(8%, 10%) scale(1.15);
   }
 }
 
-.statisticCard {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 20px; /* More compact corners */
-  padding: 1.5rem 1rem; /* Halved padding */
-  text-align: center;
-  backdrop-filter: blur(10px);
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-  display: flex;
-  flex-direction: column;
+.container {
+  position: relative;
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 2fr);
+  gap: 3rem;
   align-items: center;
-  gap: 1rem;
 }
 
-.statisticCard:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(254, 214, 91, 0.3);
-}
+/* ── Intro ── */
 
-.statisticIcon {
-  color: #fed65b;
-  margin-bottom: 0;
-  transition: transform 0.5s ease;
-}
-
-.customIcon {
-  width: 32px; /* Smaller icon */
-  height: 32px;
-  object-fit: contain;
-  filter: brightness(0) saturate(100%) invert(86%) sepia(21%) hue-rotate(352deg) brightness(102%) contrast(101%);
-}
-
-.statisticData {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.statisticValue {
-  font-size: 2.5rem; /* Reduced from 3.5rem */
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.statisticSuffix {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #fed65b;
+.eyebrow {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(241, 201, 75, 0.12);
+  border: 1px solid rgba(241, 201, 75, 0.25);
+  color: #f1c94b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.statisticTitle {
-  font-size: 0.95rem; /* Slightly smaller */
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.3;
+.title {
+  margin: 0.8rem 0 0.6rem;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.lead {
   margin: 0;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.98rem;
+  line-height: 1.6;
 }
 
-.statisticDescription {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+/* ── Figures: an open grid with hairlines between cells ── */
+
+.gridFrame {
+  overflow: hidden; /* hides the outer hairlines */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 -1px -1px 0;
+}
+
+:global([dir="rtl"]) .grid {
+  margin: 0 0 -1px -1px;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.4rem 1.4rem 1.5rem;
+  border-inline-end: 1px solid rgba(241, 201, 75, 0.14);
+  border-bottom: 1px solid rgba(241, 201, 75, 0.14);
+  transition: background 0.3s ease;
+}
+
+.cell:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f1c94b;
+  background: rgba(241, 201, 75, 0.12);
+}
+
+/* the Ka'bah and Qurban pictures, drawn in gold like the line icons */
+.iconImage {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(80%) sepia(48%) saturate(700%) hue-rotate(358deg) brightness(101%);
+}
+
+.figure {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.value {
+  font-size: clamp(2rem, 3.6vw, 2.9rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #ffffff 15%, #f1c94b 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.suffix {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #f1c94b;
+}
+
+/* a short gold line that draws itself as the numbers count */
+.bar {
+  height: 2px;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f1c94b, rgba(241, 201, 75, 0));
+  transition: width 1.6s cubic-bezier(0.2, 0.8, 0.2, 1) var(--delay, 0ms);
+}
+
+:global([dir="rtl"]) .bar {
+  background: linear-gradient(270deg, #f1c94b, rgba(241, 201, 75, 0));
+}
+
+.counted .bar {
+  width: 48px;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.74rem;
   line-height: 1.4;
-  margin-top: 0.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .statisticsContainer {
-    padding: 5rem 1.5rem;
-  }
-  
-  .statisticsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
+@media (prefers-reduced-motion: reduce) {
+  .aurora span {
+    animation: none;
   }
 
-  .statisticValue {
-    font-size: 2.8rem;
+  .bar {
+    transition: none;
+  }
+}
+
+/* ── Smaller screens ── */
+
+@media (max-width: 960px) {
+  .container {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+  }
+
+  .intro {
+    text-align: center;
+  }
+
+  .lead {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 3rem 0.9rem;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cell {
+    padding: 1rem 0.85rem 1.1rem;
+  }
+
+  .label {
+    font-size: 0.78rem;
+  }
+
+  .icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .value {
+    font-size: 1.75rem;
   }
 }

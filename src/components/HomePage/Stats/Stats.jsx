@@ -1,66 +1,72 @@
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import CountUp from "react-countup";
+import { useInView } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import styles from "./Stats.module.css";
 import StatIcon from "./StatIcon";
 import { DEFAULT_STATS, localized } from "../../../data/defaultStats";
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 
+// "Pencapaian Kami": the figures in an open grid beside a short intro.
 const Stats = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const containerRef = useRef(null);
   const { t, i18n } = useTranslation("homepage/Stats");
   const stored = useSiteContent(SITE_DOCS.stats);
-
-  useEffect(() => {
-    const node = containerRef.current;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      {
-        threshold: 0.3,
-        rootMargin: "0px 0px -50px 0px",
-      }
-    );
-
-    if (node) observer.observe(node);
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
+  const gridRef = useRef(null);
+  const inView = useInView(gridRef, { once: true, amount: 0.3 });
 
   // Numbers come from the Website dashboard once an admin has saved them.
   const items = (Array.isArray(stored?.items) ? stored.items : DEFAULT_STATS).filter((s) => s.visible !== false);
   const lng = i18n.language;
+  const separator = lng.startsWith("en") ? "," : ".";
 
   return (
-    <div className={styles.statisticsContainer} ref={containerRef}>
-      <div className={styles.statisticsContent}>
-        <h2 className={styles.statisticsTitle}>{t("achievementsTitle")}</h2>
-        <div className={styles.statisticsGrid}>
-          {items.map((stat) => (
-            <div key={stat.id} className={styles.statisticCard}>
-              <div className={styles.statisticIcon}>
-                <StatIcon name={stat.icon} size={32} className={styles.customIcon} />
-              </div>
-              <div className={styles.statisticData}>
-                {isVisible ? (
-                  <CountUp end={Number(stat.value) || 0} duration={4} className={styles.statisticValue} delay={0.2} />
-                ) : (
-                  <span className={styles.statisticValue}>0</span>
-                )}
-                <span className={styles.statisticSuffix}>{localized(stat.suffix, lng)}</span>
-              </div>
-              <h3 className={styles.statisticTitle}>{localized(stat.label, lng)}</h3>
-              {localized(stat.description, lng) && (
-                <p className={styles.statisticDescription}>{localized(stat.description, lng)}</p>
-              )}
-            </div>
-          ))}
+    <section className={styles.section} id="achievements" dir={lng === "ar" ? "rtl" : "ltr"}>
+      <div className={styles.aurora} aria-hidden="true">
+        <span />
+        <span />
+      </div>
+
+      <div className={styles.container}>
+        <div className={styles.intro}>
+          <span className={styles.eyebrow}>{t("achievementsEyebrow")}</span>
+          <h2 className={styles.title}>{t("achievementsTitle")}</h2>
+          <p className={styles.lead}>{t("achievementsSubtitle")}</p>
+        </div>
+
+        <div className={styles.gridFrame}>
+          <div className={`${styles.grid} ${inView ? styles.counted : ""}`} ref={gridRef}>
+            {items.map((stat, index) => {
+              const description = localized(stat.description, lng);
+              return (
+                <div
+                  key={stat.id}
+                  className={styles.cell}
+                  title={description || undefined}
+                  style={{ "--delay": `${index * 90}ms` }}
+                >
+                  <span className={styles.label}>
+                    <span className={styles.icon}>
+                      <StatIcon name={stat.icon} size={16} className={styles.iconImage} />
+                    </span>
+                    {localized(stat.label, lng)}
+                  </span>
+                  <span className={styles.figure}>
+                    {inView ? (
+                      <CountUp end={Number(stat.value) || 0} duration={2.4} separator={separator} className={styles.value} />
+                    ) : (
+                      <span className={styles.value}>0</span>
+                    )}
+                    <span className={styles.suffix}>{localized(stat.suffix, lng)}</span>
+                  </span>
+                  <span className={styles.bar} />
+                  {description && <span className={styles.description}>{description}</span>}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
