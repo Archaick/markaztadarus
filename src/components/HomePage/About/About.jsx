@@ -57,7 +57,6 @@ const About = () => {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
-          <p className={styles.tagline}>{t("tagline") || "Our Mission"}</p>
           <h2 className={styles.title}>{t("title")}</h2>
           <div className={styles.textContent}>
             <p className={styles.text}>

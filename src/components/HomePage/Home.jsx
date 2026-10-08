@@ -21,8 +21,8 @@ const Home = () => {
     <div>
       <Hero />
       <About />
-      <Programs />
       <Map />
+      <Programs />
       <Stats />
       <LatestNews />
       <MarqueeComponent />

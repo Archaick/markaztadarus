@@ -15,7 +15,6 @@ import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiPro
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 import { hasCoords } from "../../../data/coords";
 
-const NAVBAR = 76;
 const FLY_IN_S = 2.6;
 const FLY_OUT_S = 1.4;
 
@@ -48,9 +47,9 @@ const Map = () => {
   const onScreen = useInView(sectionRef);
 
   // The globe flies to Indonesia on its own, but only once the map is (almost)
-  // fully on screen, so it is never missed and needs no extra scrolling. When
-  // the visitor scrolls back up and the map mostly leaves the screen below,
-  // it flies back out to the globe, ready to play again. A tap skips ahead.
+  // fully on screen, so it is never missed and needs no extra scrolling. Once
+  // the map mostly leaves the screen, above or below, it flies back out to the
+  // globe, so it plays again whenever the visitor returns. A tap skips ahead.
   const areaRef = useRef(null);
   const mapInView = useInView(areaRef, { amount: 0.8 });
   const mapMostlyGone = !useInView(areaRef, { amount: 0.35 });
@@ -62,7 +61,7 @@ const Map = () => {
     let controls;
     if (mapInView) {
       controls = animate(flight, 1, { duration: FLY_IN_S * (1 - flight.get()), ease: "linear" });
-    } else if (mapMostlyGone && (areaRef.current?.getBoundingClientRect().top ?? 0) > NAVBAR) {
+    } else if (mapMostlyGone) {
       controls = animate(flight, 0, { duration: FLY_OUT_S * flight.get(), ease: "linear" });
     }
     return () => controls?.stop();

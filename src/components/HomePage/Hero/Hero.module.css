@@ -12,7 +12,8 @@
   padding: 96px 2rem 3rem; /* clears the fixed navbar */
   background-color: transparent;
   overflow: hidden;
-  font-family: "Outfit", "Inter", sans-serif;
+  /* Cairo only draws the Arabic letters; Latin text keeps Outfit */
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
 }
 
 .inner {
@@ -360,9 +361,18 @@
 }
 
 .label[data-lang="ar"] {
-  font-size: clamp(0.75rem, 3.4cqw, 1.1rem);
-  font-weight: 900;
-  line-height: 1;
+  font-family: "Cairo", sans-serif;
+  font-size: clamp(0.85rem, 3.8cqw, 1.15rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+/* Arabic motto: Cairo, darker and bolder so it reads clearly */
+:global([dir="rtl"]) .subtitle {
+  font-family: "Cairo", sans-serif;
+  font-weight: 700;
+  color: #25475e;
 }
 
 @keyframes rotateOrbit {
@@ -460,6 +470,25 @@
 
   .subtitle {
     font-size: 0.98rem;
+  }
+
+  :global([dir="rtl"]) .subtitle {
+    font-size: 1.15rem;
+  }
+
+  /* bigger, solid step numbers and names on small screens */
+  .number {
+    font-size: 0.72rem;
+    font-weight: 900;
+  }
+
+  .label {
+    font-size: 0.68rem;
+  }
+
+  .node {
+    background: rgba(255, 255, 255, 0.96);
+    border-color: rgba(171, 139, 43, 0.35);
   }
 
   .stepCardInner {

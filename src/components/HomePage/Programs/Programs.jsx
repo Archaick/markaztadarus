@@ -13,7 +13,8 @@ import Karya from "../../../assets/imgs/homepage/programs/karya.jpg";
 import Umrah from "../../../assets/imgs/homepage/gallery/umrah/umrah2.jpg";
 
 const Programs = () => {
-  const { t } = useTranslation("homepage/Programs");
+  const { t, i18n } = useTranslation("homepage/Programs");
+  const rtl = i18n.language === "ar";
   const autoplay = useRef(Autoplay({ delay: 5000, stopOnInteraction: false }));
 
   const programs = [
@@ -56,22 +57,20 @@ const Programs = () => {
       </div>
 
       <Carousel
-        slideSize="33.33%"
-        slideGap="md"
+        slideSize={{ base: "84%", xs: "62%", sm: "50%", md: "33.333%" }}
+        slideGap={{ base: "sm", md: "md" }}
         loop
-        align="start"
+        align="center"
         plugins={[autoplay.current]}
-        withControls={true}
-        breakpoints={[
-          { maxWidth: "md", slideSize: "50%", slidesToScroll: 1 },
-          { maxWidth: "sm", slideSize: "50%", slidesToScroll: 1 },
-          { maxWidth: "xs", slideSize: "80%", slidesToScroll: 1 },
-        ]}
+        withControls
+        withIndicators
+        classNames={{ indicators: styles.indicators, indicator: styles.indicator, control: styles.control }}
         className={styles.carousel}
+        dir="ltr" // the carousel slides left to right; each card keeps its own direction
       >
         {programs.map((program, index) => (
           <Carousel.Slide key={index} className={styles.slide}>
-            <ProgramCard program={program} />
+            <ProgramCard program={program} rtl={rtl} />
           </Carousel.Slide>
         ))}
       </Carousel>
@@ -79,19 +78,17 @@ const Programs = () => {
   );
 };
 
-const ProgramCard = ({ program }) => {
+const ProgramCard = ({ program, rtl }) => {
   const { t } = useTranslation("homepage/Programs");
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} dir={rtl ? "rtl" : "ltr"}>
       <div className={styles.cardImageWrapper}>
         <img
           src={program.src}
           alt={program.title}
           className={styles.cardImage}
         />
-        {/* Floating Category Label */}
-        <div className={styles.titleOverlay}>{program.title}</div>
       </div>
       
       <div className={styles.cardContent}>
@@ -107,7 +104,7 @@ const ProgramCard = ({ program }) => {
         >
           {program.link === "#" ? t("inDevelopment") : t("learnMore")}
           <span className={styles.iconWrapper}>
-             <IconArrowRight size={18} />
+            <IconArrowRight size={18} className={styles.arrow} />
           </span>
         </button>
       </div>
