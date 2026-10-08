@@ -55,7 +55,7 @@ import {
   shortLink,
 } from "../Redirects/redirectSchema";
 import LinkEditor from "./LinkEditor";
-import { qrWithLogo } from "./qrWithLogo";
+import { qrWithLogo } from "../Internal/qrWithLogo";
 import styles from "./RedirectAdmin.module.css";
 
 const NS = ["internal/Redirects", "internal/Internal"];

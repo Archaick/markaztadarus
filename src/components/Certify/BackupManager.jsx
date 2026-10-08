@@ -1,319 +1,128 @@
-// src/.../BackupManager.jsx - FINAL OPTIMIZED VERSION
-import React, { useState } from "react";
-import {
-    Button,
-    Group,
-    Text,
-    Progress,
-    FileInput,
-    Modal,
-} from "@mantine/core";
-
-import {
-    collection,
-    getDocs,
-    query,
-    where,
-    writeBatch,
-    doc,
-} from "firebase/firestore";
-
+import { useState } from "react";
+import { Button, FileButton, Progress, Text } from "@mantine/core";
+import { IconDatabaseExport, IconDatabaseImport, IconShieldCheck } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+import { Timestamp, collection, doc, writeBatch } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { CERTS, certDate, cleanText, normCode } from "./certSchema";
+import styles from "./Admin.module.css";
 
-import {
-    IconCheck,
-    IconAlertCircle,
-    IconDatabaseExport,
-    IconDatabaseImport,
-    IconRefresh,
-} from "@tabler/icons-react";
+const NS = ["internal/Certificates", "internal/Internal"];
+const BATCH = 450;
 
-import styles from "./BackupManager.module.css";
+const iso = (v) => certDate(v)?.toISOString() ?? null;
+const fromIso = (v) => (v ? Timestamp.fromDate(new Date(v)) : null);
 
-const BackupManager = ({ onImportComplete }) => {
-    const [importing, setImporting] = useState(false);
-    const [exporting, setExporting] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [file, setFile] = useState(null);
+/**
+ * A JSON copy of every certificate to keep somewhere safe, and the way back
+ * in. Restored certificates keep their codes, so printed QR codes stay valid;
+ * the dashboard then publishes them to the verification page by itself.
+ */
+export default function BackupManager({ certs, notify }) {
+  const { t } = useTranslation(NS);
+  const [progress, setProgress] = useState(null);
 
-    const [resultModal, setResultModal] = useState({
-        open: false,
-        success: false,
-        message: "",
-    });
+  const exportBackup = () => {
+    const data = certs.map((c) => ({
+      name: c.name,
+      program: c.program,
+      code: c.code,
+      signerIds: c.signerIds || [],
+      eventDate: iso(c.eventDate),
+      status: c.status || "valid",
+      revokedReason: c.revokedReason || "",
+      createdAt: iso(c.createdAt),
+    }));
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `certificates-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    notify("success", t("backup.exportedTitle"), t("backup.exportedText", { count: data.length }));
+  };
 
-    const certCollection = collection(db, "certificates");
-    const QUERY_CHUNK_SIZE = 10; // Firestore "in" limit
-    const BATCH_WRITE_LIMIT = 500; // Firestore batch limit
+  const importBackup = async (file) => {
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (!Array.isArray(data) || data.some((c) => !c || !c.name || !c.program || !c.code)) throw new Error("format");
 
-    /* -------------------------------------------------------
-       EXPORT BACKUP - Optimized for large datasets
-    ------------------------------------------------------- */
-    const handleExport = async () => {
-        setExporting(true);
-        setProgress(0);
+      const have = new Set(certs.map((c) => normCode(c.code)));
+      const fresh = data.filter((c) => {
+        const code = normCode(c.code);
+        if (have.has(code)) return false;
+        have.add(code);
+        return true;
+      });
 
-        try {
-            const snapshot = await getDocs(certCollection);
+      setProgress(0);
+      for (let i = 0; i < fresh.length; i += BATCH) {
+        const batch = writeBatch(db);
+        fresh.slice(i, i + BATCH).forEach((c) =>
+          batch.set(doc(collection(db, CERTS)), {
+            name: cleanText(c.name),
+            program: cleanText(c.program),
+            code: normCode(c.code),
+            signerIds: Array.isArray(c.signerIds) ? c.signerIds : [],
+            eventDate: fromIso(c.eventDate),
+            status: c.status === "revoked" ? "revoked" : "valid",
+            revokedReason: c.status === "revoked" ? cleanText(c.revokedReason) : "",
+            createdAt: fromIso(c.createdAt) || Timestamp.now(),
+          })
+        );
+        await batch.commit();
+        setProgress(Math.min(1, (i + BATCH) / fresh.length));
+      }
+      notify(
+        "success",
+        t("backup.importedTitle"),
+        t("backup.importedText", { count: fresh.length, skipped: data.length - fresh.length })
+      );
+    } catch (err) {
+      console.error("Import error:", err);
+      notify("error", t("backup.failedTitle"), err.message === "format" ? t("backup.badFile") : t("errors.failed"));
+    } finally {
+      setProgress(null);
+    }
+  };
 
-            const allCertificates = snapshot.docs.map((doc) => ({
-                name: doc.data().name,
-                program: doc.data().program,
-                code: doc.data().code,
-                signerIds: doc.data().signerIds || [],
-                createdAt:
-                    doc.data().createdAt?.toDate?.()?.toISOString() ||
-                    new Date().toISOString(),
-            }));
-
-            const dataStr = JSON.stringify(allCertificates, null, 2);
-            const blob = new Blob([dataStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-
-            const link = document.createElement("a");
-            link.href = url;
-            const timestamp = new Date().toISOString().split("T")[0];
-            link.download = `certificates-backup-${timestamp}.json`;
-            link.click();
-
-            URL.revokeObjectURL(url);
-
-            setResultModal({
-                open: true,
-                success: true,
-                message: `Successfully exported ${allCertificates.length} certificates!`,
-            });
-        } catch (err) {
-            console.error("Export error:", err);
-            setResultModal({
-                open: true,
-                success: false,
-                message: "Failed to export certificates.",
-            });
-        } finally {
-            setExporting(false);
-            setProgress(0);
-        }
-    };
-
-    /* -------------------------------------------------------
-       IMPORT BACKUP - Optimized with smart duplicate checking
-       - Uses batched queries (10 at a time due to 'in' limit)
-       - Uses writeBatch for efficient writes (500 at a time)
-       - Only queries codes being imported (not entire DB)
-    ------------------------------------------------------- */
-    const handleImport = async () => {
-        if (!file) return alert("Please select a backup file.");
-
-        setImporting(true);
-        setProgress(0);
-
-        try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-
-            if (!Array.isArray(data)) {
-                throw new Error("Invalid backup format.");
-            }
-
-            // Validate all records first
-            for (const cert of data) {
-                if (!cert.name || !cert.program || !cert.code) {
-                    throw new Error("Invalid certificate data: missing required fields");
-                }
-            }
-
-            let imported = 0;
-            let skipped = 0;
-            const totalItems = data.length;
-            let currentBatch = writeBatch(db);
-            let batchCount = 0;
-
-            // Process in chunks of 10 (Firestore 'in' query limit)
-            for (let i = 0; i < data.length; i += QUERY_CHUNK_SIZE) {
-                const chunk = data.slice(i, i + QUERY_CHUNK_SIZE);
-                const codesToCheck = chunk.map((c) => c.code);
-
-                // OPTIMIZATION: Only query the codes in this chunk
-                const existingQuery = query(
-                    certCollection,
-                    where("code", "in", codesToCheck)
-                );
-
-                const existingSnapshot = await getDocs(existingQuery);
-
-                const existingCodes = new Set();
-                existingSnapshot.docs.forEach((doc) => {
-                    existingCodes.add(doc.data().code);
-                });
-
-                // Add non-duplicates to batch
-                for (const cert of chunk) {
-                    if (existingCodes.has(cert.code)) {
-                        skipped++;
-                    } else {
-                        const newDocRef = doc(certCollection);
-                        currentBatch.set(newDocRef, {
-                            name: cert.name,
-                            program: cert.program,
-                            code: cert.code,
-                            signerIds: Array.isArray(cert.signerIds) ? cert.signerIds : [],
-                            createdAt: cert.createdAt
-                                ? new Date(cert.createdAt)
-                                : new Date(),
-                        });
-
-                        imported++;
-                        batchCount++;
-
-                        // Commit batch if we hit the 500 limit
-                        if (batchCount >= BATCH_WRITE_LIMIT) {
-                            await currentBatch.commit();
-                            currentBatch = writeBatch(db);
-                            batchCount = 0;
-                        }
-                    }
-                }
-
-                setProgress(((i + chunk.length) / totalItems) * 100);
-            }
-
-            // Commit any remaining writes
-            if (batchCount > 0) {
-                await currentBatch.commit();
-            }
-
-            setResultModal({
-                open: true,
-                success: true,
-                message: `Import complete!\n✓ Imported: ${imported}\n${skipped > 0 ? `⊘ Skipped (duplicates): ${skipped}` : ""
-                    }`,
-            });
-
-            if (onImportComplete) onImportComplete();
-
-            setFile(null);
-        } catch (err) {
-            console.error("Import error:", err);
-            setResultModal({
-                open: true,
-                success: false,
-                message: err.message || "Import failed.",
-            });
-        } finally {
-            setImporting(false);
-            setProgress(0);
-        }
-    };
-
-    /* -------------------------------------------------------
-       UI
-    ------------------------------------------------------- */
-    return (
-        <div className={styles.backupContainer}>
-            {/* ✅ Animated Header with Sync Icon */}
-            <div className={styles.backupIndicator}
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)",
-                    padding: "8px 14px",
-                    borderRadius: "10px",
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    border: "1px solid #bae6fd",
-                    marginBottom: "12px",
-                }}
-            >
-                <IconRefresh
-                    size={24}
-                    stroke={2}
-                    color="#0284c7"
-                    className={styles.syncIcon}
-                />
-
-                <div style={{ display: "flex", flexDirection: "column", lineHeight: "1.2" }}>
-                    <span style={{ fontSize: "10px", fontWeight: "600", color: "#0369a1", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                        Data Safety
-                    </span>
-
-                    <span style={{ fontSize: "15px", fontWeight: "700", color: "#0c4a6e" }}>
-                        Backup & Restore
-                    </span>
-                </div>
-            </div>
-
-            {/* ✅ Controls */}
-            <Group spacing="sm">
-                <Button
-                    leftIcon={<IconDatabaseExport size={16} />}
-                    onClick={handleExport}
-                    loading={exporting}
-                    variant="light"
-                    color="blue"
-                    size="sm"
-                >
-                    Export Backup
-                </Button>
-
-                <FileInput
-                    placeholder="Choose backup file"
-                    value={file}
-                    onChange={setFile}
-                    accept=".json"
-                    size="sm"
-                    style={{ flex: 1, maxWidth: "200px" }}
-                    disabled={importing}
-                />
-
-                <Button
-                    leftIcon={<IconDatabaseImport size={16} />}
-                    onClick={handleImport}
-                    loading={importing}
-                    disabled={!file}
-                    variant="light"
-                    color="green"
-                    size="sm"
-                >
-                    Import Backup
-                </Button>
-            </Group>
-
-            {/* ✅ Progress */}
-            {(importing || exporting) && (
-                <div className={styles.progressContainer}>
-                    <Progress value={progress} size="sm" radius="xl" striped animate />
-                    <Text size="xs" color="dimmed" mt={4}>
-                        {importing ? "Importing" : "Exporting"}... {Math.round(progress)}%
-                    </Text>
-                </div>
-            )}
-
-            {/* ✅ Result Modal */}
-            <Modal
-                opened={resultModal.open}
-                onClose={() =>
-                    setResultModal({ open: false, success: false, message: "" })
-                }
-                title={resultModal.success ? "Success" : "Error"}
-                centered
-                size="sm"
-            >
-                <Group spacing="sm" align="flex-start">
-                    {resultModal.success ? (
-                        <IconCheck size={24} color="green" />
-                    ) : (
-                        <IconAlertCircle size={24} color="red" />
-                    )}
-
-                    <Text style={{ whiteSpace: "pre-line", flex: 1 }}>
-                        {resultModal.message}
-                    </Text>
-                </Group>
-            </Modal>
+  return (
+    <div className={styles.backup}>
+      <div className={styles.backupCard}>
+        <IconDatabaseExport size={26} />
+        <div>
+          <Text fw={700}>{t("backup.exportTitle")}</Text>
+          <Text size="sm" c="dimmed">
+            {t("backup.exportText", { count: certs.length })}
+          </Text>
         </div>
-    );
-};
+        <Button variant="light" onClick={exportBackup} disabled={!certs.length}>
+          {t("backup.exportButton")}
+        </Button>
+      </div>
 
-export default BackupManager; 
+      <div className={styles.backupCard}>
+        <IconDatabaseImport size={26} />
+        <div>
+          <Text fw={700}>{t("backup.importTitle")}</Text>
+          <Text size="sm" c="dimmed">
+            {t("backup.importText")}
+          </Text>
+        </div>
+        <FileButton onChange={importBackup} accept=".json,application/json">
+          {(props) => (
+            <Button {...props} variant="light" color="teal" loading={progress !== null}>
+              {t("backup.importButton")}
+            </Button>
+          )}
+        </FileButton>
+      </div>
+      {progress !== null && <Progress value={progress * 100} striped animated />}
+
+      <Text size="xs" c="dimmed" className={styles.backupNote}>
+        <IconShieldCheck size={14} /> {t("backup.note")}
+      </Text>
+    </div>
+  );
+}

@@ -1,578 +1,848 @@
-// src/.../Admin.jsx - Final Refactored Version
-import React, { useState, useEffect } from "react";
-import styles from "./Admin.module.css";
-import { db, auth } from "../../../firebaseConfig";
-import QrStats from "./QrStats";
-import BackupManager from "./BackupManager";
-import SignerManager from "./SignerManager";
-import { resolveCertificateSigners } from "./signerUtils";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    doc,
-    updateDoc,
-    query,
-    orderBy,
-    startAfter,
-    limit as firestoreLimit,
-    where,
-} from "firebase/firestore";
-import {
-    Button,
-    TextInput,
-    Table,
-    Title,
-    Group,
-    Image,
-    Pagination,
-    Modal,
-    Text,
-    Alert,
-    Tabs,
-    MultiSelect,
-    Badge,
+  ActionIcon,
+  Alert,
+  Autocomplete,
+  Badge,
+  Button,
+  Card,
+  CopyButton,
+  Group,
+  Loader,
+  Modal,
+  MultiSelect,
+  Pagination,
+  Progress,
+  SegmentedControl,
+  Tabs,
+  Text,
+  TextInput,
+  Textarea,
+  Title,
+  Tooltip,
 } from "@mantine/core";
-import { IconCheck, IconX, IconAlertTriangle, IconInfoCircle, IconDownload, IconTrash, IconCertificate, IconSignature } from '@tabler/icons-react';
-import QRCode from "qrcode";
-import LoadingOverlay from "../LoadingOverlay";
 import {
-    reauthenticateWithPopup,
-    GoogleAuthProvider,
-    signOut,
-} from "firebase/auth";
+  IconArrowBackUp,
+  IconArrowLeft,
+  IconBan,
+  IconCertificate,
+  IconCheck,
+  IconCopy,
+  IconDatabase,
+  IconDownload,
+  IconEye,
+  IconPencil,
+  IconPlus,
+  IconQrcode,
+  IconSearch,
+  IconShieldCheck,
+  IconSignature,
+  IconTable,
+  IconTrash,
+  IconUsersPlus,
+} from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
+import {
+  Timestamp,
+  collection,
+  doc,
+  onSnapshot,
+  serverTimestamp,
+  setDoc,
+  writeBatch,
+} from "firebase/firestore";
+import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
+import { auth, db } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { AccountBar, InternalLayout } from "../Internal/InternalUI";
+import { intlLocale } from "../Internal/language";
+import { timeAgo } from "../Internal/timeAgo";
+import layout from "../Internal/AccessControl.module.css";
+import portal from "../Internal/InternalPortal.module.css";
+import SignerManager from "./SignerManager";
+import BackupManager from "./BackupManager";
+import BulkIssue from "./BulkIssue";
+import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
+import {
+  CERTS,
+  META,
+  MIGRATION_DOC,
+  PUBLIC,
+  certDate,
+  cleanText,
+  fromDateInput,
+  isRevoked,
+  newCode,
+  normCode,
+  publicFields,
+  publicUpToDate,
+  toDateInput,
+  verifyLink,
+} from "./certSchema";
+import { certQr, downloadCsv, downloadDataUrl, downloadQrZip, qrFileName } from "./certExports";
+import styles from "./Admin.module.css";
 
-const ITEMS_PER_PAGE = 5;
-const MAX_RETRIES = 3;
-const INPUT_MAX_LENGTH = 200;
+const NS = ["internal/Certificates", "internal/Internal"];
+const PAGE = 25;
+const CERTS_PER_BATCH = 200; // two writes each, under Firestore's 500
 
-const Admin = () => {
-    const [certificates, setCertificates] = useState([]);
-    const [newCert, setNewCert] = useState({ name: "", program: "", signerIds: [] });
-    const [searchTerm, setSearchTerm] = useState("");
-    const [qrCodes, setQrCodes] = useState({});
-    const [loading, setLoading] = useState(false);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [lastVisible, setLastVisible] = useState(null);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [deleteTargetId, setDeleteTargetId] = useState(null);
-    const [notification, setNotification] = useState(null);
-    const [activeTab, setActiveTab] = useState("certificates");
-    const [signers, setSigners] = useState([]);
-    const [signerEdit, setSignerEdit] = useState(null); // { cert, signerIds }
+const millis = (v) => certDate(v)?.getTime() ?? 0;
 
-    const certCollection = collection(db, "certificates");
+export default function Admin() {
+  const { t, i18n } = useTranslation(NS);
+  const { email } = useAccess();
+  const [certs, setCerts] = useState(null);
+  const [pubs, setPubs] = useState(null);
+  const [migrated, setMigrated] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [sync, setSync] = useState(null);
+  const syncing = useRef(false);
+  const [signers, setSigners] = useState([]);
+  const [tab, setTab] = useState("certificates");
+  const [notice, setNotice] = useState(null);
 
-    // ========== NOTIFICATION SYSTEM ==========
-    const showNotification = (type, title, message) => {
-        const config = {
-            success: { icon: <IconCheck size={20} />, color: "teal" },
-            error: { icon: <IconX size={20} />, color: "red" },
-            warning: { icon: <IconAlertTriangle size={20} />, color: "yellow" },
-            info: { icon: <IconInfoCircle size={20} />, color: "blue" },
+  const [search, setSearch] = useState("");
+  const [program, setProgram] = useState(null);
+  const [status, setStatus] = useState("all");
+  const [page, setPage] = useState(1);
+
+  const [editing, setEditing] = useState(null); // null | "new" | cert
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [qrFor, setQrFor] = useState(null);
+  const [revoking, setRevoking] = useState(null);
+  const [deleting, setDeleting] = useState(null);
+  const [zipProgress, setZipProgress] = useState(null);
+
+  // Messages are written in the language of the moment; drop them on a switch.
+  useEffect(() => setNotice(null), [i18n.language]);
+
+  const notify = (type, title, message) =>
+    setNotice({ color: { success: "teal", error: "red", warning: "yellow", info: "blue" }[type] || "blue", title, message });
+
+  // ---------- live data ----------
+  useEffect(() => {
+    const fail = (err) => {
+      console.error("Could not load certificates:", err);
+      setLoadFailed(true);
+    };
+    const offCerts = onSnapshot(collection(db, CERTS), (s) => setCerts(s.docs.map((d) => ({ id: d.id, ...d.data() }))), fail);
+    const offPubs = onSnapshot(collection(db, PUBLIC), (s) => setPubs(new Map(s.docs.map((d) => [d.id, d.data()]))), fail);
+    const offMeta = onSnapshot(doc(db, META, MIGRATION_DOC), (s) => setMigrated(s.exists() && s.data().done === true), fail);
+    return () => {
+      offCerts();
+      offPubs();
+      offMeta();
+    };
+  }, []);
+
+  // Signers for the pickers; the Signers tab keeps them current after edits.
+  useEffect(() => {
+    fetchAllSigners()
+      .then(setSigners)
+      .catch((err) => console.error("Could not load signers:", err));
+  }, []);
+
+  // ---------- keep the verification copies in step ----------
+  // Copies every certificate (including older ones and backups) into the
+  // locked-down lookup, then marks the move done so the rules stop letting
+  // anyone list the participant records.
+  useEffect(() => {
+    if (!certs || !pubs || migrated === null || syncing.current) return;
+    const byCode = new Map();
+    [...certs]
+      .sort((a, b) => millis(a.createdAt) - millis(b.createdAt))
+      .forEach((c) => {
+        const code = normCode(c.code);
+        if (code && !byCode.has(code)) byCode.set(code, c);
+      });
+    const stale = [...byCode.entries()].filter(([code, c]) => !publicUpToDate(c, pubs.get(code)));
+
+    syncing.current = true;
+    (async () => {
+      try {
+        if (stale.length) setSync({ done: 0, total: stale.length });
+        for (let i = 0; i < stale.length; i += 400) {
+          const batch = writeBatch(db);
+          stale.slice(i, i + 400).forEach(([code, c]) => batch.set(doc(db, PUBLIC, code), publicFields(c), { merge: true }));
+          await batch.commit();
+          setSync({ done: Math.min(i + 400, stale.length), total: stale.length });
+        }
+        if (!migrated) {
+          await setDoc(doc(db, META, MIGRATION_DOC), {
+            done: true,
+            count: byCode.size,
+            at: serverTimestamp(),
+            by: email || "unknown",
+          });
+          notify("success", t("secure.doneTitle"), t("secure.doneText", { count: byCode.size }));
+        }
+      } catch (err) {
+        console.error("Could not update verification copies:", err);
+        notify("error", t("secure.failedTitle"), t("secure.failedText"));
+      } finally {
+        setSync(null);
+        // let the snapshots catch up before looking again
+        setTimeout(() => {
+          syncing.current = false;
+        }, 1500);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [certs, pubs, migrated]);
+
+  // ---------- derived ----------
+  const programs = useMemo(() => {
+    const counts = new Map();
+    (certs || []).forEach((c) => c.program && counts.set(c.program, (counts.get(c.program) || 0) + 1));
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [certs]);
+  const programNames = useMemo(() => programs.map(([p]) => p), [programs]);
+
+  const totalScans = useMemo(() => {
+    let sum = 0;
+    pubs?.forEach((p) => {
+      sum += p.scans || 0;
+    });
+    return sum;
+  }, [pubs]);
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return (certs || [])
+      .filter((c) => !program || c.program === program)
+      .filter((c) => status === "all" || (status === "revoked") === isRevoked(c))
+      .filter((c) => !term || [c.name, c.program, c.code].some((v) => (v || "").toLowerCase().includes(term)))
+      .sort((a, b) => millis(b.createdAt) - millis(a.createdAt));
+  }, [certs, search, program, status]);
+
+  useEffect(() => setPage(1), [search, program, status]);
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
+  const visible = filtered.slice((page - 1) * PAGE, page * PAGE);
+
+  const signerOptions = signers
+    .filter((s) => s.active !== false)
+    .map((s) => ({ value: s.id, label: `${s.name} — ${s.position}` }));
+  const defaultSignerNames = signers
+    .filter((s) => s.active !== false && s.isDefault)
+    .map((s) => s.name)
+    .join(", ");
+  const signerPlaceholder = defaultSignerNames ? t("fields.signersDefault", { names: defaultSignerNames }) : t("fields.signersNone");
+
+  const dateFormat = useMemo(
+    () => new Intl.DateTimeFormat(intlLocale(i18n.language), { day: "numeric", month: "short", year: "numeric" }),
+    [i18n.language]
+  );
+
+  // ---------- writes ----------
+  const takenCodes = () => new Set((certs || []).map((c) => normCode(c.code)));
+
+  const createMany = async ({ names, program: prog, eventDate, signerIds }, onProgress) => {
+    const taken = takenCodes();
+    const date = fromDateInput(eventDate);
+    const created = [];
+    for (let i = 0; i < names.length; i += CERTS_PER_BATCH) {
+      const batch = writeBatch(db);
+      names.slice(i, i + CERTS_PER_BATCH).forEach((name) => {
+        const data = {
+          name,
+          program: prog,
+          code: newCode(taken),
+          signerIds: signerIds || [],
+          eventDate: date,
+          status: "valid",
+          createdAt: Timestamp.now(),
+          createdBy: email || "unknown",
         };
+        const ref = doc(collection(db, CERTS));
+        batch.set(ref, data);
+        batch.set(doc(db, PUBLIC, data.code), publicFields(data));
+        created.push({ id: ref.id, ...data });
+      });
+      await batch.commit();
+      onProgress?.(Math.min(1, (i + CERTS_PER_BATCH) / names.length));
+    }
+    return created;
+  };
 
-        setNotification({ ...config[type], title, message });
-        setTimeout(() => setNotification(null), type === "error" ? 5000 : 4000);
+  const saveCert = async (values) => {
+    if (editing === "new") {
+      const [cert] = await createMany({ ...values, names: [values.name] });
+      notify("success", t("notices.createdTitle"), t("notices.createdText", { name: cert.name, code: cert.code }));
+      setQrFor(cert);
+      return;
+    }
+    const cert = editing;
+    const changes = {
+      name: values.name,
+      program: values.program,
+      eventDate: fromDateInput(values.eventDate),
+      signerIds: values.signerIds,
+      updatedAt: Timestamp.now(),
+      updatedBy: email || "unknown",
     };
+    const batch = writeBatch(db);
+    batch.update(doc(db, CERTS, cert.id), changes);
+    batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
+    await batch.commit();
+    notify("success", t("notices.savedTitle"), t("notices.savedText", { name: values.name }));
+  };
 
-    // ========== CODE GENERATION ==========
-    const generateSecureCode = () => {
-        const array = new Uint8Array(6);
-        crypto.getRandomValues(array);
-        return Array.from(array)
-            .map((b) => b.toString(36).toUpperCase())
-            .join("")
-            .substring(0, 8);
-    };
+  const setRevoked = async (cert, revoked, reason = "") => {
+    const changes = revoked
+      ? { status: "revoked", revokedReason: cleanText(reason), revokedAt: Timestamp.now(), revokedBy: email || "unknown" }
+      : { status: "valid", revokedReason: "" };
+    try {
+      const batch = writeBatch(db);
+      batch.update(doc(db, CERTS, cert.id), changes);
+      batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
+      await batch.commit();
+      notify("success", t(revoked ? "notices.revokedTitle" : "notices.restoredTitle"), cert.name);
+      setRevoking(null);
+    } catch (err) {
+      console.error("Could not change status:", err);
+      notify("error", t("errors.failedTitle"), t("errors.failed"));
+    }
+  };
 
-    const isCodeUnique = async (code) => {
-        try {
-            const q = query(certCollection, where("code", "==", code));
-            const snapshot = await getDocs(q);
-            return snapshot.empty;
-        } catch (err) {
-            console.error("Error checking code uniqueness:", err);
-            return false;
-        }
-    };
+  const removeCert = async (cert) => {
+    try {
+      // Confirm it is really the signed-in admin before a permanent delete.
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ login_hint: auth.currentUser?.email || "" });
+      await reauthenticateWithPopup(auth.currentUser, provider);
+      const batch = writeBatch(db);
+      batch.delete(doc(db, CERTS, cert.id));
+      batch.delete(doc(db, PUBLIC, normCode(cert.code)));
+      await batch.commit();
+      setDeleting(null);
+      notify("success", t("notices.deletedTitle"), cert.name);
+    } catch (err) {
+      if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") return;
+      console.error("Delete error:", err);
+      notify("error", t("errors.failedTitle"), err.code === "auth/user-mismatch" ? t("errors.sameAccount") : t("errors.failed"));
+    }
+  };
 
-    const generateUniqueCode = async () => {
-        for (let i = 0; i < MAX_RETRIES; i++) {
-            const code = generateSecureCode();
-            if (await isCodeUnique(code)) return code;
-        }
-        throw new Error("Failed to generate unique code after multiple attempts");
-    };
+  const zip = async (list, name) => {
+    if (!list.length) return;
+    setZipProgress(0);
+    try {
+      await downloadQrZip(list, `QR_${name || "sertifikat"}`, setZipProgress);
+    } catch (err) {
+      console.error("ZIP failed:", err);
+      notify("error", t("errors.failedTitle"), t("errors.failed"));
+    } finally {
+      setZipProgress(null);
+    }
+  };
 
-    // ========== UTILITIES ==========
-    const sanitizeInput = (input) =>
-        input.trim().replace(/[<>]/g, "").substring(0, INPUT_MAX_LENGTH);
+  const csv = (list, name) =>
+    downloadCsv(list, `Sertifikat_${name || "semua"}`, [
+      t("csv.name"),
+      t("csv.program"),
+      t("csv.eventDate"),
+      t("csv.code"),
+      t("csv.link"),
+      t("csv.status"),
+    ]);
 
-    const sanitizeFilename = (s) =>
-        s.replace(/[^\w\-_. ]+/g, "").replace(/\s+/g, "_");
+  const loading = certs === null && !loadFailed;
 
-    const verifyAdminAuth = () => {
-        const user = auth?.currentUser;
-        if (!user) {
-            showNotification("error", "Authentication Required", "Please log in again. Redirecting...");
-            setTimeout(() => signOut(auth).then(() => (window.location.href = "/cert-login")), 2000);
-            return false;
-        }
-        return true;
-    };
+  return (
+    <InternalLayout align="top">
+      <div className={`${layout.page} ${styles.page}`}>
+        <a href="/internal" className={layout.back}>
+          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
+        </a>
 
-    // ========== QR CODE GENERATION ==========
-    const generateQRCodes = async (certData) => {
-        try {
-            const results = await Promise.all(
-                certData.map(async (cert) => {
-                    const qrDataUrl = await QRCode.toDataURL(
-                        `${window.location.origin}/verify/${cert.code}`,
-                        { errorCorrectionLevel: "H", margin: 2, width: 300 }
-                    );
-                    return [cert.id, qrDataUrl];
-                })
-            );
-            return Object.fromEntries(results);
-        } catch (err) {
-            console.error("QR generation error:", err);
-            return {};
-        }
-    };
+        <Card className={layout.panel}>
+          <AccountBar />
 
-    // ========== FETCH CERTIFICATES ==========
-    const fetchCertificates = async (pageNum = 1) => {
-        if (!verifyAdminAuth()) return;
-
-        setLoading(true);
-        try {
-            let qQuery = query(certCollection, orderBy("createdAt", "desc"), firestoreLimit(ITEMS_PER_PAGE));
-
-            if (pageNum > 1 && lastVisible) {
-                qQuery = query(certCollection, orderBy("createdAt", "desc"), startAfter(lastVisible), firestoreLimit(ITEMS_PER_PAGE));
-            }
-
-            const snapshot = await getDocs(qQuery);
-            const certData = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
-
-            setCertificates(certData);
-            if (snapshot.docs.length > 0) {
-                setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
-            }
-
-            setQrCodes(await generateQRCodes(certData));
-            setTotalPages(Math.max(pageNum, snapshot.docs.length === ITEMS_PER_PAGE ? pageNum + 1 : pageNum));
-        } catch (err) {
-            console.error("Error fetching certificates:", err);
-            showNotification("error", "Failed to Load", "Could not load certificates. Check your permissions.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCertificates(1);
-    }, []);
-
-    // ========== ADD CERTIFICATE ==========
-    const handleAdd = async () => {
-        const sanitizedName = sanitizeInput(newCert.name);
-        const sanitizedProgram = sanitizeInput(newCert.program);
-
-        if (!sanitizedName || !sanitizedProgram) {
-            showNotification("warning", "Invalid Input", "Please fill all fields with valid data.");
-            return;
-        }
-
-        if (!verifyAdminAuth()) return;
-
-        setActionLoading(true);
-        try {
-            const code = await generateUniqueCode();
-            const newData = {
-                name: sanitizedName,
-                program: sanitizedProgram,
-                code,
-                signerIds: newCert.signerIds,
-                createdAt: new Date(),
-                createdBy: auth.currentUser.email,
-            };
-
-            const docRef = await addDoc(certCollection, newData);
-            const addedCert = { id: docRef.id, ...newData };
-
-            const qrDataUrl = await QRCode.toDataURL(
-                `${window.location.origin}/verify/${code}`,
-                { errorCorrectionLevel: "H", margin: 2, width: 300 }
-            );
-
-            setCertificates((prev) => [addedCert, ...prev.slice(0, ITEMS_PER_PAGE - 1)]);
-            setQrCodes((prev) => ({ ...prev, [docRef.id]: qrDataUrl }));
-            setNewCert({ name: "", program: "", signerIds: [] });
-
-            showNotification("success", "Certificate Added", `Certificate for ${sanitizedName} created successfully!`);
-        } catch (err) {
-            console.error("Error adding certificate:", err);
-            const errorMessage = err.code === "permission-denied"
-                ? "Permission denied. Check Firestore security rules."
-                : err.message || "An unexpected error occurred.";
-            showNotification("error", "Add Failed", errorMessage);
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    // ========== DELETE CERTIFICATE ==========
-    const closeDeleteModal = () => {
-        setDeleteModalOpen(false);
-        setDeleteTargetId(null);
-    };
-
-    const handleConfirmDelete = async () => {
-        if (!deleteTargetId) {
-            showNotification("warning", "No Selection", "No certificate selected for deletion.");
-            return;
-        }
-
-        const currentUser = auth?.currentUser;
-        if (!currentUser) {
-            showNotification("error", "Not Authenticated", "Please log in again.");
-            return;
-        }
-
-        setActionLoading(true);
-        try {
-            // Confirm it is really the signed-in admin before a permanent delete.
-            const provider = new GoogleAuthProvider();
-            provider.setCustomParameters({ login_hint: currentUser.email || "" });
-            await reauthenticateWithPopup(currentUser, provider);
-            await deleteDoc(doc(db, "certificates", deleteTargetId));
-
-            setCertificates((prev) => prev.filter((c) => c.id !== deleteTargetId));
-            setQrCodes((prev) => {
-                const { [deleteTargetId]: _, ...rest } = prev;
-                return rest;
-            });
-
-            closeDeleteModal();
-            showNotification("success", "Certificate Deleted", "Certificate removed successfully.");
-        } catch (err) {
-            console.error("Delete error:", err);
-            if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") return;
-            const errorMessage = err.code === "auth/user-mismatch"
-                ? "Choose the same Google account you are signed in with."
-                : err.code === "permission-denied"
-                    ? "Permission denied. Check Firestore security rules."
-                    : err.message || "Deletion failed.";
-            showNotification("error", "Delete Failed", errorMessage);
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    // ========== DOWNLOAD QR ==========
-    const handleDownloadQR = (cert) => {
-        const url = qrCodes[cert.id];
-        if (!url) {
-            showNotification("error", "QR Not Found", "QR code not available for download.");
-            return;
-        }
-
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `QR_${sanitizeFilename(cert.name)}_${cert.code}.png`;
-        link.click();
-
-        showNotification("success", "Download Started", "QR code downloaded successfully.");
-    };
-
-    // ========== FILTERED CERTIFICATES ==========
-    const filteredCertificates = certificates.filter((cert) =>
-        cert.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cert.program.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // ========== SIGNERS ==========
-    const signerOptions = signers
-        .filter((s) => s.active !== false)
-        .map((s) => ({ value: s.id, label: `${s.name} — ${s.position}` }));
-
-    const defaultSignerNames = signers
-        .filter((s) => s.active !== false && s.isDefault)
-        .map((s) => s.name)
-        .join(", ");
-
-    const signerPlaceholder = defaultSignerNames
-        ? `Leave empty to use default signers (${defaultSignerNames})`
-        : "No default signers yet — add them in the Signers & Stamps tab";
-
-    const handleSaveCertSigners = async () => {
-        if (!signerEdit || !verifyAdminAuth()) return;
-        setActionLoading(true);
-        try {
-            await updateDoc(doc(db, "certificates", signerEdit.cert.id), { signerIds: signerEdit.signerIds });
-            setCertificates((prev) =>
-                prev.map((c) => (c.id === signerEdit.cert.id ? { ...c, signerIds: signerEdit.signerIds } : c))
-            );
-            setSignerEdit(null);
-            showNotification("success", "Signers Updated", "The verification page now shows the new signers.");
-        } catch (err) {
-            console.error("Error updating signers:", err);
-            showNotification("error", "Update Failed", err.message || "Could not update signers.");
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    return (
-        <div className={styles.container}>
-            <Title order={2}>Admin Certificate Panel</Title>
-
-            {notification && (
-                <Alert
-                    icon={notification.icon}
-                    title={notification.title}
-                    color={notification.color}
-                    withCloseButton
-                    onClose={() => setNotification(null)}
-                    mb="md"
-                    style={{
-                        position: 'fixed',
-                        top: '20px',
-                        right: '20px',
-                        zIndex: 1000,
-                        maxWidth: '400px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
-                    }}
-                >
-                    {notification.message}
-                </Alert>
-            )}
-
-            <div className={styles.headerActions}>
-                <QrStats />
-                <Button
-                    variant="outline"
-                    color="red"
-                    onClick={() => signOut(auth).then(() => (window.location.href = "/cert-login"))}
-                    className={styles.logoutBtn}
-                >
-                    Logout
-                </Button>
+          <div className={styles.headerRow}>
+            <div className={layout.heading}>
+              <span className={layout.headingIcon} style={{ background: "linear-gradient(135deg, #d4a912 0%, #a67d00 100%)" }}>
+                <IconCertificate size={22} />
+              </span>
+              <div>
+                <Title order={2} className={layout.headingTitle}>
+                  {t("title")}
+                </Title>
+                <Text className={layout.headingText}>{t("intro")}</Text>
+              </div>
             </div>
+            <Group gap="xs">
+              <Button variant="light" color="yellow" leftSection={<IconPlus size={17} />} onClick={() => setEditing("new")}>
+                {t("actions.one")}
+              </Button>
+              <Button className={styles.primaryButton} leftSection={<IconUsersPlus size={17} />} onClick={() => setBulkOpen(true)}>
+                {t("actions.bulk")}
+              </Button>
+            </Group>
+          </div>
 
-            <Tabs value={activeTab} onChange={setActiveTab} className={styles.tabs} keepMounted>
-                <Tabs.List className={styles.tabList} grow>
-                    <Tabs.Tab value="certificates" leftSection={<IconCertificate size={18} />}>
-                        Certificates
-                    </Tabs.Tab>
-                    <Tabs.Tab value="signers" leftSection={<IconSignature size={18} />}>
-                        Signers & Stamps
-                        {signers.length > 0 && (
-                            <Badge size="xs" ml={6} variant="white" color="violet">{signers.length}</Badge>
-                        )}
-                    </Tabs.Tab>
-                </Tabs.List>
+          <div className={styles.stats}>
+            <Stat value={certs?.length ?? 0} label={t("stats.certificates")} />
+            <Stat value={programs.length} label={t("stats.programs")} />
+            <Stat value={totalScans} label={t("stats.scans")} />
+          </div>
 
-                <Tabs.Panel value="signers" pt="lg">
-                    <SignerManager notify={showNotification} onSignersChange={setSigners} />
-                </Tabs.Panel>
+          {sync && (
+            <Alert color="blue" variant="light" mt="md" icon={<IconShieldCheck size={18} />} title={t("secure.title")}>
+              <Text size="sm">{t("secure.text", { done: sync.done, total: sync.total })}</Text>
+              <Progress mt={8} value={(sync.done / Math.max(1, sync.total)) * 100} striped animated />
+            </Alert>
+          )}
+          {notice && (
+            <Alert color={notice.color} variant="light" mt="md" title={notice.title} withCloseButton onClose={() => setNotice(null)}>
+              {notice.message}
+            </Alert>
+          )}
+          {loadFailed && (
+            <Alert color="red" mt="md">
+              {t("loadFailed")}
+            </Alert>
+          )}
 
-                <Tabs.Panel value="certificates" pt="lg">
-            <BackupManager onImportComplete={() => { setPage(1); fetchCertificates(1); }} />
+          <Tabs value={tab} onChange={setTab} mt="lg" keepMounted={false}>
+            <Tabs.List>
+              <Tabs.Tab value="certificates" leftSection={<IconCertificate size={17} />}>
+                {t("tabs.certificates")}
+              </Tabs.Tab>
+              <Tabs.Tab value="signers" leftSection={<IconSignature size={17} />}>
+                {t("tabs.signers")}
+                {signers.length > 0 && (
+                  <Badge size="xs" ml={6} variant="light" color="violet">
+                    {signers.length}
+                  </Badge>
+                )}
+              </Tabs.Tab>
+              <Tabs.Tab value="backup" leftSection={<IconDatabase size={17} />}>
+                {t("tabs.backup")}
+              </Tabs.Tab>
+            </Tabs.List>
 
-            <div className={styles.form}>
+            <Tabs.Panel value="certificates" pt="md">
+              {programs.length > 0 && (
+                <div className={styles.programs}>
+                  <button type="button" className={`${styles.programChip} ${!program ? styles.programOn : ""}`} onClick={() => setProgram(null)}>
+                    {t("filters.allPrograms")} <span>{certs?.length ?? 0}</span>
+                  </button>
+                  {programs.map(([name, count]) => (
+                    <button
+                      type="button"
+                      key={name}
+                      className={`${styles.programChip} ${program === name ? styles.programOn : ""}`}
+                      onClick={() => setProgram(program === name ? null : name)}
+                      dir="auto"
+                    >
+                      {name} <span>{count}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className={styles.toolbar}>
                 <TextInput
-                    label="Name"
-                    placeholder="Participant Name"
-                    value={newCert.name}
-                    onChange={(e) => setNewCert({ ...newCert, name: e.target.value })}
-                    disabled={actionLoading}
-                    maxLength={INPUT_MAX_LENGTH}
+                  leftSection={<IconSearch size={16} />}
+                  placeholder={t("filters.search")}
+                  value={search}
+                  onChange={(e) => setSearch(e.currentTarget.value)}
+                  className={styles.search}
                 />
-                <TextInput
-                    label="Program"
-                    placeholder="Program Name"
-                    value={newCert.program}
-                    onChange={(e) => setNewCert({ ...newCert, program: e.target.value })}
-                    disabled={actionLoading}
-                    maxLength={INPUT_MAX_LENGTH}
+                <SegmentedControl
+                  value={status}
+                  onChange={setStatus}
+                  data={[
+                    { value: "all", label: t("filters.all") },
+                    { value: "valid", label: t("filters.valid") },
+                    { value: "revoked", label: t("filters.revoked") },
+                  ]}
                 />
-                <MultiSelect
-                    label="Signers"
-                    placeholder={newCert.signerIds.length ? "" : signerPlaceholder}
-                    data={signerOptions}
-                    value={newCert.signerIds}
-                    onChange={(ids) => setNewCert({ ...newCert, signerIds: ids })}
-                    disabled={actionLoading}
-                    clearable
-                    searchable
-                    nothingFoundMessage="No signers — add them in the Signers & Stamps tab"
-                />
-                <Button mt="sm" onClick={handleAdd} loading={actionLoading}>
-                    Add Certificate
-                </Button>
-            </div>
+              </div>
 
-            <TextInput
-                className={styles.searchBox}
-                placeholder="Search by name or program..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                mb="md"
-            />
-
-            {loading ? (
-                <LoadingOverlay />
-            ) : (
-                <>
-                    <Table striped highlightOnHover withBorder>
-                        <thead className="table-head">
-                            <tr>
-                                <th>Name</th>
-                                <th>Program</th>
-                                <th>Code</th>
-                                <th>QR</th>
-                                <th>Signers</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredCertificates.length === 0 ? (
-                                <tr>
-                                    <td colSpan={6} style={{ padding: "2rem", textAlign: "center" }}>
-                                        No certificates found
-                                    </td>
-                                </tr>
-                            ) : (
-                                filteredCertificates.map((cert) => (
-                                    <tr className="table-row" key={cert.id}>
-                                        <td>{cert.name}</td>
-                                        <td>{cert.program}</td>
-                                        <td>{cert.code}</td>
-                                        <td className={styles.qrCell}>
-                                            {qrCodes[cert.id] && (
-                                                <Image src={qrCodes[cert.id]} w={60} h={60} radius="md" />
-                                            )}
-                                        </td>
-                                        <td>
-                                            <SignerSummary cert={cert} signers={signers} />
-                                        </td>
-                                        <td>
-                                            <Group spacing="xs" justify="center">
-                                                <Button
-                                                    color="blue"
-                                                    size="s"
-                                                    onClick={() => handleDownloadQR(cert)}
-                                                    title="Download QR Code"
-                                                    p="xs"
-                                                >
-                                                    <IconDownload size={16} />
-                                                </Button>
-                                                <Button
-                                                    color="violet"
-                                                    size="s"
-                                                    onClick={() => setSignerEdit({ cert, signerIds: cert.signerIds || [] })}
-                                                    title="Choose Signers"
-                                                    p="xs"
-                                                >
-                                                    <IconSignature size={16} />
-                                                </Button>
-                                                <Button
-                                                    color="red"
-                                                    size="s"
-                                                    onClick={() => {
-                                                        setDeleteTargetId(cert.id);
-                                                        setDeleteModalOpen(true);
-                                                    }}
-                                                    title="Delete Certificate"
-                                                    p="xs"
-                                                >
-                                                    <IconTrash size={16} />
-                                                </Button>
-                                            </Group>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-
-                    {!searchTerm && totalPages > 1 && (
-                        <Group justify="center" mt="lg">
-                            <Pagination
-                                value={page}
-                                onChange={(p) => { setPage(p); fetchCertificates(p); }}
-                                total={totalPages}
-                            />
-                        </Group>
-                    )}
-                </>
-            )}
-                </Tabs.Panel>
-            </Tabs>
-
-            <Modal
-                opened={!!signerEdit}
-                onClose={() => setSignerEdit(null)}
-                title={`Signers — ${signerEdit?.cert.name || ""}`}
-                centered
-                size="md"
-            >
-                <MultiSelect
-                    label="Who signed this certificate?"
-                    placeholder={signerEdit?.signerIds.length ? "" : signerPlaceholder}
-                    data={signerOptions}
-                    value={signerEdit?.signerIds || []}
-                    onChange={(ids) => setSignerEdit((prev) => ({ ...prev, signerIds: ids }))}
-                    clearable
-                    searchable
-                />
-                <Text size="xs" c="dimmed" mt="xs">
-                    Leave empty to always show the current default signers.
+              <div className={styles.listHead}>
+                <Text size="sm" c="dimmed">
+                  {t("filters.count", { count: filtered.length })}
                 </Text>
-                <Group justify="flex-end" mt="md">
-                    <Button variant="default" onClick={() => setSignerEdit(null)}>Cancel</Button>
-                    <Button loading={actionLoading} onClick={handleSaveCertSigners}>Save</Button>
+                <Group gap={6}>
+                  <Button
+                    size="xs"
+                    variant="light"
+                    leftSection={<IconDownload size={15} />}
+                    onClick={() => zip(filtered, program)}
+                    disabled={!filtered.length || zipProgress !== null}
+                  >
+                    {t("actions.zip")}
+                  </Button>
+                  <Button size="xs" variant="subtle" leftSection={<IconTable size={15} />} onClick={() => csv(filtered, program)} disabled={!filtered.length}>
+                    {t("actions.csv")}
+                  </Button>
                 </Group>
-            </Modal>
+              </div>
+              {zipProgress !== null && (
+                <div className={styles.zipProgress}>
+                  <Text size="xs" c="dimmed">
+                    {t("actions.zipping", { percent: Math.round(zipProgress * 100) })}
+                  </Text>
+                  <Progress value={zipProgress * 100} size="sm" />
+                </div>
+              )}
 
-            <Modal
-                opened={deleteModalOpen}
-                onClose={closeDeleteModal}
-                title="Confirm Delete"
-                centered
-                size="sm"
-            >
-                <Text mb="sm">
-                    This certificate will be deleted permanently. Google will ask you to confirm
-                    your account once more.
+              {loading && (
+                <Group justify="center" py="xl">
+                  <Loader size="sm" />
+                </Group>
+              )}
+              {certs?.length === 0 && (
+                <div className={styles.empty}>
+                  <IconCertificate size={34} />
+                  <Text fw={600}>{t("empty.title")}</Text>
+                  <Text size="sm" c="dimmed">
+                    {t("empty.text")}
+                  </Text>
+                </div>
+              )}
+              {certs?.length > 0 && filtered.length === 0 && (
+                <Text c="dimmed" ta="center" py="xl">
+                  {t("filters.noMatch")}
                 </Text>
-                <Group justify="flex-end" mt="md">
-                    <Button variant="default" onClick={closeDeleteModal}>Cancel</Button>
-                    <Button color="red" loading={actionLoading} onClick={handleConfirmDelete}>
-                        Confirm with Google & delete
-                    </Button>
-                </Group>
-            </Modal>
-        </div>
-    );
-};
+              )}
 
-const SignerSummary = ({ cert, signers }) => {
-    const resolved = resolveCertificateSigners(cert, signers);
-    const usesDefault = !(Array.isArray(cert.signerIds) && cert.signerIds.length > 0);
-    if (resolved.length === 0) return <Text size="xs" c="dimmed">—</Text>;
-    return (
-        <Text size="xs" title={resolved.map((s) => s.name).join(", ")}>
-            {resolved.length === 1 ? resolved[0].name : `${resolved[0].name} +${resolved.length - 1}`}
-            {usesDefault && <Text span size="xs" c="dimmed"> (default)</Text>}
+              <ul className={styles.list}>
+                {visible.map((cert) => (
+                  <CertRow
+                    key={cert.id}
+                    cert={cert}
+                    pub={pubs?.get(normCode(cert.code))}
+                    signers={signers}
+                    dateFormat={dateFormat}
+                    onQr={() => setQrFor(cert)}
+                    onEdit={() => setEditing(cert)}
+                    onRevoke={() => (isRevoked(cert) ? setRevoked(cert, false) : setRevoking(cert))}
+                    onDelete={() => setDeleting(cert)}
+                  />
+                ))}
+              </ul>
+
+              {pages > 1 && (
+                <Group justify="center" mt="lg">
+                  <Pagination value={page} onChange={setPage} total={pages} size="sm" />
+                </Group>
+              )}
+            </Tabs.Panel>
+
+            <Tabs.Panel value="signers" pt="md">
+              <SignerManager notify={notify} onSignersChange={setSigners} />
+            </Tabs.Panel>
+
+            <Tabs.Panel value="backup" pt="md">
+              <BackupManager certs={certs || []} notify={notify} />
+            </Tabs.Panel>
+          </Tabs>
+        </Card>
+      </div>
+
+      <CertEditor
+        opened={editing !== null}
+        cert={editing === "new" ? null : editing}
+        onClose={() => setEditing(null)}
+        programs={programNames}
+        signerOptions={signerOptions}
+        signerPlaceholder={signerPlaceholder}
+        onSave={saveCert}
+      />
+      <BulkIssue
+        opened={bulkOpen}
+        onClose={() => setBulkOpen(false)}
+        programs={programNames}
+        signerOptions={signerOptions}
+        signerPlaceholder={signerPlaceholder}
+        existing={certs || []}
+        onIssue={createMany}
+        onDownloadZip={zip}
+        onDownloadCsv={csv}
+      />
+      <QrModal cert={qrFor} onClose={() => setQrFor(null)} />
+      <RevokeModal cert={revoking} onClose={() => setRevoking(null)} onConfirm={(reason) => setRevoked(revoking, true, reason)} />
+      <Modal opened={!!deleting} onClose={() => setDeleting(null)} title={t("delete.title")} centered size="sm">
+        <Text size="sm" mb="sm">
+          {t("delete.text", { name: deleting?.name })}
         </Text>
-    );
-};
+        <Text size="sm" c="dimmed">
+          {t("delete.revokeHint")}
+        </Text>
+        <Group justify="flex-end" mt="md">
+          <Button variant="default" onClick={() => setDeleting(null)}>
+            {t("common.cancel")}
+          </Button>
+          <Button color="red" onClick={() => removeCert(deleting)}>
+            {t("delete.confirm")}
+          </Button>
+        </Group>
+      </Modal>
+    </InternalLayout>
+  );
+}
 
-export default Admin;
+function Stat({ value, label }) {
+  return (
+    <div className={styles.stat}>
+      <strong>{value.toLocaleString("en-US")}</strong>
+      <span>{label}</span>
+    </div>
+  );
+}
+
+function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDelete }) {
+  const { t } = useTranslation(NS);
+  const revoked = isRevoked(cert);
+  const event = certDate(cert.eventDate);
+  const resolved = resolveCertificateSigners(cert, signers);
+  const usesDefault = !(Array.isArray(cert.signerIds) && cert.signerIds.length);
+
+  return (
+    <li className={`${styles.row} ${revoked ? styles.rowOff : ""}`}>
+      <div className={styles.main}>
+        <div className={styles.titleLine}>
+          <span className={styles.name} dir="auto">
+            {cert.name}
+          </span>
+          {revoked && (
+            <Badge size="sm" color="red" variant="light">
+              {t("status.revoked")}
+            </Badge>
+          )}
+        </div>
+        <span className={styles.meta} dir="auto">
+          {cert.program}
+          {event ? ` · ${dateFormat.format(event)}` : ""}
+        </span>
+        <div className={styles.codeLine}>
+          <bdi className={styles.code}>{cert.code}</bdi>
+          <CopyButton value={verifyLink(cert.code)} timeout={1600}>
+            {({ copied, copy }) => (
+              <Tooltip label={copied ? t("row.copied") : t("row.copyLink")}>
+                <ActionIcon size="sm" variant="subtle" color={copied ? "teal" : "gray"} onClick={copy} aria-label={t("row.copyLink")}>
+                  {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </CopyButton>
+          {resolved.length > 0 && (
+            <span className={styles.signers} title={resolved.map((s) => s.name).join(", ")}>
+              <IconSignature size={13} /> {resolved.length === 1 ? resolved[0].name : `${resolved[0].name} +${resolved.length - 1}`}
+              {usesDefault ? ` (${t("row.default")})` : ""}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className={styles.scans}>
+        <span className={styles.scanCount}>
+          <IconEye size={15} /> {(pub?.scans || 0).toLocaleString("en-US")}
+        </span>
+        <span className={styles.scanWhen}>{pub?.lastScannedAt ? t("row.lastScan", { time: timeAgo(pub.lastScannedAt) }) : t("row.neverScanned")}</span>
+      </div>
+
+      <div className={styles.actions}>
+        <Tooltip label={t("row.qr")}>
+          <ActionIcon variant="subtle" color="gray" onClick={onQr} aria-label={t("row.qr")}>
+            <IconQrcode size={18} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t("row.edit")}>
+          <ActionIcon variant="subtle" color="blue" onClick={onEdit} aria-label={t("row.edit")}>
+            <IconPencil size={18} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={revoked ? t("row.restore") : t("row.revoke")}>
+          <ActionIcon variant="subtle" color={revoked ? "teal" : "orange"} onClick={onRevoke} aria-label={revoked ? t("row.restore") : t("row.revoke")}>
+            {revoked ? <IconArrowBackUp size={18} /> : <IconBan size={18} />}
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t("row.delete")}>
+          <ActionIcon variant="subtle" color="red" onClick={onDelete} aria-label={t("row.delete")}>
+            <IconTrash size={18} />
+          </ActionIcon>
+        </Tooltip>
+      </div>
+    </li>
+  );
+}
+
+function CertEditor({ opened, cert, onClose, programs, signerOptions, signerPlaceholder, onSave }) {
+  const { t } = useTranslation(NS);
+  const [values, setValues] = useState({ name: "", program: "", eventDate: "", signerIds: [] });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!opened) return;
+    setError("");
+    setValues(
+      cert
+        ? { name: cert.name || "", program: cert.program || "", eventDate: toDateInput(cert.eventDate), signerIds: cert.signerIds || [] }
+        : { name: "", program: "", eventDate: "", signerIds: [] }
+    );
+  }, [opened, cert]);
+
+  const save = async () => {
+    const name = cleanText(values.name);
+    const program = cleanText(values.program);
+    if (!name) return setError(t("errors.noName"));
+    if (!program) return setError(t("errors.noProgram"));
+    setSaving(true);
+    try {
+      await onSave({ ...values, name, program });
+      onClose();
+    } catch (err) {
+      console.error("Could not save certificate:", err);
+      setError(t("errors.failed"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Modal opened={opened} onClose={onClose} title={t(cert ? "editor.editTitle" : "editor.newTitle")} centered size="lg">
+      <div className={styles.editor}>
+        {cert && (
+          <Alert color="blue" variant="light">
+            {t("editor.sameCode", { code: cert.code })}
+          </Alert>
+        )}
+        <TextInput
+          label={t("fields.name")}
+          placeholder={t("fields.namePlaceholder")}
+          value={values.name}
+          onChange={(e) => setValues((v) => ({ ...v, name: e.currentTarget.value }))}
+          required
+          dir="auto"
+        />
+        <Autocomplete
+          label={t("fields.program")}
+          placeholder={t("fields.programPlaceholder")}
+          data={programs}
+          value={values.program}
+          onChange={(program) => setValues((v) => ({ ...v, program }))}
+          required
+          limit={12}
+        />
+        <div className={styles.editorRow}>
+          <TextInput
+            type="date"
+            label={t("fields.eventDate")}
+            description={t("fields.eventDateHint")}
+            value={values.eventDate}
+            onChange={(e) => setValues((v) => ({ ...v, eventDate: e.currentTarget.value }))}
+            className={styles.dateInput}
+          />
+          <MultiSelect
+            label={t("fields.signers")}
+            placeholder={values.signerIds.length ? "" : signerPlaceholder}
+            data={signerOptions}
+            value={values.signerIds}
+            onChange={(signerIds) => setValues((v) => ({ ...v, signerIds }))}
+            clearable
+            searchable
+          />
+        </div>
+        {error && (
+          <Alert color="red" variant="light">
+            {error}
+          </Alert>
+        )}
+      </div>
+      <Group justify="flex-end" mt="lg">
+        <Button variant="default" onClick={onClose}>
+          {t("common.cancel")}
+        </Button>
+        <Button className={styles.primaryButton} loading={saving} onClick={save}>
+          {t(cert ? "common.save" : "editor.create")}
+        </Button>
+      </Group>
+    </Modal>
+  );
+}
+
+function RevokeModal({ cert, onClose, onConfirm }) {
+  const { t } = useTranslation(NS);
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => setReason(""), [cert]);
+
+  return (
+    <Modal opened={!!cert} onClose={onClose} title={t("revoke.title")} centered size="md">
+      <Text size="sm" mb="sm">
+        {t("revoke.text", { name: cert?.name })}
+      </Text>
+      <Textarea
+        label={t("revoke.reason")}
+        placeholder={t("revoke.reasonPlaceholder")}
+        description={t("revoke.reasonHint")}
+        value={reason}
+        onChange={(e) => setReason(e.currentTarget.value)}
+        autosize
+        minRows={2}
+        dir="auto"
+      />
+      <Group justify="flex-end" mt="md">
+        <Button variant="default" onClick={onClose}>
+          {t("common.cancel")}
+        </Button>
+        <Button
+          color="orange"
+          loading={busy}
+          onClick={async () => {
+            setBusy(true);
+            await onConfirm(reason);
+            setBusy(false);
+          }}
+        >
+          {t("revoke.confirm")}
+        </Button>
+      </Group>
+    </Modal>
+  );
+}
+
+function QrModal({ cert, onClose }) {
+  const { t } = useTranslation(NS);
+  const [image, setImage] = useState("");
+
+  useEffect(() => {
+    setImage("");
+    if (!cert) return undefined;
+    let alive = true;
+    certQr(cert)
+      .then((url) => alive && setImage(url))
+      .catch((err) => console.error("QR failed:", err));
+    return () => {
+      alive = false;
+    };
+  }, [cert]);
+
+  return (
+    <Modal opened={!!cert} onClose={onClose} title={cert?.name} centered size="sm">
+      <div className={styles.qrBox}>
+        {image ? <img src={image} alt={t("row.qr")} className={styles.qrImage} /> : <Loader size="sm" />}
+        <Text size="sm" c="dimmed" ta="center">
+          {t("qr.hint")}
+        </Text>
+        <Group grow w="100%">
+          <Button
+            leftSection={<IconDownload size={17} />}
+            className={styles.primaryButton}
+            disabled={!image}
+            onClick={() => downloadDataUrl(image, qrFileName(cert))}
+          >
+            {t("qr.download")}
+          </Button>
+          <Button variant="light" component="a" href={cert ? verifyLink(cert.code) : undefined} target="_blank" rel="noreferrer">
+            {t("qr.open")}
+          </Button>
+        </Group>
+      </div>
+    </Modal>
+  );
+}

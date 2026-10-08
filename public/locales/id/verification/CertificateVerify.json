@@ -1,18 +1,25 @@
 {
-    "loading": "Memverifikasi sertifikat...",
-    "invalid_title": "Sertifikat Tidak Valid",
-    "invalid_subtext": "Kode sertifikat ini mungkin salah atau tidak terdaftar dalam sistem kami.",
-    "errors": {
-        "no_code": "Tidak ada kode sertifikat.",
-        "not_found": "Sertifikat tidak ditemukan.",
-        "failed": "Gagal memverifikasi sertifikat. Silakan coba lagi."
-    },
-    "authentic_badge": "Dokumen MTI Asli",
-    "verified_document": "Dokumen MTI Terverifikasi",
-    "issued_to": "Diterbitkan untuk:",
-    "program": "Program:",
-    "document_code": "Kode Dokumen:",
-    "issued_on": "Diterbitkan Pada:",
-    "footer_text": "Dokumen ini telah diverifikasi sebagai catatan resmi yang diterbitkan oleh MTI.",
-    "signatures_title": "Tanda Tangan Resmi"
+  "loading": "Memeriksa sertifikat…",
+  "tab_found": "Sertifikat terverifikasi",
+  "tab_check": "Verifikasi sertifikat",
+  "authentic_badge": "Sertifikat Asli MTI",
+  "revoked_badge": "Sertifikat Dicabut",
+  "revoked_title": "Sertifikat ini sudah tidak berlaku.",
+  "revoked_text": "Sertifikat ini pernah diterbitkan oleh Markaz Tadarus Indonesia, tetapi kemudian dicabut.",
+  "revoked_reason": "Alasan",
+  "issued_to": "Diberikan kepada",
+  "program": "Program",
+  "event_date": "Tanggal kegiatan",
+  "issued_on": "Diterbitkan",
+  "document_code": "Kode dokumen",
+  "signatures_title": "Tanda tangan resmi",
+  "footer_text": "Data ini berasal langsung dari catatan resmi Markaz Tadarus Indonesia.",
+  "footer_revoked": "Status ini berasal langsung dari catatan resmi Markaz Tadarus Indonesia.",
+  "invalid_title": "Sertifikat tidak ditemukan",
+  "invalid_subtext": "Kode ini tidak terdaftar di catatan kami. Periksa kembali kodenya, atau hubungi Markaz Tadarus Indonesia.",
+  "home": "Ke beranda",
+  "retry": "Coba lagi",
+  "errors": {
+    "failed": "Sertifikat belum dapat diperiksa. Periksa koneksi internet Anda."
+  }
 }

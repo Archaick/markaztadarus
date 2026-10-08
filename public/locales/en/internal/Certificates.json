@@ -1,0 +1,208 @@
+{
+  "title": "Certificate Dashboard",
+  "intro": "Issue certificates with QR codes anyone can check.",
+  "actions": {
+    "one": "One certificate",
+    "bulk": "Issue many",
+    "zip": "Download QR (ZIP)",
+    "csv": "Download list (Excel)",
+    "zipping": "Preparing QR codes… {{percent}}%"
+  },
+  "stats": {
+    "certificates": "Certificates",
+    "programs": "Programs",
+    "scans": "Times scanned"
+  },
+  "secure": {
+    "title": "Securing the verification page",
+    "text": "Copying certificates into the locked verification store: {{done}} of {{total}}. Keep this page open.",
+    "doneTitle": "The participant list is now protected",
+    "doneText": "{{count}} certificates can be verified by their own code, but the full list can no longer be pulled from outside.",
+    "failedTitle": "Copying is not finished",
+    "failedText": "Reload the page to continue. Existing QR codes keep working."
+  },
+  "loadFailed": "Certificates could not be loaded. Check your connection and reload the page.",
+  "tabs": {
+    "certificates": "Certificates",
+    "signers": "Signers & stamps",
+    "backup": "Backup"
+  },
+  "filters": {
+    "allPrograms": "All programs",
+    "search": "Search name, program, or code…",
+    "all": "All",
+    "valid": "Valid",
+    "revoked": "Revoked",
+    "count": "{{count}} certificates",
+    "noMatch": "No certificates match."
+  },
+  "empty": {
+    "title": "No certificates yet",
+    "text": "Issue one certificate, or many at once from an Excel list."
+  },
+  "status": {
+    "revoked": "Revoked"
+  },
+  "row": {
+    "copied": "Copied",
+    "copyLink": "Copy verification link",
+    "default": "default",
+    "lastScan": "last {{time}}",
+    "neverScanned": "not scanned yet",
+    "qr": "QR code",
+    "edit": "Edit",
+    "restore": "Make valid again",
+    "revoke": "Revoke",
+    "delete": "Delete"
+  },
+  "fields": {
+    "name": "Participant name",
+    "namePlaceholder": "Full name as written on the certificate",
+    "program": "Program",
+    "programPlaceholder": "Pick or type a program name",
+    "eventDate": "Event date",
+    "eventDateHint": "Optional. Shown on the verification page.",
+    "signers": "Signers",
+    "signersDefault": "Leave empty to use the default signers ({{names}})",
+    "signersNone": "No default signers yet"
+  },
+  "editor": {
+    "newTitle": "New certificate",
+    "editTitle": "Edit certificate",
+    "sameCode": "The code {{code}} stays the same, so printed certificates stay valid.",
+    "create": "Issue"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close"
+  },
+  "errors": {
+    "noName": "Enter the participant's name.",
+    "noProgram": "Enter the program name.",
+    "failed": "Something went wrong. Please try again.",
+    "failedTitle": "Failed",
+    "sameAccount": "Choose the same Google account you are signed in with."
+  },
+  "notices": {
+    "createdTitle": "Certificate issued",
+    "createdText": "{{name}} — code {{code}}.",
+    "savedTitle": "Changes saved",
+    "savedText": "The verification page for {{name}} is updated.",
+    "revokedTitle": "Certificate revoked",
+    "restoredTitle": "Certificate valid again",
+    "deletedTitle": "Certificate deleted"
+  },
+  "delete": {
+    "title": "Delete certificate?",
+    "text": "The certificate for {{name}} will be deleted permanently. Google will ask you to confirm your account once more.",
+    "revokeHint": "Only want to mark it invalid? Use Revoke — the verification page will say so clearly.",
+    "confirm": "Confirm & delete"
+  },
+  "revoke": {
+    "title": "Revoke certificate",
+    "text": "The verification page for {{name}} will say this certificate was revoked. You can make it valid again at any time.",
+    "reason": "Reason (optional)",
+    "reasonPlaceholder": "e.g. Issued to the wrong person",
+    "reasonHint": "Shown to anyone who scans the code.",
+    "confirm": "Revoke certificate"
+  },
+  "qr": {
+    "hint": "Print-ready, with the MTI logo in the middle and the verification address underneath.",
+    "download": "Download PNG",
+    "open": "Open page"
+  },
+  "csv": {
+    "name": "Name",
+    "program": "Program",
+    "eventDate": "Event date",
+    "code": "Code",
+    "link": "Verification link",
+    "status": "Status"
+  },
+  "bulk": {
+    "title": "Issue many certificates",
+    "fromExcel": "From Excel",
+    "fromPaste": "Paste a list",
+    "excelHint": "Choose an Excel file (.xlsx) with the participants' names.",
+    "excelFailed": "The file could not be read. Make sure it is .xlsx (Excel), not .xls or .csv.",
+    "chooseFile": "Choose Excel file",
+    "otherFile": "Choose another file",
+    "column": "Column",
+    "nameColumn": "Column with the names",
+    "hasHeader": "First row is a header",
+    "pasteLabel": "Participant names",
+    "pasteHint": "One name per line. You can copy straight from Google Sheets or WhatsApp.",
+    "previewTitle": "{{count}} certificates will be issued",
+    "andMore": "and {{count}} more",
+    "skipped": "{{count}} names already have a certificate for this program and are skipped.",
+    "nothing": "There are no new names to issue.",
+    "submit": "Issue {{count}} certificates",
+    "doneTitle": "{{count}} certificates issued",
+    "doneText": "Download all QR codes at once, and the list of names + codes for a mail merge in Canva or Word.",
+    "again": "Issue another list"
+  },
+  "backup": {
+    "exportTitle": "Download a backup",
+    "exportText": "A JSON copy of {{count}} certificates to keep somewhere safe.",
+    "exportButton": "Download backup",
+    "importTitle": "Restore from a backup",
+    "importText": "Codes that already exist are skipped, so it is safe to run more than once.",
+    "importButton": "Choose backup file",
+    "exportedTitle": "Backup downloaded",
+    "exportedText": "{{count}} certificates saved in the file.",
+    "importedTitle": "Restore finished",
+    "importedText": "{{count}} certificates restored, {{skipped}} skipped because they already exist.",
+    "failedTitle": "Restore failed",
+    "badFile": "This file is not a certificate backup.",
+    "note": "Restored certificates keep their original codes, so printed QR codes stay valid."
+  },
+  "signers": {
+    "intro": "Signatures and stamps appear on the page people see when they scan a certificate's QR code.",
+    "addTitle": "Add a signer",
+    "editTitle": "Edit signer",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "e.g. Dr. Ahmad Fauzi, Lc., M.A.",
+    "position": "Position",
+    "positionPlaceholder": "e.g. Director",
+    "organization": "Organization (optional)",
+    "signature": "Signature",
+    "signatureHint": "Photo or scan of the signature",
+    "stamp": "Stamp",
+    "stampHint": "Official stamp image",
+    "upload": "Upload",
+    "replace": "Replace",
+    "removeImage": "Remove image",
+    "notImage": "Choose an image file (PNG, JPG, WEBP).",
+    "badImage": "The image could not be read.",
+    "imageError": "Image problem",
+    "removeWhite": "Remove white background from uploads",
+    "removeWhiteHint": "Makes scanned paper transparent so the ink sits cleanly on the page.",
+    "default": "Default signer",
+    "defaultHint": "Shown automatically on certificates that don't pick specific signers (including older ones).",
+    "active": "Active",
+    "activeHint": "Inactive signers are hidden from every certificate.",
+    "addButton": "Add signer",
+    "preview": "Preview (as seen after scanning)",
+    "listTitle": "Signers ({{count}})",
+    "orderHint": "Order here = order on the verification page",
+    "empty": "No signers yet. Until there are, the verification page shows the standard stamp.",
+    "defaultBadge": "Default",
+    "hiddenBadge": "Hidden",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "setDefault": "Make default",
+    "unsetDefault": "Remove as default",
+    "show": "Show",
+    "hide": "Hide",
+    "deleteTitle": "Delete signer?",
+    "deleteText": "will no longer appear on any certificate. To keep them for later, hide them instead.",
+    "missingTitle": "Details missing",
+    "missingDetails": "Name and position are required.",
+    "missingImage": "Upload at least a signature or a stamp.",
+    "updated": "Signer updated",
+    "added": "Signer added",
+    "removed": "Signer removed",
+    "loadFailed": "Signers could not be loaded."
+  }
+}

@@ -64,10 +64,39 @@ service cloud.firestore {
 
     // ---------- Certificates ----------
 
+    // Set by the dashboard once every certificate has a copy in
+    // certificate_public; from then on the full records are admin-only.
+    function certificatesSecured() {
+      let migration = /databases/$(database)/documents/certificate_meta/migration;
+      return exists(migration) && get(migration).data.get("done", false) == true;
+    }
+
+    // The admin's records. Until the move is done the old verification
+    // lookup still needs them, so they stay readable until then.
     match /certificates/{certId} {
-      // Public read for QR verification
-      allow read: if true;
+      allow read: if hasFeature("certificates") || !certificatesSecured();
       allow create, update, delete: if hasFeature("certificates");
+    }
+
+    // What the verification page shows, one document per code. Anyone may
+    // open a code they hold; nobody but an admin may list them.
+    match /certificate_public/{code} {
+      // A scan: one more and the time, nothing else.
+      function isScan() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["scans", "lastScannedAt"])
+          && request.resource.data.scans == resource.data.get("scans", 0) + 1
+          && request.resource.data.lastScannedAt == request.time;
+      }
+
+      allow get: if true;
+      allow list: if hasFeature("certificates");
+      allow create, delete: if hasFeature("certificates") && code.matches("^[A-Z0-9]{4,32}$");
+      allow update: if hasFeature("certificates") || isScan();
+    }
+
+    match /certificate_meta/{docId} {
+      allow read: if true;
+      allow write: if hasFeature("certificates");
     }
 
     // Signers (signature + stamp) shown on verified certificates

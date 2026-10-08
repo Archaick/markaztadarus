@@ -36,6 +36,7 @@ import {
     doc,
     writeBatch,
 } from "firebase/firestore";
+import { useTranslation } from "react-i18next";
 import { db, auth } from "../../../firebaseConfig";
 import { SIGNERS_COLLECTION, processImageFile, fetchAllSigners } from "./signerUtils";
 import SignatureBlock from "./SignatureBlock";
@@ -51,11 +52,13 @@ const EMPTY_FORM = {
     active: true,
 };
 
+const NS = ["internal/Certificates", "internal/Internal"];
 const MAX_LEN = 120;
 const clean = (s) => s.trim().replace(/[<>]/g, "").substring(0, MAX_LEN);
 
 /* Upload box for a single image (signature or stamp) */
 const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
+    const { t } = useTranslation(NS);
     const [busy, setBusy] = useState(false);
 
     const handleFile = async (file) => {
@@ -64,7 +67,7 @@ const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
         try {
             onChange(await processImageFile(file, { removeWhite }));
         } catch (err) {
-            onError(err.message);
+            onError(err.message === "not-image" ? t("signers.notImage") : t("signers.badImage"));
         } finally {
             setBusy(false);
         }
@@ -86,7 +89,7 @@ const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
                             variant="filled"
                             color="gray"
                             onClick={() => onChange("")}
-                            title="Remove image"
+                            title={t("signers.removeImage")}
                         >
                             <IconX size={12} />
                         </ActionIcon>
@@ -98,7 +101,7 @@ const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
             <FileButton onChange={handleFile} accept="image/png,image/jpeg,image/webp">
                 {(props) => (
                     <Button {...props} variant="light" size="xs" fullWidth mt={6} leftSection={<IconUpload size={14} />}>
-                        {value ? "Replace" : "Upload"}
+                        {value ? t("signers.replace") : t("signers.upload")}
                     </Button>
                 )}
             </FileButton>
@@ -107,6 +110,7 @@ const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
 };
 
 const SignerManager = ({ notify, onSignersChange }) => {
+    const { t } = useTranslation(NS);
     const [signers, setSigners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -123,7 +127,7 @@ const SignerManager = ({ notify, onSignersChange }) => {
             onSignersChange?.(list);
         } catch (err) {
             console.error("Error loading signers:", err);
-            notify("error", "Failed to Load", "Could not load signers. Check Firestore rules.");
+            notify("error", t("errors.failedTitle"), t("signers.loadFailed"));
         } finally {
             setLoading(false);
         }
@@ -164,11 +168,11 @@ const SignerManager = ({ notify, onSignersChange }) => {
         };
 
         if (!data.name || !data.position) {
-            notify("warning", "Missing Details", "Name and position are required.");
+            notify("warning", t("signers.missingTitle"), t("signers.missingDetails"));
             return;
         }
         if (!data.signatureImg && !data.stampImg) {
-            notify("warning", "Missing Image", "Upload at least a signature or a stamp.");
+            notify("warning", t("signers.missingTitle"), t("signers.missingImage"));
             return;
         }
 
@@ -179,7 +183,7 @@ const SignerManager = ({ notify, onSignersChange }) => {
                     ...data,
                     updatedAt: new Date(),
                 });
-                notify("success", "Signer Updated", `${data.name} was updated.`);
+                notify("success", t("signers.updated"), data.name);
             } else {
                 await addDoc(collection(db, SIGNERS_COLLECTION), {
                     ...data,
@@ -187,19 +191,13 @@ const SignerManager = ({ notify, onSignersChange }) => {
                     createdAt: new Date(),
                     createdBy: auth.currentUser?.email || "",
                 });
-                notify("success", "Signer Added", `${data.name} can now sign certificates.`);
+                notify("success", t("signers.added"), data.name);
             }
             resetForm();
             await load();
         } catch (err) {
             console.error("Error saving signer:", err);
-            notify(
-                "error",
-                "Save Failed",
-                err.code === "permission-denied"
-                    ? "Permission denied. Deploy the updated Firestore rules."
-                    : err.message || "Could not save signer."
-            );
+            notify("error", t("errors.failedTitle"), t("errors.failed"));
         } finally {
             setSaving(false);
         }
@@ -214,7 +212,7 @@ const SignerManager = ({ notify, onSignersChange }) => {
             onSignersChange?.(next);
         } catch (err) {
             console.error(err);
-            notify("error", "Update Failed", "Could not update signer.");
+            notify("error", t("errors.failedTitle"), t("errors.failed"));
         }
     };
 
@@ -232,7 +230,7 @@ const SignerManager = ({ notify, onSignersChange }) => {
             onSignersChange?.(ordered);
         } catch (err) {
             console.error(err);
-            notify("error", "Reorder Failed", "Could not change the order.");
+            notify("error", t("errors.failedTitle"), t("errors.failed"));
         }
     };
 
@@ -242,20 +240,20 @@ const SignerManager = ({ notify, onSignersChange }) => {
         try {
             await deleteDoc(doc(db, SIGNERS_COLLECTION, deleteTarget.id));
             if (editingId === deleteTarget.id) resetForm();
-            notify("success", "Signer Removed", `${deleteTarget.name} was removed.`);
+            notify("success", t("signers.removed"), deleteTarget.name);
             setDeleteTarget(null);
             await load();
         } catch (err) {
             console.error(err);
-            notify("error", "Delete Failed", "Could not delete signer.");
+            notify("error", t("errors.failedTitle"), t("errors.failed"));
         } finally {
             setSaving(false);
         }
     };
 
     const preview = {
-        name: form.name || "Full Name",
-        position: form.position || "Position",
+        name: form.name || t("signers.fullName"),
+        position: form.position || t("signers.position"),
         organization: form.organization,
         signatureImg: form.signatureImg,
         stampImg: form.stampImg,
@@ -268,9 +266,9 @@ const SignerManager = ({ notify, onSignersChange }) => {
                 <div className={styles.cardHeader}>
                     <IconSignature size={22} />
                     <div>
-                        <Text fw={700}>{editingId ? "Edit Signer" : "Add a Signer"}</Text>
+                        <Text fw={700}>{editingId ? t("signers.editTitle") : t("signers.addTitle")}</Text>
                         <Text size="xs" c="dimmed">
-                            Signatures and stamps appear on the page people see when they scan a certificate QR code.
+                            {t("signers.intro")}
                         </Text>
                     </div>
                 </div>
@@ -278,24 +276,24 @@ const SignerManager = ({ notify, onSignersChange }) => {
                 <div className={styles.formGrid}>
                     <div className={styles.fields}>
                         <TextInput
-                            label="Full name"
-                            placeholder="e.g. Dr. Ahmad Fauzi, Lc., M.A."
+                            label={t("signers.fullName")}
+                            placeholder={t("signers.fullNamePlaceholder")}
                             value={form.name}
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
                             maxLength={MAX_LEN}
                             required
                         />
                         <TextInput
-                            label="Position / title"
-                            placeholder="e.g. Director"
+                            label={t("signers.position")}
+                            placeholder={t("signers.positionPlaceholder")}
                             value={form.position}
                             onChange={(e) => setForm({ ...form, position: e.target.value })}
                             maxLength={MAX_LEN}
                             required
                         />
                         <TextInput
-                            label="Organization (optional)"
-                            placeholder="e.g. Markaz Tadarus Indonesia"
+                            label={t("signers.organization")}
+                            placeholder="Markaz Tadarus Indonesia"
                             value={form.organization}
                             onChange={(e) => setForm({ ...form, organization: e.target.value })}
                             maxLength={MAX_LEN}
@@ -303,38 +301,38 @@ const SignerManager = ({ notify, onSignersChange }) => {
 
                         <div className={styles.slots}>
                             <ImageSlot
-                                label="Signature"
-                                hint="Photo or scan of the signature"
+                                label={t("signers.signature")}
+                                hint={t("signers.signatureHint")}
                                 value={form.signatureImg}
                                 onChange={(v) => setForm((f) => ({ ...f, signatureImg: v }))}
                                 removeWhite={removeWhite}
-                                onError={(m) => notify("error", "Image Error", m)}
+                                onError={(m) => notify("error", t("signers.imageError"), m)}
                             />
                             <ImageSlot
-                                label="Stamp / seal"
-                                hint="Official stamp image"
+                                label={t("signers.stamp")}
+                                hint={t("signers.stampHint")}
                                 value={form.stampImg}
                                 onChange={(v) => setForm((f) => ({ ...f, stampImg: v }))}
                                 removeWhite={removeWhite}
-                                onError={(m) => notify("error", "Image Error", m)}
+                                onError={(m) => notify("error", t("signers.imageError"), m)}
                             />
                         </div>
 
                         <Switch
-                            label="Remove white background from uploads"
-                            description="Makes scanned paper transparent so ink sits cleanly on the page"
+                            label={t("signers.removeWhite")}
+                            description={t("signers.removeWhiteHint")}
                             checked={removeWhite}
                             onChange={(e) => setRemoveWhite(e.currentTarget.checked)}
                         />
                         <Switch
-                            label="Default signer"
-                            description="Shown automatically on certificates that don't pick specific signers (including existing ones)"
+                            label={t("signers.default")}
+                            description={t("signers.defaultHint")}
                             checked={form.isDefault}
                             onChange={(e) => setForm({ ...form, isDefault: e.currentTarget.checked })}
                         />
                         <Switch
-                            label="Active"
-                            description="Inactive signers are hidden from every certificate"
+                            label={t("signers.active")}
+                            description={t("signers.activeHint")}
                             checked={form.active}
                             onChange={(e) => setForm({ ...form, active: e.currentTarget.checked })}
                         />
@@ -346,17 +344,17 @@ const SignerManager = ({ notify, onSignersChange }) => {
                                 className={styles.primaryBtn}
                                 leftSection={editingId ? <IconPencil size={16} /> : <IconPlus size={16} />}
                             >
-                                {editingId ? "Save Changes" : "Add Signer"}
+                                {editingId ? t("common.save") : t("signers.addButton")}
                             </Button>
                             {editingId && (
-                                <Button variant="default" onClick={resetForm}>Cancel</Button>
+                                <Button variant="default" onClick={resetForm}>{t("common.cancel")}</Button>
                             )}
                         </Group>
                     </div>
 
                     <div className={styles.previewPane}>
                         <Text size="xs" fw={700} tt="uppercase" c="dimmed" mb="xs">
-                            Live preview (as seen after scanning)
+                            {t("signers.preview")}
                         </Text>
                         <div className={styles.previewPaper}>
                             <SignatureBlock signer={preview} />
@@ -368,15 +366,15 @@ const SignerManager = ({ notify, onSignersChange }) => {
             {/* ---------- SIGNER LIST ---------- */}
             <div className={styles.card}>
                 <Group justify="space-between" mb="sm">
-                    <Text fw={700}>Signers ({signers.length})</Text>
-                    <Text size="xs" c="dimmed">Order here = order on the verification page</Text>
+                    <Text fw={700}>{t("signers.listTitle", { count: signers.length })}</Text>
+                    <Text size="xs" c="dimmed">{t("signers.orderHint")}</Text>
                 </Group>
 
                 {loading ? (
                     <Center p="lg"><Loader /></Center>
                 ) : signers.length === 0 ? (
                     <Text c="dimmed" ta="center" p="lg">
-                        No signers yet. Add one above — until then, the verification page shows the standard stamp.
+                        {t("signers.empty")}
                     </Text>
                 ) : (
                     <div className={styles.list}>
@@ -386,8 +384,8 @@ const SignerManager = ({ notify, onSignersChange }) => {
                                 className={`${styles.row} ${s.active === false ? styles.inactive : ""}`}
                             >
                                 <div className={styles.rowImages}>
-                                    {s.signatureImg && <img src={s.signatureImg} alt="signature" />}
-                                    {s.stampImg && <img src={s.stampImg} alt="stamp" />}
+                                    {s.signatureImg && <img src={s.signatureImg} alt={t("signers.signature")} />}
+                                    {s.stampImg && <img src={s.stampImg} alt={t("signers.stamp")} />}
                                 </div>
                                 <div className={styles.rowInfo}>
                                     <Text fw={700} size="sm">{s.name}</Text>
@@ -395,37 +393,37 @@ const SignerManager = ({ notify, onSignersChange }) => {
                                         {s.position}{s.organization ? ` · ${s.organization}` : ""}
                                     </Text>
                                     <Group gap={4} mt={4}>
-                                        {s.isDefault && <Badge size="xs" color="yellow">Default</Badge>}
-                                        {s.active === false && <Badge size="xs" color="gray">Hidden</Badge>}
+                                        {s.isDefault && <Badge size="xs" color="yellow">{t("signers.defaultBadge")}</Badge>}
+                                        {s.active === false && <Badge size="xs" color="gray">{t("signers.hiddenBadge")}</Badge>}
                                     </Group>
                                 </div>
                                 <Group gap={4} className={styles.rowActions} wrap="nowrap">
-                                    <Tooltip label="Move up">
+                                    <Tooltip label={t("signers.moveUp")}>
                                         <ActionIcon variant="subtle" disabled={i === 0} onClick={() => move(i, -1)}>
                                             <IconArrowUp size={16} />
                                         </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label="Move down">
+                                    <Tooltip label={t("signers.moveDown")}>
                                         <ActionIcon variant="subtle" disabled={i === signers.length - 1} onClick={() => move(i, 1)}>
                                             <IconArrowDown size={16} />
                                         </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label={s.isDefault ? "Remove as default" : "Make default"}>
+                                    <Tooltip label={s.isDefault ? t("signers.unsetDefault") : t("signers.setDefault")}>
                                         <ActionIcon variant="subtle" color="yellow" onClick={() => toggleField(s, "isDefault")}>
                                             {s.isDefault ? <IconStarFilled size={16} /> : <IconStar size={16} />}
                                         </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label={s.active === false ? "Show" : "Hide"}>
+                                    <Tooltip label={s.active === false ? t("signers.show") : t("signers.hide")}>
                                         <ActionIcon variant="subtle" color="gray" onClick={() => toggleField(s, "active")}>
                                             {s.active === false ? <IconEyeOff size={16} /> : <IconEye size={16} />}
                                         </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label="Edit">
+                                    <Tooltip label={t("row.edit")}>
                                         <ActionIcon variant="subtle" color="blue" onClick={() => startEdit(s)}>
                                             <IconPencil size={16} />
                                         </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label="Delete">
+                                    <Tooltip label={t("row.delete")}>
                                         <ActionIcon variant="subtle" color="red" onClick={() => setDeleteTarget(s)}>
                                             <IconTrash size={16} />
                                         </ActionIcon>
@@ -437,14 +435,13 @@ const SignerManager = ({ notify, onSignersChange }) => {
                 )}
             </div>
 
-            <Modal opened={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete signer?" centered size="sm">
+            <Modal opened={!!deleteTarget} onClose={() => setDeleteTarget(null)} title={t("signers.deleteTitle")} centered size="sm">
                 <Text size="sm" mb="md">
-                    <strong>{deleteTarget?.name}</strong> will no longer appear on any certificate. To keep them for
-                    later, hide them instead.
+                    <strong>{deleteTarget?.name}</strong> — {t("signers.deleteText")}
                 </Text>
                 <Group justify="flex-end">
-                    <Button variant="default" onClick={() => setDeleteTarget(null)}>Cancel</Button>
-                    <Button color="red" loading={saving} onClick={confirmDelete}>Delete</Button>
+                    <Button variant="default" onClick={() => setDeleteTarget(null)}>{t("common.cancel")}</Button>
+                    <Button color="red" loading={saving} onClick={confirmDelete}>{t("row.delete")}</Button>
                 </Group>
             </Modal>
         </div>

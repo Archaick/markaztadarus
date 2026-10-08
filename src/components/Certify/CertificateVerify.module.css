@@ -1,414 +1,437 @@
-/* -------------------------------------------------------
-   CONTAINER + BACKGROUND
-------------------------------------------------------- */
-.container {
-    min-height: 100vh;
-    width: 100%;
-    max-width: 100%;
-    padding: 2rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1e3c72, #2a5298 50%, #7e22ce);
-    position: relative;
-    overflow: hidden;
+/* Certificate verification: a card with the MTI logo, a seal that says at a
+   glance whether the certificate is genuine, and its details. */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4.5rem 1rem 2.5rem;
+  background: radial-gradient(circle at 50% 20%, #fffaf0 0%, #f4f6fa 55%, #e8eef6 100%);
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
+  overflow: hidden;
 }
 
-.container::before {
-    content: "";
-    position: absolute;
-    top: -120px;
-    right: -120px;
-    width: 520px;
-    height: 520px;
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 50%;
-    filter: blur(120px);
-    transform: rotate(10deg);
-    z-index: -1;
+.pattern {
+  position: absolute;
+  inset: auto -90px -90px auto;
+  width: 380px;
+  height: 380px;
+  background: url("/MTIFavicon.png") center / contain no-repeat;
+  opacity: 0.05;
+  pointer-events: none;
 }
 
-.backgroundPattern {
-    position: absolute;
-    inset: 0;
-    opacity: 0.08;
-    background-image:
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, .12) 0%, transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, .08) 0%, transparent 45%),
-        radial-gradient(circle at 40% 20%, rgba(255, 255, 255, .06) 0%, transparent 45%);
-    pointer-events: none;
-    z-index: -2;
+.langs {
+  position: absolute;
+  top: 1rem;
+  inset-inline-end: 1rem;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e3e8ef;
+  box-shadow: 0 4px 14px rgba(16, 33, 65, 0.06);
+  z-index: 2;
 }
 
-/* -------------------------------------------------------
-   LANGUAGE TOGGLE
-------------------------------------------------------- */
-.langToggle {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 99;
+.langs button {
+  border: 0;
+  background: transparent;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
 }
 
-/* -------------------------------------------------------
-   CARDS
-------------------------------------------------------- */
-.successCard,
-.errorCard {
-    width: 100%;
-    max-width: 920px;
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    padding: 3rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 35px 100px rgba(0, 0, 0, 0.35);
-    position: relative;
-    z-index: 2;
-    animation: fadeSlide 0.6s ease-out;
+.langs .langOn {
+  background: #102141;
+  color: #ffffff;
 }
 
-.errorCard {
-    max-width: 760px;
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  padding: 1.6rem 1.6rem 1.8rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(171, 139, 43, 0.2);
+  border-top: 5px solid #16a34a;
+  border-radius: 24px;
+  box-shadow: 0 30px 70px rgba(16, 33, 65, 0.1);
+  text-align: center;
+  animation: rise 0.45s ease-out;
 }
 
-/* Watermark */
-.successCard::after {
-    content: "";
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    width: 260px;
-    height: 260px;
-    background: url('/MTIFavicon.png') no-repeat center / contain;
-    opacity: 0.05;
-    pointer-events: none;
-    z-index: 0;
+.cardRevoked {
+  border-top-color: #dc2626;
 }
 
-/* -------------------------------------------------------
-   ICONS
-------------------------------------------------------- */
-.iconWrapper,
-.errorIconWrapper {
-    width: 84px;
-    height: 84px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 }
 
-.iconWrapper {
-    background: linear-gradient(135deg, #10b981, #059669);
-    box-shadow: 0 12px 36px rgba(16, 185, 129, .28);
-    animation: scaleIn 1s ease-out 0.2s both;
-    position: relative;
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #a67d00;
 }
 
-.iconWrapper::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 4px solid rgba(16, 185, 129, .4);
-    animation: ring 3s ease-out infinite;
+.brand img {
+  object-fit: contain;
 }
 
-.errorIconWrapper {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    box-shadow: 0 12px 36px rgba(239, 68, 68, .28);
-    color: white;
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.5rem 0 0.5rem;
 }
 
-.checkIcon {
-    width: 70px;
-    height: 70px;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .12));
+/* loading: same look as the short-link waiting page */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem 0 0.6rem;
 }
 
-/* -------------------------------------------------------
-   TYPOGRAPHY
-------------------------------------------------------- */
-.title {
-    font-size: 2rem;
-    font-weight: 800;
-    text-align: center;
-    color: #0f172a;
+.logoRing {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(16, 33, 65, 0.08), inset 0 0 0 1px rgba(171, 139, 43, 0.15);
+}
+
+.logoRing::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 220deg, #f6dc8c 290deg, #b8960c 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  animation: spin 1.1s linear infinite;
+}
+
+.logoRing img {
+  object-fit: contain;
+}
+
+.brandText {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #a67d00;
+}
+
+.loadingText {
+  margin: 0.8rem 0 0.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #102141;
+}
+
+.bar {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  height: 4px;
+  margin-top: 1.1rem;
+  border-radius: 99px;
+  background: #eef2f7;
+  overflow: hidden;
+}
+
+.bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #f6dc8c, #b8960c);
+  animation: slide 1.2s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* the seal: green tick when genuine, red when revoked or unknown */
+.sealWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.4rem 0 1.1rem;
+}
+
+.seal {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(145deg, #22c55e, #15803d);
+  box-shadow: 0 12px 30px rgba(22, 163, 74, 0.35);
+}
+
+.seal::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 2px dashed rgba(22, 163, 74, 0.45);
+}
+
+.sealRevoked {
+  background: linear-gradient(145deg, #f87171, #b91c1c);
+  box-shadow: 0 12px 30px rgba(220, 38, 38, 0.3);
+}
+
+.sealRevoked::after {
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.sealInvalid {
+  background: linear-gradient(145deg, #fbbf24, #d97706);
+  box-shadow: 0 12px 30px rgba(217, 119, 6, 0.3);
+}
+
+.sealInvalid::after {
+  border-color: rgba(217, 119, 6, 0.4);
+}
+
+.badge {
+  padding: 0.35rem 0.95rem;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.badgeRevoked {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.revokedBox {
+  margin: 0 0 1.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #7f1d1d;
+  font-size: 0.9rem;
+  text-align: start;
+}
+
+.revokedBox p {
+  margin: 0.3rem 0 0;
+}
+
+.label {
+  margin: 0.9rem 0 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 
 .name {
-    width: 100%;
-    display: block;
-    font-size: 2.25rem;
-    font-weight: 800;
-    text-align: center;
-    color: white;
-
-    background: linear-gradient(135deg,
-            rgba(30, 60, 114, 0.85),
-            rgba(42, 82, 152, 0.85),
-            rgba(126, 34, 206, 0.85));
-
-    padding: 0.5rem 0.7rem;
-    border-radius: 12px;
-    margin-top: 4px;
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 800;
+  color: #102141;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .program {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #0f172a;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #a67d00;
 }
 
-.programSection {
-    text-align: center;
-    padding: 1.5rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, .03), rgba(124, 58, 237, .03));
-    border: 1px solid rgba(37, 99, 235, .06);
+.headline {
+  margin: 0.4rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #102141;
 }
 
-/* -------------------------------------------------------
-   DIVIDERS + METADATA
-------------------------------------------------------- */
-.divider {
-    height: 2px;
-    border-radius: 4px;
-    margin: 1.5rem 0;
-    background: linear-gradient(to right, transparent, rgba(37, 99, 235, .18), rgba(124, 58, 237, .18), transparent);
+.muted {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
 }
 
-.metadata {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    padding: 1.5rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #fbfdff, #f6f9fb);
-    border: 1px solid #e6eef7;
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
 }
 
-.metadataItem {
-    display: flex;
-    flex-direction: column;
-    gap: .25rem;
+.details div {
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  background: #f6f8fb;
 }
 
-.metadataLabel {
-    font-size: .75rem;
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: .5px;
+.details dt {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #94a3b8;
 }
 
-.metadataValue {
-    font-weight: 600;
-    color: #0f172a;
+.details dd {
+  margin: 0.2rem 0 0;
+  font-weight: 700;
+  color: #102141;
 }
 
-/* -------------------------------------------------------
-   FOOTER + STAMP
-------------------------------------------------------- */
-.footer {
-    padding-top: 1rem;
-    border-top: 1px solid #e9eef6;
+.code {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  letter-spacing: 1.5px;
 }
 
-.footerText {
-    text-align: center;
-    color: #64748b;
-    font-weight: 500;
+.codeBox {
+  margin: 0.4rem 0 0.4rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 10px;
+  background: #f6f8fb;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #475569;
 }
 
-.footerWrapper {
-    position: relative;
-    margin-top: 1.5rem;
-}
-
-.stamp {
-    position: absolute;
-    bottom: 1px;
-    left: 50%;
-    transform: translateX(-50%) rotate(10deg);
-    width: 120px;
-    opacity: 0.3;
-    pointer-events: none;
-    user-select: none;
-}
-
-/* -------------------------------------------------------
-   SIGNATURES
-------------------------------------------------------- */
-.signaturesSection {
-    position: relative;
-    z-index: 1;
-    padding: 1.25rem 1rem 1.5rem;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #fffdf8, #fbf8f1);
-    border: 1px solid #efe6d2;
+.signatures {
+  margin-top: 1.4rem;
+  padding: 1.1rem 1rem 1.3rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fffdf8, #fbf8f1);
+  border: 1px solid #efe6d2;
 }
 
 .signaturesTitle {
-    text-align: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #92742d;
-    margin-bottom: 0.75rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #92742d;
 }
 
 .signaturesGrid {
-    display: grid;
-    grid-template-columns: repeat(var(--sig-cols, 1), minmax(0, 1fr));
-    gap: 1.5rem 1rem;
-    justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(var(--sig-cols, 1), minmax(0, 1fr));
+  gap: 1.5rem 1rem;
+  justify-items: center;
+}
+
+.stamp {
+  display: block;
+  width: 120px;
+  margin: 1.3rem auto 0;
+  opacity: 0.9;
+}
+
+.footer {
+  margin: 1.2rem 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.button {
+  margin-top: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 44px;
+  padding: 0 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: #1a4970;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+[dir="rtl"] .name,
+[dir="rtl"] .program,
+[dir="rtl"] .muted,
+[dir="rtl"] .headline,
+[dir="rtl"] .badge,
+[dir="rtl"] .revokedBox {
+  font-family: "Cairo", sans-serif;
 }
 
 @media (max-width: 600px) {
-    .signaturesGrid {
-        grid-template-columns: repeat(min(var(--sig-cols, 1), 2), minmax(0, 1fr));
-    }
+  .card {
+    padding: 1.3rem 1.1rem 1.5rem;
+  }
+
+  .signaturesGrid {
+    grid-template-columns: repeat(min(var(--sig-cols, 1), 2), minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 400px) {
-    .signaturesGrid {
-        grid-template-columns: 1fr;
-    }
+  .signaturesGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* -------------------------------------------------------
-   ERROR TEXT
-------------------------------------------------------- */
-.errorTitle {
-    color: #dc2626;
-}
-
-.errorMessage {
-    color: #0f172a;
-    font-weight: 600;
-}
-
-.errorSubtext {
-    color: #64748b;
-}
-
-/* -------------------------------------------------------
-   ANIMATIONS
-------------------------------------------------------- */
-@keyframes fadeSlide {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(.98);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes ring {
-    0% {
-        transform: scale(.6);
-        opacity: 0;
-    }
-
-    40% {
-        opacity: .35;
-    }
-
-    100% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        transform: scale(0);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* -------------------------------------------------------
-   RESPONSIVE
-------------------------------------------------------- */
-@media (max-width: 992px) {
-
-    .successCard,
-    .errorCard {
-        padding: 2.25rem;
-        max-width: 720px;
-    }
-
-    .title {
-        font-size: 1.8rem;
-    }
-
-    .name {
-        font-size: 1.85rem;
-    }
-
-    .checkIcon {
-        width: 60px;
-        height: 60px;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .successCard,
-    .errorCard {
-        padding: 1.75rem;
-        border-radius: 14px;
-    }
-
-    .metadata {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-    }
-
-    .title {
-        font-size: 1.6rem;
-    }
-
-    .name {
-        font-size: 1.6rem;
-    }
-
-    .program {
-        font-size: 1.15rem;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .successCard,
-    .errorCard {
-        padding: 1rem;
-    }
-
-    .title {
-        font-size: 1.25rem;
-    }
-
-    .name {
-        font-size: 1.4rem;
-    }
-
-    .program {
-        font-size: 1rem;
-    }
-
-    .divider {
-        margin: .75rem 0;
-    }
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .logoRing::before,
+  .bar span {
+    animation: none;
+  }
 }

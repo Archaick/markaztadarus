@@ -15,15 +15,15 @@ const MAX_IMAGE_SIDE = 480;
 export const processImageFile = (file, { removeWhite = true, threshold = 225 } = {}) =>
     new Promise((resolve, reject) => {
         if (!file || !file.type.startsWith("image/")) {
-            reject(new Error("Please choose an image file (PNG, JPG, WEBP)."));
+            reject(new Error("not-image"));
             return;
         }
 
         const reader = new FileReader();
-        reader.onerror = () => reject(new Error("Could not read the image file."));
+        reader.onerror = () => reject(new Error("bad-image"));
         reader.onload = () => {
             const img = new Image();
-            img.onerror = () => reject(new Error("Invalid image file."));
+            img.onerror = () => reject(new Error("bad-image"));
             img.onload = () => {
                 const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(img.width, img.height));
                 const w = Math.round(img.width * scale);

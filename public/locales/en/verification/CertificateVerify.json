@@ -1,18 +1,25 @@
 {
-    "loading": "Verifying certificate...",
-    "invalid_title": "Invalid Certificate",
-    "invalid_subtext": "This certificate code may be incorrect or does not exist in our system.",
-    "errors": {
-        "no_code": "No certificate code provided.",
-        "not_found": "Certificate not found.",
-        "failed": "Failed to verify certificate. Please try again."
-    },
-    "authentic_badge": "Authentic MTI Document",
-    "verified_document": "Verified MTI Document",
-    "issued_to": "Issued to:",
-    "program": "Program:",
-    "document_code": "Document Code:",
-    "issued_on": "Issued On:",
-    "footer_text": "This document has been verified as an authentic record issued by MTI.",
-    "signatures_title": "Authorized Signatures"
+  "loading": "Checking the certificate…",
+  "tab_found": "Verified certificate",
+  "tab_check": "Certificate check",
+  "authentic_badge": "Genuine MTI Certificate",
+  "revoked_badge": "Certificate Revoked",
+  "revoked_title": "This certificate is no longer valid.",
+  "revoked_text": "It was issued by Markaz Tadarus Indonesia but has since been revoked.",
+  "revoked_reason": "Reason",
+  "issued_to": "Awarded to",
+  "program": "Program",
+  "event_date": "Event date",
+  "issued_on": "Issued",
+  "document_code": "Document code",
+  "signatures_title": "Official signatures",
+  "footer_text": "These details come straight from the official records of Markaz Tadarus Indonesia.",
+  "footer_revoked": "This status comes straight from the official records of Markaz Tadarus Indonesia.",
+  "invalid_title": "Certificate not found",
+  "invalid_subtext": "This code is not in our records. Check the code again, or contact Markaz Tadarus Indonesia.",
+  "home": "Go to home page",
+  "retry": "Try again",
+  "errors": {
+    "failed": "The certificate could not be checked yet. Please check your internet connection."
+  }
 }

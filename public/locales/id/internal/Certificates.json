@@ -1,0 +1,208 @@
+{
+  "title": "Dasbor Sertifikat",
+  "intro": "Terbitkan sertifikat dengan kode QR yang bisa diperiksa siapa saja.",
+  "actions": {
+    "one": "Satu sertifikat",
+    "bulk": "Terbitkan banyak",
+    "zip": "Unduh QR (ZIP)",
+    "csv": "Unduh daftar (Excel)",
+    "zipping": "Menyiapkan kode QR… {{percent}}%"
+  },
+  "stats": {
+    "certificates": "Sertifikat",
+    "programs": "Program",
+    "scans": "Kali dipindai"
+  },
+  "secure": {
+    "title": "Mengamankan halaman verifikasi",
+    "text": "Menyalin sertifikat ke penyimpanan verifikasi yang terkunci: {{done}} dari {{total}}. Biarkan halaman ini terbuka.",
+    "doneTitle": "Daftar peserta kini terlindungi",
+    "doneText": "{{count}} sertifikat bisa diverifikasi lewat kodenya masing-masing, tetapi daftar lengkapnya tidak bisa lagi diambil dari luar.",
+    "failedTitle": "Penyalinan belum selesai",
+    "failedText": "Muat ulang halaman untuk melanjutkan. Kode QR lama tetap berfungsi."
+  },
+  "loadFailed": "Sertifikat tidak dapat dimuat. Periksa koneksi lalu muat ulang halaman.",
+  "tabs": {
+    "certificates": "Sertifikat",
+    "signers": "Penanda tangan & stempel",
+    "backup": "Cadangan"
+  },
+  "filters": {
+    "allPrograms": "Semua program",
+    "search": "Cari nama, program, atau kode…",
+    "all": "Semua",
+    "valid": "Berlaku",
+    "revoked": "Dicabut",
+    "count": "{{count}} sertifikat",
+    "noMatch": "Tidak ada sertifikat yang cocok."
+  },
+  "empty": {
+    "title": "Belum ada sertifikat",
+    "text": "Terbitkan satu sertifikat, atau sekaligus dari daftar Excel."
+  },
+  "status": {
+    "revoked": "Dicabut"
+  },
+  "row": {
+    "copied": "Tersalin",
+    "copyLink": "Salin tautan verifikasi",
+    "default": "bawaan",
+    "lastScan": "terakhir {{time}}",
+    "neverScanned": "belum dipindai",
+    "qr": "Kode QR",
+    "edit": "Ubah",
+    "restore": "Berlakukan lagi",
+    "revoke": "Cabut",
+    "delete": "Hapus"
+  },
+  "fields": {
+    "name": "Nama peserta",
+    "namePlaceholder": "Nama lengkap seperti tertulis di sertifikat",
+    "program": "Program",
+    "programPlaceholder": "Pilih atau ketik nama program",
+    "eventDate": "Tanggal kegiatan",
+    "eventDateHint": "Opsional. Ditampilkan di halaman verifikasi.",
+    "signers": "Penanda tangan",
+    "signersDefault": "Kosongkan untuk memakai penanda tangan bawaan ({{names}})",
+    "signersNone": "Belum ada penanda tangan bawaan"
+  },
+  "editor": {
+    "newTitle": "Sertifikat baru",
+    "editTitle": "Ubah sertifikat",
+    "sameCode": "Kode {{code}} tetap sama, jadi sertifikat yang sudah dicetak tetap berlaku.",
+    "create": "Terbitkan"
+  },
+  "common": {
+    "cancel": "Batal",
+    "save": "Simpan",
+    "close": "Tutup"
+  },
+  "errors": {
+    "noName": "Isi nama peserta.",
+    "noProgram": "Isi nama program.",
+    "failed": "Terjadi kesalahan. Coba lagi.",
+    "failedTitle": "Gagal",
+    "sameAccount": "Pilih akun Google yang sama dengan yang sedang masuk."
+  },
+  "notices": {
+    "createdTitle": "Sertifikat diterbitkan",
+    "createdText": "{{name}} — kode {{code}}.",
+    "savedTitle": "Perubahan disimpan",
+    "savedText": "Halaman verifikasi {{name}} sudah diperbarui.",
+    "revokedTitle": "Sertifikat dicabut",
+    "restoredTitle": "Sertifikat berlaku lagi",
+    "deletedTitle": "Sertifikat dihapus"
+  },
+  "delete": {
+    "title": "Hapus sertifikat?",
+    "text": "Sertifikat {{name}} akan dihapus permanen. Google akan meminta Anda mengonfirmasi akun sekali lagi.",
+    "revokeHint": "Ingin menandainya tidak berlaku saja? Gunakan Cabut — halaman verifikasi akan menyatakannya dengan jelas.",
+    "confirm": "Konfirmasi & hapus"
+  },
+  "revoke": {
+    "title": "Cabut sertifikat",
+    "text": "Halaman verifikasi {{name}} akan menyatakan sertifikat ini sudah dicabut. Anda bisa memberlakukannya lagi kapan saja.",
+    "reason": "Alasan (opsional)",
+    "reasonPlaceholder": "mis. Diterbitkan untuk orang yang salah",
+    "reasonHint": "Ditampilkan kepada siapa pun yang memindai kode.",
+    "confirm": "Cabut sertifikat"
+  },
+  "qr": {
+    "hint": "Siap cetak, dengan logo MTI di tengah dan alamat verifikasi di bawahnya.",
+    "download": "Unduh PNG",
+    "open": "Buka halaman"
+  },
+  "csv": {
+    "name": "Nama",
+    "program": "Program",
+    "eventDate": "Tanggal kegiatan",
+    "code": "Kode",
+    "link": "Tautan verifikasi",
+    "status": "Status"
+  },
+  "bulk": {
+    "title": "Terbitkan banyak sertifikat",
+    "fromExcel": "Dari Excel",
+    "fromPaste": "Tempel daftar",
+    "excelHint": "Pilih file Excel (.xlsx) yang berisi daftar nama peserta.",
+    "excelFailed": "File tidak dapat dibaca. Pastikan formatnya .xlsx (Excel), bukan .xls atau .csv.",
+    "chooseFile": "Pilih file Excel",
+    "otherFile": "Pilih file lain",
+    "column": "Kolom",
+    "nameColumn": "Kolom berisi nama",
+    "hasHeader": "Baris pertama adalah judul kolom",
+    "pasteLabel": "Nama peserta",
+    "pasteHint": "Satu nama per baris. Bisa disalin langsung dari Google Sheets atau WhatsApp.",
+    "previewTitle": "{{count}} sertifikat akan diterbitkan",
+    "andMore": "dan {{count}} lainnya",
+    "skipped": "{{count}} nama sudah punya sertifikat untuk program ini dan dilewati.",
+    "nothing": "Tidak ada nama baru untuk diterbitkan.",
+    "submit": "Terbitkan {{count}} sertifikat",
+    "doneTitle": "{{count}} sertifikat diterbitkan",
+    "doneText": "Unduh semua kode QR sekaligus, dan daftar nama + kode untuk mail merge di Canva atau Word.",
+    "again": "Terbitkan daftar lain"
+  },
+  "backup": {
+    "exportTitle": "Unduh cadangan",
+    "exportText": "Salinan JSON dari {{count}} sertifikat untuk disimpan di tempat aman.",
+    "exportButton": "Unduh cadangan",
+    "importTitle": "Pulihkan dari cadangan",
+    "importText": "Kode yang sudah ada dilewati, jadi aman dijalankan berulang kali.",
+    "importButton": "Pilih file cadangan",
+    "exportedTitle": "Cadangan diunduh",
+    "exportedText": "{{count}} sertifikat tersimpan dalam file.",
+    "importedTitle": "Pemulihan selesai",
+    "importedText": "{{count}} sertifikat dipulihkan, {{skipped}} dilewati karena sudah ada.",
+    "failedTitle": "Pemulihan gagal",
+    "badFile": "File ini bukan cadangan sertifikat.",
+    "note": "Sertifikat yang dipulihkan memakai kode aslinya, jadi kode QR yang sudah dicetak tetap berlaku."
+  },
+  "signers": {
+    "intro": "Tanda tangan dan stempel tampil di halaman yang dilihat orang setelah memindai kode QR sertifikat.",
+    "addTitle": "Tambah penanda tangan",
+    "editTitle": "Ubah penanda tangan",
+    "fullName": "Nama lengkap",
+    "fullNamePlaceholder": "mis. Dr. Ahmad Fauzi, Lc., M.A.",
+    "position": "Jabatan",
+    "positionPlaceholder": "mis. Direktur",
+    "organization": "Lembaga (opsional)",
+    "signature": "Tanda tangan",
+    "signatureHint": "Foto atau pindaian tanda tangan",
+    "stamp": "Stempel",
+    "stampHint": "Gambar stempel resmi",
+    "upload": "Unggah",
+    "replace": "Ganti",
+    "removeImage": "Hapus gambar",
+    "notImage": "Pilih file gambar (PNG, JPG, WEBP).",
+    "badImage": "Gambar tidak dapat dibaca.",
+    "imageError": "Masalah gambar",
+    "removeWhite": "Hapus latar putih dari unggahan",
+    "removeWhiteHint": "Kertas hasil pindaian menjadi transparan, sehingga tinta tampil bersih.",
+    "default": "Penanda tangan bawaan",
+    "defaultHint": "Tampil otomatis di sertifikat yang tidak memilih penanda tangan tertentu (termasuk yang lama).",
+    "active": "Aktif",
+    "activeHint": "Penanda tangan nonaktif disembunyikan dari semua sertifikat.",
+    "addButton": "Tambah penanda tangan",
+    "preview": "Pratinjau (seperti terlihat setelah dipindai)",
+    "listTitle": "Penanda tangan ({{count}})",
+    "orderHint": "Urutan di sini = urutan di halaman verifikasi",
+    "empty": "Belum ada penanda tangan. Sampai ada, halaman verifikasi menampilkan stempel standar.",
+    "defaultBadge": "Bawaan",
+    "hiddenBadge": "Disembunyikan",
+    "moveUp": "Naikkan",
+    "moveDown": "Turunkan",
+    "setDefault": "Jadikan bawaan",
+    "unsetDefault": "Bukan bawaan",
+    "show": "Tampilkan",
+    "hide": "Sembunyikan",
+    "deleteTitle": "Hapus penanda tangan?",
+    "deleteText": "tidak akan tampil lagi di sertifikat mana pun. Untuk menyimpannya, sembunyikan saja.",
+    "missingTitle": "Data belum lengkap",
+    "missingDetails": "Nama dan jabatan wajib diisi.",
+    "missingImage": "Unggah setidaknya tanda tangan atau stempel.",
+    "updated": "Penanda tangan diperbarui",
+    "added": "Penanda tangan ditambahkan",
+    "removed": "Penanda tangan dihapus",
+    "loadFailed": "Penanda tangan tidak dapat dimuat."
+  }
+}
