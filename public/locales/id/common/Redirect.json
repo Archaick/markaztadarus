@@ -1,0 +1,38 @@
+{
+  "tab": {
+    "loading": "Mohon tunggu",
+    "going": "Mengalihkan",
+    "closed": "Tautan ditutup",
+    "missing": "Tautan tidak ditemukan",
+    "error": "Gagal memuat"
+  },
+  "wait": {
+    "title": "Mohon tunggu sebentar…",
+    "finding": "Kami sedang menyiapkan tautan Anda.",
+    "to": {
+      "form": "Anda sedang diarahkan ke formulir.",
+      "drive": "Anda sedang diarahkan ke folder Google Drive.",
+      "docs": "Anda sedang diarahkan ke dokumen.",
+      "youtube": "Anda sedang diarahkan ke YouTube.",
+      "whatsapp": "Anda sedang diarahkan ke WhatsApp.",
+      "site": "Anda sedang diarahkan ke halaman Markaz Tadarus.",
+      "link": "Anda sedang diarahkan ke halaman tujuan."
+    },
+    "manual": "Klik di sini jika tidak berpindah otomatis"
+  },
+  "closed": {
+    "title": "Tautan ini sudah ditutup",
+    "expiredTitle": "Batas waktu tautan ini sudah lewat",
+    "text": "Terima kasih atas minat Anda. Jika Anda merasa ini keliru, hubungi panitia yang membagikan tautan ini."
+  },
+  "missing": {
+    "title": "Tautan tidak ditemukan",
+    "text": "{{path}} tidak ada atau sudah dihapus. Periksa kembali penulisan tautannya."
+  },
+  "error": {
+    "title": "Tautan belum dapat dibuka",
+    "text": "Sepertinya koneksi internet sedang bermasalah.",
+    "retry": "Coba lagi"
+  },
+  "home": "Ke beranda"
+}

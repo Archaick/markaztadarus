@@ -1,0 +1,93 @@
+{
+  "title": "Pengelola Tautan",
+  "intro": "Tautan pendek markaztadarus.com yang mengarah ke formulir, folder, video, atau halaman mana pun.",
+  "newLink": "Tautan baru",
+  "stats": {
+    "links": "Tautan",
+    "active": "Aktif",
+    "clicks": "Total klik"
+  },
+  "legacy": {
+    "title": "{{count}} tautan lama belum ada di sini",
+    "text": "Tautan ini masih tersimpan di kode situs. Impor agar bisa diubah, dijeda, dan dihitung kliknya — alamatnya tetap sama.",
+    "button": "Impor sekarang",
+    "done": "{{count}} tautan lama berhasil diimpor."
+  },
+  "search": "Cari tautan, judul, tujuan, atau catatan…",
+  "sort": {
+    "newest": "Terbaru",
+    "popular": "Terpopuler",
+    "az": "A–Z"
+  },
+  "empty": {
+    "title": "Belum ada tautan",
+    "text": "Buat tautan pendek pertama untuk formulir atau folder Anda.",
+    "button": "Buat tautan"
+  },
+  "noMatch": "Tidak ada tautan yang cocok dengan pencarian ini.",
+  "loadFailed": "Tautan tidak dapat dimuat. Periksa koneksi lalu muat ulang halaman.",
+  "showMore": "Tampilkan lainnya ({{count}})",
+  "status": {
+    "active": "Aktif",
+    "paused": "Dijeda",
+    "expired": "Berakhir"
+  },
+  "kind": {
+    "form": "Google Form",
+    "drive": "Google Drive",
+    "docs": "Google Dokumen",
+    "youtube": "YouTube",
+    "whatsapp": "WhatsApp",
+    "site": "Situs Markaz",
+    "link": "Situs web"
+  },
+  "row": {
+    "copy": "Salin tautan",
+    "copied": "Tersalin",
+    "qr": "Kode QR",
+    "edit": "Ubah",
+    "open": "Buka tujuan",
+    "delete": "Hapus",
+    "lastClick": "terakhir {{time}}",
+    "neverClicked": "belum pernah dibuka",
+    "ends": "Ditutup otomatis setelah {{date}}",
+    "endedOn": "Ditutup sejak {{date}}"
+  },
+  "deleteConfirm": "Hapus {{path}}? Siapa pun yang membukanya akan melihat halaman \"tautan tidak ditemukan\".",
+  "deleted": "Tautan {{path}} dihapus.",
+  "saved": "Perubahan pada {{path}} disimpan.",
+  "created": "Tautan {{path}} dibuat.",
+  "editor": {
+    "newTitle": "Tautan baru",
+    "editTitle": "Ubah tautan",
+    "title": "Judul",
+    "titlePlaceholder": "mis. Kuesioner Guru – Baitussalam",
+    "path": "Tautan pendek",
+    "pathHint": "Huruf kecil, angka, dan tanda hubung.",
+    "pathChanged": "Alamat lama {{path}} akan berhenti bekerja, termasuk kode QR yang sudah dicetak.",
+    "destination": "Tujuan",
+    "destinationHint": "Alamat lengkap tujuan. Bisa diganti kapan saja tanpa mengubah tautan pendek atau kode QR.",
+    "note": "Catatan",
+    "notePlaceholder": "Untuk apa tautan ini, siapa yang memakainya…",
+    "active": "Aktif",
+    "activeHint": "Jika dimatikan, pengunjung melihat pesan \"tautan ditutup\".",
+    "ends": "Ditutup otomatis setelah",
+    "endsHint": "Opsional. Cocok untuk formulir dengan batas waktu.",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "create": "Buat tautan"
+  },
+  "errors": {
+    "badPath": "Tautan pendek hanya boleh berisi huruf kecil, angka, dan tanda hubung.",
+    "reserved": "{{path}} sudah dipakai oleh halaman situs. Pilih nama lain.",
+    "taken": "{{path}} sudah ada. Pilih nama lain atau ubah tautan yang ada.",
+    "badUrl": "Tujuan harus berupa alamat web, mis. https://docs.google.com/…",
+    "loopUrl": "Tujuan tidak boleh mengarah ke tautan pendek ini sendiri.",
+    "failed": "Gagal menyimpan. Coba lagi."
+  },
+  "qr": {
+    "title": "Kode QR",
+    "hint": "Siap cetak, dengan logo di tengah dan alamat di bawahnya. Kode ini tetap berlaku walau tujuannya diganti.",
+    "download": "Unduh PNG"
+  }
+}

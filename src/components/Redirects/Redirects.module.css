@@ -1,0 +1,231 @@
+/* Short-link waiting page: the logo in a turning gold ring, then onwards. */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: radial-gradient(circle at 50% 35%, #fffaf0 0%, #f4f6fa 55%, #e8eef6 100%);
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
+  overflow: hidden;
+}
+
+/* faint kufic watermark */
+.pattern {
+  position: absolute;
+  inset: auto -80px -80px auto;
+  width: 360px;
+  height: 360px;
+  background: url("/MTIFavicon.png") center / contain no-repeat;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.4rem 1.6rem 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(171, 139, 43, 0.18);
+  border-radius: 26px;
+  box-shadow: 0 30px 70px rgba(16, 33, 65, 0.1);
+  animation: rise 0.45s ease-out;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* the logo sits inside a ring; while waiting a gold arc runs around it */
+.logoWrap {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(16, 33, 65, 0.08), inset 0 0 0 1px rgba(171, 139, 43, 0.15);
+}
+
+.logoSpin::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 220deg, #f6dc8c 290deg, #b8960c 360deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+  animation: spin 1.1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.brand {
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #a67d00;
+}
+
+.headline {
+  margin: 0.9rem 0 0.35rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #102141;
+  line-height: 1.3;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #4a6478;
+}
+
+.linkTitle {
+  margin: 0.8rem 0 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: #fff7dc;
+  color: #7a5c00;
+  font-weight: 700;
+  font-size: 0.9rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* thin bar that keeps moving while the link opens */
+.bar {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  height: 4px;
+  margin-top: 1.4rem;
+  border-radius: 99px;
+  background: #e8eef6;
+  overflow: hidden;
+}
+
+.bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #f6dc8c, #b8960c);
+  animation: slide 1.2s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
+.fallback {
+  margin-top: 1.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #25475e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fallback:hover {
+  color: #a67d00;
+}
+
+[dir="rtl"] .flip {
+  transform: scaleX(-1);
+}
+
+.noticeIcon {
+  margin-top: 1.2rem;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff7dc;
+  color: #a67d00;
+}
+
+.noticeIcon + .headline {
+  margin-top: 0.7rem;
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 46px;
+  padding: 0 1.3rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primary {
+  background: #1a4970;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(26, 73, 112, 0.22);
+}
+
+.secondary {
+  background: #ffffff;
+  color: #1a4970;
+  border: 1px solid #d5dfeb;
+}
+
+[dir="rtl"] .headline,
+[dir="rtl"] .text {
+  font-family: "Cairo", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoSpin::before,
+  .bar span,
+  .card {
+    animation: none;
+  }
+}

@@ -1,499 +1,474 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
   Alert,
-  Box,
+  Badge,
   Button,
+  Card,
   CopyButton,
   Group,
   Loader,
-  Paper,
-  Stack,
+  Modal,
+  SegmentedControl,
   Text,
   TextInput,
+  Title,
   Tooltip,
 } from "@mantine/core";
 import {
-  IconAlertCircle,
+  IconArrowLeft,
+  IconBrandGoogleDrive,
+  IconBrandWhatsapp,
+  IconBrandYoutube,
   IconCheck,
+  IconClick,
   IconCopy,
+  IconDownload,
   IconExternalLink,
-  IconLogout,
+  IconFileImport,
+  IconFileText,
+  IconForms,
+  IconLink,
+  IconPencil,
+  IconPlus,
+  IconQrcode,
+  IconSearch,
   IconTrash,
+  IconWorld,
 } from "@tabler/icons-react";
-import { useDebouncedValue } from "@mantine/hooks";
-import { signOut } from "firebase/auth";
+import { useTranslation } from "react-i18next";
+import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, writeBatch } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { AccountBar, InternalLayout } from "../Internal/InternalUI";
+import { intlLocale } from "../Internal/language";
+import { timeAgo } from "../Internal/timeAgo";
+import layout from "../Internal/AccessControl.module.css";
+import portal from "../Internal/InternalPortal.module.css";
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  endAt,
-  getDocs,
-  limit as firestoreLimit,
-  orderBy,
-  query,
-  serverTimestamp,
-  startAfter,
-  startAt,
-  where,
-} from "firebase/firestore";
-import { auth, db } from "../../../firebaseConfig";
+  LEGACY_LINKS,
+  REDIRECT_COLLECTION,
+  SITE_HOST,
+  destinationKind,
+  expiryDate,
+  linkState,
+  shortLink,
+} from "../Redirects/redirectSchema";
+import LinkEditor from "./LinkEditor";
+import { qrWithLogo } from "./qrWithLogo";
 import styles from "./RedirectAdmin.module.css";
 
-const PAGE_SIZE = 10;
-const REDIRECT_COLLECTION = "redirect_manager_links";
-const SHORT_PATH_PATTERN = /^\/[a-z0-9-]+$/;
-const particles = [
-  { left: "4%", top: "78%", size: 8, delay: "0s", duration: "16s" },
-  { left: "11%", top: "90%", size: 4, delay: "1.8s", duration: "14s" },
-  { left: "19%", top: "84%", size: 6, delay: "3.2s", duration: "17s" },
-  { left: "27%", top: "88%", size: 5, delay: "0.5s", duration: "15s" },
-  { left: "35%", top: "94%", size: 7, delay: "2.6s", duration: "18s" },
-  { left: "43%", top: "82%", size: 4, delay: "4.1s", duration: "13s" },
-  { left: "52%", top: "89%", size: 8, delay: "1.2s", duration: "20s" },
-  { left: "60%", top: "86%", size: 5, delay: "2.2s", duration: "14s" },
-  { left: "68%", top: "92%", size: 6, delay: "0.8s", duration: "17s" },
-  { left: "75%", top: "84%", size: 4, delay: "3.8s", duration: "12s" },
-  { left: "82%", top: "90%", size: 7, delay: "1.6s", duration: "19s" },
-  { left: "90%", top: "87%", size: 5, delay: "2.9s", duration: "16s" },
-  { left: "96%", top: "93%", size: 6, delay: "4.5s", duration: "18s" },
-];
+const NS = ["internal/Redirects", "internal/Internal"];
+const PAGE = 20;
 
-const normalizePath = (value) => {
-  let normalized = value.trim().toLowerCase();
-
-  if (!normalized) {
-    return "";
-  }
-
-  normalized = normalized.replace(/\s+/g, "-");
-
-  if (!normalized.startsWith("/")) {
-    normalized = `/${normalized}`;
-  }
-
-  return normalized;
+const KIND_ICONS = {
+  form: IconForms,
+  drive: IconBrandGoogleDrive,
+  docs: IconFileText,
+  youtube: IconBrandYoutube,
+  whatsapp: IconBrandWhatsapp,
+  site: IconWorld,
+  link: IconLink,
 };
 
-const normalizeUrl = (value) => {
-  const trimmed = value.trim();
-  const urlValue = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
-  const parsed = new URL(urlValue);
-  if (!["http:", "https:"].includes(parsed.protocol)) {
-    throw new Error("Destination must be http or https");
-  }
-  return parsed.toString();
+const STATE_COLORS = { active: "teal", paused: "gray", expired: "orange" };
+
+const millis = (value) => (value && typeof value.toMillis === "function" ? value.toMillis() : 0);
+
+const SORTS = {
+  newest: (a, b) => millis(b.createdAt) - millis(a.createdAt),
+  popular: (a, b) => (b.clicks || 0) - (a.clicks || 0) || millis(b.lastClickedAt) - millis(a.lastClickedAt),
+  az: (a, b) => a.source.localeCompare(b.source),
 };
 
 export default function RedirectAdmin() {
-  const [source, setSource] = useState("");
-  const [destination, setDestination] = useState("");
-  const [filter, setFilter] = useState("");
-  const [redirects, setRedirects] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingList, setLoadingList] = useState(true);
-  const [hasNextPage, setHasNextPage] = useState(false);
-  const [page, setPage] = useState(1);
-  const [reloadKey, setReloadKey] = useState(0);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const cursorsRef = useRef({ 1: null });
-  const [debouncedFilter] = useDebouncedValue(filter, 350);
-  const filterTerm = useMemo(() => debouncedFilter.trim().toLowerCase(), [debouncedFilter]);
-  const isPrefixSearch = filterTerm.startsWith("/");
-  const normalizedFilter = useMemo(
-    () => (isPrefixSearch ? normalizePath(filterTerm) : ""),
-    [filterTerm, isPrefixSearch]
+  const { t, i18n } = useTranslation(NS);
+  const { email } = useAccess();
+  const [links, setLinks] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("newest");
+  const [shown, setShown] = useState(PAGE);
+  const [editing, setEditing] = useState(null); // null | "new" | link
+  const [qrFor, setQrFor] = useState(null);
+  const [notice, setNotice] = useState(null);
+  const [importing, setImporting] = useState(false);
+
+  // Every link at once: there are a few hundred at most, and searching and
+  // sorting then work across all of them.
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, REDIRECT_COLLECTION),
+        (snap) => setLinks(snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((l) => l.source)),
+        (err) => {
+          console.error("Could not load links:", err);
+          setLoadFailed(true);
+          setLinks([]);
+        }
+      ),
+    []
   );
 
-  useEffect(() => {
-    cursorsRef.current = { 1: null };
-    setPage(1);
-  }, [filterTerm]);
+  useEffect(() => setShown(PAGE), [search, sort]);
 
-  useEffect(() => {
-    let isMounted = true;
+  const visible = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    const list = (links || []).filter(
+      (l) =>
+        !term ||
+        [l.source, l.title, l.destination, l.note].some((v) => (v || "").toLowerCase().includes(term))
+    );
+    return list.sort(SORTS[sort]);
+  }, [links, search, sort]);
 
-    const fetchRedirects = async () => {
-      setLoadingList(true);
-
-      try {
-        if (page > 1 && !(page in cursorsRef.current)) {
-          setPage(1);
-          return;
-        }
-
-        const constraints = [];
-        if (normalizedFilter) {
-          constraints.push(orderBy("source"));
-          constraints.push(startAt(normalizedFilter));
-          constraints.push(endAt(`${normalizedFilter}\uf8ff`));
-        } else {
-          constraints.push(orderBy("createdAt", "desc"));
-        }
-
-        const cursor = cursorsRef.current[page] ?? null;
-        if (cursor) {
-          constraints.push(startAfter(cursor));
-        }
-
-        constraints.push(firestoreLimit(PAGE_SIZE + 1));
-
-        const redirectsQuery = query(collection(db, REDIRECT_COLLECTION), ...constraints);
-        const snapshot = await getDocs(redirectsQuery);
-
-        if (!isMounted) {
-          return;
-        }
-
-        const docs = snapshot.docs;
-        const hasMore = docs.length > PAGE_SIZE;
-        const visibleDocs = hasMore ? docs.slice(0, PAGE_SIZE) : docs;
-        const data = visibleDocs.map((item) => ({ id: item.id, ...item.data() }));
-        const filteredData =
-          !filterTerm || isPrefixSearch
-            ? data
-            : data.filter((item) => {
-                const sourceValue = (item.source ?? "").toLowerCase();
-                const destinationValue = (item.destination ?? "").toLowerCase();
-                return sourceValue.includes(filterTerm) || destinationValue.includes(filterTerm);
-              });
-
-        setRedirects(filteredData);
-        setHasNextPage(hasMore);
-
-        if (hasMore && visibleDocs.length > 0) {
-          cursorsRef.current[page + 1] = visibleDocs[visibleDocs.length - 1];
-        } else {
-          delete cursorsRef.current[page + 1];
-        }
-      } catch (fetchError) {
-        console.error("Error fetching redirects:", fetchError);
-        if (isMounted) {
-          setRedirects([]);
-          setHasNextPage(false);
-        }
-      } finally {
-        if (isMounted) {
-          setLoadingList(false);
-        }
-      }
+  const totals = useMemo(() => {
+    const all = links || [];
+    return {
+      links: all.length,
+      active: all.filter((l) => linkState(l) === "active").length,
+      clicks: all.reduce((sum, l) => sum + (l.clicks || 0), 0),
     };
+  }, [links]);
 
-    fetchRedirects();
+  // Links still written in the code that the dashboard does not hold yet.
+  const missingLegacy = useMemo(() => {
+    if (!links) return [];
+    const have = new Set(links.map((l) => l.source));
+    const seen = new Set();
+    return LEGACY_LINKS.filter((l) => !have.has(l.source) && !seen.has(l.source) && seen.add(l.source));
+  }, [links]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [page, normalizedFilter, filterTerm, isPrefixSearch, reloadKey]);
-
-  const resetToFirstPage = () => {
-    cursorsRef.current = { 1: null };
-    setPage(1);
-    setReloadKey((value) => value + 1);
-  };
-
-  const handleAddRedirect = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
+  const importLegacy = async () => {
+    setImporting(true);
     try {
-      const cleanSource = normalizePath(source);
-      if (!SHORT_PATH_PATTERN.test(cleanSource)) {
-        throw new Error("Custom path must be one segment like /my-link");
-      }
-
-      const cleanDestination = normalizeUrl(destination);
-      const duplicateSnapshot = await getDocs(
-        query(
-          collection(db, REDIRECT_COLLECTION),
-          where("source", "==", cleanSource),
-          firestoreLimit(1)
-        )
+      const batch = writeBatch(db);
+      missingLegacy.forEach((l) =>
+        batch.set(doc(collection(db, REDIRECT_COLLECTION)), {
+          ...l,
+          note: "",
+          active: true,
+          expiresAt: null,
+          clicks: 0,
+          importedFromCode: true,
+          createdAt: serverTimestamp(),
+          createdBy: email || "unknown",
+          updatedAt: serverTimestamp(),
+          updatedBy: email || "unknown",
+        })
       );
-
-      if (!duplicateSnapshot.empty) {
-        throw new Error(`Path ${cleanSource} already exists`);
-      }
-
-      await addDoc(collection(db, REDIRECT_COLLECTION), {
-        source: cleanSource,
-        destination: cleanDestination,
-        createdAt: serverTimestamp(),
-        createdBy: auth.currentUser?.email ?? "unknown",
-      });
-
-      setSource("");
-      setDestination("");
-      setSuccess(`Redirect ${cleanSource} created successfully`);
-      resetToFirstPage();
-    } catch (createError) {
-      console.error("Error adding redirect:", createError);
-      setError(createError?.message || "Failed to create redirect");
+      await batch.commit();
+      setNotice({ color: "teal", text: t("legacy.done", { count: missingLegacy.length }) });
+    } catch (err) {
+      console.error("Could not import links:", err);
+      setNotice({ color: "red", text: t("errors.failed") });
     } finally {
-      setLoading(false);
+      setImporting(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    setError("");
-    setSuccess("");
-    if (window.confirm("Are you sure you want to delete this redirect?")) {
-      try {
-        await deleteDoc(doc(db, REDIRECT_COLLECTION, id));
-        setSuccess("Redirect deleted");
-        resetToFirstPage();
-      } catch (deleteError) {
-        console.error("Error deleting redirect:", deleteError);
-        setError("Failed to delete redirect");
-      }
-    }
-  };
-
-  const handleLogout = async () => {
+  const remove = async (link) => {
+    if (!window.confirm(t("deleteConfirm", { path: `${SITE_HOST}${link.source}` }))) return;
     try {
-      await signOut(auth);
-      window.location.href = "/internal/redirect-login";
-    } catch (logoutError) {
-      console.error("Logout error:", logoutError);
-      setError("Unable to logout right now");
+      await deleteDoc(doc(db, REDIRECT_COLLECTION, link.id));
+      setNotice({ color: "teal", text: t("deleted", { path: link.source }) });
+    } catch (err) {
+      console.error("Could not delete link:", err);
+      setNotice({ color: "red", text: t("errors.failed") });
     }
   };
 
-  const domain =
-    typeof window !== "undefined" ? window.location.origin : "https://markaztadarus.org";
-  const hostname = domain.replace(/^https?:\/\//, "");
-  const pageStartNumber = (page - 1) * PAGE_SIZE;
+  const dateFormat = useMemo(
+    () => new Intl.DateTimeFormat(intlLocale(i18n.language), { day: "numeric", month: "short", year: "numeric" }),
+    [i18n.language]
+  );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.particles} aria-hidden="true">
-        {particles.map((particle, index) => (
-          <span
-            key={`dashboard-particle-${index}`}
-            className={styles.particle}
-            style={{
-              left: particle.left,
-              top: particle.top,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDelay: particle.delay,
-              animationDuration: particle.duration,
-            }}
-          />
-        ))}
-      </div>
-      <div className={styles.content}>
-        <div className={styles.header}>
-          <div>
-            <h1 className={styles.title}>Redirect Manager Dashboard</h1>
-            <p className={styles.subtitle}>Manage internal short links safely.</p>
-            <span className={styles.badge}>Firestore collection: {REDIRECT_COLLECTION}</span>
-          </div>
-          <Button
-            leftSection={<IconLogout size={16} />}
-            className={styles.logoutBtn}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </div>
+    <InternalLayout align="top">
+      <div className={`${layout.page} ${styles.page}`}>
+        <a href="/internal" className={layout.back}>
+          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
+        </a>
 
-        {error && (
-          <Alert
-            icon={<IconAlertCircle size={18} />}
-            color="red"
-            mb="md"
-            withCloseButton
-            onClose={() => setError("")}
-          >
-            {error}
-          </Alert>
-        )}
+        <Card className={layout.panel}>
+          <AccountBar />
 
-        {success && (
-          <Alert
-            icon={<IconCheck size={18} />}
-            color="teal"
-            mb="md"
-            withCloseButton
-            onClose={() => setSuccess("")}
-          >
-            {success}
-          </Alert>
-        )}
-
-        <Stack gap="lg">
-          <Paper p="md" className={styles.panel}>
-            <Text fw={700} mb="sm">
-              Create New Redirect
-            </Text>
-            <form onSubmit={handleAddRedirect}>
-              <div className={styles.formGrid}>
-                <TextInput
-                  label="Custom Path"
-                  placeholder="/drive"
-                  description="Lowercase, numbers, and hyphens only"
-                  required
-                  value={source}
-                  onChange={(e) => setSource(e.currentTarget.value)}
-                  className={styles.input}
-                />
-                <TextInput
-                  label="Destination URL"
-                  placeholder="https://docs.google.com/..."
-                  description="http/https URL"
-                  required
-                  value={destination}
-                  onChange={(e) => setDestination(e.currentTarget.value)}
-                  className={styles.input}
-                />
-                <Button type="submit" loading={loading} className={styles.createBtn}>
-                  Create Link
-                </Button>
+          <div className={styles.headerRow}>
+            <div className={layout.heading}>
+              <span
+                className={layout.headingIcon}
+                style={{ background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)" }}
+              >
+                <IconLink size={22} />
+              </span>
+              <div>
+                <Title order={2} className={layout.headingTitle}>
+                  {t("title")}
+                </Title>
+                <Text className={layout.headingText}>{t("intro")}</Text>
               </div>
-            </form>
-          </Paper>
-
-          <Paper p={0} className={styles.panel}>
-            <Box p="md">
-              <TextInput
-                label="Filter"
-                placeholder="/prefix or keyword"
-                description="Use /path for server-side prefix. Plain text filters current page."
-                value={filter}
-                onChange={(e) => setFilter(e.currentTarget.value)}
-                className={styles.input}
-              />
-            </Box>
-
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={{ width: 70 }}>No.</th>
-                    <th>Generated Link</th>
-                    <th>Destination</th>
-                    <th style={{ width: 120 }}>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loadingList ? (
-                    <tr>
-                      <td className={styles.loading} colSpan={4}>
-                        <Loader size="sm" color="blue" />
-                      </td>
-                    </tr>
-                  ) : redirects.length === 0 ? (
-                    <tr>
-                      <td className={styles.empty} colSpan={4}>
-                        <Text className={styles.muted}>
-                          {isPrefixSearch
-                            ? "No redirects found for this prefix."
-                            : "No matches on this page."}
-                        </Text>
-                      </td>
-                    </tr>
-                  ) : (
-                    redirects.map((route, index) => {
-                      const fullLink = `${domain}${route.source}`;
-                      return (
-                        <tr key={route.id}>
-                          <td>{pageStartNumber + index + 1}</td>
-                          <td>
-                            <Group gap="xs">
-                              <Text className={styles.mono}>
-                                {hostname}
-                                {route.source}
-                              </Text>
-                              <CopyButton value={fullLink} timeout={1800}>
-                                {({ copied, copy }) => (
-                                  <Tooltip
-                                    label={copied ? "Copied" : "Copy full link"}
-                                    withArrow
-                                    position="right"
-                                  >
-                                    <ActionIcon
-                                      color={copied ? "teal" : "gray"}
-                                      variant="subtle"
-                                      onClick={copy}
-                                    >
-                                      {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                                    </ActionIcon>
-                                  </Tooltip>
-                                )}
-                              </CopyButton>
-                            </Group>
-                          </td>
-                          <td>
-                            <Group gap="xs" wrap="nowrap">
-                              <Text truncate className={styles.muted} style={{ maxWidth: 340 }}>
-                                {route.destination}
-                              </Text>
-                              <ActionIcon
-                                component="a"
-                                href={route.destination}
-                                target="_blank"
-                                variant="subtle"
-                                color="blue"
-                              >
-                                <IconExternalLink size={16} />
-                              </ActionIcon>
-                            </Group>
-                          </td>
-                          <td>
-                            <ActionIcon
-                              color="red"
-                              variant="subtle"
-                              onClick={() => handleDelete(route.id)}
-                              className={styles.danger}
-                            >
-                              <IconTrash size={17} />
-                            </ActionIcon>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
             </div>
+            <Button
+              leftSection={<IconPlus size={17} />}
+              className={styles.primaryButton}
+              onClick={() => setEditing("new")}
+            >
+              {t("newLink")}
+            </Button>
+          </div>
 
-            <Group p="md" className={styles.footerRow}>
-              <Text className={styles.footerText}>
-                {normalizedFilter
-                  ? `Prefix filter: ${normalizedFilter}`
-                  : filterTerm
-                    ? `Keyword filter (current page): ${filterTerm}`
-                    : "Showing latest redirects"}
-              </Text>
+          <div className={styles.stats}>
+            <Stat value={totals.links} label={t("stats.links")} />
+            <Stat value={totals.active} label={t("stats.active")} />
+            <Stat value={totals.clicks} label={t("stats.clicks")} />
+          </div>
 
-              <div className={styles.pager}>
-                <Button
-                  variant="subtle"
-                  color="gray"
-                  onClick={() => setPage((currentPage) => Math.max(1, currentPage - 1))}
-                  disabled={page === 1 || loadingList}
-                >
-                  Previous
-                </Button>
-                <Text size="sm">Page {page}</Text>
-                <Button
-                  variant="subtle"
-                  color="gray"
-                  onClick={() => setPage((currentPage) => currentPage + 1)}
-                  disabled={!hasNextPage || loadingList}
-                >
-                  Next
-                </Button>
+          {notice && (
+            <Alert color={notice.color} variant="light" mt="md" withCloseButton onClose={() => setNotice(null)}>
+              {notice.text}
+            </Alert>
+          )}
+          {loadFailed && (
+            <Alert color="red" mt="md">
+              {t("loadFailed")}
+            </Alert>
+          )}
+
+          {missingLegacy.length > 0 && (
+            <div className={styles.legacy}>
+              <IconFileImport size={22} />
+              <div>
+                <Text fw={700}>{t("legacy.title", { count: missingLegacy.length })}</Text>
+                <Text size="sm" c="dimmed">
+                  {t("legacy.text")}
+                </Text>
               </div>
+              <Button variant="light" loading={importing} onClick={importLegacy}>
+                {t("legacy.button")}
+              </Button>
+            </div>
+          )}
+
+          <div className={styles.toolbar}>
+            <TextInput
+              leftSection={<IconSearch size={16} />}
+              placeholder={t("search")}
+              value={search}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              className={styles.search}
+            />
+            <SegmentedControl
+              value={sort}
+              onChange={setSort}
+              data={[
+                { value: "newest", label: t("sort.newest") },
+                { value: "popular", label: t("sort.popular") },
+                { value: "az", label: t("sort.az") },
+              ]}
+            />
+          </div>
+
+          {links === null && (
+            <Group justify="center" py="xl">
+              <Loader size="sm" />
             </Group>
-          </Paper>
-        </Stack>
+          )}
+
+          {links?.length === 0 && !loadFailed && (
+            <div className={styles.empty}>
+              <IconLink size={34} />
+              <Text fw={600}>{t("empty.title")}</Text>
+              <Text size="sm" c="dimmed">
+                {t("empty.text")}
+              </Text>
+              <Button mt="sm" variant="light" onClick={() => setEditing("new")}>
+                {t("empty.button")}
+              </Button>
+            </div>
+          )}
+
+          {links?.length > 0 && visible.length === 0 && (
+            <Text c="dimmed" ta="center" py="xl">
+              {t("noMatch")}
+            </Text>
+          )}
+
+          <ul className={styles.list}>
+            {visible.slice(0, shown).map((link) => (
+              <LinkRow
+                key={link.id}
+                link={link}
+                dateFormat={dateFormat}
+                onEdit={() => setEditing(link)}
+                onQr={() => setQrFor(link)}
+                onDelete={() => remove(link)}
+              />
+            ))}
+          </ul>
+
+          {visible.length > shown && (
+            <Group justify="center" mt="md">
+              <Button variant="subtle" onClick={() => setShown((n) => n + PAGE)}>
+                {t("showMore", { count: visible.length - shown })}
+              </Button>
+            </Group>
+          )}
+        </Card>
       </div>
+
+      <LinkEditor
+        opened={editing !== null}
+        onClose={() => setEditing(null)}
+        link={editing === "new" ? null : editing}
+        links={links || []}
+        email={email}
+        onSaved={(kind, path) => setNotice({ color: "teal", text: t(kind, { path }) })}
+      />
+      <QrModal link={qrFor} onClose={() => setQrFor(null)} />
+    </InternalLayout>
+  );
+}
+
+function Stat({ value, label }) {
+  return (
+    <div className={styles.stat}>
+      <strong>{value.toLocaleString("en-US")}</strong>
+      <span>{label}</span>
     </div>
+  );
+}
+
+function LinkRow({ link, dateFormat, onEdit, onQr, onDelete }) {
+  const { t } = useTranslation(NS);
+  const state = linkState(link);
+  const { kind, host } = destinationKind(link.destination);
+  const KindIcon = KIND_ICONS[kind];
+  const ends = expiryDate(link);
+  const full = shortLink(link.source);
+
+  return (
+    <li className={`${styles.row} ${state !== "active" ? styles.rowOff : ""}`}>
+      <span className={styles.kind} title={t(`kind.${kind}`)}>
+        <KindIcon size={20} />
+      </span>
+
+      <div className={styles.main}>
+        <div className={styles.titleLine}>
+          <span className={styles.linkTitle} dir="auto">
+            {link.title || link.source.slice(1)}
+          </span>
+          <Badge size="sm" variant="light" color={STATE_COLORS[state]}>
+            {t(`status.${state}`)}
+          </Badge>
+        </div>
+        <div className={styles.pathLine}>
+          <bdi className={styles.path}>
+            {SITE_HOST}
+            <strong>{link.source}</strong>
+          </bdi>
+          <CopyButton value={full} timeout={1600}>
+            {({ copied, copy }) => (
+              <Tooltip label={copied ? t("row.copied") : t("row.copy")}>
+                <ActionIcon size="sm" variant="subtle" color={copied ? "teal" : "gray"} onClick={copy} aria-label={t("row.copy")}>
+                  {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </CopyButton>
+        </div>
+        <bdi className={styles.dest} title={link.destination}>
+          {t(`kind.${kind}`)} · {host}
+        </bdi>
+        {link.note && (
+          <p className={styles.note} dir="auto">
+            {link.note}
+          </p>
+        )}
+        {ends && (
+          <p className={styles.ends}>
+            {t(state === "expired" ? "row.endedOn" : "row.ends", { date: dateFormat.format(ends) })}
+          </p>
+        )}
+      </div>
+
+      <div className={styles.clicks}>
+        <span className={styles.clickCount}>
+          <IconClick size={15} /> {(link.clicks || 0).toLocaleString("en-US")}
+        </span>
+        <span className={styles.clickWhen}>
+          {link.lastClickedAt ? t("row.lastClick", { time: timeAgo(link.lastClickedAt) }) : t("row.neverClicked")}
+        </span>
+      </div>
+
+      <div className={styles.actions}>
+        <Tooltip label={t("row.qr")}>
+          <ActionIcon variant="subtle" color="gray" onClick={onQr} aria-label={t("row.qr")}>
+            <IconQrcode size={18} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t("row.edit")}>
+          <ActionIcon variant="subtle" color="blue" onClick={onEdit} aria-label={t("row.edit")}>
+            <IconPencil size={18} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t("row.open")}>
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            component="a"
+            href={link.destination}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t("row.open")}
+          >
+            <IconExternalLink size={18} />
+          </ActionIcon>
+        </Tooltip>
+        <Tooltip label={t("row.delete")}>
+          <ActionIcon variant="subtle" color="red" onClick={onDelete} aria-label={t("row.delete")}>
+            <IconTrash size={18} />
+          </ActionIcon>
+        </Tooltip>
+      </div>
+    </li>
+  );
+}
+
+function QrModal({ link, onClose }) {
+  const { t } = useTranslation(NS);
+  const [image, setImage] = useState("");
+
+  useEffect(() => {
+    setImage("");
+    if (!link) return undefined;
+    let alive = true;
+    qrWithLogo(shortLink(link.source), `${SITE_HOST}${link.source}`)
+      .then((url) => alive && setImage(url))
+      .catch((err) => console.error("QR failed:", err));
+    return () => {
+      alive = false;
+    };
+  }, [link]);
+
+  return (
+    <Modal opened={!!link} onClose={onClose} title={t("qr.title")} centered size="sm">
+      <div className={styles.qrBox}>
+        {image ? <img src={image} alt={t("qr.title")} className={styles.qrImage} /> : <Loader size="sm" />}
+        <Text size="sm" c="dimmed" ta="center">
+          {t("qr.hint")}
+        </Text>
+        <Button
+          component="a"
+          href={image || undefined}
+          download={link ? `QR-${link.source.slice(1)}.png` : undefined}
+          leftSection={<IconDownload size={17} />}
+          className={styles.primaryButton}
+          disabled={!image}
+          fullWidth
+        >
+          {t("qr.download")}
+        </Button>
+      </div>
+    </Modal>
   );
 }

@@ -1,0 +1,93 @@
+{
+  "title": "Link Manager",
+  "intro": "Short markaztadarus.com links that lead to any form, folder, video, or page.",
+  "newLink": "New link",
+  "stats": {
+    "links": "Links",
+    "active": "Active",
+    "clicks": "Total clicks"
+  },
+  "legacy": {
+    "title": "{{count}} older links are not here yet",
+    "text": "These links still live in the site's code. Import them so they can be edited, paused, and counted — their addresses stay the same.",
+    "button": "Import now",
+    "done": "{{count}} older links imported."
+  },
+  "search": "Search links, titles, destinations, or notes…",
+  "sort": {
+    "newest": "Newest",
+    "popular": "Most clicked",
+    "az": "A–Z"
+  },
+  "empty": {
+    "title": "No links yet",
+    "text": "Create your first short link for a form or folder.",
+    "button": "Create a link"
+  },
+  "noMatch": "No links match this search.",
+  "loadFailed": "Links could not be loaded. Check your connection and reload the page.",
+  "showMore": "Show more ({{count}})",
+  "status": {
+    "active": "Active",
+    "paused": "Paused",
+    "expired": "Ended"
+  },
+  "kind": {
+    "form": "Google Form",
+    "drive": "Google Drive",
+    "docs": "Google Docs",
+    "youtube": "YouTube",
+    "whatsapp": "WhatsApp",
+    "site": "Markaz site",
+    "link": "Website"
+  },
+  "row": {
+    "copy": "Copy link",
+    "copied": "Copied",
+    "qr": "QR code",
+    "edit": "Edit",
+    "open": "Open destination",
+    "delete": "Delete",
+    "lastClick": "last {{time}}",
+    "neverClicked": "never opened",
+    "ends": "Closes automatically after {{date}}",
+    "endedOn": "Closed since {{date}}"
+  },
+  "deleteConfirm": "Delete {{path}}? Anyone who opens it will see a \"link not found\" page.",
+  "deleted": "Link {{path}} deleted.",
+  "saved": "Changes to {{path}} saved.",
+  "created": "Link {{path}} created.",
+  "editor": {
+    "newTitle": "New link",
+    "editTitle": "Edit link",
+    "title": "Title",
+    "titlePlaceholder": "e.g. Teacher Questionnaire – Baitussalam",
+    "path": "Short link",
+    "pathHint": "Lowercase letters, numbers, and hyphens.",
+    "pathChanged": "The old address {{path}} will stop working, including QR codes already printed.",
+    "destination": "Destination",
+    "destinationHint": "The full address it leads to. You can change it any time without changing the short link or QR code.",
+    "note": "Note",
+    "notePlaceholder": "What the link is for, who uses it…",
+    "active": "Active",
+    "activeHint": "When off, visitors see a \"link closed\" message.",
+    "ends": "Close automatically after",
+    "endsHint": "Optional. Handy for forms with a deadline.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create link"
+  },
+  "errors": {
+    "badPath": "A short link may only contain lowercase letters, numbers, and hyphens.",
+    "reserved": "{{path}} is already used by a page of the site. Choose another name.",
+    "taken": "{{path}} already exists. Choose another name or edit the existing link.",
+    "badUrl": "The destination must be a web address, e.g. https://docs.google.com/…",
+    "loopUrl": "The destination cannot point back to this same short link.",
+    "failed": "Could not save. Please try again."
+  },
+  "qr": {
+    "title": "QR code",
+    "hint": "Print-ready, with the logo in the middle and the address underneath. It keeps working even if the destination changes.",
+    "download": "Download PNG"
+  }
+}

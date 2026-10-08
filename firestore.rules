@@ -80,9 +80,25 @@ service cloud.firestore {
     // ---------- Redirect manager ----------
 
     match /redirect_manager_links/{redirectId} {
+      // A short path and an http(s) destination.
+      function validLink() {
+        let data = request.resource.data;
+        return data.source is string && data.source.matches('^/[a-z0-9-]+$')
+          && data.destination is string && data.destination.matches('^https?://.+');
+      }
+
+      // The waiting page counts a visit: one more click and the time, nothing else.
+      function isClickCount() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(["clicks", "lastClickedAt"])
+          && request.resource.data.clicks == resource.data.get("clicks", 0) + 1
+          && request.resource.data.lastClickedAt == request.time;
+      }
+
       // Public read so short-link resolver can fetch destination
       allow read: if true;
-      allow create, update, delete: if hasFeature("redirects");
+      allow create: if hasFeature("redirects") && validLink();
+      allow update: if (hasFeature("redirects") && validLink()) || isClickCount();
+      allow delete: if hasFeature("redirects");
     }
 
     // ---------- Website content (home page map and achievements) ----------

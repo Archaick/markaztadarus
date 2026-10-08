@@ -1,0 +1,38 @@
+{
+  "tab": {
+    "loading": "Please wait",
+    "going": "Redirecting",
+    "closed": "Link closed",
+    "missing": "Link not found",
+    "error": "Could not load"
+  },
+  "wait": {
+    "title": "Please wait a moment…",
+    "finding": "We are getting your link ready.",
+    "to": {
+      "form": "Taking you to the form.",
+      "drive": "Taking you to the Google Drive folder.",
+      "docs": "Taking you to the document.",
+      "youtube": "Taking you to YouTube.",
+      "whatsapp": "Taking you to WhatsApp.",
+      "site": "Taking you to a Markaz Tadarus page.",
+      "link": "Taking you to the page."
+    },
+    "manual": "Click here if nothing happens"
+  },
+  "closed": {
+    "title": "This link is closed",
+    "expiredTitle": "This link's deadline has passed",
+    "text": "Thank you for your interest. If you think this is a mistake, contact the organisers who shared the link."
+  },
+  "missing": {
+    "title": "Link not found",
+    "text": "{{path}} does not exist or has been removed. Please check how the link is written."
+  },
+  "error": {
+    "title": "The link could not be opened yet",
+    "text": "It looks like the internet connection is having trouble.",
+    "retry": "Try again"
+  },
+  "home": "Go to home page"
+}
