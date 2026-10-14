@@ -87,7 +87,7 @@
   },
   "qr": {
     "title": "Kode QR",
-    "hint": "Siap cetak, dengan logo di tengah dan alamat di bawahnya. Kode ini tetap berlaku walau tujuannya diganti.",
+    "hint": "Siap cetak, dengan logo di tengah. Kode ini tetap berlaku walau tujuannya diganti.",
     "download": "Unduh PNG"
   }
 }

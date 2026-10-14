@@ -1,8 +1,8 @@
 import { zipSync } from "fflate";
 import { qrWithLogo } from "../Internal/qrWithLogo";
-import { certDate, isRevoked, safeFileName, verifyCaption, verifyLink } from "./certSchema";
+import { certDate, isRevoked, safeFileName, verifyLink } from "./certSchema";
 
-export const certQr = (cert) => qrWithLogo(verifyLink(cert.code), verifyCaption(cert.code));
+export const certQr = (cert) => qrWithLogo(verifyLink(cert.code));
 
 const dataUrlBytes = (url) => {
   const binary = atob(url.split(",")[1]);
@@ -27,7 +27,7 @@ export const downloadDataUrl = (url, filename) => {
   a.click();
 };
 
-export const qrFileName = (cert) => `${safeFileName(cert.name)}_${cert.code}.png`;
+export const qrFileName = (cert) => `${safeFileName(cert.name || cert.nameAr)}_${cert.code}.png`;
 
 /** Every QR code as one ZIP, each file named after the participant. */
 export async function downloadQrZip(certs, zipName, onProgress) {
@@ -58,7 +58,9 @@ export function downloadCsv(certs, fileName, headers) {
     headers,
     ...certs.map((c) => [
       c.name,
+      c.nameAr || "",
       c.program,
+      c.programAr || "",
       format(c.eventDate),
       c.code,
       verifyLink(c.code),

@@ -442,7 +442,7 @@ function QrModal({ link, onClose }) {
     setImage("");
     if (!link) return undefined;
     let alive = true;
-    qrWithLogo(shortLink(link.source), `${SITE_HOST}${link.source}`)
+    qrWithLogo(shortLink(link.source))
       .then((url) => alive && setImage(url))
       .catch((err) => console.error("QR failed:", err));
     return () => {

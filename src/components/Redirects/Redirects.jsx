@@ -19,7 +19,7 @@ import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./Redirects.module.css";
 
 const NS = "common/Redirect";
-const MIN_SHOWN_MS = 1900; // long enough for the globe to land on Indonesia, short enough not to annoy
+const MIN_SHOWN_MS = 3000; // long enough for the globe to land on Indonesia, short enough not to annoy
 const COUNT_WAIT_MS = 1500; // a slow network never holds the visitor back for long
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -17,7 +17,6 @@ export const MIGRATION_DOC = "migration";
 
 export const SITE_ORIGIN = "https://markaztadarus.com";
 export const verifyLink = (code) => `${SITE_ORIGIN}/verify/${code}`;
-export const verifyCaption = (code) => `markaztadarus.com/verify/${code}`;
 
 // No 0/O or 1/I/L, so a code read off paper is never ambiguous.
 const ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -48,10 +47,25 @@ const millis = (v) => toDate(v)?.getTime() ?? null;
 
 export const isRevoked = (cert) => cert.status === "revoked";
 
+// Each certificate may carry its name and description in Latin script and in
+// Arabic. Arabic pages show the Arabic text, the others the Latin one; either
+// falls back to the other when only one was written.
+export const CERT_LANGS = ["id", "en", "ar"];
+export const certLang = (cert) => (CERT_LANGS.includes(cert?.lang) ? cert.lang : "id");
+export const displayName = (cert, lang) =>
+  (lang === "ar" ? cert?.nameAr || cert?.name : cert?.name || cert?.nameAr) || "";
+export const displayProgram = (cert, lang) =>
+  (lang === "ar" ? cert?.programAr || cert?.program : cert?.program || cert?.programAr) || "";
+// The label a certificate is grouped and searched under.
+export const programKey = (cert) => cert?.program || cert?.programAr || "";
+
 // The fields the verification page needs, nothing more.
 export const publicFields = (cert) => ({
   name: cert.name || "",
+  nameAr: cert.nameAr || "",
   program: cert.program || "",
+  programAr: cert.programAr || "",
+  lang: certLang(cert),
   code: normCode(cert.code),
   eventDate: cert.eventDate || null,
   issuedAt: cert.createdAt || null,
@@ -68,7 +82,10 @@ export const publicUpToDate = (cert, pub) => {
   const want = publicFields(cert);
   return (
     want.name === pub.name &&
+    want.nameAr === (pub.nameAr || "") &&
     want.program === pub.program &&
+    want.programAr === (pub.programAr || "") &&
+    want.lang === (pub.lang || "id") &&
     want.status === pub.status &&
     want.revokedReason === (pub.revokedReason || "") &&
     want.title === (pub.title || "") &&
@@ -92,24 +109,29 @@ export const fromDateInput = (value) => {
 
 export const safeFileName = (s) =>
   (s || "")
-    .normalize("NFKD")
-    .replace(/[^\w\- ]+/g, "")
+    .normalize("NFC")
+    .replace(/[^\p{L}\p{N}\- ]+/gu, "") // keeps Arabic letters too
     .trim()
     .replace(/\s+/g, "_")
     .substring(0, 60) || "sertifikat";
 
-// Names out of an Excel column or a pasted list: one per row, blanks and
-// repeats dropped, extra spaces removed.
-export const tidyNames = (values) => {
+const ARABIC = /[؀-ۿ]/;
+
+// People out of an Excel sheet or a pasted list: each row is [latin, arabic]
+// (either may be missing). A lone name written in Arabic script goes to the
+// Arabic field. Blank rows and repeats are dropped.
+export const tidyPeople = (rows) => {
   const seen = new Set();
-  const names = [];
-  values.forEach((value) => {
-    const name = cleanText(String(value ?? ""));
-    const key = name.toLowerCase();
-    if (name && !seen.has(key)) {
+  const people = [];
+  rows.forEach(([first, second]) => {
+    let name = cleanText(String(first ?? ""));
+    let nameAr = cleanText(String(second ?? ""));
+    if (name && !nameAr && ARABIC.test(name)) [name, nameAr] = ["", name];
+    const key = `${name}|${nameAr}`.toLowerCase();
+    if ((name || nameAr) && !seen.has(key)) {
       seen.add(key);
-      names.push(name);
+      people.push({ name, nameAr });
     }
   });
-  return names;
+  return people;
 };

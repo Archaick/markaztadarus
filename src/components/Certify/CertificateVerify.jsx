@@ -18,7 +18,7 @@ import { db } from "../../../firebaseConfig";
 import stampImg from "../../assets/imgs/stamp.png";
 import SignatureBlock from "./SignatureBlock";
 import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
-import { CERTS, PUBLIC, certDate, normCode, publicFields } from "./certSchema";
+import { CERTS, PUBLIC, certDate, certLang, displayName, displayProgram, normCode, publicFields } from "./certSchema";
 import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./CertificateVerify.module.css";
 
@@ -29,7 +29,7 @@ const LANGS = [
 ];
 const LOCALES = { id: "id-ID", en: "en-GB", ar: "ar-u-nu-latn" };
 // The loading globe gets to land on Indonesia before the result replaces it.
-const MIN_LOADING_MS = 1900;
+const MIN_LOADING_MS = 3000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
@@ -65,6 +65,8 @@ export default function CertificateVerify() {
       }
       await settle();
       if (!alive) return;
+      // open in the certificate's own language; the visitor can still switch
+      if (cert.lang) i18n.changeLanguage(certLang(cert));
       setState({ phase: "found", cert, signers });
       if (countScan) {
         updateDoc(doc(db, PUBLIC, code), { scans: increment(1), lastScannedAt: serverTimestamp() }).catch(() => {});
@@ -96,6 +98,8 @@ export default function CertificateVerify() {
     return () => {
       alive = false;
     };
+    // i18n is stable; the language only seeds the first view
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawCode, attempt]);
 
   const dateFormat = useMemo(
@@ -187,11 +191,11 @@ export default function CertificateVerify() {
 
             <p className={styles.label}>{t("issued_to")}</p>
             <h1 className={styles.name} dir="auto">
-              {cert.name}
+              {displayName(cert, lang)}
             </h1>
             <p className={styles.label}>{t("program")}</p>
             <p className={styles.program} dir="auto">
-              {cert.program}
+              {displayProgram(cert, lang)}
             </p>
             {cert.description && (
               <p className={styles.muted} dir="auto">

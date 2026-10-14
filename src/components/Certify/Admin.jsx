@@ -62,6 +62,7 @@ import portal from "../Internal/InternalPortal.module.css";
 import SignerManager from "./SignerManager";
 import BackupManager from "./BackupManager";
 import BulkIssue from "./BulkIssue";
+import LangPicker from "./LangPicker";
 import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
 import {
   CERTS,
@@ -69,12 +70,14 @@ import {
   MIGRATION_DOC,
   PUBLIC,
   certDate,
+  certLang,
   cleanText,
   fromDateInput,
   isRevoked,
   newCode,
   normCode,
   publicFields,
+  programKey,
   publicUpToDate,
   toDateInput,
   verifyLink,
@@ -87,6 +90,9 @@ const PAGE = 25;
 const CERTS_PER_BATCH = 200; // two writes each, under Firestore's 500
 
 const millis = (v) => certDate(v)?.getTime() ?? 0;
+// "Rafi · رافع": both scripts where both were written
+const both = (a, b) => [a, b].filter(Boolean).join(" · ");
+const nameOf = (cert) => both(cert?.name, cert?.nameAr);
 
 export default function Admin() {
   const { t, i18n } = useTranslation(NS);
@@ -193,10 +199,15 @@ export default function Admin() {
   // ---------- derived ----------
   const programs = useMemo(() => {
     const counts = new Map();
-    (certs || []).forEach((c) => c.program && counts.set(c.program, (counts.get(c.program) || 0) + 1));
+    (certs || []).forEach((c) => {
+      const key = programKey(c);
+      if (key) counts.set(key, (counts.get(key) || 0) + 1);
+    });
     return [...counts.entries()].sort((a, b) => b[1] - a[1]);
   }, [certs]);
-  const programNames = useMemo(() => programs.map(([p]) => p), [programs]);
+  // the descriptions already used, offered as suggestions in each script
+  const programNames = useMemo(() => [...new Set((certs || []).map((c) => c.program).filter(Boolean))], [certs]);
+  const programNamesAr = useMemo(() => [...new Set((certs || []).map((c) => c.programAr).filter(Boolean))], [certs]);
 
   const totalScans = useMemo(() => {
     let sum = 0;
@@ -209,9 +220,9 @@ export default function Admin() {
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
     return (certs || [])
-      .filter((c) => !program || c.program === program)
+      .filter((c) => !program || programKey(c) === program)
       .filter((c) => status === "all" || (status === "revoked") === isRevoked(c))
-      .filter((c) => !term || [c.name, c.program, c.code].some((v) => (v || "").toLowerCase().includes(term)))
+      .filter((c) => !term || [c.name, c.nameAr, c.program, c.programAr, c.code].some((v) => (v || "").toLowerCase().includes(term)))
       .sort((a, b) => millis(b.createdAt) - millis(a.createdAt));
   }, [certs, search, program, status]);
 
@@ -236,16 +247,20 @@ export default function Admin() {
   // ---------- writes ----------
   const takenCodes = () => new Set((certs || []).map((c) => normCode(c.code)));
 
-  const createMany = async ({ names, program: prog, eventDate, signerIds }, onProgress) => {
+  // people: [{ name, nameAr }] — either may be empty, not both
+  const createMany = async ({ people, program: prog, programAr, lang, eventDate, signerIds }, onProgress) => {
     const taken = takenCodes();
     const date = fromDateInput(eventDate);
     const created = [];
-    for (let i = 0; i < names.length; i += CERTS_PER_BATCH) {
+    for (let i = 0; i < people.length; i += CERTS_PER_BATCH) {
       const batch = writeBatch(db);
-      names.slice(i, i + CERTS_PER_BATCH).forEach((name) => {
+      people.slice(i, i + CERTS_PER_BATCH).forEach((person) => {
         const data = {
-          name,
-          program: prog,
+          name: person.name || "",
+          nameAr: person.nameAr || "",
+          program: prog || "",
+          programAr: programAr || "",
+          lang: lang || "id",
           code: newCode(taken),
           signerIds: signerIds || [],
           eventDate: date,
@@ -259,22 +274,25 @@ export default function Admin() {
         created.push({ id: ref.id, ...data });
       });
       await batch.commit();
-      onProgress?.(Math.min(1, (i + CERTS_PER_BATCH) / names.length));
+      onProgress?.(Math.min(1, (i + CERTS_PER_BATCH) / people.length));
     }
     return created;
   };
 
   const saveCert = async (values) => {
     if (editing === "new") {
-      const [cert] = await createMany({ ...values, names: [values.name] });
-      notify("success", t("notices.createdTitle"), t("notices.createdText", { name: cert.name, code: cert.code }));
+      const [cert] = await createMany({ ...values, people: [{ name: values.name, nameAr: values.nameAr }] });
+      notify("success", t("notices.createdTitle"), t("notices.createdText", { name: cert.name || cert.nameAr, code: cert.code }));
       setQrFor(cert);
       return;
     }
     const cert = editing;
     const changes = {
       name: values.name,
+      nameAr: values.nameAr,
       program: values.program,
+      programAr: values.programAr,
+      lang: values.lang,
       eventDate: fromDateInput(values.eventDate),
       signerIds: values.signerIds,
       updatedAt: Timestamp.now(),
@@ -284,7 +302,7 @@ export default function Admin() {
     batch.update(doc(db, CERTS, cert.id), changes);
     batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
     await batch.commit();
-    notify("success", t("notices.savedTitle"), t("notices.savedText", { name: values.name }));
+    notify("success", t("notices.savedTitle"), t("notices.savedText", { name: values.name || values.nameAr }));
   };
 
   const setRevoked = async (cert, revoked, reason = "") => {
@@ -296,7 +314,7 @@ export default function Admin() {
       batch.update(doc(db, CERTS, cert.id), changes);
       batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
       await batch.commit();
-      notify("success", t(revoked ? "notices.revokedTitle" : "notices.restoredTitle"), cert.name);
+      notify("success", t(revoked ? "notices.revokedTitle" : "notices.restoredTitle"), nameOf(cert));
       setRevoking(null);
     } catch (err) {
       console.error("Could not change status:", err);
@@ -315,7 +333,7 @@ export default function Admin() {
       batch.delete(doc(db, PUBLIC, normCode(cert.code)));
       await batch.commit();
       setDeleting(null);
-      notify("success", t("notices.deletedTitle"), cert.name);
+      notify("success", t("notices.deletedTitle"), nameOf(cert));
     } catch (err) {
       if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") return;
       console.error("Delete error:", err);
@@ -339,7 +357,9 @@ export default function Admin() {
   const csv = (list, name) =>
     downloadCsv(list, `Sertifikat_${name || "semua"}`, [
       t("csv.name"),
+      t("csv.nameAr"),
       t("csv.program"),
+      t("csv.programAr"),
       t("csv.eventDate"),
       t("csv.code"),
       t("csv.link"),
@@ -547,6 +567,7 @@ export default function Admin() {
         cert={editing === "new" ? null : editing}
         onClose={() => setEditing(null)}
         programs={programNames}
+        programsAr={programNamesAr}
         signerOptions={signerOptions}
         signerPlaceholder={signerPlaceholder}
         onSave={saveCert}
@@ -555,6 +576,7 @@ export default function Admin() {
         opened={bulkOpen}
         onClose={() => setBulkOpen(false)}
         programs={programNames}
+        programsAr={programNamesAr}
         signerOptions={signerOptions}
         signerPlaceholder={signerPlaceholder}
         existing={certs || []}
@@ -566,7 +588,7 @@ export default function Admin() {
       <RevokeModal cert={revoking} onClose={() => setRevoking(null)} onConfirm={(reason) => setRevoked(revoking, true, reason)} />
       <Modal opened={!!deleting} onClose={() => setDeleting(null)} title={t("delete.title")} centered size="sm">
         <Text size="sm" mb="sm">
-          {t("delete.text", { name: deleting?.name })}
+          {t("delete.text", { name: nameOf(deleting) })}
         </Text>
         <Text size="sm" c="dimmed">
           {t("delete.revokeHint")}
@@ -605,7 +627,7 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDel
       <div className={styles.main}>
         <div className={styles.titleLine}>
           <span className={styles.name} dir="auto">
-            {cert.name}
+            {nameOf(cert)}
           </span>
           {revoked && (
             <Badge size="sm" color="red" variant="light">
@@ -614,7 +636,7 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDel
           )}
         </div>
         <span className={styles.meta} dir="auto">
-          {cert.program}
+          {both(cert.program, cert.programAr)}
           {event ? ` · ${dateFormat.format(event)}` : ""}
         </span>
         <div className={styles.codeLine}>
@@ -670,9 +692,11 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDel
   );
 }
 
-function CertEditor({ opened, cert, onClose, programs, signerOptions, signerPlaceholder, onSave }) {
+const blankCert = { name: "", nameAr: "", program: "", programAr: "", lang: "id", eventDate: "", signerIds: [] };
+
+function CertEditor({ opened, cert, onClose, programs, programsAr, signerOptions, signerPlaceholder, onSave }) {
   const { t } = useTranslation(NS);
-  const [values, setValues] = useState({ name: "", program: "", eventDate: "", signerIds: [] });
+  const [values, setValues] = useState(blankCert);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -681,19 +705,33 @@ function CertEditor({ opened, cert, onClose, programs, signerOptions, signerPlac
     setError("");
     setValues(
       cert
-        ? { name: cert.name || "", program: cert.program || "", eventDate: toDateInput(cert.eventDate), signerIds: cert.signerIds || [] }
-        : { name: "", program: "", eventDate: "", signerIds: [] }
+        ? {
+            name: cert.name || "",
+            nameAr: cert.nameAr || "",
+            program: cert.program || "",
+            programAr: cert.programAr || "",
+            lang: certLang(cert),
+            eventDate: toDateInput(cert.eventDate),
+            signerIds: cert.signerIds || [],
+          }
+        : blankCert
     );
   }, [opened, cert]);
 
+  const set = (key) => (value) => setValues((v) => ({ ...v, [key]: value?.currentTarget ? value.currentTarget.value : value }));
+
   const save = async () => {
-    const name = cleanText(values.name);
-    const program = cleanText(values.program);
-    if (!name) return setError(t("errors.noName"));
-    if (!program) return setError(t("errors.noProgram"));
+    const clean = {
+      name: cleanText(values.name),
+      nameAr: cleanText(values.nameAr),
+      program: cleanText(values.program),
+      programAr: cleanText(values.programAr),
+    };
+    if (!clean.name && !clean.nameAr) return setError(t("errors.noName"));
+    if (!clean.program && !clean.programAr) return setError(t("errors.noProgram"));
     setSaving(true);
     try {
-      await onSave({ ...values, name, program });
+      await onSave({ ...values, ...clean });
       onClose();
     } catch (err) {
       console.error("Could not save certificate:", err);
@@ -711,30 +749,55 @@ function CertEditor({ opened, cert, onClose, programs, signerOptions, signerPlac
             {t("editor.sameCode", { code: cert.code })}
           </Alert>
         )}
-        <TextInput
-          label={t("fields.name")}
-          placeholder={t("fields.namePlaceholder")}
-          value={values.name}
-          onChange={(e) => setValues((v) => ({ ...v, name: e.currentTarget.value }))}
-          required
-          dir="auto"
-        />
-        <Autocomplete
-          label={t("fields.program")}
-          placeholder={t("fields.programPlaceholder")}
-          data={programs}
-          value={values.program}
-          onChange={(program) => setValues((v) => ({ ...v, program }))}
-          required
-          limit={12}
-        />
+        <div className={styles.editorRow}>
+          <TextInput
+            label={t("fields.name")}
+            placeholder={t("fields.namePlaceholder")}
+            value={values.name}
+            onChange={set("name")}
+            dir="ltr"
+          />
+          <TextInput
+            label={t("fields.nameAr")}
+            placeholder={t("fields.nameArPlaceholder")}
+            value={values.nameAr}
+            onChange={set("nameAr")}
+            dir="rtl"
+            lang="ar"
+          />
+        </div>
+        <div className={styles.editorRow}>
+          <Autocomplete
+            label={t("fields.program")}
+            placeholder={t("fields.programPlaceholder")}
+            data={programs}
+            value={values.program}
+            onChange={set("program")}
+            limit={12}
+            dir="ltr"
+          />
+          <Autocomplete
+            label={t("fields.programAr")}
+            placeholder={t("fields.programArPlaceholder")}
+            data={programsAr}
+            value={values.programAr}
+            onChange={set("programAr")}
+            limit={12}
+            dir="rtl"
+            lang="ar"
+          />
+        </div>
+        <Text size="xs" c="dimmed" mt={-6}>
+          {t("fields.bilingualHint")}
+        </Text>
+        <LangPicker value={values.lang} onChange={set("lang")} />
         <div className={styles.editorRow}>
           <TextInput
             type="date"
             label={t("fields.eventDate")}
             description={t("fields.eventDateHint")}
             value={values.eventDate}
-            onChange={(e) => setValues((v) => ({ ...v, eventDate: e.currentTarget.value }))}
+            onChange={set("eventDate")}
             className={styles.dateInput}
           />
           <MultiSelect
@@ -742,7 +805,7 @@ function CertEditor({ opened, cert, onClose, programs, signerOptions, signerPlac
             placeholder={values.signerIds.length ? "" : signerPlaceholder}
             data={signerOptions}
             value={values.signerIds}
-            onChange={(signerIds) => setValues((v) => ({ ...v, signerIds }))}
+            onChange={set("signerIds")}
             clearable
             searchable
           />
@@ -774,7 +837,7 @@ function RevokeModal({ cert, onClose, onConfirm }) {
   return (
     <Modal opened={!!cert} onClose={onClose} title={t("revoke.title")} centered size="md">
       <Text size="sm" mb="sm">
-        {t("revoke.text", { name: cert?.name })}
+        {t("revoke.text", { name: nameOf(cert) })}
       </Text>
       <Textarea
         label={t("revoke.reason")}
@@ -823,7 +886,7 @@ function QrModal({ cert, onClose }) {
   }, [cert]);
 
   return (
-    <Modal opened={!!cert} onClose={onClose} title={cert?.name} centered size="sm">
+    <Modal opened={!!cert} onClose={onClose} title={nameOf(cert)} centered size="sm">
       <div className={styles.qrBox}>
         {image ? <img src={image} alt={t("row.qr")} className={styles.qrImage} /> : <Loader size="sm" />}
         <Text size="sm" c="dimmed" ta="center">

@@ -10,7 +10,7 @@
   },
   "stats": {
     "certificates": "Sertifikat",
-    "programs": "Program",
+    "programs": "Deskripsi",
     "scans": "Kali dipindai"
   },
   "secure": {
@@ -28,8 +28,8 @@
     "backup": "Cadangan"
   },
   "filters": {
-    "allPrograms": "Semua program",
-    "search": "Cari nama, program, atau kode…",
+    "allPrograms": "Semua",
+    "search": "Cari nama, deskripsi, atau kode…",
     "all": "Semua",
     "valid": "Berlaku",
     "revoked": "Dicabut",
@@ -56,15 +56,22 @@
     "delete": "Hapus"
   },
   "fields": {
-    "name": "Nama peserta",
-    "namePlaceholder": "Nama lengkap seperti tertulis di sertifikat",
-    "program": "Program",
-    "programPlaceholder": "Pilih atau ketik nama program",
+    "name": "Nama (huruf Latin)",
+    "namePlaceholder": "mis. Rafi Abdullah",
+    "program": "Deskripsi (huruf Latin)",
+    "programPlaceholder": "mis. Peserta Pelatihan Tadarus 5T",
     "eventDate": "Tanggal kegiatan",
     "eventDateHint": "Opsional. Ditampilkan di halaman verifikasi.",
     "signers": "Penanda tangan",
     "signersDefault": "Kosongkan untuk memakai penanda tangan bawaan ({{names}})",
-    "signersNone": "Belum ada penanda tangan bawaan"
+    "signersNone": "Belum ada penanda tangan bawaan",
+    "nameAr": "Nama (huruf Arab)",
+    "nameArPlaceholder": "رافع عبد الله",
+    "programAr": "Deskripsi (huruf Arab)",
+    "programArPlaceholder": "مشارك في دورة التدارس",
+    "bilingualHint": "Isi salah satu atau keduanya. Halaman berbahasa Arab menampilkan teks Arab, bahasa lain menampilkan teks Latin.",
+    "lang": "Bahasa saat dipindai",
+    "langHint": "Halaman verifikasi terbuka dalam bahasa ini. Pemindai tetap bisa menggantinya."
   },
   "editor": {
     "newTitle": "Sertifikat baru",
@@ -78,8 +85,8 @@
     "close": "Tutup"
   },
   "errors": {
-    "noName": "Isi nama peserta.",
-    "noProgram": "Isi nama program.",
+    "noName": "Isi nama peserta (huruf Latin atau Arab).",
+    "noProgram": "Isi deskripsi (huruf Latin atau Arab).",
     "failed": "Terjadi kesalahan. Coba lagi.",
     "failedTitle": "Gagal",
     "sameAccount": "Pilih akun Google yang sama dengan yang sedang masuk."
@@ -108,17 +115,19 @@
     "confirm": "Cabut sertifikat"
   },
   "qr": {
-    "hint": "Siap cetak, dengan logo MTI di tengah dan alamat verifikasi di bawahnya.",
+    "hint": "Siap cetak, dengan logo MTI di tengah.",
     "download": "Unduh PNG",
     "open": "Buka halaman"
   },
   "csv": {
     "name": "Nama",
-    "program": "Program",
+    "program": "Deskripsi",
     "eventDate": "Tanggal kegiatan",
     "code": "Kode",
     "link": "Tautan verifikasi",
-    "status": "Status"
+    "status": "Status",
+    "nameAr": "Nama (Arab)",
+    "programAr": "Deskripsi (Arab)"
   },
   "bulk": {
     "title": "Terbitkan banyak sertifikat",
@@ -129,18 +138,20 @@
     "chooseFile": "Pilih file Excel",
     "otherFile": "Pilih file lain",
     "column": "Kolom",
-    "nameColumn": "Kolom berisi nama",
+    "nameColumn": "Kolom nama (huruf Latin)",
     "hasHeader": "Baris pertama adalah judul kolom",
     "pasteLabel": "Nama peserta",
-    "pasteHint": "Satu nama per baris. Bisa disalin langsung dari Google Sheets atau WhatsApp.",
+    "pasteHint": "Satu nama per baris. Untuk dua huruf, pisahkan dengan Tab: nama Latin, lalu nama Arab (bisa disalin langsung dari dua kolom Google Sheets).",
     "previewTitle": "{{count}} sertifikat akan diterbitkan",
     "andMore": "dan {{count}} lainnya",
-    "skipped": "{{count}} nama sudah punya sertifikat untuk program ini dan dilewati.",
+    "skipped": "{{count}} nama sudah punya sertifikat dengan deskripsi ini dan dilewati.",
     "nothing": "Tidak ada nama baru untuk diterbitkan.",
     "submit": "Terbitkan {{count}} sertifikat",
     "doneTitle": "{{count}} sertifikat diterbitkan",
     "doneText": "Unduh semua kode QR sekaligus, dan daftar nama + kode untuk mail merge di Canva atau Word.",
-    "again": "Terbitkan daftar lain"
+    "again": "Terbitkan daftar lain",
+    "nameArColumn": "Kolom nama (huruf Arab)",
+    "noColumn": "— Tidak ada —"
   },
   "backup": {
     "exportTitle": "Unduh cadangan",

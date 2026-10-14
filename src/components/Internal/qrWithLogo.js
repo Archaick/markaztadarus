@@ -1,7 +1,6 @@
 import QRCode from "qrcode";
 
 const SIZE = 900;
-const CAPTION = 110;
 const LOGO_SRC = "/MTIFavicon.png";
 
 const loadImage = (src) =>
@@ -24,13 +23,13 @@ const roundRect = (ctx, x, y, w, h, r) => {
 
 /**
  * A print-ready PNG: the QR code in navy with the Markaz Tadarus logo in the
- * middle (high error correction keeps it scannable) and the short link
- * written underneath, so people without a camera can type it.
+ * middle (high error correction keeps it scannable). No text, so it sits
+ * cleanly on certificates and posters.
  */
-export async function qrWithLogo(url, caption) {
+export async function qrWithLogo(url) {
   const canvas = document.createElement("canvas");
   canvas.width = SIZE;
-  canvas.height = SIZE + CAPTION;
+  canvas.height = SIZE;
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -56,12 +55,6 @@ export async function qrWithLogo(url, caption) {
   } catch {
     // without the logo the code still works
   }
-
-  ctx.fillStyle = "#102141";
-  ctx.font = "700 44px Outfit, Inter, Arial, sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(caption, SIZE / 2, SIZE + CAPTION / 2 - 14, SIZE - 60);
 
   return canvas.toDataURL("image/png");
 }

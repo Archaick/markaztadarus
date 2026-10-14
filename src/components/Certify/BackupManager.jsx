@@ -25,7 +25,10 @@ export default function BackupManager({ certs, notify }) {
   const exportBackup = () => {
     const data = certs.map((c) => ({
       name: c.name,
+      nameAr: c.nameAr || "",
       program: c.program,
+      programAr: c.programAr || "",
+      lang: c.lang || "id",
       code: c.code,
       signerIds: c.signerIds || [],
       eventDate: iso(c.eventDate),
@@ -46,7 +49,7 @@ export default function BackupManager({ certs, notify }) {
     if (!file) return;
     try {
       const data = JSON.parse(await file.text());
-      if (!Array.isArray(data) || data.some((c) => !c || !c.name || !c.program || !c.code)) throw new Error("format");
+      if (!Array.isArray(data) || data.some((c) => !c || !(c.name || c.nameAr) || !(c.program || c.programAr) || !c.code)) throw new Error("format");
 
       const have = new Set(certs.map((c) => normCode(c.code)));
       const fresh = data.filter((c) => {
@@ -62,7 +65,10 @@ export default function BackupManager({ certs, notify }) {
         fresh.slice(i, i + BATCH).forEach((c) =>
           batch.set(doc(collection(db, CERTS)), {
             name: cleanText(c.name),
+            nameAr: cleanText(c.nameAr),
             program: cleanText(c.program),
+            programAr: cleanText(c.programAr),
+            lang: ["id", "en", "ar"].includes(c.lang) ? c.lang : "id",
             code: normCode(c.code),
             signerIds: Array.isArray(c.signerIds) ? c.signerIds : [],
             eventDate: fromIso(c.eventDate),

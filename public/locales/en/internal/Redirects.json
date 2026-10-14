@@ -87,7 +87,7 @@
   },
   "qr": {
     "title": "QR code",
-    "hint": "Print-ready, with the logo in the middle and the address underneath. It keeps working even if the destination changes.",
+    "hint": "Print-ready, with the logo in the middle. It keeps working even if the destination changes.",
     "download": "Download PNG"
   }
 }

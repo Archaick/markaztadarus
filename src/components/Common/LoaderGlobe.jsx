@@ -11,7 +11,7 @@ const LAND = feature(land110, land110.objects.land);
 const SPHERE = { type: "Sphere" };
 const W = 400;
 const H = 300;
-const FLIGHT_MS = 1500;
+const FLIGHT_MS = 2300;
 const DELAY_MS = 150;
 
 const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
@@ -36,7 +36,7 @@ const reducedMotion = () =>
 /**
  * A small version of the home-page globe for loading screens: the Earth turns,
  * flies down to Indonesia, and the provinces with Tadarus programs light up
- * in gold with a soft pulse. Plays once (about 1.5 s) and then holds.
+ * in gold with a soft pulse. Plays once (about 2.3 s) and then holds.
  * `at` (0–1) freezes it at one point of the flight, for previews.
  */
 export default function LoaderGlobe({ className = "", at }) {

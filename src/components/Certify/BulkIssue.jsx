@@ -17,28 +17,35 @@ import {
 } from "@mantine/core";
 import { IconCheck, IconDownload, IconFileSpreadsheet, IconTable } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { cleanText, tidyNames } from "./certSchema";
+import { cleanText, programKey, tidyPeople } from "./certSchema";
+import LangPicker from "./LangPicker";
 import styles from "./Admin.module.css";
 
 const NS = ["internal/Certificates", "internal/Internal"];
 const MAX_NAMES = 2000;
 const NAME_HEADER = /nama|name|peserta|participant|اسم|الاسم/i;
+const ARABIC_HEADER = /arab|arabic|عربي|بالعربية/i;
+const NONE = "none";
 
 const columnLetter = (i) => (i < 26 ? String.fromCharCode(65 + i) : `${String.fromCharCode(64 + Math.floor(i / 26))}${String.fromCharCode(65 + (i % 26))}`);
 
 /**
  * Issue a certificate to everyone on a list at once: an Excel sheet (pick the
- * column with the names) or names pasted one per line.
+ * columns with the names) or names pasted one per line — "Latin name<Tab>Arabic
+ * name" when both are wanted.
  */
-export default function BulkIssue({ opened, onClose, programs, signerOptions, signerPlaceholder, existing, onIssue, onDownloadZip, onDownloadCsv }) {
+export default function BulkIssue({ opened, onClose, programs, programsAr, signerOptions, signerPlaceholder, existing, onIssue, onDownloadZip, onDownloadCsv }) {
   const { t } = useTranslation(NS);
   const [source, setSource] = useState("excel");
   const [program, setProgram] = useState("");
+  const [programAr, setProgramAr] = useState("");
+  const [lang, setLang] = useState("id");
   const [eventDate, setEventDate] = useState("");
   const [signerIds, setSignerIds] = useState([]);
   const [pasted, setPasted] = useState("");
   const [sheet, setSheet] = useState(null); // { fileName, rows }
   const [column, setColumn] = useState("0");
+  const [columnAr, setColumnAr] = useState(NONE);
   const [hasHeader, setHasHeader] = useState(true);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(null);
@@ -65,10 +72,13 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
       const { readSheet } = await import("read-excel-file/browser");
       const rows = (await readSheet(file)).filter((r) => r.some((c) => c !== null && String(c).trim() !== ""));
       if (!rows.length) throw new Error("empty");
-      const header = rows[0].findIndex((c) => NAME_HEADER.test(String(c ?? "")));
+      const heads = rows[0].map((c) => String(c ?? ""));
+      const arabic = heads.findIndex((h) => NAME_HEADER.test(h) && ARABIC_HEADER.test(h));
+      const header = heads.findIndex((h, i) => i !== arabic && NAME_HEADER.test(h));
       setSheet({ fileName: file.name, rows });
-      setHasHeader(header >= 0);
+      setHasHeader(header >= 0 || arabic >= 0);
       setColumn(String(header >= 0 ? header : Math.max(0, rows[0].findIndex((c) => typeof c === "string"))));
+      setColumnAr(arabic >= 0 ? String(arabic) : NONE);
     } catch (err) {
       console.error("Could not read Excel file:", err);
       setSheet(null);
@@ -86,32 +96,39 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
     });
   }, [sheet, t]);
 
-  const names = useMemo(() => {
-    let values = [];
+  const people = useMemo(() => {
+    let rows = [];
     if (source === "excel" && sheet) {
-      values = sheet.rows.slice(hasHeader ? 1 : 0).map((r) => r[Number(column)]);
+      rows = sheet.rows
+        .slice(hasHeader ? 1 : 0)
+        .map((r) => [r[Number(column)], columnAr === NONE ? "" : r[Number(columnAr)]]);
     } else if (source === "paste") {
-      values = pasted.split(/\r?\n/).map((line) => line.split("\t")[0]);
+      rows = pasted.split(/\r?\n/).map((line) => line.split("\t"));
     }
-    return tidyNames(values).slice(0, MAX_NAMES);
-  }, [source, sheet, column, hasHeader, pasted]);
+    return tidyPeople(rows).slice(0, MAX_NAMES);
+  }, [source, sheet, column, columnAr, hasHeader, pasted]);
 
-  // People who already have a certificate for this program are skipped.
+  // People who already have a certificate with this description are skipped.
+  const personKey = (p) => `${p.name || ""}|${p.nameAr || ""}`.toLowerCase();
   const already = useMemo(() => {
-    const p = cleanText(program).toLowerCase();
-    if (!p) return new Set();
-    return new Set(existing.filter((c) => (c.program || "").toLowerCase() === p).map((c) => (c.name || "").toLowerCase()));
-  }, [existing, program]);
-  const fresh = names.filter((n) => !already.has(n.toLowerCase()));
-  const skipped = names.length - fresh.length;
+    const key = programKey({ program: cleanText(program), programAr: cleanText(programAr) }).toLowerCase();
+    if (!key) return new Set();
+    return new Set(existing.filter((c) => programKey(c).toLowerCase() === key).map(personKey));
+  }, [existing, program, programAr]);
+  const fresh = people.filter((p) => !already.has(personKey(p)));
+  const skipped = people.length - fresh.length;
+  const label = (p) => [p.name, p.nameAr].filter(Boolean).join(" · ");
 
   const issue = async () => {
     setError("");
-    if (!cleanText(program)) return setError(t("errors.noProgram"));
+    if (!cleanText(program) && !cleanText(programAr)) return setError(t("errors.noProgram"));
     if (!fresh.length) return setError(t("bulk.nothing"));
     setProgress(0);
     try {
-      const created = await onIssue({ names: fresh, program: cleanText(program), eventDate, signerIds }, setProgress);
+      const created = await onIssue(
+        { people: fresh, program: cleanText(program), programAr: cleanText(programAr), lang, eventDate, signerIds },
+        setProgress
+      );
       setIssued(created);
     } catch (err) {
       console.error("Bulk issue failed:", err);
@@ -155,15 +172,28 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
         </div>
       ) : (
         <div className={styles.editor}>
-          <Autocomplete
-            label={t("fields.program")}
-            placeholder={t("fields.programPlaceholder")}
-            data={programs}
-            value={program}
-            onChange={setProgram}
-            required
-            limit={12}
-          />
+          <div className={styles.editorRow}>
+            <Autocomplete
+              label={t("fields.program")}
+              placeholder={t("fields.programPlaceholder")}
+              data={programs}
+              value={program}
+              onChange={setProgram}
+              limit={12}
+              dir="ltr"
+            />
+            <Autocomplete
+              label={t("fields.programAr")}
+              placeholder={t("fields.programArPlaceholder")}
+              data={programsAr}
+              value={programAr}
+              onChange={setProgramAr}
+              limit={12}
+              dir="rtl"
+              lang="ar"
+            />
+          </div>
+          <LangPicker value={lang} onChange={setLang} />
           <div className={styles.editorRow}>
             <TextInput
               type="date"
@@ -203,6 +233,15 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
                   </Text>
                   <div className={styles.editorRow}>
                     <Select label={t("bulk.nameColumn")} data={columns} value={column} onChange={(v) => setColumn(v || "0")} allowDeselect={false} />
+                    <Select
+                      label={t("bulk.nameArColumn")}
+                      data={[{ value: NONE, label: t("bulk.noColumn") }, ...columns]}
+                      value={columnAr}
+                      onChange={(v) => setColumnAr(v || NONE)}
+                      allowDeselect={false}
+                    />
+                  </div>
+                  <div className={styles.editorRow}>
                     <Checkbox
                       mt={30}
                       label={t("bulk.hasHeader")}
@@ -228,7 +267,7 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
             <Textarea
               label={t("bulk.pasteLabel")}
               description={t("bulk.pasteHint")}
-              placeholder={"Ahmad Fauzi\nSiti Aminah\nMuhammad Rizki"}
+              placeholder={"Ahmad Fauzi\tأحمد فوزي\nSiti Aminah\nمحمد رزقي"}
               autosize
               minRows={6}
               maxRows={14}
@@ -238,13 +277,13 @@ export default function BulkIssue({ opened, onClose, programs, signerOptions, si
             />
           )}
 
-          {names.length > 0 && (
+          {people.length > 0 && (
             <div className={styles.preview}>
               <Text size="sm" fw={700}>
                 {t("bulk.previewTitle", { count: fresh.length })}
               </Text>
               <p className={styles.previewNames} dir="auto">
-                {fresh.slice(0, 8).join(" · ")}
+                {fresh.slice(0, 8).map(label).join("  ·  ")}
                 {fresh.length > 8 ? ` · ${t("bulk.andMore", { count: fresh.length - 8 })}` : ""}
               </p>
               {skipped > 0 && (

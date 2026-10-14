@@ -10,7 +10,7 @@
   },
   "stats": {
     "certificates": "Certificates",
-    "programs": "Programs",
+    "programs": "Descriptions",
     "scans": "Times scanned"
   },
   "secure": {
@@ -28,8 +28,8 @@
     "backup": "Backup"
   },
   "filters": {
-    "allPrograms": "All programs",
-    "search": "Search name, program, or code…",
+    "allPrograms": "All",
+    "search": "Search name, description, or code…",
     "all": "All",
     "valid": "Valid",
     "revoked": "Revoked",
@@ -56,15 +56,22 @@
     "delete": "Delete"
   },
   "fields": {
-    "name": "Participant name",
-    "namePlaceholder": "Full name as written on the certificate",
-    "program": "Program",
-    "programPlaceholder": "Pick or type a program name",
+    "name": "Name (Latin script)",
+    "namePlaceholder": "e.g. Rafi Abdullah",
+    "program": "Description (Latin script)",
+    "programPlaceholder": "e.g. Participant, Tadarus 5T Training",
     "eventDate": "Event date",
     "eventDateHint": "Optional. Shown on the verification page.",
     "signers": "Signers",
     "signersDefault": "Leave empty to use the default signers ({{names}})",
-    "signersNone": "No default signers yet"
+    "signersNone": "No default signers yet",
+    "nameAr": "Name (Arabic script)",
+    "nameArPlaceholder": "رافع عبد الله",
+    "programAr": "Description (Arabic script)",
+    "programArPlaceholder": "مشارك في دورة التدارس",
+    "bilingualHint": "Fill in one or both. Arabic pages show the Arabic text; other languages show the Latin text.",
+    "lang": "Language when scanned",
+    "langHint": "The verification page opens in this language. The person scanning can still switch."
   },
   "editor": {
     "newTitle": "New certificate",
@@ -78,8 +85,8 @@
     "close": "Close"
   },
   "errors": {
-    "noName": "Enter the participant's name.",
-    "noProgram": "Enter the program name.",
+    "noName": "Enter the participant's name (Latin or Arabic).",
+    "noProgram": "Enter a description (Latin or Arabic).",
     "failed": "Something went wrong. Please try again.",
     "failedTitle": "Failed",
     "sameAccount": "Choose the same Google account you are signed in with."
@@ -108,17 +115,19 @@
     "confirm": "Revoke certificate"
   },
   "qr": {
-    "hint": "Print-ready, with the MTI logo in the middle and the verification address underneath.",
+    "hint": "Print-ready, with the MTI logo in the middle.",
     "download": "Download PNG",
     "open": "Open page"
   },
   "csv": {
     "name": "Name",
-    "program": "Program",
+    "program": "Description",
     "eventDate": "Event date",
     "code": "Code",
     "link": "Verification link",
-    "status": "Status"
+    "status": "Status",
+    "nameAr": "Name (Arabic)",
+    "programAr": "Description (Arabic)"
   },
   "bulk": {
     "title": "Issue many certificates",
@@ -129,18 +138,20 @@
     "chooseFile": "Choose Excel file",
     "otherFile": "Choose another file",
     "column": "Column",
-    "nameColumn": "Column with the names",
+    "nameColumn": "Name column (Latin script)",
     "hasHeader": "First row is a header",
     "pasteLabel": "Participant names",
-    "pasteHint": "One name per line. You can copy straight from Google Sheets or WhatsApp.",
+    "pasteHint": "One name per line. For both scripts, separate with a Tab: Latin name, then Arabic name (copying two columns from Google Sheets does this).",
     "previewTitle": "{{count}} certificates will be issued",
     "andMore": "and {{count}} more",
-    "skipped": "{{count}} names already have a certificate for this program and are skipped.",
+    "skipped": "{{count}} names already have a certificate with this description and are skipped.",
     "nothing": "There are no new names to issue.",
     "submit": "Issue {{count}} certificates",
     "doneTitle": "{{count}} certificates issued",
     "doneText": "Download all QR codes at once, and the list of names + codes for a mail merge in Canva or Word.",
-    "again": "Issue another list"
+    "again": "Issue another list",
+    "nameArColumn": "Name column (Arabic script)",
+    "noColumn": "— None —"
   },
   "backup": {
     "exportTitle": "Download a backup",
