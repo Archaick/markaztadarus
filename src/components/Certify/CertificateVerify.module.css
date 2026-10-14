@@ -111,34 +111,14 @@
   padding: 1.2rem 0 0.6rem;
 }
 
-.logoRing {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 10px 30px rgba(16, 33, 65, 0.08), inset 0 0 0 1px rgba(171, 139, 43, 0.15);
-}
 
-.logoRing::before {
-  content: "";
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, transparent 220deg, #f6dc8c 290deg, #b8960c 360deg);
-  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
-  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
-  animation: spin 1.1s linear infinite;
-}
 
-.logoRing img {
-  object-fit: contain;
-}
 
 .brandText {
-  margin: 1rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0;
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 2.5px;
@@ -430,7 +410,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .logoRing::before,
   .bar span {
     animation: none;
   }

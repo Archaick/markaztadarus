@@ -15,10 +15,11 @@ import {
 import { IconArrowRight, IconHome2, IconLinkOff, IconLock, IconRefresh } from "@tabler/icons-react";
 import { db } from "../../../firebaseConfig";
 import { REDIRECT_COLLECTION, destinationKind, legacyDestination, linkState, normalizePath } from "./redirectSchema";
+import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./Redirects.module.css";
 
 const NS = "common/Redirect";
-const MIN_SHOWN_MS = 900; // long enough to see where one is going, short enough not to annoy
+const MIN_SHOWN_MS = 1900; // long enough for the globe to land on Indonesia, short enough not to annoy
 const COUNT_WAIT_MS = 1500; // a slow network never holds the visitor back for long
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -105,10 +106,23 @@ export default function Redirects() {
     <main className={styles.page} dir={rtl ? "rtl" : "ltr"}>
       <div className={styles.pattern} aria-hidden="true" />
       <section className={styles.card} aria-live="polite" aria-busy={waiting}>
-        <div className={`${styles.logoWrap} ${waiting ? styles.logoSpin : ""}`}>
-          <img src="/MTIFavicon.png" alt="" className={styles.logo} width="88" height="88" />
-        </div>
-        <p className={styles.brand}>Markaz Tadarus Indonesia</p>
+        {waiting ? (
+          // while it opens: the globe flies down to the Tadarus provinces
+          <>
+            <LoaderGlobe />
+            <p className={styles.brandRow}>
+              <img src="/MTIFavicon.png" alt="" width="22" height="22" />
+              Markaz Tadarus Indonesia
+            </p>
+          </>
+        ) : (
+          <>
+            <div className={styles.logoWrap}>
+              <img src="/MTIFavicon.png" alt="" className={styles.logo} width="88" height="88" />
+            </div>
+            <p className={styles.brand}>Markaz Tadarus Indonesia</p>
+          </>
+        )}
 
         {waiting && (
           <>

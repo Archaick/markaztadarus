@@ -19,6 +19,7 @@ import stampImg from "../../assets/imgs/stamp.png";
 import SignatureBlock from "./SignatureBlock";
 import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
 import { CERTS, PUBLIC, certDate, normCode, publicFields } from "./certSchema";
+import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./CertificateVerify.module.css";
 
 const LANGS = [
@@ -27,6 +28,9 @@ const LANGS = [
   { code: "ar", label: "AR" },
 ];
 const LOCALES = { id: "id-ID", en: "en-GB", ar: "ar-u-nu-latn" };
+// The loading globe gets to land on Indonesia before the result replaces it.
+const MIN_LOADING_MS = 1900;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * markaztadarus.com/verify/<CODE>: what someone sees after scanning a
@@ -43,6 +47,8 @@ export default function CertificateVerify() {
 
   useEffect(() => {
     let alive = true;
+    const started = Date.now();
+    const settle = () => wait(Math.max(0, MIN_LOADING_MS - (Date.now() - started)));
     const code = normCode(rawCode);
     if (!code) {
       setState({ phase: "missing" });
@@ -57,6 +63,7 @@ export default function CertificateVerify() {
         // signatures are a bonus: the certificate is valid without them
         console.error("Could not load signers:", err);
       }
+      await settle();
       if (!alive) return;
       setState({ phase: "found", cert, signers });
       if (countScan) {
@@ -77,9 +84,11 @@ export default function CertificateVerify() {
         } catch {
           // no longer readable: the code simply does not exist
         }
+        await settle();
         if (alive) setState({ phase: "missing" });
       } catch (err) {
         console.error("Verification failed:", err);
+        await settle();
         if (alive) setState({ phase: "error" });
       }
     })();
@@ -129,12 +138,13 @@ export default function CertificateVerify() {
 
       <section className={`${styles.card} ${revoked ? styles.cardRevoked : ""}`} aria-live="polite">
         {state.phase === "loading" ? (
-          // the logo in a turning gold ring while the code is looked up
+          // while the code is looked up: the globe flies down to the Tadarus provinces
           <div className={styles.loading}>
-            <div className={styles.logoRing}>
-              <img src="/MTIFavicon.png" alt="" width="84" height="84" />
-            </div>
-            <p className={styles.brandText}>Markaz Tadarus Indonesia</p>
+            <LoaderGlobe />
+            <p className={styles.brandText}>
+              <img src="/MTIFavicon.png" alt="" width="22" height="22" />
+              Markaz Tadarus Indonesia
+            </p>
             <p className={styles.loadingText}>{t("loading")}</p>
             {rawCode && (
               <p className={styles.codeBox}>
