@@ -10,6 +10,7 @@ import formStyles from "../Forms/Forms.module.css";
 import MapEditor from "./MapEditor";
 import StatsEditor from "./StatsEditor";
 import PostsPanel from "./PostsPanel";
+import styles from "./Website.module.css";
 
 const TABS = ["map", "stats", "blog"];
 
@@ -21,7 +22,7 @@ export default function WebsiteAdmin() {
 
   return (
     <InternalLayout align="top">
-      <div className={layout.page}>
+      <div className={`${layout.page} ${styles.pageWide}`}>
         <a href="/internal" className={layout.back}>
           <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
         </a>

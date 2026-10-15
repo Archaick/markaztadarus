@@ -45,7 +45,15 @@
     "coordsPlaceholder": "Koordinat / tautan Google Maps (opsional)",
     "coordsHint": "Koordinat membuat lembaga tampil sebagai titik di peta. Di Google Maps, klik kanan tempatnya lalu klik angka koordinat untuk menyalin, atau salin tautan tempat dari browser, lalu tempel di sini.",
     "coords_bad": "Koordinat tidak terbaca. Tempel angka seperti -6.9175, 107.6191.",
-    "coords_outside": "Titik ini berada di luar Indonesia — periksa lagi."
+    "coords_outside": "Titik ini berada di luar Indonesia — periksa lagi.",
+    "search": "Cari provinsi…",
+    "tapHint": "Ketuk provinsi di peta untuk mengubahnya. Peta langsung menampilkan perubahan Anda.",
+    "pickTitle": "Pilih provinsi",
+    "pickText": "Ketuk provinsi di peta, atau pilih dari daftar di bawah peta.",
+    "notActive": "Provinsi ini belum punya program di peta.",
+    "addThis": "Tambahkan provinsi ini",
+    "removeConfirm": "Hapus {{province}} dari peta? Perubahan baru berlaku setelah Anda menyimpan.",
+    "close": "Tutup"
   },
   "stats": {
     "add": "Tambah pencapaian",

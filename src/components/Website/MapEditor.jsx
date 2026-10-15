@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Accordion,
   ActionIcon,
   Alert,
   Autocomplete,
@@ -18,17 +17,22 @@ import {
   IconBuildingCommunity,
   IconCircleCheck,
   IconCircleX,
+  IconClick,
   IconCurrentLocation,
   IconMapPin,
+  IconMapPinOff,
   IconPlus,
+  IconSearch,
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import topoData from "../../data/indonesia-provinces.topo.json";
-import { mtiProvinces, programCount } from "../../data/mtiProvinceData";
+import { mtiProvinces, programCount, provinceList, provinceTotals } from "../../data/mtiProvinceData";
 import { formatCoords, inIndonesia, parseCoords } from "../../data/coords";
 import { SITE_DOCS } from "../HomePage/siteContent";
+import MapCanvas from "../HomePage/Map/MapCanvas";
+import { ALL_PROVINCES, fitProjection } from "../HomePage/Map/mapGeometry";
 import { useSiteDraft } from "./useSiteDraft";
 import SaveBar from "./SaveBar";
 import styles from "./Website.module.css";
@@ -49,6 +53,9 @@ const ISLANDS = [
   "Kep. Bangka Belitung",
   "Kepulauan Riau",
 ];
+
+// The whole country, framed once for the preview.
+const FIT = fitProjection(ALL_PROVINCES, 16);
 
 const emptyLocation = () => ({ city: "", institution: "", coords: "" });
 const NO_ROWS = [];
@@ -110,29 +117,48 @@ const toStored = (rows) =>
     })
   );
 
+const countOf = (row) => programCount({ programs: row.programs === "" ? 0 : row.programs, locations: row.locations });
+
+/**
+ * The home-page map, editable: tap a province on the map (or pick it below)
+ * and change it in the panel beside it. The map redraws as you type, so the
+ * result is visible before it is saved.
+ */
 export default function MapEditor({ editorEmail }) {
   const { t } = useTranslation("internal/Website");
   const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail);
   const rows = site.draft || NO_ROWS;
-  const [open, setOpen] = useState([]);
-  const [adding, setAdding] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [focusPlace, setFocusPlace] = useState(null); // location index tapped on the map
   const [message, setMessage] = useState(null);
+  const [search, setSearch] = useState("");
+  const panelRef = useRef(null);
 
-  const available = useMemo(
-    () => ALL_PROVINCE_NAMES.filter((name) => !rows.some((r) => r.name === name)),
+  // What the home page would show with these edits.
+  const preview = useMemo(() => toStored(rows), [rows]);
+  const list = useMemo(() => provinceList(preview), [preview]);
+  const totals = useMemo(() => provinceTotals(preview), [preview]);
+  const row = rows.find((r) => r.name === selected) || null;
+
+  const summary = useMemo(
+    () => ({ provinces: rows.length, locations: rows.reduce((sum, r) => sum + countOf(r), 0) }),
     [rows]
   );
 
-  const totals = useMemo(
-    () => ({
-      provinces: rows.length,
-      locations: rows.reduce(
-        (sum, r) => sum + programCount({ programs: r.programs === "" ? 0 : r.programs, locations: r.locations }),
-        0
-      ),
-    }),
-    [rows]
-  );
+  const select = (name, placeIndex = null) => {
+    setSelected(name);
+    setFocusPlace(placeIndex);
+    // on phones the panel sits under the map: bring it into view
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    }
+  };
+
+  useEffect(() => {
+    if (focusPlace === null) return undefined;
+    const timer = setTimeout(() => setFocusPlace(null), 2400);
+    return () => clearTimeout(timer);
+  }, [focusPlace]);
 
   const update = (name, patch) =>
     site.setDraft((current) => current.map((r) => (r.name === name ? { ...r, ...patch } : r)));
@@ -144,20 +170,16 @@ export default function MapEditor({ editorEmail }) {
       )
     );
 
-  const addProvince = () => {
-    if (!adding) return;
+  const addProvince = (name) =>
     site.setDraft((current) =>
-      [...current, { name: adding, island: "", programs: "", participants: "", locations: [emptyLocation()] }].sort((a, b) =>
+      [...current, { name, island: "", programs: "", participants: "", locations: [emptyLocation()] }].sort((a, b) =>
         a.name.localeCompare(b.name)
       )
     );
-    setOpen((current) => [...current, adding]);
-    setAdding(null);
-  };
 
   const removeProvince = (name) => {
+    if (!window.confirm(t("map.removeConfirm", { province: name }))) return;
     site.setDraft((current) => current.filter((r) => r.name !== name));
-    setOpen((current) => current.filter((n) => n !== name));
   };
 
   const save = async () => {
@@ -165,7 +187,7 @@ export default function MapEditor({ editorEmail }) {
     const problem = problemIn(rows);
     if (problem) {
       setMessage({ color: "red", text: t(`map.problems.${problem.key}`, { province: problem.province }) });
-      setOpen((current) => (current.includes(problem.province) ? current : [...current, problem.province]));
+      select(problem.province);
       return;
     }
     const ok = await site.save({ provinces: toStored(rows) });
@@ -187,143 +209,97 @@ export default function MapEditor({ editorEmail }) {
 
       <div className={styles.toolbar}>
         <Text fw={700} className={styles.summary}>
-          {t("map.summary", totals)}
+          {t("map.summary", summary)}
         </Text>
-        <Group gap="xs" className={styles.addRow}>
-          <Select
-            placeholder={t("map.pickProvince")}
-            data={available}
-            value={adding}
-            onChange={setAdding}
-            searchable
-            clearable
-            className={styles.addSelect}
-            comboboxProps={{ withinPortal: true }}
-          />
-          <Button leftSection={<IconPlus size={16} />} disabled={!adding} onClick={addProvince} className={styles.goldButton}>
-            {t("map.addProvince")}
-          </Button>
-        </Group>
+        <Select
+          placeholder={t("map.search")}
+          leftSection={<IconSearch size={15} />}
+          data={ALL_PROVINCE_NAMES}
+          value={null}
+          onChange={(name) => {
+            if (!name) return;
+            select(name);
+            setSearch("");
+          }}
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchable
+          className={styles.addSelect}
+          comboboxProps={{ withinPortal: true }}
+        />
       </div>
 
-      {rows.length === 0 ? (
-        <Text c="dimmed" ta="center" py="xl">
-          {t("map.empty")}
-        </Text>
-      ) : (
-        <Accordion multiple value={open} onChange={setOpen} variant="separated" radius="md" className={styles.accordion}>
-          {rows.map((row) => {
-            const count = programCount({ programs: row.programs === "" ? 0 : row.programs, locations: row.locations });
-            return (
-              <Accordion.Item key={row.name} value={row.name}>
-                <Accordion.Control>
-                  <div className={styles.provinceHead}>
-                    <span className={styles.provinceName}>{row.name}</span>
-                    {row.island && <span className={styles.provinceIsland}>{row.island}</span>}
-                    <Badge color="yellow" variant="light" className={styles.provinceCount}>
-                      {t("map.count", { count })}
-                    </Badge>
-                  </div>
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <div className={styles.fieldGrid}>
-                    <Autocomplete
-                      label={t("map.island")}
-                      data={ISLANDS}
-                      value={row.island}
-                      onChange={(island) => update(row.name, { island })}
-                      comboboxProps={{ withinPortal: true }}
-                    />
-                    <NumberInput
-                      label={t("map.programs")}
-                      description={t("map.programsHint")}
-                      min={0}
-                      allowDecimal={false}
-                      placeholder={String(row.locations.filter((l) => l.city.trim()).length)}
-                      value={row.programs}
-                      onChange={(programs) => update(row.name, { programs })}
-                    />
-                    <NumberInput
-                      label={`${t("map.participants")} (${t("optional")})`}
-                      min={0}
-                      allowDecimal={false}
-                      thousandSeparator="."
-                      decimalSeparator=","
-                      value={row.participants}
-                      onChange={(participants) => update(row.name, { participants })}
-                    />
-                  </div>
+      <div className={styles.mapLayout}>
+        <div className={styles.mapSide}>
+          <div className={styles.mapBox}>
+            <MapCanvas
+              list={list}
+              provinces={preview}
+              totals={totals}
+              projection={FIT.projection}
+              height={FIT.height}
+              selected={selected}
+              onSelect={select}
+            />
+          </div>
+          <p className={styles.mapHint}>
+            <IconClick size={14} /> {t("map.tapHint")}
+          </p>
+          <div className={styles.chips}>
+            {rows.map((r) => (
+              <button
+                type="button"
+                key={r.name}
+                className={`${styles.chip} ${r.name === selected ? styles.chipOn : ""}`}
+                onClick={() => select(r.name)}
+              >
+                {r.name} <span>{countOf(r)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-                  <Text className={styles.sectionLabel}>{t("map.locations")}</Text>
-                  <div className={styles.locationList}>
-                    {row.locations.map((loc, i) => (
-                      <div className={styles.locationRow} key={i}>
-                        <TextInput
-                          leftSection={<IconMapPin size={15} />}
-                          placeholder={t("map.city")}
-                          aria-label={t("map.city")}
-                          value={loc.city}
-                          onChange={(e) => setLocation(row.name, i, { city: e.target.value })}
-                          className={styles.cityInput}
-                        />
-                        <TextInput
-                          leftSection={<IconBuildingCommunity size={15} />}
-                          placeholder={t("map.institutionPlaceholder")}
-                          aria-label={t("map.institution")}
-                          value={loc.institution}
-                          onChange={(e) => setLocation(row.name, i, { institution: e.target.value })}
-                          className={styles.institutionInput}
-                        />
-                        <CoordsInput
-                          value={loc.coords}
-                          onChange={(coords) => setLocation(row.name, i, { coords })}
-                        />
-                        <Tooltip label={t("map.removeLocation")}>
-                          <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            aria-label={t("map.removeLocation")}
-                            onClick={() =>
-                              update(row.name, { locations: row.locations.filter((_, idx) => idx !== i) })
-                            }
-                          >
-                            <IconX size={16} />
-                          </ActionIcon>
-                        </Tooltip>
-                      </div>
-                    ))}
-                  </div>
+        <div className={styles.panel} ref={panelRef}>
+          {!selected && (
+            <div className={styles.panelEmpty}>
+              <IconClick size={30} />
+              <Text fw={700}>{t("map.pickTitle")}</Text>
+              <Text size="sm" c="dimmed">
+                {t("map.pickText")}
+              </Text>
+            </div>
+          )}
 
-                  <Text size="xs" c="dimmed" mt={6}>
-                    {t("map.coordsHint")}
-                  </Text>
+          {selected && !row && (
+            <div className={styles.panelEmpty}>
+              <IconMapPinOff size={30} />
+              <Text fw={700}>{selected}</Text>
+              <Text size="sm" c="dimmed">
+                {t("map.notActive")}
+              </Text>
+              <Button
+                mt="sm"
+                leftSection={<IconPlus size={16} />}
+                className={styles.goldButton}
+                onClick={() => addProvince(selected)}
+              >
+                {t("map.addThis")}
+              </Button>
+            </div>
+          )}
 
-                  <Group justify="space-between" mt="sm">
-                    <Button
-                      variant="light"
-                      color="yellow"
-                      size="xs"
-                      leftSection={<IconPlus size={14} />}
-                      onClick={() => update(row.name, { locations: [...row.locations, emptyLocation()] })}
-                    >
-                      {t("map.addLocation")}
-                    </Button>
-                    <Button
-                      variant="subtle"
-                      color="red"
-                      size="xs"
-                      leftSection={<IconTrash size={14} />}
-                      onClick={() => removeProvince(row.name)}
-                    >
-                      {t("map.removeProvince")}
-                    </Button>
-                  </Group>
-                </Accordion.Panel>
-              </Accordion.Item>
-            );
-          })}
-        </Accordion>
-      )}
+          {row && (
+            <ProvinceForm
+              row={row}
+              focusPlace={focusPlace}
+              onUpdate={(patch) => update(row.name, patch)}
+              onSetLocation={(i, patch) => setLocation(row.name, i, patch)}
+              onRemove={() => removeProvince(row.name)}
+              onClose={() => setSelected(null)}
+            />
+          )}
+        </div>
+      </div>
 
       <SaveBar
         dirty={site.dirty}
@@ -337,6 +313,112 @@ export default function MapEditor({ editorEmail }) {
         }}
         onSave={save}
       />
+    </div>
+  );
+}
+
+// Everything about one province: its island, numbers and the places in it.
+function ProvinceForm({ row, focusPlace, onUpdate, onSetLocation, onRemove, onClose }) {
+  const { t } = useTranslation("internal/Website");
+  const count = countOf(row);
+
+  return (
+    <div className={styles.provinceForm}>
+      <div className={styles.panelHead}>
+        <div>
+          <h3 className={styles.panelTitle}>{row.name}</h3>
+          <Badge color="yellow" variant="light">
+            {t("map.count", { count })}
+          </Badge>
+        </div>
+        <ActionIcon variant="subtle" color="gray" onClick={onClose} aria-label={t("map.close")}>
+          <IconX size={18} />
+        </ActionIcon>
+      </div>
+
+      <div className={styles.fieldGrid3}>
+        <Autocomplete
+          label={t("map.island")}
+          data={ISLANDS}
+          value={row.island}
+          onChange={(island) => onUpdate({ island })}
+          comboboxProps={{ withinPortal: true }}
+        />
+        <NumberInput
+          label={t("map.programs")}
+          description={t("map.programsHint")}
+          min={0}
+          allowDecimal={false}
+          placeholder={String(row.locations.filter((l) => l.city.trim()).length)}
+          value={row.programs}
+          onChange={(programs) => onUpdate({ programs })}
+        />
+        <NumberInput
+          label={`${t("map.participants")} (${t("optional")})`}
+          min={0}
+          allowDecimal={false}
+          thousandSeparator="."
+          decimalSeparator=","
+          value={row.participants}
+          onChange={(participants) => onUpdate({ participants })}
+        />
+      </div>
+
+      <Text className={styles.sectionLabel}>{t("map.locations")}</Text>
+      <div className={styles.placeList}>
+        {row.locations.map((loc, i) => (
+          <div className={`${styles.placeCard} ${focusPlace === i ? styles.placeFocus : ""}`} key={i}>
+            <div className={styles.placeTop}>
+              <span className={styles.placeNumber}>{i + 1}</span>
+              <Tooltip label={t("map.removeLocation")}>
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  size="sm"
+                  aria-label={t("map.removeLocation")}
+                  onClick={() => onUpdate({ locations: row.locations.filter((_, idx) => idx !== i) })}
+                >
+                  <IconX size={15} />
+                </ActionIcon>
+              </Tooltip>
+            </div>
+            <TextInput
+              leftSection={<IconMapPin size={15} />}
+              placeholder={t("map.city")}
+              aria-label={t("map.city")}
+              value={loc.city}
+              onChange={(e) => onSetLocation(i, { city: e.target.value })}
+            />
+            <TextInput
+              leftSection={<IconBuildingCommunity size={15} />}
+              placeholder={t("map.institutionPlaceholder")}
+              aria-label={t("map.institution")}
+              value={loc.institution}
+              onChange={(e) => onSetLocation(i, { institution: e.target.value })}
+            />
+            <CoordsInput value={loc.coords} onChange={(coords) => onSetLocation(i, { coords })} />
+          </div>
+        ))}
+      </div>
+
+      <Text size="xs" c="dimmed" mt={6}>
+        {t("map.coordsHint")}
+      </Text>
+
+      <Group justify="space-between" mt="sm">
+        <Button
+          variant="light"
+          color="yellow"
+          size="xs"
+          leftSection={<IconPlus size={14} />}
+          onClick={() => onUpdate({ locations: [...row.locations, emptyLocation()] })}
+        >
+          {t("map.addLocation")}
+        </Button>
+        <Button variant="subtle" color="red" size="xs" leftSection={<IconTrash size={14} />} onClick={onRemove}>
+          {t("map.removeProvince")}
+        </Button>
+      </Group>
     </div>
   );
 }
@@ -367,8 +449,8 @@ function CoordsInput({ value, onChange }) {
         if (point) onChange(formatCoords(point));
       }}
       error={state === "bad" || state === "outside"}
-      className={styles.coordsInput}
       dir="ltr"
     />
   );
 }
+
