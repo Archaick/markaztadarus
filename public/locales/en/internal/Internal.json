@@ -45,6 +45,10 @@
     "site": {
       "title": "Website",
       "description": "Home page map, achievements and (soon) news."
+    },
+    "history": {
+      "title": "Activity History",
+      "description": "Everything admins did in the dashboards, newest first."
     }
   },
   "hub": {
@@ -89,6 +93,137 @@
       "greeting": "Assalamu'alaikum,",
       "body": "You have been given access to the Markaz Tadarus internal dashboard ({{dashboards}}).",
       "howTo": "Open {{link}} and choose \"Continue with Google\" with this account: {{email}}"
+    }
+  },
+  "history": {
+    "intro": "Every change made in the dashboards, newest first: who did it, when, and what changed.",
+    "refresh": "Refresh",
+    "all": "All",
+    "everyone": "Every admin",
+    "search": "Search name, link, code…",
+    "locked": "Saved with each change by the database itself. Entries cannot be edited or deleted, and only you can see them.",
+    "loadFailed": "Could not load the history.",
+    "empty": "Nothing has happened yet.",
+    "noMatch": "No activity matches these filters.",
+    "loadMore": "Load older activity",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "justNow": "Just now",
+    "by": "by",
+    "changed": "Changed:",
+    "andMore": "and {{count}} more",
+    "yes": "yes",
+    "no": "no",
+    "actions": {
+      "link": {
+        "create": "Created a short link",
+        "update": "Edited a short link",
+        "rename": "Renamed a short link",
+        "delete": "Deleted a short link",
+        "import": "Imported the old short links"
+      },
+      "form": {
+        "create": "Created a form",
+        "update": "Edited a form's questions",
+        "status": "Changed a form's status",
+        "cover": "Uploaded a form cover",
+        "cover_remove": "Removed a form cover",
+        "cover_position": "Moved a form cover",
+        "delete": "Deleted a form"
+      },
+      "response": {
+        "delete": "Deleted a form response"
+      },
+      "responses": {
+        "clear": "Deleted form responses"
+      },
+      "cert": {
+        "issue": "Issued certificates",
+        "update": "Edited a certificate",
+        "revoke": "Revoked a certificate",
+        "restore": "Restored a certificate",
+        "delete": "Deleted a certificate",
+        "import": "Imported a certificate backup",
+        "sync": "Updated verification copies",
+        "secure": "Made the certificate list private"
+      },
+      "signer": {
+        "create": "Added a signer",
+        "update": "Edited a signer",
+        "reorder": "Reordered the signers",
+        "delete": "Removed a signer"
+      },
+      "admin": {
+        "invite": "Invited an admin",
+        "update": "Changed an admin's dashboards",
+        "remove": "Removed an admin",
+        "signin": "Signed in"
+      },
+      "post": {
+        "create": "Created a news post",
+        "update": "Edited a news post",
+        "status": "Changed a post's status",
+        "photo_add": "Added a photo to a post",
+        "photo_delete": "Removed a photo from a post",
+        "photo_move": "Reordered a post's photos",
+        "cover": "Changed a post's cover photo",
+        "delete": "Deleted a news post"
+      },
+      "site": {
+        "map": "Edited the reach map",
+        "stats": "Edited the achievement figures"
+      }
+    },
+    "fields": {
+      "path": "Link",
+      "destination": "Goes to",
+      "previousDestination": "Used to go to",
+      "previousPath": "Old link",
+      "active": "Active",
+      "clicks": "Clicks",
+      "title": "Title",
+      "slug": "Link",
+      "note": "Note",
+      "ends": "End date",
+      "description": "Description",
+      "language": "Language",
+      "fields": "Questions",
+      "questions": "Questions",
+      "template": "Template",
+      "position": "Position",
+      "response": "Response",
+      "count": "Count",
+      "status": "Status",
+      "responses": "Responses",
+      "total": "Of",
+      "previousName": "Was",
+      "reason": "Reason",
+      "name": "Name",
+      "nameAr": "Arabic name",
+      "program": "Description",
+      "programAr": "Arabic description",
+      "lang": "Language",
+      "signerIds": "Signers",
+      "eventDate": "Event date",
+      "organization": "Organisation",
+      "signatureImg": "Signature",
+      "stampImg": "Stamp",
+      "isDefault": "Default",
+      "draft": "Draft",
+      "open": "Open",
+      "closed": "Closed",
+      "valid": "Valid",
+      "revoked": "Revoked",
+      "excerpt": "Summary",
+      "category": "Category",
+      "province": "Province",
+      "photo": "Photo",
+      "photos": "Photos",
+      "imported": "Imported",
+      "published": "Published",
+      "paths": "Links",
+      "provinces": "Provinces",
+      "source": "Link"
     }
   }
 }

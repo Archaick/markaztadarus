@@ -12,16 +12,17 @@ import {
 } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
 import QRCode from "qrcode";
-import { collection, deleteDoc, doc, getDocs, limit, query, writeBatch } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, limit, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { AUDIT_CHUNK, auditedWrite } from "../Internal/audit";
 import styles from "./Forms.module.css";
 import { COVER_DOC, FORMS_COLLECTION, MEDIA, RESPONSES, formLink } from "./formSchema";
 
 export default function SharePanel({ form, onOpen }) {
   const { t } = useTranslation("internal/Forms");
   const navigate = useNavigate();
-  const { hasFeature } = useAccess();
+  const { hasFeature, user } = useAccess();
   const link = formLink(form.id);
   const [qr, setQr] = useState("");
   // The invitation is read by respondents, so it is written in the form's language.
@@ -52,15 +53,34 @@ export default function SharePanel({ form, onOpen }) {
     try {
       // Responses live in a subcollection, which Firestore does not remove
       // with the parent, so clear them first in batches.
+      let removed = 0;
       for (;;) {
-        const snap = await getDocs(query(collection(db, FORMS_COLLECTION, form.id, RESPONSES), limit(400)));
+        const snap = await getDocs(query(collection(db, FORMS_COLLECTION, form.id, RESPONSES), limit(AUDIT_CHUNK)));
         if (snap.empty) break;
-        const batch = writeBatch(db);
-        snap.docs.forEach((d) => batch.delete(d.ref));
-        await batch.commit();
+        await auditedWrite(
+          user,
+          { area: "forms", action: "responses.clear", target: form.id, label: form.title, details: { count: snap.size } },
+          (batch, _auditId, markDelete) =>
+            snap.docs.forEach((d) => {
+              batch.delete(d.ref);
+              markDelete(`forms~${form.id}~responses~${d.id}`, d.data().auditId);
+            })
+        );
+        removed += snap.size;
       }
-      await deleteDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
-      await deleteDoc(doc(db, FORMS_COLLECTION, form.id));
+      const cover = await getDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
+      await auditedWrite(
+        user,
+        { area: "forms", action: "form.delete", target: form.id, label: form.title, details: { status: form.status, responses: removed } },
+        (batch, _auditId, markDelete) => {
+          if (cover.exists()) {
+            batch.delete(cover.ref);
+            markDelete(`forms~${form.id}~media~${COVER_DOC}`, cover.data().auditId);
+          }
+          batch.delete(doc(db, FORMS_COLLECTION, form.id));
+          markDelete(`forms~${form.id}`, form.auditId);
+        }
+      );
       navigate("/internal/forms", { replace: true });
     } catch (err) {
       console.error("Could not delete form:", err);

@@ -1,5 +1,5 @@
 import { Card, Stack, Text, Title } from "@mantine/core";
-import { IconArrowRight, IconShieldLock, IconUsersGroup } from "@tabler/icons-react";
+import { IconArrowRight, IconHistory, IconShieldLock, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { FEATURES } from "./access";
@@ -13,6 +13,13 @@ const accessControlLink = {
   color: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
 };
 
+const historyLink = {
+  key: "history",
+  href: "/internal/history",
+  icon: IconHistory,
+  color: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)",
+};
+
 export default function InternalHub() {
   const { t } = useTranslation("internal/Internal");
   const { loading, user, isSuperAdmin, features } = useAccess();
@@ -20,7 +27,7 @@ export default function InternalHub() {
   if (loading) return <FullPageLoader />;
 
   const links = [
-    ...(isSuperAdmin ? [accessControlLink] : []),
+    ...(isSuperAdmin ? [accessControlLink, historyLink] : []),
     ...FEATURES.filter((f) => features.includes(f.key)),
   ];
 
@@ -52,7 +59,7 @@ export default function InternalHub() {
             <a
               href={link.href}
               key={link.key}
-              className={`${styles.linkCard} ${link.key === "access" ? styles.linkCardSuper : ""}`}
+              className={`${styles.linkCard} ${["access", "history"].includes(link.key) ? styles.linkCardSuper : ""}`}
             >
               <div className={styles.linkMeta}>
                 <span className={styles.linkIcon} style={{ background: link.color }}>

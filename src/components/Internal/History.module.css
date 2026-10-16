@@ -1,0 +1,88 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+.areas { display: flex; flex-wrap: wrap; gap: 8px; }
+.filterRow { display: flex; flex-wrap: wrap; gap: 10px; }
+.grow { flex: 1 1 220px; }
+
+.lock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0.9rem 0 1.4rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.center { display: flex; justify-content: center; padding: 28px 0; }
+.empty { text-align: center; padding: 40px 0; color: #64748b; }
+
+.day { margin-bottom: 1.6rem; }
+.dayTitle {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b8960c;
+}
+:global([dir="rtl"]) .dayTitle { letter-spacing: 0; text-transform: none; font-size: 0.95rem; }
+
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.entry {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+}
+.icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  color: #fff;
+}
+.body { flex: 1; min-width: 0; }
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+.action { font-weight: 700; color: #0f172a; }
+.time { font-size: 0.8rem; color: #64748b; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.label { margin: 2px 0 0; color: #0f172a; overflow-wrap: anywhere; }
+.actor { margin: 2px 0 0; font-size: 0.85rem; color: #64748b; overflow-wrap: anywhere; }
+.actor strong { color: #1d4ed8; font-weight: 600; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+.chipsLabel { font-size: 0.8rem; color: #64748b; }
+.change { margin: 8px 0 0; font-size: 0.9rem; color: #334155; }
+.names { margin: 8px 0 0; font-size: 0.85rem; color: #334155; overflow-wrap: anywhere; }
+
+.details {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+.detail { display: flex; gap: 8px; font-size: 0.85rem; min-width: 0; }
+.detail dt { flex-shrink: 0; color: #64748b; }
+.detail dt::after { content: ":"; }
+.detail dd { margin: 0; color: #0f172a; overflow-wrap: anywhere; min-width: 0; }

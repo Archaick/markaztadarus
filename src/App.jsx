@@ -21,6 +21,7 @@ import LinkTree from "./components/LinkTree/LinkTree";
 import InternalHub from "./components/Internal/InternalHub";
 import AccessProvider from "./components/Internal/AccessProvider";
 import AccessControl from "./components/Internal/AccessControl";
+import History from "./components/Internal/History";
 import RequireFeature, { FeatureLogin } from "./components/Internal/RequireFeature";
 import RedirectAdmin from "./components/RedirectManager/RedirectAdmin";
 import FormsAdmin from "./components/Forms/FormsAdmin";
@@ -69,6 +70,10 @@ const App = () => {
             <Route
               path="/internal/access"
               element={<RequireFeature feature="super"><AccessControl /></RequireFeature>}
+            />
+            <Route
+              path="/internal/history"
+              element={<RequireFeature feature="super"><History /></RequireFeature>}
             />
             <Route
               path="/cert-admin"

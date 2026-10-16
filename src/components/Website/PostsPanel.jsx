@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Button, Group, Loader, Modal, Text, TextInput } from "@mantine/core";
 import { IconCalendar, IconNews, IconPhoto, IconPhotoDown, IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { isValidSlug, slugify } from "../Forms/formSchema";
 import { POSTS, formatPostDate, todayIso } from "../Blog/blogSchema";
 import styles from "./Website.module.css";
@@ -14,6 +16,7 @@ const STATUS_COLORS = { draft: "gray", published: "teal" };
 
 export default function PostsPanel({ editorEmail }) {
   const { t, i18n } = useTranslation(["internal/Website", "blog/Blog"]);
+  const { user } = useAccess();
   const navigate = useNavigate();
   const [posts, setPosts] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -28,6 +31,7 @@ export default function PostsPanel({ editorEmail }) {
     setImporting({ done: 0, total: LEGACY_PHOTO_COUNT });
     try {
       const count = await importLegacyGallery({
+        user,
         editorEmail,
         onPhoto: () => setImporting((s) => ({ ...s, done: s.done + 1 })),
       });
@@ -144,6 +148,7 @@ export default function PostsPanel({ editorEmail }) {
 
 function CreatePostModal({ opened, onClose, editorEmail, onCreated }) {
   const { t } = useTranslation("internal/Website");
+  const { user } = useAccess();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
@@ -162,7 +167,9 @@ function CreatePostModal({ opened, onClose, editorEmail, onCreated }) {
         setError({ key: "taken", id });
         return;
       }
-      await setDoc(ref, {
+      await auditedWrite(user, { area: "site", action: "post.create", target: id, label: title.trim() }, (batch, auditId) =>
+        batch.set(ref, {
+        auditId,
         title: title.trim(),
         excerpt: "",
         body: "",
@@ -177,7 +184,8 @@ function CreatePostModal({ opened, onClose, editorEmail, onCreated }) {
         updatedBy: editorEmail,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+        })
+      );
       onCreated(id);
     } catch (err) {
       console.error("Could not create post:", err);

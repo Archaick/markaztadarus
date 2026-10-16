@@ -22,7 +22,6 @@ import {
 import { useTranslation } from "react-i18next";
 import {
   collection,
-  deleteDoc,
   doc,
   limit,
   onSnapshot,
@@ -30,6 +29,8 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { formatDateTime, timeAgo } from "../Internal/timeAgo";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
@@ -47,6 +48,7 @@ const MAX_RESPONSES = 2000;
 
 export default function ResponsesPanel({ form }) {
   const { t } = useTranslation("internal/Forms");
+  const { user } = useAccess();
   const fields = useMemo(() => form.fields || [], [form.fields]);
   const [responses, setResponses] = useState(null);
   const [error, setError] = useState(""); // a responses.<key>
@@ -125,7 +127,14 @@ export default function ResponsesPanel({ form }) {
     if (!open) return;
     setDeleting(true);
     try {
-      await deleteDoc(doc(db, FORMS_COLLECTION, form.id, RESPONSES, open.id));
+      await auditedWrite(
+        user,
+        { area: "forms", action: "response.delete", target: form.id, label: form.title, details: { response: open.id } },
+        (batch, _auditId, markDelete) => {
+          batch.delete(doc(db, FORMS_COLLECTION, form.id, RESPONSES, open.id));
+          markDelete(`forms~${form.id}~responses~${open.id}`, open.auditId);
+        }
+      );
       setConfirmDelete(false);
       setOpenIndex(-1);
     } catch (err) {

@@ -45,6 +45,10 @@
     "site": {
       "title": "Situs Web",
       "description": "Peta beranda, pencapaian, dan (segera) berita."
+    },
+    "history": {
+      "title": "Riwayat Aktivitas",
+      "description": "Semua yang dilakukan admin di dasbor, terbaru di atas."
     }
   },
   "hub": {
@@ -89,6 +93,137 @@
       "greeting": "Assalamu'alaikum,",
       "body": "Anda telah diberi akses ke dasbor internal Markaz Tadarus ({{dashboards}}).",
       "howTo": "Buka {{link}} lalu pilih \"Lanjutkan dengan Google\" menggunakan akun ini: {{email}}"
+    }
+  },
+  "history": {
+    "intro": "Setiap perubahan di dasbor, terbaru di atas: siapa, kapan, dan apa yang berubah.",
+    "refresh": "Muat ulang",
+    "all": "Semua",
+    "everyone": "Semua admin",
+    "search": "Cari nama, tautan, kode…",
+    "locked": "Dicatat oleh database bersama setiap perubahan. Catatan tidak bisa diubah atau dihapus, dan hanya Anda yang bisa melihatnya.",
+    "loadFailed": "Riwayat tidak dapat dimuat.",
+    "empty": "Belum ada aktivitas.",
+    "noMatch": "Tidak ada aktivitas yang cocok dengan filter ini.",
+    "loadMore": "Muat aktivitas lebih lama",
+    "today": "Hari ini",
+    "yesterday": "Kemarin",
+    "justNow": "Baru saja",
+    "by": "oleh",
+    "changed": "Diubah:",
+    "andMore": "dan {{count}} lainnya",
+    "yes": "ya",
+    "no": "tidak",
+    "actions": {
+      "link": {
+        "create": "Membuat tautan pendek",
+        "update": "Mengubah tautan pendek",
+        "rename": "Mengganti nama tautan pendek",
+        "delete": "Menghapus tautan pendek",
+        "import": "Mengimpor tautan pendek lama"
+      },
+      "form": {
+        "create": "Membuat formulir",
+        "update": "Mengubah pertanyaan formulir",
+        "status": "Mengubah status formulir",
+        "cover": "Mengunggah sampul formulir",
+        "cover_remove": "Menghapus sampul formulir",
+        "cover_position": "Menggeser sampul formulir",
+        "delete": "Menghapus formulir"
+      },
+      "response": {
+        "delete": "Menghapus jawaban formulir"
+      },
+      "responses": {
+        "clear": "Menghapus jawaban formulir"
+      },
+      "cert": {
+        "issue": "Menerbitkan sertifikat",
+        "update": "Mengubah sertifikat",
+        "revoke": "Mencabut sertifikat",
+        "restore": "Memulihkan sertifikat",
+        "delete": "Menghapus sertifikat",
+        "import": "Mengimpor cadangan sertifikat",
+        "sync": "Memperbarui salinan verifikasi",
+        "secure": "Menjadikan daftar sertifikat privat"
+      },
+      "signer": {
+        "create": "Menambah penanda tangan",
+        "update": "Mengubah penanda tangan",
+        "reorder": "Mengubah urutan penanda tangan",
+        "delete": "Menghapus penanda tangan"
+      },
+      "admin": {
+        "invite": "Mengundang admin",
+        "update": "Mengubah dasbor admin",
+        "remove": "Menghapus admin",
+        "signin": "Masuk"
+      },
+      "post": {
+        "create": "Membuat berita",
+        "update": "Mengubah berita",
+        "status": "Mengubah status berita",
+        "photo_add": "Menambah foto berita",
+        "photo_delete": "Menghapus foto berita",
+        "photo_move": "Mengubah urutan foto berita",
+        "cover": "Mengganti foto sampul berita",
+        "delete": "Menghapus berita"
+      },
+      "site": {
+        "map": "Mengubah peta jangkauan",
+        "stats": "Mengubah angka capaian"
+      }
+    },
+    "fields": {
+      "path": "Tautan",
+      "destination": "Menuju",
+      "previousDestination": "Sebelumnya menuju",
+      "previousPath": "Tautan lama",
+      "active": "Aktif",
+      "clicks": "Klik",
+      "title": "Judul",
+      "slug": "Tautan",
+      "note": "Catatan",
+      "ends": "Tanggal berakhir",
+      "description": "Deskripsi",
+      "language": "Bahasa",
+      "fields": "Pertanyaan",
+      "questions": "Pertanyaan",
+      "template": "Templat",
+      "position": "Posisi",
+      "response": "Jawaban",
+      "count": "Jumlah",
+      "status": "Status",
+      "responses": "Jawaban",
+      "total": "Dari",
+      "previousName": "Sebelumnya",
+      "reason": "Alasan",
+      "name": "Nama",
+      "nameAr": "Nama Arab",
+      "program": "Deskripsi",
+      "programAr": "Deskripsi Arab",
+      "lang": "Bahasa",
+      "signerIds": "Penanda tangan",
+      "eventDate": "Tanggal acara",
+      "organization": "Organisasi",
+      "signatureImg": "Tanda tangan",
+      "stampImg": "Stempel",
+      "isDefault": "Bawaan",
+      "draft": "Draf",
+      "open": "Dibuka",
+      "closed": "Ditutup",
+      "valid": "Berlaku",
+      "revoked": "Dicabut",
+      "excerpt": "Ringkasan",
+      "category": "Kategori",
+      "province": "Provinsi",
+      "photo": "Foto",
+      "photos": "Foto",
+      "imported": "Diimpor",
+      "published": "Terbit",
+      "paths": "Tautan",
+      "provinces": "Provinsi",
+      "source": "Tautan"
     }
   }
 }

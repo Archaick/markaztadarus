@@ -30,17 +30,15 @@ import { useTranslation } from "react-i18next";
 import {
   arrayUnion,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
   serverTimestamp,
-  setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import topoData from "../../data/indonesia-provinces.topo.json";
 import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { stableKey } from "../Internal/stableKey";
 import layout from "../Internal/AccessControl.module.css";
@@ -66,7 +64,7 @@ export default function PostEditor() {
   const { postId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(["internal/Website", "blog/Blog", "internal/Internal"]);
-  const { email } = useAccess();
+  const { email, user } = useAccess();
   const postRef = useMemo(() => doc(db, POSTS, postId), [postId]);
 
   const [post, setPost] = useState(undefined);
@@ -134,6 +132,13 @@ export default function PostEditor() {
 
   const touch = { updatedBy: email, updatedAt: serverTimestamp() };
 
+  // Changes the post (and its photos) in one batch with a history entry.
+  const writePost = (action, patch, details, more) =>
+    auditedWrite(user, { area: "site", action, target: postId, label: post?.title || postId, details }, (batch, auditId, markDelete) => {
+      if (patch) batch.update(postRef, { ...patch, ...touch, auditId });
+      more?.(batch, auditId, markDelete);
+    });
+
   const saveText = async (extra = {}) => {
     setMessage(null);
     const problem = problemIn(draft);
@@ -151,7 +156,11 @@ export default function PostEditor() {
     };
     setSaving(true);
     try {
-      await updateDoc(postRef, { ...clean, ...extra, ...touch });
+      const changed = ["title", "excerpt", "body", "category", "province", "date"].filter((k) => (post?.[k] ?? "") !== clean[k]);
+      await writePost(extra.status ? "post.status" : "post.update", { ...clean, ...extra }, {
+        changed,
+        ...(extra.status && { from: post?.status || "draft", to: extra.status }),
+      });
       setDraft(clean);
       setMessage({ color: "teal", text: t("saved") });
       return true;
@@ -172,7 +181,7 @@ export default function PostEditor() {
       return;
     }
     try {
-      await updateDoc(postRef, { ...extra, ...touch });
+      await writePost("post.status", extra, { from: post?.status || "draft", to: status });
     } catch (err) {
       console.error("Could not change status:", err);
       setMessage({ color: "red", text: t("blog.statusFailed") });
@@ -194,14 +203,15 @@ export default function PostEditor() {
       try {
         const image = await makeImage(file);
         const ref = doc(collection(db, POSTS, postId, IMAGES));
-        await setDoc(ref, { ...image, createdAt: serverTimestamp() });
-        const patch = { images: arrayUnion(ref.id), ...touch };
+        const patch = { images: arrayUnion(ref.id) };
         if (!coverRef.current) {
           coverRef.current = ref.id;
           patch.coverId = ref.id;
           patch.coverThumb = await makeThumb(image.dataUrl);
         }
-        await updateDoc(postRef, patch);
+        await writePost("post.photo_add", patch, { photo: file.name }, (batch, auditId) =>
+          batch.set(ref, { ...image, auditId, createdAt: serverTimestamp() })
+        );
       } catch (err) {
         console.error("Photo upload failed:", err);
         const key = err.message === "unreadable" ? "unreadable" : err.message === "too-large" ? "tooLarge" : "failed";
@@ -219,7 +229,7 @@ export default function PostEditor() {
     try {
       const coverThumb = await makeThumb(images[id].dataUrl);
       coverRef.current = id;
-      await updateDoc(postRef, { coverId: id, coverThumb, ...touch });
+      await writePost("post.cover", { coverId: id, coverThumb }, { photo: order.indexOf(id) + 1 });
     } catch (err) {
       console.error("Could not set cover:", err);
     } finally {
@@ -232,22 +242,24 @@ export default function PostEditor() {
     const target = index + delta;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
-    await updateDoc(postRef, { images: next, ...touch }).catch((err) => console.error("Could not reorder:", err));
+    await writePost("post.photo_move", { images: next }, { from: index + 1, to: target + 1 }).catch((err) => console.error("Could not reorder:", err));
   };
 
   const deletePhoto = async (id) => {
     setBusyPhoto(id);
     try {
       const remaining = order.filter((x) => x !== id);
-      const patch = { images: remaining, ...touch };
+      const patch = { images: remaining };
       if (post.coverId === id) {
         const next = remaining.find((x) => images[x]);
         coverRef.current = next || null;
         patch.coverId = next || null;
         patch.coverThumb = next ? await makeThumb(images[next].dataUrl) : "";
       }
-      await updateDoc(postRef, patch);
-      await deleteDoc(doc(db, POSTS, postId, IMAGES, id));
+      await writePost("post.photo_delete", patch, { photo: order.indexOf(id) + 1 }, (batch, _auditId, markDelete) => {
+        batch.delete(doc(db, POSTS, postId, IMAGES, id));
+        markDelete(`posts~${postId}~images~${id}`, images[id]?.auditId);
+      });
     } catch (err) {
       console.error("Could not delete photo:", err);
     } finally {
@@ -259,8 +271,14 @@ export default function PostEditor() {
     setDeleting(true);
     try {
       const snap = await getDocs(collection(db, POSTS, postId, IMAGES));
-      await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
-      await deleteDoc(postRef);
+      await writePost("post.delete", null, { status: post?.status || "draft", photos: snap.size }, (batch, _auditId, markDelete) => {
+        snap.docs.forEach((d) => {
+          batch.delete(d.ref);
+          markDelete(`posts~${postId}~images~${d.id}`, d.data().auditId);
+        });
+        batch.delete(postRef);
+        markDelete(`posts~${postId}`, post?.auditId);
+      });
       navigate("/internal/website?tab=blog", { replace: true });
     } catch (err) {
       console.error("Could not delete post:", err);

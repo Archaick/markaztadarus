@@ -2,14 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { Alert, Button, Group, Loader, SegmentedControl, Text } from "@mantine/core";
 import { IconPhoto, IconPhotoPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { deleteDoc, deleteField, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { deleteField, doc, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { db } from "../../../firebaseConfig";
 import styles from "./Forms.module.css";
 import { COVER_DOC, COVER_POSITIONS, FORMS_COLLECTION, MEDIA, compressCover } from "./formSchema";
 
 export default function FormCoverEditor({ form, editorEmail }) {
   const { t } = useTranslation("internal/Forms");
+  const { user } = useAccess();
   const inputRef = useRef(null);
+  // The cover's current version, needed to delete it (see Internal/audit.js).
+  const coverAuditId = useRef(null);
   const [cover, setCover] = useState(null);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
@@ -23,16 +28,24 @@ export default function FormCoverEditor({ form, editorEmail }) {
     }
     return onSnapshot(
       doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC),
-      (snap) => setCover(snap.exists() ? snap.data().dataUrl : null),
+      (snap) => {
+        setCover(snap.exists() ? snap.data().dataUrl : null);
+        coverAuditId.current = snap.exists() ? snap.data().auditId : null;
+      },
       (err) => console.error("Could not load cover:", err)
     );
   }, [form.id, hasCover]);
 
-  const touchForm = (patch) =>
-    updateDoc(doc(db, FORMS_COLLECTION, form.id), {
-      ...patch,
-      updatedBy: editorEmail,
-      updatedAt: serverTimestamp(),
+  // Changes the form (and its cover) in one batch with a history entry.
+  const touchForm = (action, patch, more, details) =>
+    auditedWrite(user, { area: "forms", action, target: form.id, label: form.title, details }, (batch, auditId, markDelete) => {
+      batch.update(doc(db, FORMS_COLLECTION, form.id), {
+        ...patch,
+        auditId,
+        updatedBy: editorEmail,
+        updatedAt: serverTimestamp(),
+      });
+      more?.(batch, auditId, markDelete);
     });
 
   const handleFile = async (event) => {
@@ -43,11 +56,13 @@ export default function FormCoverEditor({ form, editorEmail }) {
     setBusy("upload");
     try {
       const dataUrl = await compressCover(file);
-      await setDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC), {
-        dataUrl,
-        updatedAt: serverTimestamp(),
-      });
-      await touchForm({ coverVersion: Date.now(), coverPosition: position });
+      await touchForm("form.cover", { coverVersion: Date.now(), coverPosition: position }, (batch, auditId) =>
+        batch.set(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC), {
+          dataUrl,
+          auditId,
+          updatedAt: serverTimestamp(),
+        })
+      );
     } catch (err) {
       console.error("Cover upload failed:", err);
       setError(
@@ -62,8 +77,10 @@ export default function FormCoverEditor({ form, editorEmail }) {
     setError("");
     setBusy("remove");
     try {
-      await touchForm({ coverVersion: deleteField(), coverPosition: deleteField() });
-      await deleteDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
+      await touchForm("form.cover_remove", { coverVersion: deleteField(), coverPosition: deleteField() }, (batch, _id, markDelete) => {
+        batch.delete(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
+        markDelete(`forms~${form.id}~media~${COVER_DOC}`, coverAuditId.current);
+      });
     } catch (err) {
       console.error("Could not remove cover:", err);
       setError("removeFailed");
@@ -73,7 +90,7 @@ export default function FormCoverEditor({ form, editorEmail }) {
   };
 
   const changePosition = (value) =>
-    touchForm({ coverPosition: value }).catch((err) => {
+    touchForm("form.cover_position", { coverPosition: value }, null, { position: value }).catch((err) => {
       console.error("Could not move cover:", err);
       setError("moveFailed");
     });

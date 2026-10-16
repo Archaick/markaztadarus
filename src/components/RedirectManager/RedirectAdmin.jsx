@@ -37,9 +37,10 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, writeBatch } from "firebase/firestore";
+import { collection, doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { intlLocale } from "../Internal/language";
 import { timeAgo } from "../Internal/timeAgo";
@@ -83,7 +84,7 @@ const SORTS = {
 
 export default function RedirectAdmin() {
   const { t, i18n } = useTranslation(NS);
-  const { email } = useAccess();
+  const { email, user } = useAccess();
   const [links, setLinks] = useState(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [search, setSearch] = useState("");
@@ -142,10 +143,14 @@ export default function RedirectAdmin() {
   const importLegacy = async () => {
     setImporting(true);
     try {
-      const batch = writeBatch(db);
+      await auditedWrite(
+        user,
+        { area: "redirects", action: "link.import", details: { count: missingLegacy.length, paths: missingLegacy.map((l) => l.source) } },
+        (batch, auditId) =>
       missingLegacy.forEach((l) =>
         batch.set(doc(collection(db, REDIRECT_COLLECTION)), {
           ...l,
+          auditId,
           note: "",
           active: true,
           expiresAt: null,
@@ -156,8 +161,8 @@ export default function RedirectAdmin() {
           updatedAt: serverTimestamp(),
           updatedBy: email || "unknown",
         })
+      )
       );
-      await batch.commit();
       setNotice({ color: "teal", text: t("legacy.done", { count: missingLegacy.length }) });
     } catch (err) {
       console.error("Could not import links:", err);
@@ -170,7 +175,20 @@ export default function RedirectAdmin() {
   const remove = async (link) => {
     if (!window.confirm(t("deleteConfirm", { path: `${SITE_HOST}${link.source}` }))) return;
     try {
-      await deleteDoc(doc(db, REDIRECT_COLLECTION, link.id));
+      await auditedWrite(
+        user,
+        {
+          area: "redirects",
+          action: "link.delete",
+          target: link.source,
+          label: link.title || link.source,
+          details: { path: `${SITE_HOST}${link.source}`, destination: link.destination, clicks: link.clicks || 0 },
+        },
+        (batch, _auditId, markDelete) => {
+          batch.delete(doc(db, REDIRECT_COLLECTION, link.id));
+          markDelete(`redirect_manager_links~${link.id}`, link.auditId);
+        }
+      );
       setNotice({ color: "teal", text: t("deleted", { path: link.source }) });
     } catch (err) {
       console.error("Could not delete link:", err);

@@ -38,6 +38,66 @@ service cloud.firestore {
           && get(adminPath()).data.features.hasAny([feature]));
     }
 
+    // ---------- History ----------
+    // Every admin write is sent in one batch with an entry in internal_audit
+    // (see src/components/Internal/audit.js). Entries can never be changed or
+    // deleted, and only the super admin reads them.
+
+    function adminEmail() {
+      return hasVerifiedEmail() ? signedInEmail() : "";
+    }
+
+    function isAdminAccount() {
+      return isSuperAdmin() || (hasVerifiedEmail() && exists(adminPath()));
+    }
+
+    function auditPath(id) {
+      return /databases/$(database)/documents/internal_audit/$(id);
+    }
+
+    // The written document names a history entry made in this same request
+    // by this same account.
+    function audited() {
+      let id = request.resource.data.get("auditId", "none");
+      return id is string
+        && existsAfter(auditPath(id))
+        && getAfter(auditPath(id)).data.at == request.time
+        && getAfter(auditPath(id)).data.actor == adminEmail();
+    }
+
+    // A delete needs a mark for the version being deleted, made in this same
+    // request by this same account (deleting a document that is not there
+    // changes nothing). Mirrored in deleteMarkId().
+    function marked(key) {
+      let path = /databases/$(database)/documents/internal_audit_marks/$(key + "~" + resource.data.get("auditId", "v0"));
+      return resource == null || (existsAfter(path)
+        && getAfter(path).data.at == request.time
+        && getAfter(path).data.actor == adminEmail());
+    }
+
+    match /internal_audit/{entryId} {
+      allow read: if isSuperAdmin();
+      allow create: if isAdminAccount()
+        && request.resource.data.keys().hasOnly(["at", "actor", "actorName", "area", "action", "target", "label", "details"])
+        && request.resource.data.at == request.time
+        && request.resource.data.actor == adminEmail()
+        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access"]
+        && request.resource.data.action is string && request.resource.data.action.size() <= 60
+        && request.resource.data.target is string && request.resource.data.target.size() <= 200
+        && request.resource.data.label is string && request.resource.data.label.size() <= 200
+        && request.resource.data.details is map && request.resource.data.details.size() <= 20;
+    }
+
+    match /internal_audit_marks/{markId} {
+      allow read: if isSuperAdmin();
+      allow create: if isAdminAccount()
+        && request.resource.data.keys().hasOnly(["at", "actor", "audit"])
+        && request.resource.data.at == request.time
+        && request.resource.data.actor == adminEmail()
+        && exists(auditPath(request.resource.data.audit)) == false
+        && existsAfter(auditPath(request.resource.data.audit));
+    }
+
     // ---------- Internal admins (invites) ----------
 
     // Keep this list in step with FEATURES in src/components/Internal/access.js.
@@ -51,8 +111,8 @@ service cloud.firestore {
 
     match /internal_admins/{email} {
       allow read: if isSuperAdmin() || (hasVerifiedEmail() && signedInEmail() == email);
-      allow create, update: if isSuperAdmin() && validAdmin(email);
-      allow delete: if isSuperAdmin();
+      allow create, update: if isSuperAdmin() && validAdmin(email) && audited();
+      allow delete: if isSuperAdmin() && marked("admins~" + email);
 
       // An admin may stamp their own sign-in, so the super admin can see
       // who has accepted an invite. Nothing else on their own record.
@@ -75,7 +135,8 @@ service cloud.firestore {
     // lookup still needs them, so they stay readable until then.
     match /certificates/{certId} {
       allow read: if hasFeature("certificates") || !certificatesSecured();
-      allow create, update, delete: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates") && audited();
+      allow delete: if hasFeature("certificates") && marked("certificates~" + certId);
     }
 
     // What the verification page shows, one document per code. Anyone may
@@ -90,20 +151,23 @@ service cloud.firestore {
 
       allow get: if true;
       allow list: if hasFeature("certificates");
-      allow create, delete: if hasFeature("certificates") && code.matches("^[A-Z0-9]{4,32}$");
-      allow update: if hasFeature("certificates") || isScan();
+      allow create: if hasFeature("certificates") && code.matches("^[A-Z0-9]{4,32}$") && audited();
+      allow update: if (hasFeature("certificates") && audited()) || isScan();
+      allow delete: if hasFeature("certificates") && marked("certificate_public~" + code);
     }
 
     match /certificate_meta/{docId} {
       allow read: if true;
-      allow write: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates") && audited();
+      allow delete: if hasFeature("certificates") && marked("certificate_meta~" + docId);
     }
 
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
       // Public read so the verification page can show signatures
       allow read: if true;
-      allow create, update, delete: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates") && audited();
+      allow delete: if hasFeature("certificates") && marked("certificate_signers~" + signerId);
     }
 
     // ---------- Redirect manager ----------
@@ -125,9 +189,9 @@ service cloud.firestore {
 
       // Public read so short-link resolver can fetch destination
       allow read: if true;
-      allow create: if hasFeature("redirects") && validLink();
-      allow update: if (hasFeature("redirects") && validLink()) || isClickCount();
-      allow delete: if hasFeature("redirects");
+      allow create: if hasFeature("redirects") && validLink() && audited();
+      allow update: if (hasFeature("redirects") && validLink() && audited()) || isClickCount();
+      allow delete: if hasFeature("redirects") && marked("redirect_manager_links~" + redirectId);
     }
 
     // ---------- Website content (home page map and achievements) ----------
@@ -143,7 +207,8 @@ service cloud.firestore {
           || (docId == "stats"
             && request.resource.data.items is list
             && request.resource.data.items.size() <= 30)
-        );
+        )
+        && audited();
       allow delete: if false;
     }
 
@@ -162,18 +227,19 @@ service cloud.firestore {
     match /posts/{postId} {
       // Visitors only ever see published posts; drafts stay with the editors.
       allow read: if hasFeature("site") || resource.data.status == "published";
-      allow create, update: if hasFeature("site") && validPost();
-      allow delete: if hasFeature("site");
+      allow create, update: if hasFeature("site") && validPost() && audited();
+      allow delete: if hasFeature("site") && marked("posts~" + postId);
 
       match /images/{imageId} {
         allow read: if hasFeature("site")
           || get(/databases/$(database)/documents/posts/$(postId)).data.status == "published";
         allow create, update: if hasFeature("site")
-          && request.resource.data.keys().hasOnly(["dataUrl", "width", "height", "createdAt"])
+          && request.resource.data.keys().hasOnly(["dataUrl", "width", "height", "createdAt", "auditId"])
           && request.resource.data.dataUrl is string
           && request.resource.data.dataUrl.size() <= 460000
-          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+");
-        allow delete: if hasFeature("site");
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+")
+          && audited();
+        allow delete: if hasFeature("site") && marked("posts~" + postId + "~images~" + imageId);
       }
     }
 
@@ -186,8 +252,9 @@ service cloud.firestore {
       allow create, update: if hasFeature("forms")
         && request.resource.data.status in ["draft", "open", "closed"]
         && request.resource.data.fields is list
-        && request.resource.data.fields.size() <= 100;
-      allow delete: if hasFeature("forms");
+        && request.resource.data.fields.size() <= 100
+        && audited();
+      allow delete: if hasFeature("forms") && marked("forms~" + formId);
 
       // The cover image, as a JPEG data URL (this project has no Storage
       // bucket). Readable wherever the form itself is.
@@ -196,11 +263,12 @@ service cloud.firestore {
           || get(/databases/$(database)/documents/forms/$(formId)).data.status in ["open", "closed"];
         allow create, update: if hasFeature("forms")
           && mediaId == "cover"
-          && request.resource.data.keys().hasOnly(["dataUrl", "updatedAt"])
+          && request.resource.data.keys().hasOnly(["dataUrl", "updatedAt", "auditId"])
           && request.resource.data.dataUrl is string
           && request.resource.data.dataUrl.size() <= 700000
-          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+");
-        allow delete: if hasFeature("forms");
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+")
+          && audited();
+        allow delete: if hasFeature("forms") && marked("forms~" + formId + "~media~" + mediaId);
       }
 
       match /responses/{responseId} {
@@ -210,7 +278,8 @@ service cloud.firestore {
           && request.resource.data.answers is map
           && request.resource.data.answers.size() <= 100
           && request.resource.data.submittedAt == request.time;
-        allow read, delete: if hasFeature("forms");
+        allow read: if hasFeature("forms");
+        allow delete: if hasFeature("forms") && marked("forms~" + formId + "~responses~" + responseId);
       }
     }
 

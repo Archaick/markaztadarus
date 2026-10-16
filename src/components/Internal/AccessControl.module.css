@@ -33,6 +33,7 @@
   display: flex;
   gap: 0.9rem;
   align-items: flex-start;
+  flex-wrap: wrap;
   margin-top: 1.5rem;
 }
 
@@ -209,4 +210,9 @@
   .featureChips {
     flex: 1;
   }
+}
+
+.historyLink {
+  margin-inline-start: auto;
+  flex-shrink: 0;
 }

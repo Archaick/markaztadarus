@@ -34,10 +34,10 @@ import {
   orderBy,
   query,
   serverTimestamp,
-  setDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { timeAgo } from "../Internal/timeAgo";
 import layout from "../Internal/AccessControl.module.css";
@@ -227,6 +227,7 @@ export default function FormsAdmin() {
 }
 
 function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
+  const { user } = useAccess();
   const { t, i18n } = useTranslation(NS);
   const [templateKey, setTemplateKey] = useState("komitmen-tadarus");
   const [title, setTitle] = useState("Komitmen Pelaksanaan Tadarus");
@@ -261,15 +262,21 @@ function CreateFormModal({ opened, onClose, createdBy, onCreated }) {
       }
       const template = TEMPLATES.find((tpl) => tpl.key === templateKey) || TEMPLATES[0];
       const built = template.build(i18n.language.slice(0, 2));
-      await setDoc(ref, {
-        ...built,
-        title: title.trim(),
-        status: "draft",
-        createdBy,
-        updatedBy: createdBy,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
+      await auditedWrite(
+        user,
+        { area: "forms", action: "form.create", target: id, label: title.trim(), details: { template: template.key } },
+        (batch, auditId) =>
+          batch.set(ref, {
+            ...built,
+            title: title.trim(),
+            status: "draft",
+            auditId,
+            createdBy,
+            updatedBy: createdBy,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          })
+      );
       onCreated(id);
     } catch (err) {
       console.error("Could not create form:", err);

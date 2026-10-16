@@ -3,9 +3,10 @@ import { useParams } from "react-router-dom";
 import { Alert, Badge, Card, Group, Loader, SegmentedControl, Tabs, Text, Title } from "@mantine/core";
 import { IconArrowLeft, IconListDetails, IconMessages, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
@@ -19,7 +20,7 @@ import SharePanel from "./SharePanel";
 export default function FormDetail() {
   const { t } = useTranslation("internal/Forms");
   const { formId } = useParams();
-  const { email } = useAccess();
+  const { email, user } = useAccess();
   const [form, setForm] = useState(undefined);
   const [tab, setTab] = useState("questions");
   const [statusError, setStatusError] = useState(false);
@@ -40,11 +41,17 @@ export default function FormDetail() {
   const changeStatus = async (status) => {
     setStatusError(false);
     try {
-      await updateDoc(doc(db, FORMS_COLLECTION, formId), {
-        status,
-        updatedBy: email,
-        updatedAt: serverTimestamp(),
-      });
+      await auditedWrite(
+        user,
+        { area: "forms", action: "form.status", target: formId, label: form?.title, details: { from: form?.status || "draft", to: status } },
+        (batch, auditId) =>
+          batch.update(doc(db, FORMS_COLLECTION, formId), {
+            status,
+            auditId,
+            updatedBy: email,
+            updatedAt: serverTimestamp(),
+          })
+      );
     } catch (err) {
       console.error("Could not change status:", err);
       setStatusError(true);

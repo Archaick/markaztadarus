@@ -48,12 +48,11 @@ import {
   doc,
   onSnapshot,
   serverTimestamp,
-  setDoc,
-  writeBatch,
 } from "firebase/firestore";
 import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
 import { auth, db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { intlLocale } from "../Internal/language";
 import { timeAgo } from "../Internal/timeAgo";
@@ -96,7 +95,7 @@ const nameOf = (cert) => both(cert?.name, cert?.nameAr);
 
 export default function Admin() {
   const { t, i18n } = useTranslation(NS);
-  const { email } = useAccess();
+  const { email, user } = useAccess();
   const [certs, setCerts] = useState(null);
   const [pubs, setPubs] = useState(null);
   const [migrated, setMigrated] = useState(null);
@@ -167,19 +166,26 @@ export default function Admin() {
     (async () => {
       try {
         if (stale.length) setSync({ done: 0, total: stale.length });
-        for (let i = 0; i < stale.length; i += 400) {
-          const batch = writeBatch(db);
-          stale.slice(i, i + 400).forEach(([code, c]) => batch.set(doc(db, PUBLIC, code), publicFields(c), { merge: true }));
-          await batch.commit();
-          setSync({ done: Math.min(i + 400, stale.length), total: stale.length });
+        for (let i = 0; i < stale.length; i += CERTS_PER_BATCH) {
+          const part = stale.slice(i, i + CERTS_PER_BATCH);
+          await auditedWrite(
+            user,
+            { area: "certificates", action: "cert.sync", details: { count: part.length, codes: part.map(([code]) => code) } },
+            (batch, auditId) =>
+              part.forEach(([code, c]) => batch.set(doc(db, PUBLIC, code), { ...publicFields(c), auditId }, { merge: true }))
+          );
+          setSync({ done: Math.min(i + CERTS_PER_BATCH, stale.length), total: stale.length });
         }
         if (!migrated) {
-          await setDoc(doc(db, META, MIGRATION_DOC), {
-            done: true,
-            count: byCode.size,
-            at: serverTimestamp(),
-            by: email || "unknown",
-          });
+          await auditedWrite(user, { area: "certificates", action: "cert.secure", details: { count: byCode.size } }, (batch, auditId) =>
+            batch.set(doc(db, META, MIGRATION_DOC), {
+              done: true,
+              count: byCode.size,
+              auditId,
+              at: serverTimestamp(),
+              by: email || "unknown",
+            })
+          );
           notify("success", t("secure.doneTitle"), t("secure.doneText", { count: byCode.size }));
         }
       } catch (err) {
@@ -253,8 +259,15 @@ export default function Admin() {
     const date = fromDateInput(eventDate);
     const created = [];
     for (let i = 0; i < people.length; i += CERTS_PER_BATCH) {
-      const batch = writeBatch(db);
-      people.slice(i, i + CERTS_PER_BATCH).forEach((person) => {
+      const part = people.slice(i, i + CERTS_PER_BATCH);
+      const made = [];
+      const entry = {
+        area: "certificates",
+        action: "cert.issue",
+        label: both(prog, programAr),
+        details: { count: part.length, names: part.map((p) => both(p.name, p.nameAr)), ...(people.length > part.length && { total: people.length }) },
+      };
+      await auditedWrite(user, entry, (batch, auditId) => part.forEach((person) => {
         const data = {
           name: person.name || "",
           nameAr: person.nameAr || "",
@@ -267,13 +280,14 @@ export default function Admin() {
           status: "valid",
           createdAt: Timestamp.now(),
           createdBy: email || "unknown",
+          auditId,
         };
         const ref = doc(collection(db, CERTS));
         batch.set(ref, data);
-        batch.set(doc(db, PUBLIC, data.code), publicFields(data));
-        created.push({ id: ref.id, ...data });
-      });
-      await batch.commit();
+        batch.set(doc(db, PUBLIC, data.code), { ...publicFields(data), auditId });
+        made.push({ id: ref.id, ...data });
+      }));
+      created.push(...made);
       onProgress?.(Math.min(1, (i + CERTS_PER_BATCH) / people.length));
     }
     return created;
@@ -298,10 +312,18 @@ export default function Admin() {
       updatedAt: Timestamp.now(),
       updatedBy: email || "unknown",
     };
-    const batch = writeBatch(db);
-    batch.update(doc(db, CERTS, cert.id), changes);
-    batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
-    await batch.commit();
+    const changed = ["name", "nameAr", "program", "programAr", "lang", "signerIds"].filter(
+      (k) => JSON.stringify(cert[k] ?? "") !== JSON.stringify(changes[k] ?? "")
+    );
+    if (millis(cert.eventDate) !== millis(changes.eventDate)) changed.push("eventDate");
+    await auditedWrite(
+      user,
+      { area: "certificates", action: "cert.update", target: cert.code, label: nameOf({ ...cert, ...changes }), details: { changed, previousName: nameOf(cert) } },
+      (batch, auditId) => {
+        batch.update(doc(db, CERTS, cert.id), { ...changes, auditId });
+        batch.set(doc(db, PUBLIC, normCode(cert.code)), { ...publicFields({ ...cert, ...changes }), auditId }, { merge: true });
+      }
+    );
     notify("success", t("notices.savedTitle"), t("notices.savedText", { name: values.name || values.nameAr }));
   };
 
@@ -310,10 +332,20 @@ export default function Admin() {
       ? { status: "revoked", revokedReason: cleanText(reason), revokedAt: Timestamp.now(), revokedBy: email || "unknown" }
       : { status: "valid", revokedReason: "" };
     try {
-      const batch = writeBatch(db);
-      batch.update(doc(db, CERTS, cert.id), changes);
-      batch.set(doc(db, PUBLIC, normCode(cert.code)), publicFields({ ...cert, ...changes }), { merge: true });
-      await batch.commit();
+      await auditedWrite(
+        user,
+        {
+          area: "certificates",
+          action: revoked ? "cert.revoke" : "cert.restore",
+          target: cert.code,
+          label: nameOf(cert),
+          details: revoked ? { reason: cleanText(reason) } : {},
+        },
+        (batch, auditId) => {
+          batch.update(doc(db, CERTS, cert.id), { ...changes, auditId });
+          batch.set(doc(db, PUBLIC, normCode(cert.code)), { ...publicFields({ ...cert, ...changes }), auditId }, { merge: true });
+        }
+      );
       notify("success", t(revoked ? "notices.revokedTitle" : "notices.restoredTitle"), nameOf(cert));
       setRevoking(null);
     } catch (err) {
@@ -328,10 +360,17 @@ export default function Admin() {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ login_hint: auth.currentUser?.email || "" });
       await reauthenticateWithPopup(auth.currentUser, provider);
-      const batch = writeBatch(db);
-      batch.delete(doc(db, CERTS, cert.id));
-      batch.delete(doc(db, PUBLIC, normCode(cert.code)));
-      await batch.commit();
+      const code = normCode(cert.code);
+      await auditedWrite(
+        user,
+        { area: "certificates", action: "cert.delete", target: cert.code, label: nameOf(cert), details: { description: both(cert.program, cert.programAr), status: cert.status || "valid" } },
+        (batch, _auditId, markDelete) => {
+          batch.delete(doc(db, CERTS, cert.id));
+          markDelete(`certificates~${cert.id}`, cert.auditId);
+          batch.delete(doc(db, PUBLIC, code));
+          markDelete(`certificate_public~${code}`, pubs?.get(code)?.auditId);
+        }
+      );
       setDeleting(null);
       notify("success", t("notices.deletedTitle"), nameOf(cert));
     } catch (err) {

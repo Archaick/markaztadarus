@@ -9,6 +9,7 @@ import {
 import { doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 import { AccessContext } from "./accessContext";
+import { auditedWrite } from "./audit";
 import {
   ADMINS_COLLECTION,
   FEATURE_KEYS,
@@ -18,6 +19,9 @@ import {
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });
+
+// Visits closer together than this count as one sign-in in the history.
+const SIGN_IN_GAP_MS = 6 * 3600 * 1000;
 
 export default function AccessProvider({ children }) {
   // undefined while Firebase restores the session, null when signed out
@@ -42,11 +46,19 @@ export default function AccessProvider({ children }) {
         // Lets the super admin see who has accepted their invite.
         if (snap.exists() && recordedLoginFor.current !== email) {
           recordedLoginFor.current = email;
-          updateDoc(ref, {
+          const stamp = {
             lastLoginAt: serverTimestamp(),
             displayName: user.displayName || "",
             photoURL: user.photoURL || "",
-          }).catch((err) => console.error("Could not record login:", err));
+          };
+          // A new history line when they come back after a while, so the
+          // super admin sees who signed in and when.
+          const last = snap.data().lastLoginAt?.toMillis?.() || 0;
+          const write =
+            Date.now() - last > SIGN_IN_GAP_MS
+              ? auditedWrite(user, { area: "access", action: "admin.signin", target: email, label: email }, (batch) => batch.update(ref, stamp))
+              : updateDoc(ref, stamp);
+          write.catch((err) => console.error("Could not record login:", err));
         }
       },
       (err) => {

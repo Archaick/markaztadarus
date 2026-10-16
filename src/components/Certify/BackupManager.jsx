@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Button, FileButton, Progress, Text } from "@mantine/core";
 import { IconDatabaseExport, IconDatabaseImport, IconShieldCheck } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { Timestamp, collection, doc, writeBatch } from "firebase/firestore";
+import { Timestamp, collection, doc } from "firebase/firestore";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { db } from "../../../firebaseConfig";
 import { CERTS, certDate, cleanText, normCode } from "./certSchema";
 import styles from "./Admin.module.css";
@@ -19,6 +21,7 @@ const fromIso = (v) => (v ? Timestamp.fromDate(new Date(v)) : null);
  * the dashboard then publishes them to the verification page by itself.
  */
 export default function BackupManager({ certs, notify }) {
+  const { user } = useAccess();
   const { t } = useTranslation(NS);
   const [progress, setProgress] = useState(null);
 
@@ -61,9 +64,11 @@ export default function BackupManager({ certs, notify }) {
 
       setProgress(0);
       for (let i = 0; i < fresh.length; i += BATCH) {
-        const batch = writeBatch(db);
-        fresh.slice(i, i + BATCH).forEach((c) =>
+        const part = fresh.slice(i, i + BATCH);
+        await auditedWrite(user, { area: "certificates", action: "cert.import", label: file.name, details: { count: part.length } }, (batch, auditId) =>
+          part.forEach((c) =>
           batch.set(doc(collection(db, CERTS)), {
+            auditId,
             name: cleanText(c.name),
             nameAr: cleanText(c.nameAr),
             program: cleanText(c.program),
@@ -76,8 +81,8 @@ export default function BackupManager({ certs, notify }) {
             revokedReason: c.status === "revoked" ? cleanText(c.revokedReason) : "",
             createdAt: fromIso(c.createdAt) || Timestamp.now(),
           })
+          )
         );
-        await batch.commit();
         setProgress(Math.min(1, (i + BATCH) / fresh.length));
       }
       notify(

@@ -22,7 +22,9 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp } from "firebase/firestore";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { db } from "../../../firebaseConfig";
 import { LANGUAGES } from "../Internal/language";
 import { stableKey } from "../Internal/stableKey";
@@ -53,6 +55,7 @@ const problemIn = (draft) => {
 };
 
 export default function FormBuilder({ form, editorEmail }) {
+  const { user } = useAccess();
   const { t } = useTranslation("internal/Forms");
   const [draft, setDraft] = useState(() => editableOf(form));
   const [baseline, setBaseline] = useState(() => stableKey(editableOf(form)));
@@ -139,11 +142,20 @@ export default function FormBuilder({ form, editorEmail }) {
     };
     setSaving(true);
     try {
-      await updateDoc(doc(db, FORMS_COLLECTION, form.id), {
-        ...clean,
-        updatedBy: editorEmail,
-        updatedAt: serverTimestamp(),
-      });
+      const changed = ["title", "description", "language", "fields"].filter(
+        (k) => JSON.stringify(form[k] ?? "") !== JSON.stringify(clean[k] ?? "")
+      );
+      await auditedWrite(
+        user,
+        { area: "forms", action: "form.update", target: form.id, label: clean.title, details: { changed, questions: clean.fields.length } },
+        (batch, auditId) =>
+          batch.update(doc(db, FORMS_COLLECTION, form.id), {
+            ...clean,
+            auditId,
+            updatedBy: editorEmail,
+            updatedAt: serverTimestamp(),
+          })
+      );
       setDraft(clean);
       setMessage({ color: "teal", text: t("builder.saved") });
     } catch (err) {

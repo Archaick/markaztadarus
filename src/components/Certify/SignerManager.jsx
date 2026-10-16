@@ -28,16 +28,11 @@ import {
     IconX,
     IconPlus,
 } from "@tabler/icons-react";
-import {
-    collection,
-    addDoc,
-    updateDoc,
-    deleteDoc,
-    doc,
-    writeBatch,
-} from "firebase/firestore";
+import { collection, doc } from "firebase/firestore";
 import { useTranslation } from "react-i18next";
 import { db, auth } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import { SIGNERS_COLLECTION, processImageFile, fetchAllSigners } from "./signerUtils";
 import SignatureBlock from "./SignatureBlock";
 import styles from "./SignerManager.module.css";
@@ -111,6 +106,14 @@ const ImageSlot = ({ label, hint, value, onChange, removeWhite, onError }) => {
 
 const SignerManager = ({ notify, onSignersChange }) => {
     const { t } = useTranslation(NS);
+    const { user } = useAccess();
+    const signerEntry = (action, signer, details) => ({
+        area: "certificates",
+        action,
+        target: signer.id || "",
+        label: [signer.name, signer.position].filter(Boolean).join(" — "),
+        details,
+    });
     const [signers, setSigners] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -179,18 +182,23 @@ const SignerManager = ({ notify, onSignersChange }) => {
         setSaving(true);
         try {
             if (editingId) {
-                await updateDoc(doc(db, SIGNERS_COLLECTION, editingId), {
-                    ...data,
-                    updatedAt: new Date(),
-                });
+                const before = signers.find((s) => s.id === editingId) || {};
+                const changed = Object.keys(data).filter((k) => (before[k] ?? "") !== data[k]);
+                await auditedWrite(user, signerEntry("signer.update", { ...data, id: editingId }, { changed }), (batch, auditId) =>
+                    batch.update(doc(db, SIGNERS_COLLECTION, editingId), { ...data, auditId, updatedAt: new Date() })
+                );
                 notify("success", t("signers.updated"), data.name);
             } else {
-                await addDoc(collection(db, SIGNERS_COLLECTION), {
-                    ...data,
-                    order: signers.length ? Math.max(...signers.map((s) => s.order || 0)) + 1 : 1,
-                    createdAt: new Date(),
-                    createdBy: auth.currentUser?.email || "",
-                });
+                const ref = doc(collection(db, SIGNERS_COLLECTION));
+                await auditedWrite(user, signerEntry("signer.create", { ...data, id: ref.id }), (batch, auditId) =>
+                    batch.set(ref, {
+                        ...data,
+                        auditId,
+                        order: signers.length ? Math.max(...signers.map((s) => s.order || 0)) + 1 : 1,
+                        createdAt: new Date(),
+                        createdBy: auth.currentUser?.email || "",
+                    })
+                );
                 notify("success", t("signers.added"), data.name);
             }
             resetForm();
@@ -206,8 +214,10 @@ const SignerManager = ({ notify, onSignersChange }) => {
     const toggleField = async (signer, field) => {
         const value = field === "active" ? signer.active === false : !signer.isDefault;
         try {
-            await updateDoc(doc(db, SIGNERS_COLLECTION, signer.id), { [field]: value });
-            const next = signers.map((s) => (s.id === signer.id ? { ...s, [field]: value } : s));
+            const auditId = await auditedWrite(user, signerEntry("signer.update", signer, { changed: [field], [field]: value }), (batch, id) =>
+                batch.update(doc(db, SIGNERS_COLLECTION, signer.id), { [field]: value, auditId: id })
+            );
+            const next = signers.map((s) => (s.id === signer.id ? { ...s, [field]: value, auditId } : s));
             setSigners(next);
             onSignersChange?.(next);
         } catch (err) {
@@ -222,10 +232,12 @@ const SignerManager = ({ notify, onSignersChange }) => {
         const next = [...signers];
         [next[index], next[target]] = [next[target], next[index]];
         try {
-            const batch = writeBatch(db);
-            next.forEach((s, i) => batch.update(doc(db, SIGNERS_COLLECTION, s.id), { order: i + 1 }));
-            await batch.commit();
-            const ordered = next.map((s, i) => ({ ...s, order: i + 1 }));
+            const auditId = await auditedWrite(
+                user,
+                { area: "certificates", action: "signer.reorder", details: { order: next.map((s) => s.name) } },
+                (batch, id) => next.forEach((s, i) => batch.update(doc(db, SIGNERS_COLLECTION, s.id), { order: i + 1, auditId: id }))
+            );
+            const ordered = next.map((s, i) => ({ ...s, order: i + 1, auditId }));
             setSigners(ordered);
             onSignersChange?.(ordered);
         } catch (err) {
@@ -238,7 +250,10 @@ const SignerManager = ({ notify, onSignersChange }) => {
         if (!deleteTarget) return;
         setSaving(true);
         try {
-            await deleteDoc(doc(db, SIGNERS_COLLECTION, deleteTarget.id));
+            await auditedWrite(user, signerEntry("signer.delete", deleteTarget), (batch, _auditId, markDelete) => {
+                batch.delete(doc(db, SIGNERS_COLLECTION, deleteTarget.id));
+                markDelete(`certificate_signers~${deleteTarget.id}`, deleteTarget.auditId);
+            });
             if (editingId === deleteTarget.id) resetForm();
             notify("success", t("signers.removed"), deleteTarget.name);
             setDeleteTarget(null);

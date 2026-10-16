@@ -21,6 +21,7 @@ import {
   IconBrandWhatsapp,
   IconCheck,
   IconCopy,
+  IconHistory,
   IconMail,
   IconTrash,
   IconUserPlus,
@@ -29,18 +30,16 @@ import {
 import { Trans, useTranslation } from "react-i18next";
 import {
   collection,
-  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
-  setDoc,
-  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "./accessContext";
+import { auditedWrite } from "./audit";
 import {
   ADMINS_COLLECTION,
   FEATURES,
@@ -55,7 +54,7 @@ import styles from "./AccessControl.module.css";
 
 export default function AccessControl() {
   const { t } = useTranslation("internal/Internal");
-  const { email: myEmail } = useAccess();
+  const { email: myEmail, user } = useAccess();
   const [admins, setAdmins] = useState(null);
   const [listError, setListError] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -118,17 +117,27 @@ export default function AccessControl() {
       const existing = await getDoc(ref);
       if (existing.exists()) {
         const merged = Array.from(new Set([...(existing.data().features || []), ...inviteFeatures]));
-        await updateDoc(ref, { features: merged, updatedAt: serverTimestamp() });
+        await auditedWrite(
+          user,
+          { area: "access", action: "admin.update", target: email, label: email, details: { from: existing.data().features || [], to: merged } },
+          (batch, auditId) => batch.update(ref, { features: merged, auditId, updatedAt: serverTimestamp() })
+        );
         setNotice({ color: "teal", key: "updated", email });
         setLastInvite({ email, features: merged });
       } else {
-        await setDoc(ref, {
-          email,
-          features: inviteFeatures,
-          invitedBy: myEmail,
-          invitedAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+        await auditedWrite(
+          user,
+          { area: "access", action: "admin.invite", target: email, label: email, details: { to: inviteFeatures } },
+          (batch, auditId) =>
+            batch.set(ref, {
+              email,
+              features: inviteFeatures,
+              auditId,
+              invitedBy: myEmail,
+              invitedAt: serverTimestamp(),
+              updatedAt: serverTimestamp(),
+            })
+        );
         setNotice({ color: "teal", key: "invited", email });
         setLastInvite({ email, features: inviteFeatures });
       }
@@ -147,10 +156,11 @@ export default function AccessControl() {
     const next = has ? admin.features.filter((k) => k !== key) : [...(admin.features || []), key];
     setBusyEmail(admin.id);
     try {
-      await updateDoc(doc(db, ADMINS_COLLECTION, admin.id), {
-        features: next,
-        updatedAt: serverTimestamp(),
-      });
+      await auditedWrite(
+        user,
+        { area: "access", action: "admin.update", target: admin.id, label: admin.id, details: { from: admin.features || [], to: next } },
+        (batch, auditId) => batch.update(doc(db, ADMINS_COLLECTION, admin.id), { features: next, auditId, updatedAt: serverTimestamp() })
+      );
     } catch (err) {
       console.error("Could not update access:", err);
       setNotice({ color: "red", key: "updateFailed", email: admin.id });
@@ -163,7 +173,14 @@ export default function AccessControl() {
     if (!removeTarget) return;
     setBusyEmail(removeTarget.id);
     try {
-      await deleteDoc(doc(db, ADMINS_COLLECTION, removeTarget.id));
+      await auditedWrite(
+        user,
+        { area: "access", action: "admin.remove", target: removeTarget.id, label: removeTarget.id, details: { from: removeTarget.features || [] } },
+        (batch, _auditId, markDelete) => {
+          batch.delete(doc(db, ADMINS_COLLECTION, removeTarget.id));
+          markDelete(`admins~${removeTarget.id}`, removeTarget.auditId);
+        }
+      );
       setNotice({ color: "teal", key: "removed", email: removeTarget.id });
       if (lastInvite?.email === removeTarget.id) setLastInvite(null);
     } catch (err) {
@@ -197,6 +214,9 @@ export default function AccessControl() {
               </Title>
               <Text className={styles.headingText}>{t("access.intro")}</Text>
             </div>
+            <Button component="a" href="/internal/history" variant="default" radius="xl" leftSection={<IconHistory size={16} />} className={styles.historyLink}>
+              {t("features.history.title")}
+            </Button>
           </div>
 
           {/* ---------- Invite ---------- */}

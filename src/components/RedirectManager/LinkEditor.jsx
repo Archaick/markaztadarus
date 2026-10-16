@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Group, Modal, Switch, Text, TextInput, Textarea } from "@mantine/core";
 import { IconAlertTriangle } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { Timestamp, addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { Timestamp, collection, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { useAccess } from "../Internal/accessContext";
+import { auditedWrite } from "../Internal/audit";
 import {
   PATH_PATTERN,
   REDIRECT_COLLECTION,
@@ -30,6 +32,7 @@ const blank = { title: "", path: "", destination: "", note: "", active: true, en
 /** Create a short link, or change one (`link`) without breaking its printed QR codes. */
 export default function LinkEditor({ opened, onClose, link, links, email, onSaved }) {
   const { t } = useTranslation(NS);
+  const { user } = useAccess();
   const [values, setValues] = useState(blank);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -87,18 +90,41 @@ export default function LinkEditor({ opened, onClose, link, links, email, onSave
       updatedBy: email || "unknown",
     };
 
+    // What changed, for the history.
+    const changed = link
+      ? ["title", "source", "destination", "note", "active"].filter((k) => String(link[k] ?? "") !== String(data[k] ?? ""))
+      : [];
+    if (link && (link.expiresAt?.toMillis?.() || 0) !== (data.expiresAt?.toMillis?.() || 0)) changed.push("ends");
+    const entry = {
+      area: "redirects",
+      action: !link ? "link.create" : link.source !== source ? "link.rename" : "link.update",
+      target: source,
+      label: data.title || source,
+      details: {
+        path: `${SITE_HOST}${source}`,
+        destination,
+        ...(link && { changed }),
+        ...(link && link.destination !== destination && { previousDestination: link.destination }),
+        ...(link && link.source !== source && { previousPath: `${SITE_HOST}${link.source}` }),
+        ...(link && (link.active !== false) !== data.active && { active: data.active }),
+      },
+    };
+
     setSaving(true);
     try {
-      if (link) {
-        await updateDoc(doc(db, REDIRECT_COLLECTION, link.id), data);
-      } else {
-        await addDoc(collection(db, REDIRECT_COLLECTION), {
-          ...data,
-          clicks: 0,
-          createdAt: serverTimestamp(),
-          createdBy: email || "unknown",
-        });
-      }
+      await auditedWrite(user, entry, (batch, auditId) => {
+        if (link) {
+          batch.update(doc(db, REDIRECT_COLLECTION, link.id), { ...data, auditId });
+        } else {
+          batch.set(doc(collection(db, REDIRECT_COLLECTION)), {
+            ...data,
+            auditId,
+            clicks: 0,
+            createdAt: serverTimestamp(),
+            createdBy: email || "unknown",
+          });
+        }
+      });
       onSaved(link ? "saved" : "created", source);
       onClose();
     } catch (err) {
