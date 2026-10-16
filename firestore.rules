@@ -241,6 +241,19 @@ service cloud.firestore {
           && audited();
         allow delete: if hasFeature("site") && marked("posts~" + postId + "~images~" + imageId);
       }
+
+      // A small copy of each photo (same id) for the gallery grid.
+      match /thumbs/{thumbId} {
+        allow read: if hasFeature("site")
+          || get(/databases/$(database)/documents/posts/$(postId)).data.status == "published";
+        allow create, update: if hasFeature("site")
+          && request.resource.data.keys().hasOnly(["dataUrl", "width", "height", "auditId"])
+          && request.resource.data.dataUrl is string
+          && request.resource.data.dataUrl.size() <= 80000
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+")
+          && audited();
+        allow delete: if hasFeature("site") && marked("posts~" + postId + "~thumbs~" + thumbId);
+      }
     }
 
     // ---------- Forms ----------

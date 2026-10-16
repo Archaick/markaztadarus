@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { CopyButton } from "@mantine/core";
 import {
@@ -19,16 +19,43 @@ import { formatPostDate, paragraphs, postLink } from "./blogSchema";
 /**
  * One news post as visitors see it: meta, title, cover, text, gallery and
  * share buttons. Used by the public post page and by the editor's preview.
- * `images` maps photo id → { dataUrl, width, height }.
+ *
+ * `images` maps photo id → { dataUrl, width, height } for the full photos
+ * loaded so far. `thumbs`, when given, holds the small gallery copies; then a
+ * full photo is asked for with `onNeedImage(id)` only when it is opened (and
+ * for the neighbours, so swiping is instant).
  */
-export default function ArticleView({ post, images, showDraftBanner = true, children }) {
+export default function ArticleView({ post, images, thumbs, onNeedImage, showDraftBanner = true, children }) {
   const { t, i18n } = useTranslation("blog/Blog");
   const [viewer, setViewer] = useState(-1);
 
   const gallery = useMemo(
-    () => (post?.images || []).map((id) => images[id] && { id, ...images[id] }).filter(Boolean),
-    [post?.images, images]
+    () =>
+      (post?.images || [])
+        .map((id) => {
+          const src = images[id]?.dataUrl || thumbs?.[id]?.dataUrl;
+          return src && { id, dataUrl: src, thumb: thumbs?.[id]?.dataUrl || src };
+        })
+        .filter(Boolean),
+    [post?.images, images, thumbs]
   );
+
+  // a photo with no small copy falls back to its full version
+  useEffect(() => {
+    if (!thumbs || !onNeedImage) return;
+    (post?.images || []).forEach((id) => {
+      if (!thumbs[id]) onNeedImage(id);
+    });
+  }, [thumbs, post?.images, onNeedImage]);
+
+  // the open photo and its neighbours in full size
+  useEffect(() => {
+    if (viewer < 0 || !onNeedImage || !gallery.length) return;
+    [viewer, viewer + 1, viewer - 1].forEach((i) => {
+      const item = gallery[(i + gallery.length) % gallery.length];
+      if (item) onNeedImage(item.id);
+    });
+  }, [viewer, gallery, onNeedImage]);
 
   const cover = images[post.coverId]?.dataUrl || post.coverThumb;
   const link = postLink(post.id);
@@ -93,7 +120,7 @@ export default function ArticleView({ post, images, showDraftBanner = true, chil
               <div className={styles.galleryGrid}>
                 {gallery.map((img, i) => (
                   <button type="button" key={img.id} className={styles.galleryItem} onClick={() => setViewer(i)}>
-                    <img src={img.dataUrl} alt="" loading="lazy" />
+                    <img src={img.thumb} alt="" loading="lazy" />
                   </button>
                 ))}
               </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Loader } from "@mantine/core";
 import { useTranslation } from "react-i18next";
@@ -8,19 +8,23 @@ import BlogShell from "./BlogShell";
 import PostCard from "./PostCard";
 import ArticleView from "./ArticleView";
 import styles from "./Blog.module.css";
-import { IMAGES, POSTS, fetchPublished } from "./blogSchema";
+import { IMAGES, POSTS, THUMBS, fetchPublished } from "./blogSchema";
 
 export default function BlogPost() {
   const { slug } = useParams();
   const { t } = useTranslation("blog/Blog");
   const [post, setPost] = useState(undefined); // undefined = loading, null = not found
-  const [images, setImages] = useState({}); // id → { dataUrl, width, height }
+  const [images, setImages] = useState({}); // full photos loaded so far: id → { dataUrl, width, height }
+  const [thumbs, setThumbs] = useState(null); // gallery copies, for posts that have them
+  const requested = useRef(new Set());
   const [related, setRelated] = useState([]);
 
   useEffect(() => {
     let alive = true;
     setPost(undefined);
     setImages({});
+    setThumbs(null);
+    requested.current = new Set();
     getDoc(doc(db, POSTS, slug))
       .then((snap) => alive && setPost(snap.exists() ? { id: snap.id, ...snap.data() } : null))
       // Drafts are hidden from visitors by the rules, which reads as not found.
@@ -30,21 +34,47 @@ export default function BlogPost() {
     };
   }, [slug]);
 
-  // Photos load after the text, so the article shows straight away.
+  // One full photo, fetched once.
   const postId = post?.id;
+  const loadImage = useCallback(
+    (id) => {
+      if (!postId || !id || requested.current.has(id)) return;
+      requested.current.add(id);
+      getDoc(doc(db, POSTS, postId, IMAGES, id))
+        .then((snap) => snap.exists() && setImages((m) => ({ ...m, [id]: snap.data() })))
+        .catch((err) => {
+          requested.current.delete(id);
+          console.error("Could not load photo:", err);
+        });
+    },
+    [postId]
+  );
+
+  // Photos load after the text, so the article shows straight away. Posts with
+  // gallery copies load those and the full cover only; older posts load every
+  // photo as before.
+  const thumbsReady = !!post?.thumbsReady;
+  const coverId = post?.coverId;
   useEffect(() => {
     if (!postId) return undefined;
     let alive = true;
-    getDocs(collection(db, POSTS, postId, IMAGES))
-      .then((snap) => alive && setImages(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))))
-      .catch((err) => console.error("Could not load photos:", err));
+    if (thumbsReady) {
+      getDocs(collection(db, POSTS, postId, THUMBS))
+        .then((snap) => alive && setThumbs(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))))
+        .catch((err) => console.error("Could not load photos:", err));
+      if (coverId) loadImage(coverId);
+    } else {
+      getDocs(collection(db, POSTS, postId, IMAGES))
+        .then((snap) => alive && setImages(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))))
+        .catch((err) => console.error("Could not load photos:", err));
+    }
     fetchPublished({ size: 4 })
       .then((page) => alive && setRelated(page.posts.filter((p) => p.id !== postId).slice(0, 3)))
       .catch(() => {});
     return () => {
       alive = false;
     };
-  }, [postId]);
+  }, [postId, thumbsReady, coverId, loadImage]);
 
   useEffect(() => {
     if (post?.title) document.title = `${post.title} · Markaz Tadarus Indonesia`;
@@ -76,7 +106,7 @@ export default function BlogPost() {
 
   return (
     <BlogShell>
-      <ArticleView post={post} images={images}>
+      <ArticleView post={post} images={images} thumbs={thumbs || undefined} onNeedImage={thumbs ? loadImage : undefined}>
         {related.length > 0 && (
           <section className={styles.related}>
             <div className={styles.container}>

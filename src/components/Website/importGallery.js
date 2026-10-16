@@ -2,7 +2,7 @@ import { collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
 import { LEGACY_GALLERY } from "../../data/legacyGallery";
-import { IMAGES, POSTS, makeImage, makeThumb, todayIso } from "../Blog/blogSchema";
+import { IMAGES, POSTS, THUMBS, makeGridThumb, makeImage, makeThumb, todayIso } from "../Blog/blogSchema";
 
 export const LEGACY_PHOTO_COUNT = LEGACY_GALLERY.reduce((n, g) => n + g.images.length, 0);
 export const LEGACY_SLUGS = LEGACY_GALLERY.map((g) => g.slug);
@@ -43,10 +43,12 @@ export async function importLegacyGallery({ user, editorEmail, onPhoto }) {
       const blob = await (await fetch(url)).blob();
       const image = await makeImage(blob);
       const imageRef = doc(collection(db, POSTS, group.slug, IMAGES));
+      const grid = await makeGridThumb(image.dataUrl);
       // one photo per write: each is close to the size limit of a request
-      await auditedWrite(user, entry("post.photo_add", { photo: ids.length + 1 }), (batch, auditId) =>
-        batch.set(imageRef, { ...image, auditId, createdAt: serverTimestamp() })
-      );
+      await auditedWrite(user, entry("post.photo_add", { photo: ids.length + 1 }), (batch, auditId) => {
+        batch.set(imageRef, { ...image, auditId, createdAt: serverTimestamp() });
+        batch.set(doc(db, POSTS, group.slug, THUMBS, imageRef.id), { ...grid, auditId });
+      });
       ids.push(imageRef.id);
       if (!coverThumb) coverThumb = await makeThumb(image.dataUrl);
       onPhoto?.();
@@ -56,6 +58,7 @@ export async function importLegacyGallery({ user, editorEmail, onPhoto }) {
       batch.update(postRef, {
       auditId,
       images: ids,
+      thumbsReady: true,
       coverId: ids[0] || null,
       coverThumb,
       status: "published",

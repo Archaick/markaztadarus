@@ -176,6 +176,16 @@
       "done_one": "{{count}} news item created from the old gallery.",
       "done_other": "{{count}} news items created from the old gallery.",
       "failed": "The import stopped. Try again — items already created are not duplicated."
+    },
+    "optimise": {
+      "title_one": "{{count}} news item loads its photos at full size",
+      "title_other": "{{count}} news items load their photos at full size",
+      "text": "Makes small gallery copies so visitors download far less. Full photos still open when tapped. Nothing else changes.",
+      "button": "Optimise photos",
+      "progress": "Optimising news {{done}}/{{total}}…",
+      "done_one": "{{count}} news item optimised.",
+      "done_other": "{{count}} news items optimised.",
+      "failed": "Optimising stopped. Try again — finished items are skipped."
     }
   }
 }

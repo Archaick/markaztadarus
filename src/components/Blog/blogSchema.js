@@ -24,6 +24,9 @@ import { intlLocale } from "../Internal/language";
  */
 export const POSTS = "posts";
 export const IMAGES = "images";
+// Small copies of each photo, same id, for the gallery grid. Visitors load
+// these; a full photo is fetched only when it is opened in the viewer.
+export const THUMBS = "thumbs";
 
 // Names live under categories.<key> in blog/Blog.json.
 export const CATEGORIES = ["umrah", "pelatihan", "majelis", "seminar", "lainnya"];
@@ -31,6 +34,7 @@ export const CATEGORIES = ["umrah", "pelatihan", "majelis", "seminar", "lainnya"
 export const MAX_IMAGES = 30;
 export const IMAGE_LIMITS = { maxWidth: 1600, maxHeight: 1600, maxChars: 450000 };
 export const THUMB_LIMITS = { maxWidth: 720, maxHeight: 540, maxChars: 110000 };
+export const GRID_LIMITS = { maxWidth: 480, maxHeight: 480, maxChars: 70000 };
 
 export const PAGE_SIZE = 12;
 
@@ -66,6 +70,9 @@ export const excerptOf = (post, length = 160) => {
 export const makeImage = (file) => compressImage(file, IMAGE_LIMITS);
 
 export const makeThumb = async (source) => (await compressImage(source, THUMB_LIMITS)).dataUrl;
+
+// { dataUrl, width, height } for the gallery grid
+export const makeGridThumb = (source) => compressImage(source, GRID_LIMITS);
 
 // Published posts, newest first; pass the last doc to get the next page.
 // Each filter combination needs its index in firestore.indexes.json.

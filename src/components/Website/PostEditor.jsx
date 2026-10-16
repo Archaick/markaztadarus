@@ -44,7 +44,8 @@ import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { stableKey } from "../Internal/stableKey";
 import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
-import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, makeImage, makeThumb } from "../Blog/blogSchema";
+import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
+import { buildPostThumbs } from "./postThumbs";
 import SaveBar from "./SaveBar";
 import PostPreview from "./PostPreview";
 import styles from "./Website.module.css";
@@ -71,6 +72,7 @@ export default function PostEditor() {
 
   const [post, setPost] = useState(undefined);
   const [images, setImages] = useState({});
+  const [thumbs, setThumbs] = useState({}); // id → { auditId }, to delete them with their photo
   const [draft, setDraft] = useState(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [baseline, setBaseline] = useState(null);
@@ -107,6 +109,30 @@ export default function PostEditor() {
       ),
     [postId]
   );
+
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, POSTS, postId, THUMBS),
+        (snap) => setThumbs(Object.fromEntries(snap.docs.map((d) => [d.id, { auditId: d.data().auditId }]))),
+        (err) => console.error("Could not load thumbnails:", err)
+      ),
+    [postId]
+  );
+
+  // A post saved before gallery thumbnails existed gets them once its photos
+  // have loaded, so visitors stop downloading every full photo.
+  const buildingThumbs = useRef(false);
+  useEffect(() => {
+    if (!post || post.thumbsReady || buildingThumbs.current) return;
+    const ids = post.images || [];
+    if (!ids.every((id) => images[id])) return;
+    buildingThumbs.current = true;
+    buildPostThumbs({ user, post, images }).catch((err) => {
+      console.error("Could not make thumbnails:", err);
+      buildingThumbs.current = false;
+    });
+  }, [post, images, user]);
 
   // Text fields: keep local edits, take in changes saved elsewhere.
   useEffect(() => {
@@ -205,6 +231,7 @@ export default function PostEditor() {
     for (const [i, file] of accepted.entries()) {
       try {
         const image = await makeImage(file);
+        const grid = await makeGridThumb(image.dataUrl);
         const ref = doc(collection(db, POSTS, postId, IMAGES));
         const patch = { images: arrayUnion(ref.id) };
         if (!coverRef.current) {
@@ -212,9 +239,10 @@ export default function PostEditor() {
           patch.coverId = ref.id;
           patch.coverThumb = await makeThumb(image.dataUrl);
         }
-        await writePost("post.photo_add", patch, { photo: file.name }, (batch, auditId) =>
-          batch.set(ref, { ...image, auditId, createdAt: serverTimestamp() })
-        );
+        await writePost("post.photo_add", patch, { photo: file.name }, (batch, auditId) => {
+          batch.set(ref, { ...image, auditId, createdAt: serverTimestamp() });
+          batch.set(doc(db, POSTS, postId, THUMBS, ref.id), { ...grid, auditId });
+        });
       } catch (err) {
         console.error("Photo upload failed:", err);
         const key = err.message === "unreadable" ? "unreadable" : err.message === "too-large" ? "tooLarge" : "failed";
@@ -262,6 +290,8 @@ export default function PostEditor() {
       await writePost("post.photo_delete", patch, { photo: order.indexOf(id) + 1 }, (batch, _auditId, markDelete) => {
         batch.delete(doc(db, POSTS, postId, IMAGES, id));
         markDelete(`posts~${postId}~images~${id}`, images[id]?.auditId);
+        batch.delete(doc(db, POSTS, postId, THUMBS, id));
+        markDelete(`posts~${postId}~thumbs~${id}`, thumbs[id]?.auditId);
       });
     } catch (err) {
       console.error("Could not delete photo:", err);
@@ -274,10 +304,15 @@ export default function PostEditor() {
     setDeleting(true);
     try {
       const snap = await getDocs(collection(db, POSTS, postId, IMAGES));
+      const small = await getDocs(collection(db, POSTS, postId, THUMBS));
       await writePost("post.delete", null, { status: post?.status || "draft", photos: snap.size }, (batch, _auditId, markDelete) => {
         snap.docs.forEach((d) => {
           batch.delete(d.ref);
           markDelete(`posts~${postId}~images~${d.id}`, d.data().auditId);
+        });
+        small.docs.forEach((d) => {
+          batch.delete(d.ref);
+          markDelete(`posts~${postId}~thumbs~${d.id}`, d.data().auditId);
         });
         batch.delete(postRef);
         markDelete(`posts~${postId}`, post?.auditId);

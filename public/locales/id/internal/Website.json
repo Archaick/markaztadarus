@@ -174,6 +174,16 @@
       "progress": "Mengimpor foto {{done}}/{{total}}…",
       "done_other": "{{count}} berita dibuat dari galeri lama.",
       "failed": "Impor terhenti. Coba lagi — berita yang sudah dibuat tidak akan diduplikasi."
+    },
+    "optimise": {
+      "title_one": "{{count}} berita memuat fotonya dalam ukuran penuh",
+      "title_other": "{{count}} berita memuat fotonya dalam ukuran penuh",
+      "text": "Membuat salinan kecil untuk galeri agar pengunjung mengunduh jauh lebih sedikit. Foto penuh tetap terbuka saat diketuk. Tidak ada yang lain berubah.",
+      "button": "Optimalkan foto",
+      "progress": "Mengoptimalkan berita {{done}}/{{total}}…",
+      "done_one": "{{count}} berita dioptimalkan.",
+      "done_other": "{{count}} berita dioptimalkan.",
+      "failed": "Optimasi terhenti. Coba lagi — berita yang sudah selesai dilewati."
     }
   }
 }

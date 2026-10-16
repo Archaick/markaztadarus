@@ -167,7 +167,8 @@
         "photo_delete": "Menghapus foto berita",
         "photo_move": "Mengubah urutan foto berita",
         "cover": "Mengganti foto sampul berita",
-        "delete": "Menghapus berita"
+        "delete": "Menghapus berita",
+        "thumbs": "Membuat thumbnail galeri"
       },
       "site": {
         "map": "Mengubah peta jangkauan",

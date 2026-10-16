@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Button, Group, Loader, Modal, Text, TextInput } from "@mantine/core";
-import { IconCalendar, IconNews, IconPhoto, IconPhotoDown, IconPlus } from "@tabler/icons-react";
+import { IconBolt, IconCalendar, IconNews, IconPhoto, IconPhotoDown, IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -11,6 +11,7 @@ import { isValidSlug, slugify } from "../Forms/formSchema";
 import { POSTS, formatPostDate, todayIso } from "../Blog/blogSchema";
 import styles from "./Website.module.css";
 import { LEGACY_PHOTO_COUNT, LEGACY_SLUGS, importLegacyGallery } from "./importGallery";
+import { buildPostThumbs } from "./postThumbs";
 
 const STATUS_COLORS = { draft: "gray", published: "teal" };
 
@@ -25,6 +26,30 @@ export default function PostsPanel({ editorEmail }) {
   const [importResult, setImportResult] = useState(null);
 
   const legacyLeft = posts ? LEGACY_SLUGS.filter((slug) => !posts.some((p) => p.id === slug)).length : 0;
+
+  // Posts saved before gallery thumbnails existed: their page downloads every
+  // full photo until they are optimised.
+  const unoptimised = (posts || []).filter((p) => !p.thumbsReady && (p.images || []).length > 0);
+  const [optimising, setOptimising] = useState(null); // { done, total }
+  const [optimiseResult, setOptimiseResult] = useState(null);
+
+  const runOptimise = async () => {
+    setOptimiseResult(null);
+    const list = unoptimised;
+    setOptimising({ done: 0, total: list.length });
+    try {
+      for (const [i, post] of list.entries()) {
+        await buildPostThumbs({ user, post });
+        setOptimising({ done: i + 1, total: list.length });
+      }
+      setOptimiseResult({ color: "teal", text: t("blog.optimise.done", { count: list.length }) });
+    } catch (err) {
+      console.error("Could not optimise photos:", err);
+      setOptimiseResult({ color: "red", text: t("blog.optimise.failed") });
+    } finally {
+      setOptimising(null);
+    }
+  };
 
   const runImport = async () => {
     setImportResult(null);
@@ -87,6 +112,30 @@ export default function PostsPanel({ editorEmail }) {
             {t("blog.import.button")}
           </Button>
         </div>
+      )}
+      {unoptimised.length > 0 && (
+        <div className={styles.importBox}>
+          <IconBolt size={26} />
+          <div className={styles.importText}>
+            <Text fw={700}>{t("blog.optimise.title", { count: unoptimised.length })}</Text>
+            <Text size="sm" c="dimmed">
+              {t("blog.optimise.text")}
+            </Text>
+          </div>
+          <Button className={styles.goldButton} loading={!!optimising} onClick={runOptimise}>
+            {t("blog.optimise.button")}
+          </Button>
+        </div>
+      )}
+      {optimising && (
+        <Text size="sm" c="yellow.8" fw={600}>
+          {t("blog.optimise.progress", optimising)}
+        </Text>
+      )}
+      {optimiseResult && (
+        <Alert color={optimiseResult.color} withCloseButton onClose={() => setOptimiseResult(null)}>
+          {optimiseResult.text}
+        </Alert>
       )}
       {importing && (
         <Text size="sm" c="yellow.8" fw={600}>
@@ -178,6 +227,7 @@ function CreatePostModal({ opened, onClose, editorEmail, onCreated }) {
         date: todayIso(),
         status: "draft",
         images: [],
+        thumbsReady: true,
         coverId: null,
         coverThumb: "",
         createdBy: editorEmail,

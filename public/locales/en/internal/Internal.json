@@ -167,7 +167,8 @@
         "photo_delete": "Removed a photo from a post",
         "photo_move": "Reordered a post's photos",
         "cover": "Changed a post's cover photo",
-        "delete": "Deleted a news post"
+        "delete": "Deleted a news post",
+        "thumbs": "Made gallery thumbnails"
       },
       "site": {
         "map": "Edited the reach map",
