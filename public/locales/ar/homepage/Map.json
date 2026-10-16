@@ -21,5 +21,10 @@
   "news_title": "أخبار هذه المحافظة",
   "news_more": "عرض كل الأخبار",
   "open_in_maps": "فتح في خرائط Google",
-  "places_legend": "المؤسسات الشريكة"
+  "places_legend": "المؤسسات الشريكة",
+  "holy": {
+    "makkah": "مكة",
+    "madinah": "المدينة",
+    "quds": "القدس"
+  }
 }

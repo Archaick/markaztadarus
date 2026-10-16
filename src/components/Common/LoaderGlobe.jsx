@@ -5,6 +5,7 @@ import land110 from "world-atlas/land-110m.json";
 import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
 import { mtiProvinces } from "../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
+import HolyPlaces from "./HolyPlaces";
 import styles from "./LoaderGlobe.module.css";
 
 const LAND = feature(land110, land110.objects.land);
@@ -113,6 +114,7 @@ export default function LoaderGlobe({ className = "", at }) {
           />
         );
       })}
+      <HolyPlaces projection={projection} opacity={Math.max(0, 1 - e * 2.2)} size={17} />
       {landed &&
         active.map((f, i) => {
           const point = projection(geoCentroid(f));

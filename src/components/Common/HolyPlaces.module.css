@@ -1,0 +1,106 @@
+.layer {
+  transition: opacity 0.2s linear;
+}
+
+/* the line from Makkah to Indonesia: a soft halo, a thin gold line, and light
+   flowing along it */
+.routeGlow {
+  fill: none;
+  stroke: rgba(212, 169, 18, 0.16);
+  stroke-linecap: round;
+}
+
+.route {
+  fill: none;
+  stroke: rgba(184, 150, 12, 0.7);
+  stroke-linecap: round;
+  stroke-dasharray: 1 0;
+}
+
+.flow {
+  fill: none;
+  stroke: #f6dc8c;
+  stroke-linecap: round;
+  stroke-dasharray: 9 91;
+  animation: flow 2.4s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(212, 169, 18, 0.8));
+}
+
+@keyframes flow {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.arrival {
+  fill: rgba(212, 169, 18, 0.18);
+  stroke: rgba(212, 169, 18, 0.55);
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: breathe 2.2s ease-out infinite;
+}
+
+.arrivalDot {
+  fill: #b8960c;
+  stroke: #ffffff;
+  stroke-width: 1;
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.leader {
+  stroke: rgba(16, 33, 65, 0.35);
+}
+
+.spot {
+  fill: #102141;
+}
+
+.spotSource {
+  fill: #b8960c;
+}
+
+/* white badges so each landmark reads clearly on the pale globe */
+.badge,
+.badgeSource {
+  fill: #ffffff;
+  stroke: rgba(16, 33, 65, 0.12);
+  filter: drop-shadow(0 2px 4px rgba(16, 33, 65, 0.18));
+}
+
+.badgeSource {
+  stroke: #d4a912;
+}
+
+/* beside the badge, towards the outside of the globe */
+.label {
+  text-anchor: end;
+  dominant-baseline: central;
+  fill: #102141;
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow,
+  .arrival {
+    animation: none;
+  }
+}

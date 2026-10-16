@@ -21,5 +21,10 @@
   "news_title": "Berita dari provinsi ini",
   "news_more": "Lihat semua berita",
   "open_in_maps": "Buka di Google Maps",
-  "places_legend": "Lembaga mitra"
+  "places_legend": "Lembaga mitra",
+  "holy": {
+    "makkah": "Makkah",
+    "madinah": "Madinah",
+    "quds": "Al-Quds"
+  }
 }

@@ -21,5 +21,10 @@
   "news_title": "News from this province",
   "news_more": "See all news",
   "open_in_maps": "Open in Google Maps",
-  "places_legend": "Partner institutions"
+  "places_legend": "Partner institutions",
+  "holy": {
+    "makkah": "Makkah",
+    "madinah": "Madinah",
+    "quds": "Al-Quds"
+  }
 }

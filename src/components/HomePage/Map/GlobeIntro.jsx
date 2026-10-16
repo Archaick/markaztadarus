@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
+import { useTranslation } from "react-i18next";
+import HolyPlaces from "../../Common/HolyPlaces";
 import styles from "./Map.module.css";
 import { ALL_PROVINCES, WIDTH } from "./mapGeometry";
 
@@ -21,6 +23,7 @@ const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
  * (kept within ±180°) unwinds as it zooms, so it always lands on Indonesia.
  */
 export default function GlobeIntro({ target, height, provinces, progress, spinning, onSkip }) {
+  const { t } = useTranslation("homepage/Map");
   const [seconds, setSeconds] = useState(0);
   const idle = progress <= 0.001;
 
@@ -94,6 +97,14 @@ export default function GlobeIntro({ target, height, provinces, progress, spinni
           />
         ) : null;
       })}
+      {/* Makkah, Madinah and Al-Quds, and the line to Indonesia; gone before
+          the globe lands so the hand-over to the flat map stays clean */}
+      <HolyPlaces
+        projection={projection}
+        opacity={Math.max(0, 1 - e * 2.4)}
+        size={30}
+        labels={{ makkah: t("holy.makkah"), madinah: t("holy.madinah"), quds: t("holy.quds") }}
+      />
     </svg>
   );
 }
