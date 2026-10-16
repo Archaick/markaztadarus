@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Pengayoman — Kementerian Hukum dan HAM">
+  <rect width="100" height="100" rx="9" fill="#25235E"/>
+  <g fill="none" stroke="#F7E10F" stroke-width="3.4" stroke-linecap="butt">
+    <!-- the canopy: five arches -->
+    <path d="M39.5 31 A11.5 11.5 0 0 1 62.5 31"/>
+    <path d="M26.5 43 A11.5 11.5 0 0 1 48.5 41"/>
+    <path d="M53.5 41 A11.5 11.5 0 0 1 75.5 43"/>
+    <path d="M13.5 56 A13.5 13.5 0 0 1 41.8 50"/>
+    <path d="M60.2 50 A13.5 13.5 0 0 1 88.5 56"/>
+    <!-- the trunk, its two stems on each side turning out at the foot -->
+    <path d="M43.5 49 V74 H31"/>
+    <path d="M48.5 38 V80 H25"/>
+    <path d="M58.5 49 V74 H71"/>
+    <path d="M53.5 38 V80 H77"/>
+  </g>
+  <rect x="24" y="84" width="54" height="9" fill="#F7E10F"/>
+  <text x="51" y="91" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="7" textLength="48" lengthAdjust="spacingAndGlyphs" fill="#25235E">PENGAYOMAN</text>
+</svg>

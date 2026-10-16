@@ -1,4 +1,8 @@
 .about {
+  --navy: #1a4970;
+  --navy-deep: #102141;
+  --gold: #b8960c;
+  --gold-light: #e8c65a;
   position: relative;
   padding: 8rem 0;
   background: transparent;
@@ -6,15 +10,15 @@
   font-family: "Outfit", "Inter", sans-serif;
 }
 
-/* Background Decorative Elements */
+/* soft gold glow in the corner */
 .about::before {
   content: "";
   position: absolute;
   top: -10%;
   right: -5%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(254, 214, 91, 0.08) 0%, transparent 70%);
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(232, 198, 90, 0.12) 0%, transparent 70%);
   z-index: 0;
   pointer-events: none;
 }
@@ -30,10 +34,9 @@
   z-index: 1;
 }
 
-/* Image Section with Floating Effect */
+/* ── photo ── */
 .imageSection {
   flex: 1;
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,42 +45,100 @@
 .imageWrapper {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 420px;
+  padding: 0 0 28px;
+}
+
+/* an eight-point-star lattice behind the arch */
+.pattern {
+  position: absolute;
+  inset: -36px -48px 0 -48px;
+  z-index: 0;
+  opacity: 0.55;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23b8960c' stroke-opacity='0.35' stroke-width='1'%3E%3Crect x='18' y='18' width='20' height='20'/%3E%3Crect x='18' y='18' width='20' height='20' transform='rotate(45 28 28)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 45%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 45%, #000 30%, transparent 75%);
+  pointer-events: none;
+}
+
+/* the gold outline, offset from the photo */
+.frame {
+  position: absolute;
+  top: 18px;
+  bottom: 10px;
+  left: 18px;
+  right: -18px;
+  z-index: 1;
+  border: 1.5px solid var(--gold-light);
+  border-radius: 50% 50% 26px 26px / 18% 18% 26px 26px;
+  pointer-events: none;
+}
+[dir="rtl"] .frame {
+  left: -18px;
+  right: 18px;
+}
+
+.arch {
+  position: relative;
   z-index: 2;
+  overflow: hidden;
+  border-radius: 50% 50% 26px 26px / 18% 18% 26px 26px;
+  background: #e9eef5;
+  box-shadow: 0 30px 60px -30px rgba(16, 33, 65, 0.45), 0 0 0 6px #fff;
 }
 
 .image {
+  display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4/5;
+  aspect-ratio: 677 / 687;
   object-fit: cover;
-  border-radius: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  object-position: center top;
 }
 
-/* Decorative background behind image - Removed as requested */
-.imageBackdrop {
-  display: none;
-}
-
-.glassElement {
+/* the Markaz badge, overlapping the bottom corner */
+.badge {
   position: absolute;
-  bottom: -30px;
-  left: -30px;
-  width: 120px;
-  height: 120px;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 20px;
   z-index: 3;
+  bottom: 0;
+  inset-inline-start: -28px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+  gap: 12px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 40px -18px rgba(16, 33, 65, 0.4);
+  border: 1px solid rgba(184, 150, 12, 0.25);
+}
+[dir="rtl"] .badge {
+  padding: 12px 12px 12px 18px;
+}
+.badgeLogo {
+  width: 46px;
+  height: 46px;
+  padding: 6px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fdf6dc, #f3e3a6);
+}
+.badgeName {
+  display: block;
+  font-family: "Cairo", "Amiri", serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  color: var(--navy-deep);
+}
+.badgePlace {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--gold);
 }
 
-/* Content Section */
+/* ── text ── */
 .content {
   flex: 1.2;
   display: flex;
@@ -85,22 +146,42 @@
   gap: 1.5rem;
 }
 
-.tagline {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #ab8b2b;
-  text-transform: uppercase;
-  letter-spacing: 3px;
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.eyebrow::before {
+  content: "";
+  width: 36px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+[dir="rtl"] .eyebrow {
+  letter-spacing: 0;
+  font-size: 1rem;
 }
 
 .title {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
   font-weight: 800;
-  color: #1a4970;
+  color: var(--navy);
   line-height: 1.1;
-  margin: 0;
+  margin: -0.5rem 0 0;
   letter-spacing: -1px;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .text {
@@ -111,27 +192,27 @@
 }
 
 .highlight {
-  color: #1a4970;
+  color: var(--navy);
   font-weight: 700;
-  background: linear-gradient(120deg, rgba(254, 214, 91, 0.2) 0%, rgba(254, 214, 91, 0.2) 100%);
+  background: linear-gradient(120deg, rgba(232, 198, 90, 0.3), rgba(232, 198, 90, 0.3));
   background-repeat: no-repeat;
   background-size: 100% 40%;
   background-position: 0 80%;
 }
 
-/* CTA Section */
+/* CTA */
 .ctaContainer {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
 .modalButton {
-  background: #1a4970;
+  background: var(--navy);
   color: white;
   border: none;
-  padding: 1rem 2rem;
+  padding: 0.7rem 1.6rem 0.7rem 0.7rem;
   border-radius: 100px;
   font-weight: 600;
   font-size: 1rem;
@@ -139,13 +220,24 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
+  box-shadow: 0 14px 28px -16px rgba(26, 73, 112, 0.7);
 }
-
+[dir="rtl"] .modalButton {
+  padding: 0.7rem 0.7rem 0.7rem 1.6rem;
+}
+.playIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  color: var(--navy-deep);
+}
 .modalButton:hover {
-  background: #ab8b2b;
+  background: var(--navy-deep);
   transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(171, 139, 43, 0.2);
 }
 
 /* Video Modal Styling */
@@ -203,6 +295,7 @@
     align-items: center;
   }
 
+
   .ctaContainer {
     justify-content: center;
   }
@@ -212,13 +305,17 @@
   .about {
     padding: 4rem 0;
   }
-  
+
+  .container {
+    padding: 0 1rem;
+  }
+
   .imageWrapper {
     max-width: 300px;
   }
 
-  .glassElement {
-    display: none;
+  .badge {
+    inset-inline-start: -12px;
   }
-}
 
+}

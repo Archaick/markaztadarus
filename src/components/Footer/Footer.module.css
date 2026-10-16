@@ -1,152 +1,305 @@
 .footer {
-  background: linear-gradient(to bottom, #1a1a2e, #102141);
-  color: #fff;
-  padding: 40px 0;
+  --gold: #d4a912;
+  --gold-soft: rgba(212, 169, 18, 0.16);
+  --muted: rgba(226, 232, 240, 0.72);
   position: relative;
   overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(ellipse 60% 80% at 100% 0%, rgba(212, 169, 18, 0.1), transparent 60%),
+    linear-gradient(180deg, #13284d 0%, #0c1a33 100%);
+  padding: 72px 0 0;
 }
 
-/* Watermark - Default position (bottom-left) */
+/* a thin gold rule along the top */
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold) 70%, transparent);
+  opacity: 0.8;
+}
+
+/* the MT mark as a faint watermark */
 .footer::after {
   content: "";
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 300px;
-  height: 300px;
-  background-image: url('/MTIFavicon.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.05;
+  bottom: -40px;
+  inset-inline-end: -40px;
+  width: 340px;
+  height: 340px;
+  background: url("/MTIFavicon.png") center / contain no-repeat;
   filter: brightness(0) invert(1);
+  opacity: 0.035;
   pointer-events: none;
-  z-index: 0;
-  transition: all 0.3s ease;
 }
 
-
-/* Tablet screens */
-@media (max-width: 1024px) {
-  .footer::after {
-    width: 250px;
-    height: 250px;
-  }
-}
-
-/* Mobile screens - Moves to top-right */
-@media (max-width: 768px) {
-  .footer::after {
-    top: 10px;
-    right: 10px;
-    bottom: auto;
-    left: auto;
-    width: 150px;
-    height: 150px;
-    opacity: 0.07;
-  }
-}
-
-/* Small mobile screens */
-@media (max-width: 480px) {
-  .footer::after {
-    width: 150px;
-    height: 150px;
-    top: 5px;
-    right: 5px;
-  }
+.inner {
+  position: relative;
+  z-index: 1;
 }
 
 .grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.7fr 1.35fr 1.6fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ── brand ── */
+.logo {
+  width: 210px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.tagline {
+  margin: 18px 0 26px;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--gold);
+}
+.label,
+.heading {
+  margin: 0 0 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.heading {
+  position: relative;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  color: #fff;
+}
+.heading::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+}
+[dir="rtl"] .label,
+[dir="rtl"] .heading {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.95rem;
+}
+
+.socials {
+  display: flex;
+  gap: 10px;
+}
+.social {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.social:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0c1a33;
+  transform: translateY(-2px);
+}
+
+/* ── links ── */
+.links,
+.contact {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.links a,
+.contact a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  min-width: 0;
+}
+/* an address breaks only at its @ or dots, never mid-word */
+.contact a {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.links a:hover,
+.contact a:hover {
+  color: var(--gold);
+}
+
+/* ── contact ── */
+.contact li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.contactIcon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--gold);
+}
+.whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #25d366;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -12px rgba(37, 211, 102, 0.8);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.whatsapp:hover {
+  background: #1fbd5a;
+  transform: translateY(-2px);
+}
+
+/* ── legal registration card ── */
+.legal {
+  padding: 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.025));
+  box-shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.6);
+}
+.legalHead {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.emblem {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.legalLabel {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+[dir="rtl"] .legalLabel {
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.88rem;
+}
+.legalOrg {
+  margin: 0 0 3px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #fff;
+}
+.legalMinistry {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.legalText {
+  margin: 18px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.sk {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed rgba(212, 169, 18, 0.45);
+  background: var(--gold-soft);
 }
-
-.column {
-  flex: 1 1 100%;
-  /* Full width on mobile */
+.sk span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
 }
-
-.infoLinks {
-  text-align: center;
-}
-
-.link {
-  color: #c8c8c8;
-  text-decoration: none;
-  /* Removes underline */
-  transition: color 0.3s ease-in-out;
-}
-
-.link:hover {
-  text-decoration: none;
-  color: #b37d08;
-}
-
-.socialIcon {
+.sk strong {
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
   color: #fff;
-  transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  font-variant-numeric: tabular-nums;
 }
 
-.socialIcon:hover {
-  color: #b37d08;
-  transform: scale(1.1);
+/* ── bottom bar ── */
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 20px;
+  margin-top: 56px;
+  padding: 22px 0 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.arabic {
+  font-family: "Cairo", "Amiri", serif;
+  font-size: 1rem;
+  color: var(--gold);
 }
 
-.email,
-.phone {
-  color: #c8c8c8;
-  text-decoration: none;
-  /* Removes underline */
-  transition: color 0.3s ease-in-out;
-}
-
-.email:hover {
-  text-decoration: none;
-  color: #b37d08;
-
-}
-
-
-@media (min-width: 768px) {
-  .column {
-    flex: 1 1 calc(30% - 20px);
-    /* First column takes 30% of the width */
-  }
-
-  .column:nth-child(2) {
-    flex: 1 1 calc(20% - 20px);
-    /* Second column takes 20% of the width */
-  }
-
-  .column:last-child {
-    flex: 1 1 calc(50% - 20px);
-    /* Third column takes 50% of the width */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
   }
 }
 
-
-.ahuLogo {
-  max-width: 340px;
-  width: 100%;
-  opacity: 0.9;
-  /* optional: softer legal look */
-}
-
-.subfooter {
-  text-align: center;
-  color: #cbcbcb;
-  font-size: 0.875rem;
-  margin-top: 20px;
-}
-
-@media (max-width: 768px) {
-  .footerLogo {
-    width: 240px;
-    margin-bottom: 10px;
+@media (max-width: 640px) {
+  .footer {
+    padding-top: 56px;
   }
-
-  .column:last-child iframe {
-    height: 300px;
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .logo {
+    width: 230px;
+  }
+  .legal {
+    padding: 18px;
+  }
+  .bottom {
+    justify-content: center;
+    text-align: center;
+  }
+  .footer::after {
+    width: 200px;
+    height: 200px;
   }
 }
