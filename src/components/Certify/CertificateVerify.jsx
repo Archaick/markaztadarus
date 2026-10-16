@@ -29,7 +29,7 @@ const LANGS = [
 ];
 const LOCALES = { id: "id-ID", en: "en-GB", ar: "ar-u-nu-latn" };
 // The loading globe gets to land on Indonesia before the result replaces it.
-const MIN_LOADING_MS = 3000;
+const MIN_LOADING_MS = 4200;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**

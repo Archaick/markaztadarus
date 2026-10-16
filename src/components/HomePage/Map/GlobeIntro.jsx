@@ -97,13 +97,17 @@ export default function GlobeIntro({ target, height, provinces, progress, spinni
           />
         ) : null;
       })}
-      {/* Makkah, Madinah and Al-Quds, and the line to Indonesia; gone before
-          the globe lands so the hand-over to the flat map stays clean */}
+      {/* Makkah, Madinah and Al-Quds, and the line to Indonesia; they stay
+          until the globe is almost down, then fade for a clean hand-over */}
       <HolyPlaces
         projection={projection}
-        opacity={Math.max(0, 1 - e * 2.4)}
-        size={30}
-        labels={{ makkah: t("holy.makkah"), madinah: t("holy.madinah"), quds: t("holy.quds") }}
+        opacity={Math.min(1, Math.max(0, (0.9 - e) / 0.3))}
+        size={22}
+        labels={{
+          makkah: t("holy.makkah", "Makkah"),
+          madinah: t("holy.madinah", "Madinah"),
+          quds: t("holy.quds", "Al-Quds"),
+        }}
       />
     </svg>
   );

@@ -15,7 +15,9 @@ import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiPro
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 import { hasCoords } from "../../../data/coords";
 
-const FLY_IN_S = 2.6;
+const FLY_IN_S = 4.2;
+// a moment on the Haramain, while the line draws itself to Indonesia
+const FLY_IN_DELAY_S = 1.6;
 const FLY_OUT_S = 1.4;
 
 const Map = () => {
@@ -60,7 +62,12 @@ const Map = () => {
     if (reduceMotion) return undefined;
     let controls;
     if (mapInView) {
-      controls = animate(flight, 1, { duration: FLY_IN_S * (1 - flight.get()), ease: "linear" });
+      const from = flight.get();
+      controls = animate(flight, 1, {
+        duration: FLY_IN_S * (1 - from),
+        delay: from === 0 ? FLY_IN_DELAY_S : 0,
+        ease: "linear",
+      });
     } else if (mapMostlyGone) {
       controls = animate(flight, 0, { duration: FLY_OUT_S * flight.get(), ease: "linear" });
     }

@@ -11,19 +11,20 @@ const JAKARTA = [106.8456, -6.2088];
 const interpolate = geoInterpolate(MAKKAH, JAKARTA);
 const ROUTE = { type: "LineString", coordinates: Array.from({ length: 65 }, (_, i) => interpolate(i / 64)) };
 
-// The three sit only a few degrees apart, so each badge is set off to the
-// side with a thin line to its exact spot. Offsets are in badge sizes.
+// Each icon sits on its own city, nudged a little (in icon sizes) so Makkah
+// and Madinah, three degrees apart, do not cover each other. `side` is where
+// the name goes.
 const PLACES = [
-  { key: "quds", at: QUDS, dx: -2.3, dy: -1.15, Icon: DomeOfTheRock },
-  { key: "madinah", at: MADINAH, dx: -2.6, dy: 0.15, Icon: GreenDome },
-  { key: "makkah", at: MAKKAH, dx: -1.9, dy: 1.45, Icon: Kaaba, source: true },
+  { key: "quds", at: QUDS, dx: -0.35, dy: -0.55, side: "left", Icon: DomeOfTheRock },
+  { key: "madinah", at: MADINAH, dx: -0.45, dy: -0.4, side: "left", Icon: GreenDome },
+  { key: "makkah", at: MAKKAH, dx: 0.5, dy: 0.42, side: "right", Icon: Kaaba, source: true },
 ];
 
 /**
  * The Haramain and Al-Aqsa on the globe, and a line of light from Makkah to
  * Indonesia: where the knowledge comes from and where it is going. Drawn with
  * the globe's own projection; `opacity` lets it fade out as the view flies
- * in. `size` is the badge diameter in the svg's units, `labels` optional.
+ * in. `size` is the icon diameter in the svg's units, `labels` optional.
  */
 export default function HolyPlaces({ projection, opacity = 1, size = 26, labels }) {
   const path = useMemo(() => geoPath(projection), [projection]);
@@ -40,7 +41,7 @@ export default function HolyPlaces({ projection, opacity = 1, size = 26, labels 
       {route && (
         <>
           <path d={route} className={styles.routeGlow} style={{ strokeWidth: size * 0.32 }} />
-          <path d={route} className={styles.route} style={{ strokeWidth: size * 0.09 }} />
+          <path d={route} pathLength="100" className={styles.route} style={{ strokeWidth: size * 0.09 }} />
           <path d={route} pathLength="100" className={styles.flow} style={{ strokeWidth: size * 0.12 }} />
         </>
       )}
@@ -51,26 +52,25 @@ export default function HolyPlaces({ projection, opacity = 1, size = 26, labels 
         </g>
       )}
 
-      {PLACES.map(({ key, at, dx, dy, Icon, source }) => {
+      {PLACES.map(({ key, at, dx, dy, side, Icon, source }) => {
         if (!visible(at)) return null;
         const [x, y] = projection(at);
-        const bx = x + dx * size;
-        const by = y + dy * size;
+        const label = labels?.[key];
         return (
-          <g key={key}>
-            <line x1={x} y1={y} x2={bx} y2={by} className={styles.leader} style={{ strokeWidth: size * 0.045 }} />
-            <circle cx={x} cy={y} r={size * 0.1} className={source ? styles.spotSource : styles.spot} />
-            <g transform={`translate(${bx} ${by})`}>
-              <circle r={size / 2} className={source ? styles.badgeSource : styles.badge} style={{ strokeWidth: size * 0.07 }} />
-              <g transform={`scale(${size / 26})`}>
-                <Icon />
-              </g>
-              {labels?.[key] && (
-                <text x={-size * 0.68} className={styles.label} style={{ fontSize: size * 0.42 }}>
-                  {labels[key]}
-                </text>
-              )}
+          <g key={key} transform={`translate(${x + dx * size} ${y + dy * size})`}>
+            <circle r={size / 2} className={source ? styles.badgeSource : styles.badge} style={{ strokeWidth: size * 0.07 }} />
+            <g transform={`scale(${size / 26})`}>
+              <Icon />
             </g>
+            {label && (
+              <text
+                x={(side === "left" ? -1 : 1) * size * 0.68}
+                className={`${styles.label} ${side === "left" ? styles.labelLeft : styles.labelRight}`}
+                style={{ fontSize: size * 0.44 }}
+              >
+                {label}
+              </text>
+            )}
           </g>
         );
       })}

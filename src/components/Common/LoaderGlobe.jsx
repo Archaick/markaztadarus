@@ -12,8 +12,8 @@ const LAND = feature(land110, land110.objects.land);
 const SPHERE = { type: "Sphere" };
 const W = 400;
 const H = 300;
-const FLIGHT_MS = 2300;
-const DELAY_MS = 150;
+const FLIGHT_MS = 2800;
+const DELAY_MS = 1100; // the line from Makkah draws first
 
 const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
@@ -37,7 +37,7 @@ const reducedMotion = () =>
 /**
  * A small version of the home-page globe for loading screens: the Earth turns,
  * flies down to Indonesia, and the provinces with Tadarus programs light up
- * in gold with a soft pulse. Plays once (about 2.3 s) and then holds.
+ * in gold with a soft pulse. Plays once (about 4 s) and then holds.
  * `at` (0–1) freezes it at one point of the flight, for previews.
  */
 export default function LoaderGlobe({ className = "", at }) {
@@ -114,7 +114,7 @@ export default function LoaderGlobe({ className = "", at }) {
           />
         );
       })}
-      <HolyPlaces projection={projection} opacity={Math.max(0, 1 - e * 2.2)} size={17} />
+      <HolyPlaces projection={projection} opacity={Math.min(1, Math.max(0, (0.88 - e) / 0.3))} size={13} />
       {landed &&
         active.map((f, i) => {
           const point = projection(geoCentroid(f));

@@ -10,11 +10,20 @@
   stroke-linecap: round;
 }
 
+/* the line draws itself from Makkah to Indonesia, then the light flows */
 .route {
   fill: none;
-  stroke: rgba(184, 150, 12, 0.7);
+  stroke: rgba(184, 150, 12, 0.75);
   stroke-linecap: round;
-  stroke-dasharray: 1 0;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: draw 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .flow {
@@ -22,7 +31,7 @@
   stroke: #f6dc8c;
   stroke-linecap: round;
   stroke-dasharray: 9 91;
-  animation: flow 2.4s linear infinite;
+  animation: flow 2.4s linear 1.6s infinite both;
   filter: drop-shadow(0 0 3px rgba(212, 169, 18, 0.8));
 }
 
@@ -61,17 +70,8 @@
   }
 }
 
-.leader {
-  stroke: rgba(16, 33, 65, 0.35);
-}
 
-.spot {
-  fill: #102141;
-}
 
-.spotSource {
-  fill: #b8960c;
-}
 
 /* white badges so each landmark reads clearly on the pale globe */
 .badge,
@@ -85,9 +85,8 @@
   stroke: #d4a912;
 }
 
-/* beside the badge, towards the outside of the globe */
+/* beside the icon */
 .label {
-  text-anchor: end;
   dominant-baseline: central;
   fill: #102141;
   font-weight: 800;
@@ -98,7 +97,20 @@
   font-family: "Outfit", "Inter", "Cairo", sans-serif;
 }
 
+.labelLeft {
+  text-anchor: end;
+}
+
+.labelRight {
+  text-anchor: start;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .route {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
   .flow,
   .arrival {
     animation: none;
