@@ -25,8 +25,10 @@ const PLACES = [
  * Indonesia: where the knowledge comes from and where it is going. Drawn with
  * the globe's own projection; `opacity` lets it fade out as the view flies
  * in. `size` is the icon diameter in the svg's units, `labels` optional.
+ * `reveal` (0–1) draws the line that far from Makkah; without it the line
+ * draws itself once.
  */
-export default function HolyPlaces({ projection, opacity = 1, size = 26, labels }) {
+export default function HolyPlaces({ projection, opacity = 1, size = 26, labels, reveal }) {
   const path = useMemo(() => geoPath(projection), [projection]);
   if (opacity <= 0.01) return null;
 
@@ -34,21 +36,37 @@ export default function HolyPlaces({ projection, opacity = 1, size = 26, labels 
   const centre = [-lambda, -phi];
   const visible = (point) => geoDistance(point, centre) < Math.PI / 2 - 0.08;
   const route = path(ROUTE);
-  const end = visible(JAKARTA) ? projection(JAKARTA) : null;
+  const manual = reveal !== undefined;
+  const drawn = manual ? { strokeDasharray: 100, strokeDashoffset: 100 * (1 - reveal) } : undefined;
+  const lineWidth = Math.min(size, 26) * 0.09;
+  const end = visible(JAKARTA) && (!manual || reveal >= 0.98) ? projection(JAKARTA) : null;
 
   return (
     <g className={styles.layer} style={{ opacity }} pointerEvents="none">
       {route && (
         <>
-          <path d={route} className={styles.routeGlow} style={{ strokeWidth: size * 0.32 }} />
-          <path d={route} pathLength="100" className={styles.route} style={{ strokeWidth: size * 0.09 }} />
-          <path d={route} pathLength="100" className={styles.flow} style={{ strokeWidth: size * 0.12 }} />
+          {/* the line's width stays the same while the icons grow in the close-up */}
+          <path
+            d={route}
+            pathLength="100"
+            className={styles.routeGlow}
+            style={{ strokeWidth: lineWidth * 3.5, ...drawn }}
+          />
+          <path
+            d={route}
+            pathLength="100"
+            className={manual ? styles.routeManual : styles.route}
+            style={{ strokeWidth: lineWidth, ...drawn }}
+          />
+          {(!manual || reveal >= 0.98) && (
+            <path d={route} pathLength="100" className={styles.flow} style={{ strokeWidth: lineWidth * 1.3 }} />
+          )}
         </>
       )}
       {end && (
         <g transform={`translate(${end[0]} ${end[1]})`}>
-          <circle r={size * 0.42} className={styles.arrival} />
-          <circle r={size * 0.14} className={styles.arrivalDot} />
+          <circle r={Math.min(size, 26) * 0.42} className={styles.arrival} />
+          <circle r={Math.min(size, 26) * 0.14} className={styles.arrivalDot} />
         </g>
       )}
 

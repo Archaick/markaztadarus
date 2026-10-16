@@ -6,16 +6,15 @@ import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
 import { mtiProvinces } from "../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
 import HolyPlaces from "./HolyPlaces";
+import { closeUpOf, flightAt } from "./haramainFlight";
 import styles from "./LoaderGlobe.module.css";
 
 const LAND = feature(land110, land110.objects.land);
 const SPHERE = { type: "Sphere" };
 const W = 400;
 const H = 300;
-const FLIGHT_MS = 2800;
-const DELAY_MS = 1100; // the line from Makkah draws first
-
-const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
+const FLIGHT_MS = 4000; // the whole story, close-up to landing
+const DELAY_MS = 100;
 
 // Indonesia framed in the box, as a flat (Mercator) map: where the flight ends.
 const TARGET = geoMercator().fitExtent(
@@ -29,15 +28,17 @@ const END = (() => {
   const [lon, lat] = TARGET.invert([W / 2, H / 2]);
   return { lambda: -lon, phi: -lat, scale: TARGET.scale() };
 })();
-const START = { lambda: END.lambda + 70, phi: END.phi - 16, scale: 118 };
+const GLOBE = { lambda: END.lambda + 70, phi: END.phi - 16, scale: 118 };
+const KEYS = { end: END, globe: GLOBE, close: closeUpOf(GLOBE, 3.2) };
 
 const reducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * A small version of the home-page globe for loading screens: the Earth turns,
- * flies down to Indonesia, and the provinces with Tadarus programs light up
- * in gold with a soft pulse. Plays once (about 4 s) and then holds.
+ * A small version of the home-page globe for loading screens: a close-up of
+ * the Haramain, out to the whole Earth as the line from Makkah draws to
+ * Indonesia, then down to Indonesia, where the provinces with Tadarus
+ * programs light up in gold with a soft pulse. Plays once (4 s), then holds.
  * `at` (0–1) freezes it at one point of the flight, for previews.
  */
 export default function LoaderGlobe({ className = "", at }) {
@@ -61,16 +62,13 @@ export default function LoaderGlobe({ className = "", at }) {
     return () => cancelAnimationFrame(raf);
   }, [at]);
 
-  const e = ease(progress);
+  const flight = flightAt(progress, KEYS);
+  const { view } = flight;
+  const e = flight.fly;
   const projection = useMemo(
     () =>
-      geoOrthographic()
-        .translate([W / 2, H / 2])
-        // zooming feels even when the scale grows geometrically
-        .scale(START.scale * Math.pow(END.scale / START.scale, e))
-        .rotate([START.lambda + (END.lambda - START.lambda) * e, START.phi + (END.phi - START.phi) * e])
-        .clipAngle(90),
-    [e]
+      geoOrthographic().translate([W / 2, H / 2]).scale(view.scale).rotate([view.lambda, view.phi]).clipAngle(90),
+    [view.scale, view.lambda, view.phi]
   );
   const path = geoPath(projection);
 
@@ -114,7 +112,7 @@ export default function LoaderGlobe({ className = "", at }) {
           />
         );
       })}
-      <HolyPlaces projection={projection} opacity={Math.min(1, Math.max(0, (0.88 - e) / 0.3))} size={13} />
+      <HolyPlaces projection={projection} opacity={flight.holyOpacity} size={13 * flight.iconScale} reveal={flight.reveal} />
       {landed &&
         active.map((f, i) => {
           const point = projection(geoCentroid(f));

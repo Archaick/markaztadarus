@@ -1,70 +1,48 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import land110 from "world-atlas/land-110m.json";
 import { useTranslation } from "react-i18next";
 import HolyPlaces from "../../Common/HolyPlaces";
+import { closeUpOf, flightAt } from "../../Common/haramainFlight";
 import styles from "./Map.module.css";
 import { ALL_PROVINCES, WIDTH } from "./mapGeometry";
 
 const LAND = feature(land110, land110.objects.land);
 const GRATICULE = geoGraticule10();
 const SPHERE = { type: "Sphere" };
-const SPIN_DEG_PER_S = 6;
-
-const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
 /**
- * A globe that zooms into Indonesia as `progress` goes from 0 to 1 (the
- * scroll position of the map section), ending exactly on `target`, the
- * flat map's projection. Near the centre an orthographic globe at that
- * scale is all but flat, so the hand-over to the flat map is seamless.
- * While `spinning` and fully zoomed out, it also turns slowly; that turn
- * (kept within ±180°) unwinds as it zooms, so it always lands on Indonesia.
+ * The map's opening story, driven by `progress` 0–1: a close-up of Makkah,
+ * Madinah and Al-Quds; the camera pulls back to the whole Earth as a line of
+ * light draws from Makkah to Indonesia; then it flies down to Indonesia and
+ * ends exactly on `target`, the flat map's projection. Near the centre an
+ * orthographic globe at that scale is all but flat, so the hand-over to the
+ * flat map is seamless.
  */
-export default function GlobeIntro({ target, height, provinces, progress, spinning, onSkip }) {
+export default function GlobeIntro({ target, height, provinces, progress, onSkip }) {
   const { t } = useTranslation("homepage/Map");
-  const [seconds, setSeconds] = useState(0);
-  const idle = progress <= 0.001;
 
-  useEffect(() => {
-    if (!spinning || !idle) return undefined;
-    let raf = 0;
-    const began = performance.now() - seconds * 1000;
-    const tick = (now) => {
-      setSeconds((now - began) / 1000);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-    // `seconds` only seeds the clock when spinning resumes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spinning, idle]);
-
-  // Where the flat map is centred, and how far in it is zoomed.
-  const end = useMemo(() => {
+  // Where the flat map is centred and how far in it is zoomed; the whole-Earth
+  // view in between; and the close-up the story opens on.
+  const keys = useMemo(() => {
     const [lon, lat] = target.invert([WIDTH / 2, height / 2]);
-    return { lambda: -lon, phi: -lat, scale: target.scale() };
+    const end = { lambda: -lon, phi: -lat, scale: target.scale() };
+    const globe = { lambda: end.lambda + 75, phi: end.phi - 18, scale: Math.min(WIDTH, height) * 0.42 };
+    return { end, globe, close: closeUpOf(globe) };
   }, [target, height]);
 
-  const start = useMemo(
-    () => ({ lambda: end.lambda + 75, phi: end.phi - 18, scale: Math.min(WIDTH, height) * 0.42 }),
-    [end, height]
-  );
-
-  const e = ease(Math.min(1, Math.max(0, progress)));
-  const turned = ((((seconds * SPIN_DEG_PER_S + 180) % 360) + 360) % 360) - 180;
-  const spin = turned * (1 - e);
+  const at = flightAt(Math.min(1, Math.max(0, progress)), keys);
+  const { view } = at;
 
   const projection = useMemo(
     () =>
       geoOrthographic()
         .translate([WIDTH / 2, height / 2])
-        // zooming feels even when the scale grows geometrically
-        .scale(start.scale * Math.pow(end.scale / start.scale, e))
-        .rotate([start.lambda + (end.lambda - start.lambda) * e + spin, start.phi + (end.phi - start.phi) * e])
+        .scale(view.scale)
+        .rotate([view.lambda, view.phi])
         .clipAngle(90),
-    [start, end, e, spin, height]
+    [view.scale, view.lambda, view.phi, height]
   );
   const path = geoPath(projection);
 
@@ -97,12 +75,13 @@ export default function GlobeIntro({ target, height, provinces, progress, spinni
           />
         ) : null;
       })}
-      {/* Makkah, Madinah and Al-Quds, and the line to Indonesia; they stay
-          until the globe is almost down, then fade for a clean hand-over */}
+      {/* Makkah, Madinah and Al-Quds, and the line to Indonesia; large in the
+          close-up, then fading near the landing for a clean hand-over */}
       <HolyPlaces
         projection={projection}
-        opacity={Math.min(1, Math.max(0, (0.9 - e) / 0.3))}
-        size={22}
+        opacity={at.holyOpacity}
+        size={22 * at.iconScale}
+        reveal={at.reveal}
         labels={{
           makkah: t("holy.makkah", "Makkah"),
           madinah: t("holy.madinah", "Madinah"),

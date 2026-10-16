@@ -15,9 +15,8 @@ import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiPro
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 import { hasCoords } from "../../../data/coords";
 
-const FLY_IN_S = 4.2;
-// a moment on the Haramain, while the line draws itself to Indonesia
-const FLY_IN_DELAY_S = 1.6;
+// the whole story: Haramain close-up, out to the Earth, down to Indonesia
+const FLY_IN_S = 5;
 const FLY_OUT_S = 1.4;
 
 const Map = () => {
@@ -46,7 +45,6 @@ const Map = () => {
 
   const sectionRef = useRef(null);
   const inView = useInView(sectionRef, { once: true, amount: 0.45 });
-  const onScreen = useInView(sectionRef);
 
   // The globe flies to Indonesia on its own, but only once the map is (almost)
   // fully on screen, so it is never missed and needs no extra scrolling. Once
@@ -65,7 +63,6 @@ const Map = () => {
       const from = flight.get();
       controls = animate(flight, 1, {
         duration: FLY_IN_S * (1 - from),
-        delay: from === 0 ? FLY_IN_DELAY_S : 0,
         ease: "linear",
       });
     } else if (mapMostlyGone) {
@@ -152,7 +149,6 @@ const Map = () => {
                   height={fit.height}
                   provinces={provinces}
                   progress={progress}
-                  spinning={onScreen}
                   onSkip={skipFlight}
                 />
               ) : (
