@@ -157,7 +157,15 @@
       "problems": {
         "noTitle": "Berita perlu judul.",
         "noDate": "Pilih tanggal kegiatan."
-      }
+      },
+      "preview": "Pratinjau",
+      "previewTitle": "Pratinjau",
+      "previewUnsaved": "Termasuk perubahan yang belum disimpan",
+      "previewArticle": "Artikel",
+      "previewCard": "Kartu berita",
+      "previewDesktop": "Desktop",
+      "previewPhone": "Ponsel",
+      "previewClose": "Tutup"
     },
     "import": {
       "title": "Pindahkan galeri lama ke Berita",

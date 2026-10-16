@@ -162,7 +162,15 @@
       "problems": {
         "noTitle": "يحتاج الخبر إلى عنوان.",
         "noDate": "اختر تاريخ النشاط."
-      }
+      },
+      "preview": "معاينة",
+      "previewTitle": "معاينة",
+      "previewUnsaved": "تشمل تغييرات غير محفوظة",
+      "previewArticle": "المقال",
+      "previewCard": "بطاقة الخبر",
+      "previewDesktop": "الحاسوب",
+      "previewPhone": "الجوال",
+      "previewClose": "إغلاق"
     },
     "import": {
       "title": "نقل المعرض القديم إلى الأخبار",

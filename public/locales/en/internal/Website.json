@@ -158,7 +158,15 @@
       "problems": {
         "noTitle": "The news item needs a title.",
         "noDate": "Choose the activity date."
-      }
+      },
+      "preview": "Preview",
+      "previewTitle": "Preview",
+      "previewUnsaved": "Includes unsaved changes",
+      "previewArticle": "Article",
+      "previewCard": "News card",
+      "previewDesktop": "Desktop",
+      "previewPhone": "Phone",
+      "previewClose": "Close"
     },
     "import": {
       "title": "Move the old gallery into News",

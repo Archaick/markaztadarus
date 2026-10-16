@@ -5,12 +5,14 @@ import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./Blog.module.css";
 import { excerptOf, formatPostDate } from "./blogSchema";
 
-export default function PostCard({ post }) {
+// `preview` draws the card without a link, for the editor's preview.
+export default function PostCard({ post, preview = false }) {
   const { t, i18n } = useTranslation("blog/Blog");
   const photos = (post.images || []).length;
+  const Wrapper = preview ? "div" : Link;
 
   return (
-    <Link to={`/berita/${post.id}`} className={styles.card}>
+    <Wrapper {...(preview ? {} : { to: `/berita/${post.id}` })} className={styles.card}>
       <div className={styles.cardImage}>
         {post.coverThumb ? (
           <img src={post.coverThumb} alt="" loading="lazy" />
@@ -40,6 +42,6 @@ export default function PostCard({ post }) {
           {t("readMore")} <IconArrowRight size={15} className={styles.flipRtl} />
         </span>
       </div>
-    </Link>
+    </Wrapper>
   );
 }

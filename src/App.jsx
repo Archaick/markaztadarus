@@ -31,6 +31,7 @@ import WebsiteAdmin from "./components/Website/WebsiteAdmin";
 import PostEditor from "./components/Website/PostEditor";
 import BlogList from "./components/Blog/BlogList";
 import BlogPost from "./components/Blog/BlogPost";
+import PostPreviewPage from "./components/Blog/PostPreviewPage";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
@@ -107,6 +108,8 @@ const App = () => {
             <Route path="/form/:formId" element={<PublicForm />} />
             <Route path="/berita" element={<BlogList />} />
             <Route path="/berita/:slug" element={<BlogPost />} />
+            {/* drawn inside the news editor's preview frame */}
+            <Route path="/internal/preview-post" element={<PostPreviewPage />} />
 
             <Route path="/:shortCode" element={<Redirects />} />
 

@@ -21,6 +21,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconExternalLink,
+  IconEye,
   IconPhotoPlus,
   IconStar,
   IconStarFilled,
@@ -45,6 +46,7 @@ import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
 import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, makeImage, makeThumb } from "../Blog/blogSchema";
 import SaveBar from "./SaveBar";
+import PostPreview from "./PostPreview";
 import styles from "./Website.module.css";
 
 const PROVINCES = topoData.objects["indonesia-38-prov-topo"].geometries
@@ -70,6 +72,7 @@ export default function PostEditor() {
   const [post, setPost] = useState(undefined);
   const [images, setImages] = useState({});
   const [draft, setDraft] = useState(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [baseline, setBaseline] = useState(null);
   const baselineRef = useRef(null);
   const [saving, setSaving] = useState(false);
@@ -327,6 +330,9 @@ export default function PostEditor() {
                 </div>
               </div>
               <Group gap="xs">
+                <Button size="xs" color="yellow" leftSection={<IconEye size={14} />} onClick={() => setPreviewOpen(true)}>
+                  {t("blog.editor.preview")}
+                </Button>
                 <Button
                   size="xs"
                   variant="light"
@@ -520,6 +526,16 @@ export default function PostEditor() {
           )}
         </Card>
       </div>
+
+      {post && draft && (
+        <PostPreview
+          opened={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          post={{ ...post, ...draft }}
+          images={images}
+          unsaved={dirty}
+        />
+      )}
 
       <Modal opened={deleteOpen} onClose={() => setDeleteOpen(false)} title={t("blog.editor.deleteTitle")} centered>
         <Text size="sm">{t("blog.editor.deleteText")}</Text>
