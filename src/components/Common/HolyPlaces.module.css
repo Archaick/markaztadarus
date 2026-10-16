@@ -94,6 +94,10 @@
 
 /* beside the icon */
 .label {
+  /* anchors mean left/right even on an Arabic (right-to-left) page; the
+     Arabic name itself still reads right to left inside its own run */
+  direction: ltr;
+  unicode-bidi: isolate;
   dominant-baseline: central;
   fill: #102141;
   font-weight: 800;
