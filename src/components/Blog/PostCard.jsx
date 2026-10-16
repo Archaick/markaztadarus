@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { IconArrowRight, IconCalendar, IconPhoto } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import logo from "../../assets/imgs/MT-logo-white.svg";
+import FadeImage from "./FadeImage";
 import styles from "./Blog.module.css";
 import { excerptOf, formatPostDate } from "./blogSchema";
 
@@ -15,7 +16,7 @@ export default function PostCard({ post, preview = false }) {
     <Wrapper {...(preview ? {} : { to: `/berita/${post.id}` })} className={styles.card}>
       <div className={styles.cardImage}>
         {post.coverThumb ? (
-          <img src={post.coverThumb} alt="" loading="lazy" />
+          <FadeImage src={post.coverThumb} loading="lazy" decoding="async" />
         ) : (
           <div className={styles.cardPlaceholder}>
             <img src={logo} alt="" />

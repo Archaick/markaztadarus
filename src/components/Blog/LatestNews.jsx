@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { IconArrowRight } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import PostCard from "./PostCard";
+import { SkeletonCard } from "./FadeImage";
 import styles from "./Blog.module.css";
 import { fetchPublished } from "./blogSchema";
 
@@ -24,8 +25,7 @@ export default function LatestNews() {
     };
   }, []);
 
-  if (posts === undefined) return <div className={styles.latestPlaceholder} id="news" />;
-  if (posts.length === 0) return null;
+  if (posts?.length === 0) return null;
 
   return (
     <section className={styles.latest} id="news" dir={i18n.language === "ar" ? "rtl" : "ltr"}>
@@ -40,9 +40,9 @@ export default function LatestNews() {
           </Link>
         </div>
         <div className={`${styles.grid} ${styles.latestGrid}`}>
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
+          {posts === undefined
+            ? [0, 1, 2].map((i) => <SkeletonCard key={i} />)
+            : posts.map((post) => <PostCard key={post.id} post={post} />)}
         </div>
       </div>
     </section>

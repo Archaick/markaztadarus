@@ -44,7 +44,7 @@ import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { stableKey } from "../Internal/stableKey";
 import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
-import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
+import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, hasLargeCard, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
 import { buildPostThumbs } from "./postThumbs";
 import SaveBar from "./SaveBar";
 import PostPreview from "./PostPreview";
@@ -124,7 +124,7 @@ export default function PostEditor() {
   // have loaded, so visitors stop downloading every full photo.
   const buildingThumbs = useRef(false);
   useEffect(() => {
-    if (!post || post.thumbsReady || buildingThumbs.current) return;
+    if (!post || (post.thumbsReady && !hasLargeCard(post)) || buildingThumbs.current) return;
     const ids = post.images || [];
     if (!ids.every((id) => images[id])) return;
     buildingThumbs.current = true;

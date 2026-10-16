@@ -5,6 +5,7 @@ import { IconNews } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import BlogShell from "./BlogShell";
 import PostCard from "./PostCard";
+import { SkeletonCard } from "./FadeImage";
 import styles from "./Blog.module.css";
 import { CATEGORIES, fetchPublished } from "./blogSchema";
 
@@ -81,10 +82,11 @@ export default function BlogList() {
           {state.posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
+          {state.loading && state.posts.length === 0 && [0, 1, 2, 3, 4, 5].map((i) => <SkeletonCard key={i} />)}
         </div>
 
         <div className={styles.moreRow}>
-          {state.loading ? (
+          {state.loading && state.posts.length > 0 ? (
             <Loader color="yellow" />
           ) : (
             state.hasMore && (

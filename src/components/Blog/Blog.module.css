@@ -667,3 +667,67 @@
     right: 0.5rem;
   }
 }
+
+/* ── loading placeholders ── */
+/* a soft moving sheen behind photos that are still on their way */
+.shimmer,
+.cardImage,
+.galleryItem {
+  background: linear-gradient(100deg, #eef2f7 30%, #f8fafc 50%, #eef2f7 70%) #eef2f7;
+  background-size: 220% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+/* the sheen stops once the photo is in */
+.cardImage:has(> img.loaded),
+.cardImage:has(> .cardPlaceholder),
+.galleryItem:has(> img.loaded) {
+  animation: none;
+  background: #eef2f7;
+}
+
+/* photos fade in once decoded, instead of popping in */
+.fadeImg {
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.4s ease;
+}
+.fadeImg.loaded {
+  opacity: 1;
+}
+
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #edf0f5;
+}
+.skeletonCard .skeletonImage {
+  aspect-ratio: 4 / 3;
+}
+.skeletonBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1.1rem 1.2rem 1.4rem;
+}
+.skeletonLine {
+  height: 12px;
+  border-radius: 6px;
+}
+.skeletonLine:nth-child(1) { width: 35%; }
+.skeletonLine:nth-child(2) { width: 90%; height: 16px; }
+.skeletonLine:nth-child(3) { width: 70%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer,
+  .cardImage,
+  .galleryItem {
+    animation: none;
+  }
+}

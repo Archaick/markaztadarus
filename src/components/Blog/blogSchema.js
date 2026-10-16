@@ -33,7 +33,9 @@ export const CATEGORIES = ["umrah", "pelatihan", "majelis", "seminar", "lainnya"
 
 export const MAX_IMAGES = 30;
 export const IMAGE_LIMITS = { maxWidth: 1600, maxHeight: 1600, maxChars: 450000 };
-export const THUMB_LIMITS = { maxWidth: 720, maxHeight: 540, maxChars: 110000 };
+// The card / cover image kept on the post itself: every news list downloads
+// it, so it stays small (it is also the WhatsApp share picture).
+export const THUMB_LIMITS = { maxWidth: 480, maxHeight: 360, maxChars: 45000 };
 export const GRID_LIMITS = { maxWidth: 480, maxHeight: 480, maxChars: 70000 };
 
 export const PAGE_SIZE = 12;
@@ -70,6 +72,9 @@ export const excerptOf = (post, length = 160) => {
 export const makeImage = (file) => compressImage(file, IMAGE_LIMITS);
 
 export const makeThumb = async (source) => (await compressImage(source, THUMB_LIMITS)).dataUrl;
+
+// A post saved before card images were made this small.
+export const hasLargeCard = (post) => (post.coverThumb || "").length > THUMB_LIMITS.maxChars;
 
 // { dataUrl, width, height } for the gallery grid
 export const makeGridThumb = (source) => compressImage(source, GRID_LIMITS);

@@ -8,7 +8,7 @@ import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { isValidSlug, slugify } from "../Forms/formSchema";
-import { POSTS, formatPostDate, todayIso } from "../Blog/blogSchema";
+import { POSTS, formatPostDate, hasLargeCard, todayIso } from "../Blog/blogSchema";
 import styles from "./Website.module.css";
 import { LEGACY_PHOTO_COUNT, LEGACY_SLUGS, importLegacyGallery } from "./importGallery";
 import { buildPostThumbs } from "./postThumbs";
@@ -29,7 +29,7 @@ export default function PostsPanel({ editorEmail }) {
 
   // Posts saved before gallery thumbnails existed: their page downloads every
   // full photo until they are optimised.
-  const unoptimised = (posts || []).filter((p) => !p.thumbsReady && (p.images || []).length > 0);
+  const unoptimised = (posts || []).filter((p) => (p.images || []).length > 0 && (!p.thumbsReady || hasLargeCard(p)));
   const [optimising, setOptimising] = useState(null); // { done, total }
   const [optimiseResult, setOptimiseResult] = useState(null);
 

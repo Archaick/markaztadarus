@@ -12,6 +12,7 @@ import {
   IconPhoto,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
+import FadeImage from "./FadeImage";
 import Lightbox from "./Lightbox";
 import styles from "./Blog.module.css";
 import { formatPostDate, paragraphs, postLink } from "./blogSchema";
@@ -29,16 +30,18 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
   const { t, i18n } = useTranslation("blog/Blog");
   const [viewer, setViewer] = useState(-1);
 
-  const gallery = useMemo(
+  // one tile per photo, in order; `src` is empty until its copy arrives
+  const tiles = useMemo(
     () =>
-      (post?.images || [])
-        .map((id) => {
-          const src = images[id]?.dataUrl || thumbs?.[id]?.dataUrl;
-          return src && { id, dataUrl: src, thumb: thumbs?.[id]?.dataUrl || src };
-        })
-        .filter(Boolean),
+      (post?.images || []).map((id) => ({
+        id,
+        src: thumbs?.[id]?.dataUrl || images[id]?.dataUrl || "",
+        full: images[id]?.dataUrl || thumbs?.[id]?.dataUrl || "",
+      })),
     [post?.images, images, thumbs]
   );
+  // what the viewer can show: photos that have arrived
+  const gallery = useMemo(() => tiles.filter((x) => x.full).map((x) => ({ id: x.id, dataUrl: x.full })), [tiles]);
 
   // a photo with no small copy falls back to its full version
   useEffect(() => {
@@ -96,6 +99,7 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
             <img
               src={cover}
               alt=""
+              decoding="async"
               className={styles.cover}
               onClick={() => {
                 const i = gallery.findIndex((g) => g.id === post.coverId);
@@ -112,15 +116,21 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
             ))}
           </div>
 
-          {gallery.length > 1 && (
+          {tiles.length > 1 && (
             <section className={styles.gallerySection}>
               <h2 className={styles.sectionHeading}>
-                <IconPhoto size={20} /> {t("gallery")} · {t("photos", { count: gallery.length })}
+                <IconPhoto size={20} /> {t("gallery")} · {t("photos", { count: tiles.length })}
               </h2>
               <div className={styles.galleryGrid}>
-                {gallery.map((img, i) => (
-                  <button type="button" key={img.id} className={styles.galleryItem} onClick={() => setViewer(i)}>
-                    <img src={img.thumb} alt="" loading="lazy" />
+                {tiles.map((tile) => (
+                  <button
+                    type="button"
+                    key={tile.id}
+                    className={styles.galleryItem}
+                    disabled={!tile.full}
+                    onClick={() => setViewer(gallery.findIndex((g) => g.id === tile.id))}
+                  >
+                    {tile.src && <FadeImage src={tile.src} loading="lazy" decoding="async" />}
                   </button>
                 ))}
               </div>
