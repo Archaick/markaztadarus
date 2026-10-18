@@ -45,6 +45,20 @@ export function textOfDocument(xml) {
 const textKey = (text) => text.replace(/\s+/g, " ").trim();
 export const textFingerprint = (text) => sha256(strToU8(textKey(text)));
 
+const QR_MEDIA = "word/media/mti-verify-qr.png";
+
+/** The code of the MTI QR already in a .docx (from an earlier stamp), if any. */
+export async function existingQrCode(file) {
+  try {
+    const files = unzipSync(new Uint8Array(await file.arrayBuffer()), { filter: (f) => f.name === "word/document.xml" });
+    const xml = strFromU8(files["word/document.xml"] || new Uint8Array());
+    const m = xml.match(new RegExp(`name="${QR_NAME}"[^>]*descr="[^"]*/verify/([A-Z0-9]+)"`));
+    return m ? m[1] : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Fingerprints of a .docx someone hands back, to look it up. */
 export async function fingerprintsOf(file) {
   const bytes = new Uint8Array(await file.arrayBuffer());
@@ -60,8 +74,10 @@ const dataUrlBytes = (dataUrl) => Uint8Array.from(atob(dataUrl.split(",")[1]), (
 /**
  * Adds the verification QR to a Word file: a floating picture with square
  * wrapping, bottom-left of the last page, so it can simply be dragged in Word.
- * Resolves to { blob, text, fileHash, textHash }; rejects with
- * "not-docx", "already-stamped" or "unreadable".
+ * A file stamped before keeps its QR where it was (moved or not); only the
+ * picture and its link change to the new code. Resolves to
+ * { blob, text, fileHash, textHash, replaced }; rejects with "not-docx" or
+ * "unreadable".
  */
 export async function stampDocx(file, url) {
   if (!isDocx(file)) throw new Error("not-docx");
@@ -77,7 +93,14 @@ export async function stampDocx(file, url) {
   if (!files[docPath] || !files[relsPath] || !files[typesPath]) throw new Error("unreadable");
 
   let xml = strFromU8(files[docPath]);
-  if (xml.includes(`name="${QR_NAME}"`)) throw new Error("already-stamped");
+
+  // stamped before: swap the picture, keep where it sits
+  if (xml.includes(`name="${QR_NAME}"`) && files[QR_MEDIA]) {
+    files[QR_MEDIA] = dataUrlBytes(await qrWithLogo(url));
+    xml = xml.replace(new RegExp(`(name="${QR_NAME}"[^>]*descr=")[^"]*"`), `$1${escapeXml(url)}"`);
+    files[docPath] = strToU8(xml);
+    return finish(files, xml, true);
+  }
 
   // the namespaces the picture uses, if the document does not declare them
   const root = xml.match(/<w:document\b[^>]*>/);
@@ -100,8 +123,7 @@ export async function stampDocx(file, url) {
   xml = before.endsWith("</w:p>") ? `${before.slice(0, -"</w:p>".length)}${run}</w:p>${xml.slice(at)}` : `${before}<w:p>${run}</w:p>${xml.slice(at)}`;
 
   // the image itself, its link from the document, and its file type
-  const media = "word/media/mti-verify-qr.png";
-  files[media] = dataUrlBytes(await qrWithLogo(url));
+  files[QR_MEDIA] = dataUrlBytes(await qrWithLogo(url));
   let rels = strFromU8(files[relsPath]);
   rels = rels.replace(
     "</Relationships>",
@@ -113,7 +135,10 @@ export async function stampDocx(file, url) {
   files[docPath] = strToU8(xml);
   files[relsPath] = strToU8(rels);
   files[typesPath] = strToU8(types);
+  return finish(files, xml, false);
+}
 
+async function finish(files, xml, replaced) {
   const out = zipSync(files, { level: 6 });
   const text = textOfDocument(xml);
   return {
@@ -121,6 +146,7 @@ export async function stampDocx(file, url) {
     text,
     fileHash: await sha256(out),
     textHash: await textFingerprint(text),
+    replaced,
   };
 }
 

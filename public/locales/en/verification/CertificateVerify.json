@@ -21,11 +21,5 @@
   "retry": "Try again",
   "errors": {
     "failed": "The certificate could not be checked yet. Please check your internet connection."
-  },
-  "doc_badge": "Genuine MTI Document",
-  "doc_revoked_badge": "Document Revoked",
-  "doc_label": "Document",
-  "tab_doc": "Verified document",
-  "doc_revoked_title": "This document is no longer valid.",
-  "doc_revoked_text": "It was issued by Markaz Tadarus Indonesia but has since been revoked."
+  }
 }

@@ -26,7 +26,7 @@
     "certificates": "Certificates",
     "signers": "Signers & stamps",
     "backup": "Backup",
-    "documents": "Documents"
+    "documents": "Word files"
   },
   "filters": {
     "allPrograms": "All",
@@ -218,21 +218,14 @@
     "loadFailed": "Signers could not be loaded."
   },
   "documents": {
-    "dropTitle": "Drop a Word file here, or tap to choose",
-    "dropText": "Only .docx. The QR is added at the bottom of the last page and the file downloads back to you. The file itself is not uploaded.",
-    "busy": {
-      "stamping": "Adding the QR…",
-      "snapshot": "Taking a picture of page 1…",
-      "saving": "Saving…"
-    },
-    "title": "Title",
+    "dropTitle": "Drop a Word file to issue a certificate with it",
+    "dropText": "Only .docx. Fill in the certificate details as usual; on save the QR is added at the bottom of the last page and the file downloads back. The file itself is not uploaded.",
     "code": "Code",
-    "qrHint": "The QR sits bottom-left of the last page as a floating picture — drag it anywhere in Word if needed.",
-    "save": "Add QR & download",
+    "save": "Issue & download Word file",
     "savedTitle": "Document ready",
-    "savedText": "Downloaded with QR · code {{code}}",
-    "listTitle": "Stamped documents ({{count}})",
-    "empty": "No documents yet. Drop the first one above.",
+    "savedText": "Downloaded with the QR of {{code}}",
+    "listTitle": "Certificates with a Word file ({{count}})",
+    "empty": "No Word files yet. Drop one above, or use the Word button on any certificate.",
     "check": "Check a file",
     "checkResult": {
       "file": "Same file — exactly as it was stamped",
@@ -254,8 +247,11 @@
     "errors": {
       "notDocx": "Only Word .docx files can be stamped",
       "alreadyStamped": "This file already has an MTI QR",
-      "unreadable": "This Word file could not be read"
+      "unreadable": "This Word file could not be read",
+      "alreadyStampedFor": "It carries the QR of certificate {{code}}. Use the Word button on that certificate instead."
     },
-    "titleHint": "Shown to anyone who scans the QR — keep amounts or private details out of it."
+    "newHint": "This file gets the new certificate's QR when you save, then downloads back to you.",
+    "attach": "Stamp a Word file with this QR",
+    "replace": "Stamp another Word file with this QR"
   }
 }

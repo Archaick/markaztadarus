@@ -26,7 +26,7 @@
     "certificates": "Sertifikat",
     "signers": "Penanda tangan & stempel",
     "backup": "Cadangan",
-    "documents": "Dokumen"
+    "documents": "File Word"
   },
   "filters": {
     "allPrograms": "Semua",
@@ -218,21 +218,14 @@
     "loadFailed": "Penanda tangan tidak dapat dimuat."
   },
   "documents": {
-    "dropTitle": "Letakkan file Word di sini, atau ketuk untuk memilih",
-    "dropText": "Hanya .docx. QR ditambahkan di bagian bawah halaman terakhir dan file langsung terunduh kembali. File tidak diunggah.",
-    "busy": {
-      "stamping": "Menambahkan QR…",
-      "snapshot": "Mengambil gambar halaman 1…",
-      "saving": "Menyimpan…"
-    },
-    "title": "Judul",
+    "dropTitle": "Letakkan file Word untuk menerbitkan sertifikat dengannya",
+    "dropText": "Hanya .docx. Isi data sertifikat seperti biasa; saat disimpan QR ditambahkan di bawah halaman terakhir dan file terunduh kembali. File tidak diunggah.",
     "code": "Kode",
-    "qrHint": "QR ada di kiri bawah halaman terakhir sebagai gambar mengambang — geser ke mana saja di Word bila perlu.",
-    "save": "Tambah QR & unduh",
+    "save": "Terbitkan & unduh file Word",
     "savedTitle": "Dokumen siap",
-    "savedText": "Terunduh dengan QR · kode {{code}}",
-    "listTitle": "Dokumen ber-QR ({{count}})",
-    "empty": "Belum ada dokumen. Letakkan yang pertama di atas.",
+    "savedText": "Terunduh dengan QR {{code}}",
+    "listTitle": "Sertifikat dengan file Word ({{count}})",
+    "empty": "Belum ada file Word. Letakkan di atas, atau pakai tombol Word pada sertifikat mana pun.",
     "check": "Periksa file",
     "checkResult": {
       "file": "File yang sama — persis seperti saat diberi QR",
@@ -254,8 +247,11 @@
     "errors": {
       "notDocx": "Hanya file Word .docx yang bisa diberi QR",
       "alreadyStamped": "File ini sudah memiliki QR MTI",
-      "unreadable": "File Word ini tidak bisa dibaca"
+      "unreadable": "File Word ini tidak bisa dibaca",
+      "alreadyStampedFor": "File ini memuat QR sertifikat {{code}}. Pakai tombol Word pada sertifikat itu."
     },
-    "titleHint": "Terlihat oleh siapa pun yang memindai QR — jangan cantumkan nominal atau data pribadi."
+    "newHint": "File ini diberi QR sertifikat baru saat disimpan, lalu terunduh kembali.",
+    "attach": "Beri QR ini pada file Word",
+    "replace": "Beri QR ini pada file Word lain"
   }
 }

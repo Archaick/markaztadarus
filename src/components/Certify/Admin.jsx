@@ -47,6 +47,7 @@ import {
   Timestamp,
   collection,
   doc,
+  getDoc,
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
@@ -61,6 +62,7 @@ import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
 import SignerManager from "./SignerManager";
 import DocumentsPanel from "./DocumentsPanel";
+import { SNAPSHOT, SNAPSHOT_DOC, useWordAttach } from "./useWordAttach";
 import BackupManager from "./BackupManager";
 import BulkIssue from "./BulkIssue";
 import LangPicker from "./LangPicker";
@@ -114,6 +116,10 @@ export default function Admin() {
   const [page, setPage] = useState(1);
 
   const [editing, setEditing] = useState(null); // null | "new" | cert
+  // a Word file dropped on the Documents tab: stamped with the new certificate's QR on save
+  const [pendingFile, setPendingFile] = useState(null);
+  const [wordFor, setWordFor] = useState(null);
+  const wordPick = useRef(null);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [qrFor, setQrFor] = useState(null);
   const [revoking, setRevoking] = useState(null);
@@ -125,6 +131,15 @@ export default function Admin() {
 
   const notify = (type, title, message) =>
     setNotice({ color: { success: "teal", error: "red", warning: "yellow", info: "blue" }[type] || "blue", title, message });
+
+  const { attach, canUse, busy: wordBusy } = useWordAttach({ user, certs, notify, t });
+
+  // checked before the editor opens, so a refused file never leaves an empty certificate behind
+  const newFromFile = async (file) => {
+    if (!(await canUse(file, null))) return;
+    setPendingFile(file);
+    setEditing("new");
+  };
 
   // ---------- live data ----------
   useEffect(() => {
@@ -298,6 +313,12 @@ export default function Admin() {
   const saveCert = async (values) => {
     if (editing === "new") {
       const [cert] = await createMany({ ...values, people: [{ name: values.name, nameAr: values.nameAr }] });
+      if (pendingFile) {
+        const file = pendingFile;
+        setPendingFile(null);
+        await attach(cert, file);
+        return;
+      }
       notify("success", t("notices.createdTitle"), t("notices.createdText", { name: cert.name || cert.nameAr, code: cert.code }));
       setQrFor(cert);
       return;
@@ -363,10 +384,15 @@ export default function Admin() {
       provider.setCustomParameters({ login_hint: auth.currentUser?.email || "" });
       await reauthenticateWithPopup(auth.currentUser, provider);
       const code = normCode(cert.code);
+      const shot = cert.doc ? await getDoc(doc(db, CERTS, cert.id, SNAPSHOT, SNAPSHOT_DOC)) : null;
       await auditedWrite(
         user,
         { area: "certificates", action: "cert.delete", target: cert.code, label: nameOf(cert), details: { description: both(cert.program, cert.programAr), status: cert.status || "valid" } },
         (batch, _auditId, markDelete) => {
+          if (shot?.exists()) {
+            batch.delete(shot.ref);
+            markDelete(`certificates~${cert.id}~${SNAPSHOT}~${SNAPSHOT_DOC}`, shot.data().auditId);
+          }
           batch.delete(doc(db, CERTS, cert.id));
           markDelete(`certificates~${cert.id}`, cert.auditId);
           batch.delete(doc(db, PUBLIC, code));
@@ -582,6 +608,11 @@ export default function Admin() {
                     dateFormat={dateFormat}
                     onQr={() => setQrFor(cert)}
                     onEdit={() => setEditing(cert)}
+                    onWord={() => {
+                      setWordFor(cert);
+                      wordPick.current?.click();
+                    }}
+                    wordBusy={wordBusy === cert.id}
                     onRevoke={() => (isRevoked(cert) ? setRevoked(cert, false) : setRevoking(cert))}
                     onDelete={() => setDeleting(cert)}
                   />
@@ -600,7 +631,15 @@ export default function Admin() {
             </Tabs.Panel>
 
             <Tabs.Panel value="documents" pt="md">
-              <DocumentsPanel notify={notify} takenCodes={takenCodes} />
+              <DocumentsPanel
+                certs={certs}
+                attach={attach}
+                busy={wordBusy}
+                onNewFromFile={newFromFile}
+                onEdit={(c) => setEditing(c)}
+                nameOf={nameOf}
+                describe={(c) => both(c.program, c.programAr)}
+              />
             </Tabs.Panel>
 
             <Tabs.Panel value="backup" pt="md">
@@ -610,10 +649,25 @@ export default function Admin() {
         </Card>
       </div>
 
+      <input
+        ref={wordPick}
+        type="file"
+        accept=".docx"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (wordFor && file) attach(wordFor, file);
+        }}
+      />
       <CertEditor
         opened={editing !== null}
         cert={editing === "new" ? null : editing}
-        onClose={() => setEditing(null)}
+        file={editing === "new" ? pendingFile : null}
+        onClose={() => {
+          setEditing(null);
+          setPendingFile(null);
+        }}
         programs={programNames}
         programsAr={programNamesAr}
         signerOptions={signerOptions}
@@ -663,7 +717,7 @@ function Stat({ value, label }) {
   );
 }
 
-function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDelete }) {
+function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBusy, onRevoke, onDelete }) {
   const { t } = useTranslation(NS);
   const revoked = isRevoked(cert);
   const event = certDate(cert.eventDate);
@@ -720,6 +774,11 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDel
             <IconQrcode size={18} />
           </ActionIcon>
         </Tooltip>
+        <Tooltip label={cert.doc ? t("documents.replace") : t("documents.attach")}>
+          <ActionIcon variant="subtle" color={cert.doc ? "yellow" : "gray"} onClick={onWord} loading={wordBusy} aria-label={t("documents.attach")}>
+            <IconFileTypeDocx size={18} />
+          </ActionIcon>
+        </Tooltip>
         <Tooltip label={t("row.edit")}>
           <ActionIcon variant="subtle" color="blue" onClick={onEdit} aria-label={t("row.edit")}>
             <IconPencil size={18} />
@@ -742,7 +801,7 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onRevoke, onDel
 
 const blankCert = { name: "", nameAr: "", program: "", programAr: "", lang: "id", eventDate: "", signerIds: [] };
 
-function CertEditor({ opened, cert, onClose, programs, programsAr, signerOptions, signerPlaceholder, onSave }) {
+function CertEditor({ opened, cert, file, onClose, programs, programsAr, signerOptions, signerPlaceholder, onSave }) {
   const { t } = useTranslation(NS);
   const [values, setValues] = useState(blankCert);
   const [error, setError] = useState("");
@@ -795,6 +854,11 @@ function CertEditor({ opened, cert, onClose, programs, programsAr, signerOptions
         {cert && (
           <Alert color="blue" variant="light">
             {t("editor.sameCode", { code: cert.code })}
+          </Alert>
+        )}
+        {file && (
+          <Alert color="yellow" variant="light" icon={<IconFileTypeDocx size={18} />} title={file.name}>
+            {t("documents.newHint")}
           </Alert>
         )}
         <div className={styles.editorRow}>
@@ -869,7 +933,7 @@ function CertEditor({ opened, cert, onClose, programs, programsAr, signerOptions
           {t("common.cancel")}
         </Button>
         <Button className={styles.primaryButton} loading={saving} onClick={save}>
-          {t(cert ? "common.save" : "editor.create")}
+          {t(cert ? "common.save" : file ? "documents.save" : "editor.create")}
         </Button>
       </Group>
     </Modal>
