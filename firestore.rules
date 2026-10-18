@@ -162,6 +162,30 @@ service cloud.firestore {
       allow delete: if hasFeature("certificates") && marked("certificate_meta~" + docId);
     }
 
+    // Word documents stamped with a verification QR. The file itself is never
+    // stored: only its title, text, fingerprints and a picture of page 1.
+    match /documents/{docId} {
+      allow read: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates")
+        && request.resource.data.title is string && request.resource.data.title.size() <= 300
+        && request.resource.data.code is string && request.resource.data.code.matches("^[A-Z0-9]{4,32}$")
+        && request.resource.data.text is string && request.resource.data.text.size() <= 4000
+        && request.resource.data.thumb is string && request.resource.data.thumb.size() <= 40000
+        && audited();
+      allow delete: if hasFeature("certificates") && marked("documents~" + docId);
+
+      match /snapshot/{page} {
+        allow read: if hasFeature("certificates");
+        allow create, update: if hasFeature("certificates")
+          && request.resource.data.keys().hasOnly(["dataUrl", "auditId"])
+          && request.resource.data.dataUrl is string
+          && request.resource.data.dataUrl.size() <= 400000
+          && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+")
+          && audited();
+        allow delete: if hasFeature("certificates") && marked("documents~" + docId + "~snapshot~" + page);
+      }
+    }
+
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
       // Public read so the verification page can show signatures

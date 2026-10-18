@@ -25,7 +25,8 @@
   "tabs": {
     "certificates": "Certificates",
     "signers": "Signers & stamps",
-    "backup": "Backup"
+    "backup": "Backup",
+    "documents": "Documents"
   },
   "filters": {
     "allPrograms": "All",
@@ -215,5 +216,46 @@
     "added": "Signer added",
     "removed": "Signer removed",
     "loadFailed": "Signers could not be loaded."
+  },
+  "documents": {
+    "dropTitle": "Drop a Word file here, or tap to choose",
+    "dropText": "Only .docx. The QR is added at the bottom of the last page and the file downloads back to you. The file itself is not uploaded.",
+    "busy": {
+      "stamping": "Adding the QR…",
+      "snapshot": "Taking a picture of page 1…",
+      "saving": "Saving…"
+    },
+    "title": "Title",
+    "code": "Code",
+    "qrHint": "The QR sits bottom-left of the last page as a floating picture — drag it anywhere in Word if needed.",
+    "save": "Add QR & download",
+    "savedTitle": "Document ready",
+    "savedText": "Downloaded with QR · code {{code}}",
+    "listTitle": "Stamped documents ({{count}})",
+    "empty": "No documents yet. Drop the first one above.",
+    "check": "Check a file",
+    "checkResult": {
+      "file": "Same file — exactly as it was stamped",
+      "text": "Same document — the text matches (layout may have changed in Word)",
+      "none": "Not found — this file was not stamped here, or its text was changed"
+    },
+    "view": "View",
+    "copyLink": "Copy verification link",
+    "revoke": "Revoke",
+    "restore": "Make valid again",
+    "delete": "Delete",
+    "deleteTitle": "Delete document",
+    "deleteText": "“{{title}}” and its QR stop working straight away. This cannot be undone.",
+    "issued": "Stamped",
+    "file": "Original file",
+    "fingerprint": "File fingerprint",
+    "textTitle": "Text of the document",
+    "noSnapshot": "No picture was saved for this document.",
+    "errors": {
+      "notDocx": "Only Word .docx files can be stamped",
+      "alreadyStamped": "This file already has an MTI QR",
+      "unreadable": "This Word file could not be read"
+    },
+    "titleHint": "Shown to anyone who scans the QR — keep amounts or private details out of it."
   }
 }

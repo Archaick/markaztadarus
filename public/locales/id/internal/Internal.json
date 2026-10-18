@@ -173,6 +173,12 @@
       "site": {
         "map": "Mengubah peta jangkauan",
         "stats": "Mengubah angka capaian"
+      },
+      "doc": {
+        "stamp": "Memberi QR pada dokumen Word",
+        "revoke": "Mencabut dokumen",
+        "restore": "Memberlakukan lagi dokumen",
+        "delete": "Menghapus dokumen"
       }
     },
     "fields": {

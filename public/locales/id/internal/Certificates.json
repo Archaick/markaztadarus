@@ -25,7 +25,8 @@
   "tabs": {
     "certificates": "Sertifikat",
     "signers": "Penanda tangan & stempel",
-    "backup": "Cadangan"
+    "backup": "Cadangan",
+    "documents": "Dokumen"
   },
   "filters": {
     "allPrograms": "Semua",
@@ -215,5 +216,46 @@
     "added": "Penanda tangan ditambahkan",
     "removed": "Penanda tangan dihapus",
     "loadFailed": "Penanda tangan tidak dapat dimuat."
+  },
+  "documents": {
+    "dropTitle": "Letakkan file Word di sini, atau ketuk untuk memilih",
+    "dropText": "Hanya .docx. QR ditambahkan di bagian bawah halaman terakhir dan file langsung terunduh kembali. File tidak diunggah.",
+    "busy": {
+      "stamping": "Menambahkan QR…",
+      "snapshot": "Mengambil gambar halaman 1…",
+      "saving": "Menyimpan…"
+    },
+    "title": "Judul",
+    "code": "Kode",
+    "qrHint": "QR ada di kiri bawah halaman terakhir sebagai gambar mengambang — geser ke mana saja di Word bila perlu.",
+    "save": "Tambah QR & unduh",
+    "savedTitle": "Dokumen siap",
+    "savedText": "Terunduh dengan QR · kode {{code}}",
+    "listTitle": "Dokumen ber-QR ({{count}})",
+    "empty": "Belum ada dokumen. Letakkan yang pertama di atas.",
+    "check": "Periksa file",
+    "checkResult": {
+      "file": "File yang sama — persis seperti saat diberi QR",
+      "text": "Dokumen yang sama — teksnya cocok (tata letak mungkin diubah di Word)",
+      "none": "Tidak ditemukan — file ini tidak diberi QR di sini, atau teksnya diubah"
+    },
+    "view": "Lihat",
+    "copyLink": "Salin tautan verifikasi",
+    "revoke": "Cabut",
+    "restore": "Berlakukan lagi",
+    "delete": "Hapus",
+    "deleteTitle": "Hapus dokumen",
+    "deleteText": "“{{title}}” dan QR-nya langsung tidak berlaku. Tidak bisa dibatalkan.",
+    "issued": "Diberi QR",
+    "file": "File asli",
+    "fingerprint": "Sidik file",
+    "textTitle": "Teks dokumen",
+    "noSnapshot": "Tidak ada gambar yang tersimpan untuk dokumen ini.",
+    "errors": {
+      "notDocx": "Hanya file Word .docx yang bisa diberi QR",
+      "alreadyStamped": "File ini sudah memiliki QR MTI",
+      "unreadable": "File Word ini tidak bisa dibaca"
+    },
+    "titleHint": "Terlihat oleh siapa pun yang memindai QR — jangan cantumkan nominal atau data pribadi."
   }
 }

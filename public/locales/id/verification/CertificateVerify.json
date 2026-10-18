@@ -21,5 +21,11 @@
   "retry": "Coba lagi",
   "errors": {
     "failed": "Sertifikat belum dapat diperiksa. Periksa koneksi internet Anda."
-  }
+  },
+  "doc_badge": "Dokumen Resmi MTI",
+  "doc_revoked_badge": "Dokumen Dicabut",
+  "doc_label": "Dokumen",
+  "tab_doc": "Dokumen terverifikasi",
+  "doc_revoked_title": "Dokumen ini tidak berlaku lagi.",
+  "doc_revoked_text": "Dokumen ini dikeluarkan oleh Markaz Tadarus Indonesia namun telah dicabut."
 }

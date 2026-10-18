@@ -29,6 +29,7 @@ import {
   IconCheck,
   IconCopy,
   IconDatabase,
+  IconFileTypeDocx,
   IconDownload,
   IconEye,
   IconPencil,
@@ -59,6 +60,7 @@ import { timeAgo } from "../Internal/timeAgo";
 import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
 import SignerManager from "./SignerManager";
+import DocumentsPanel from "./DocumentsPanel";
 import BackupManager from "./BackupManager";
 import BulkIssue from "./BulkIssue";
 import LangPicker from "./LangPicker";
@@ -475,6 +477,9 @@ export default function Admin() {
                   </Badge>
                 )}
               </Tabs.Tab>
+              <Tabs.Tab value="documents" leftSection={<IconFileTypeDocx size={17} />}>
+                {t("tabs.documents")}
+              </Tabs.Tab>
               <Tabs.Tab value="backup" leftSection={<IconDatabase size={17} />}>
                 {t("tabs.backup")}
               </Tabs.Tab>
@@ -592,6 +597,10 @@ export default function Admin() {
 
             <Tabs.Panel value="signers" pt="md">
               <SignerManager notify={notify} onSignersChange={setSigners} />
+            </Tabs.Panel>
+
+            <Tabs.Panel value="documents" pt="md">
+              <DocumentsPanel notify={notify} takenCodes={takenCodes} />
             </Tabs.Panel>
 
             <Tabs.Panel value="backup" pt="md">

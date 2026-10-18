@@ -173,6 +173,12 @@
       "site": {
         "map": "Edited the reach map",
         "stats": "Edited the achievement figures"
+      },
+      "doc": {
+        "stamp": "Stamped a Word document",
+        "revoke": "Revoked a document",
+        "restore": "Made a document valid again",
+        "delete": "Deleted a document"
       }
     },
     "fields": {

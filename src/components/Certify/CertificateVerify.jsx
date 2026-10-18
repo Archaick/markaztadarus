@@ -58,7 +58,8 @@ export default function CertificateVerify() {
     const show = async (cert, countScan) => {
       let signers = [];
       try {
-        signers = resolveCertificateSigners(cert, await fetchAllSigners());
+        // stamped documents carry their own signatures on paper
+        if (cert.type !== "document") signers = resolveCertificateSigners(cert, await fetchAllSigners());
       } catch (err) {
         // signatures are a bonus: the certificate is valid without them
         console.error("Could not load signers:", err);
@@ -110,7 +111,13 @@ export default function CertificateVerify() {
   useEffect(() => {
     const previous = document.title;
     const revokedNow = state.cert?.status === "revoked";
-    const label = state.phase !== "found" ? t("tab_check") : revokedNow ? t("revoked_badge") : t("tab_found");
+    const isDocument = state.cert?.type === "document";
+    const label =
+      state.phase !== "found"
+        ? t("tab_check")
+        : revokedNow
+          ? t(isDocument ? "doc_revoked_badge" : "revoked_badge")
+          : t(isDocument ? "tab_doc" : "tab_found");
     document.title = `${label} · Markaz Tadarus Indonesia`;
     return () => {
       document.title = previous;
@@ -119,6 +126,8 @@ export default function CertificateVerify() {
 
   const cert = state.cert;
   const revoked = cert?.status === "revoked";
+  // a Word document stamped from the dashboard: only its title is public
+  const isDoc = cert?.type === "document";
   const event = certDate(cert?.eventDate);
   const issued = certDate(cert?.issuedAt);
 
@@ -173,14 +182,14 @@ export default function CertificateVerify() {
                 {revoked ? <IconBan size={38} /> : <IconCheck size={40} stroke={3} />}
               </span>
               <span className={`${styles.badge} ${revoked ? styles.badgeRevoked : ""}`}>
-                {revoked ? t("revoked_badge") : t("authentic_badge")}
+                {revoked ? t(isDoc ? "doc_revoked_badge" : "revoked_badge") : t(isDoc ? "doc_badge" : "authentic_badge")}
               </span>
             </div>
 
             {revoked && (
               <div className={styles.revokedBox}>
-                <strong>{t("revoked_title")}</strong>
-                <p>{t("revoked_text")}</p>
+                <strong>{t(isDoc ? "doc_revoked_title" : "revoked_title")}</strong>
+                <p>{t(isDoc ? "doc_revoked_text" : "revoked_text")}</p>
                 {cert.revokedReason && (
                   <p dir="auto">
                     {t("revoked_reason")}: {cert.revokedReason}
@@ -189,15 +198,26 @@ export default function CertificateVerify() {
               </div>
             )}
 
-            <p className={styles.label}>{t("issued_to")}</p>
-            <h1 className={styles.name} dir="auto">
-              {displayName(cert, lang)}
-            </h1>
-            <p className={styles.label}>{t("program")}</p>
-            <p className={styles.program} dir="auto">
-              {displayProgram(cert, lang)}
-            </p>
-            {cert.description && (
+            {isDoc ? (
+              <>
+                <p className={styles.label}>{t("doc_label")}</p>
+                <h1 className={styles.name} dir="auto">
+                  {cert.title}
+                </h1>
+              </>
+            ) : (
+              <>
+                <p className={styles.label}>{t("issued_to")}</p>
+                <h1 className={styles.name} dir="auto">
+                  {displayName(cert, lang)}
+                </h1>
+                <p className={styles.label}>{t("program")}</p>
+                <p className={styles.program} dir="auto">
+                  {displayProgram(cert, lang)}
+                </p>
+              </>
+            )}
+            {!isDoc && cert.description && (
               <p className={styles.muted} dir="auto">
                 {cert.description}
               </p>
