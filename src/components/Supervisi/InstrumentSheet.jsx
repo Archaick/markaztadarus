@@ -89,6 +89,8 @@ export default function InstrumentSheet({ instrument, onClose }) {
   const { user } = useAccess();
   const [v, setV] = useState(() => JSON.parse(JSON.stringify(withoutMeta(instrument))));
   const [lang, setLang] = useState(() => (LANGS.includes(i18n.language?.slice(0, 2)) ? i18n.language.slice(0, 2) : "id"));
+  // the sheet itself speaks the language being edited, the controls around it the dashboard's
+  const { t: ts } = useTranslation(NS, { lng: lang });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const max = v.scaleMax || 5;
@@ -148,13 +150,13 @@ export default function InstrumentSheet({ instrument, onClose }) {
       <p className={s.hint}>{t("instruments.sheetHint")}</p>
 
       <article className={s.paper} dir={lang === "ar" ? "rtl" : "ltr"}>
-        <Words value={v.name} onChange={(name) => setV({ ...v, name })} lang={lang} placeholder={t("instruments.name")} className={s.title} />
-        <Words value={v.note} onChange={(note) => setV({ ...v, note })} lang={lang} placeholder={t("instruments.noteHint")} multiline className={s.note} />
+        <Words value={v.name} onChange={(name) => setV({ ...v, name })} lang={lang} placeholder={ts("instruments.name")} className={s.title} />
+        <Words value={v.note} onChange={(note) => setV({ ...v, note })} lang={lang} placeholder={ts("instruments.noteHint")} multiline className={s.note} />
 
         {(v.sections || []).map((section, si) => (
           <section key={section.id} className={s.section}>
             <div className={s.sectionHead}>
-              <Words value={section.title} onChange={(title) => setSection(si, { title })} lang={lang} placeholder={t("instruments.sectionHint")} className={s.h3} />
+              <Words value={section.title} onChange={(title) => setSection(si, { title })} lang={lang} placeholder={ts("instruments.sectionHint")} className={s.h3} />
               <Tools
                 onUp={() => setSections((ss) => move(ss, si, -1))}
                 onDown={() => setSections((ss) => move(ss, si, 1))}
@@ -165,7 +167,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
               value={section.description}
               onChange={(description) => setSection(si, { description })}
               lang={lang}
-              placeholder={t("instruments.descriptionHint")}
+              placeholder={ts("instruments.descriptionHint")}
               multiline
               className={s.description}
             />
@@ -174,7 +176,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
               <thead>
                 <tr>
                   <th className={s.numCol}>#</th>
-                  <th>{t("report.indicator")}</th>
+                  <th>{ts("report.indicator")}</th>
                   {SCALE.slice(0, max).map((x) => (
                     <th key={x} className={s.scoreCol}>
                       {x}
@@ -187,7 +189,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
                 {(section.groups || []).map((group, gi) => [
                   <tr key={`${group.id}-title`} className={`${s.groupRow} ${group.title?.id?.trim() ? "" : s.groupEmpty}`}>
                     <td colSpan={2 + max}>
-                      <Words value={group.title} onChange={(title) => setGroup(si, gi, { title })} lang={lang} placeholder={t("instruments.groupHint")} />
+                      <Words value={group.title} onChange={(title) => setGroup(si, gi, { title })} lang={lang} placeholder={ts("instruments.groupHint")} />
                     </td>
                     <td className={s.toolCol}>
                       <Tools
@@ -207,7 +209,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
                             value={item.text}
                             onChange={(text) => setItems(si, gi, (its) => its.map((x, i) => (i === ii ? { ...x, text } : x)))}
                             lang={lang}
-                            placeholder={t("instruments.itemHint")}
+                            placeholder={ts("instruments.itemHint")}
                             multiline
                           />
                         </td>
@@ -229,7 +231,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
                   <tr key={`${group.id}-add`} className={s.addRow}>
                     <td colSpan={3 + max}>
                       <button type="button" onClick={() => setItems(si, gi, (its) => [...its, blankItem()])}>
-                        <IconPlus size={15} /> {t("instruments.addItem")}
+                        <IconPlus size={15} /> {ts("instruments.addItem")}
                       </button>
                     </td>
                   </tr>,
@@ -237,13 +239,13 @@ export default function InstrumentSheet({ instrument, onClose }) {
               </tbody>
             </table>
             <button type="button" className={s.addLink} onClick={() => setGroups(si, (gs) => [...gs, blankGroup()])}>
-              <IconPlus size={15} /> {t("instruments.addGroup")}
+              <IconPlus size={15} /> {ts("instruments.addGroup")}
             </button>
           </section>
         ))}
 
         <button type="button" className={s.addSection} onClick={() => setSections((ss) => [...ss, blankSection()])}>
-          <IconPlus size={17} /> {t("instruments.addSection")}
+          <IconPlus size={17} /> {ts("instruments.addSection")}
         </button>
       </article>
 
