@@ -8,7 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { deleteSession, loadSignatures } from "./actions";
 import { useDateFormat } from "./parts";
-import { SCALE, formatAverage, headerOf, itemNo, summarize, tr } from "./supervisiSchema";
+import { SCALE, formatAverage, headerOf, itemNo, summarize, tr, withLiveLabels } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 import report from "./Report.module.css";
 
@@ -28,7 +28,7 @@ export default function ReportPage() {
   const { user } = useAccess();
   const navigate = useNavigate();
   const dates = useDateFormat();
-  const { sessions, loading } = useSupervisi();
+  const { sessions, instruments, loading } = useSupervisi();
   const session = (sessions || []).find((s) => s.id === sessionId);
   const [signs, setSigns] = useState(null);
   const [removing, setRemoving] = useState(false);
@@ -50,7 +50,7 @@ export default function ReportPage() {
   if (loading) return <Loader />;
   if (!session) return <p className={styles.empty}>{t("sessions.missing")}</p>;
 
-  const instrument = session.instrument;
+  const instrument = withLiveLabels(session.instrument, instruments.find((i) => i.id === session.instrumentId));
   const summary = summarize(instrument, session.scores);
   const max = instrument?.scaleMax || 5;
   const identity = [

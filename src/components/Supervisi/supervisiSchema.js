@@ -31,6 +31,27 @@ export const itemNo = (item, n) => (item?.no || "").trim() || String(n);
  */
 export const headerOf = (instrument, key, lang, fallback) => tr(instrument?.headers?.[key], lang) || fallback;
 
+/**
+ * A supervision's own copy of its instrument, with the numbers and table
+ * headers of the instrument as it is now: those are only labels, so editing
+ * them also renumbers reports already made. Texts and scores stay as copied.
+ */
+export function withLiveLabels(copy, live) {
+  if (!copy || !live) return copy;
+  const numbers = new Map(indicatorsOf(live).map((i) => [i.id, i.no]));
+  return {
+    ...copy,
+    headers: live.headers || copy.headers,
+    sections: (copy.sections || []).map((section) => ({
+      ...section,
+      groups: (section.groups || []).map((group) => ({
+        ...group,
+        items: (group.items || []).map((item) => (numbers.has(item.id) ? { ...item, no: numbers.get(item.id) || "" } : item)),
+      })),
+    })),
+  };
+}
+
 /** A stored document without its bookkeeping fields (for copies). */
 export const withoutMeta = (obj) => {
   const copy = { ...obj };

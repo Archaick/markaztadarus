@@ -8,7 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { finishSession, loadSignatures, updateSession } from "./actions";
 import SignaturePad from "./SignaturePad";
-import { SCALE, formatAverage, itemNo, summarize, tr } from "./supervisiSchema";
+import { SCALE, formatAverage, itemNo, summarize, tr, withLiveLabels } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
@@ -28,7 +28,7 @@ export default function SessionPage() {
   const lang = i18n.language;
   const { user } = useAccess();
   const navigate = useNavigate();
-  const { sessions, loading } = useSupervisi();
+  const { sessions, instruments, loading } = useSupervisi();
   const session = (sessions || []).find((s) => s.id === sessionId);
 
   const [step, setStep] = useState(null);
@@ -220,7 +220,7 @@ export default function SessionPage() {
       {step === 1 && (
         <>
           {session.instrument?.note && <p className={styles.hint}>{tr(session.instrument.note, lang)}</p>}
-          {(session.instrument?.sections || []).map((section, si) => {
+          {(withLiveLabels(session.instrument, instruments.find((i) => i.id === session.instrumentId))?.sections || []).map((section, si) => {
             const stats = summary.sections[si];
             return (
               <section key={section.id} className={`${styles.panel} ${styles.section}`}>
