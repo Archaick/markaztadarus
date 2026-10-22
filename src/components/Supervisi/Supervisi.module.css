@@ -511,8 +511,9 @@
 }
 .row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 10px 14px;
   padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid var(--line);
@@ -523,8 +524,9 @@
 a.row:hover {
   border-color: var(--gold);
 }
+/* the name keeps a readable width; the buttons drop below it when the panel is narrow */
 .rowMain {
-  flex: 1;
+  flex: 1 1 150px;
   min-width: 0;
 }
 .rowTitle {

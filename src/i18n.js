@@ -11,8 +11,9 @@ i18n
     fallbackLng: "id",
     supportedLngs: ["id", "en", "ar"],
     backend: {
-      // ?v= is the build id, so every deploy fetches its own translations.
-      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${import.meta.env.VITE_BUILD_ID}`,
+      // ?v= is the build id, so every deploy fetches its own translations;
+      // in dev it changes on every page load, so edited files show at once.
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${import.meta.env.DEV ? Date.now().toString(36) : import.meta.env.VITE_BUILD_ID}`,
     },
     ns: [
       "common/Footer",
