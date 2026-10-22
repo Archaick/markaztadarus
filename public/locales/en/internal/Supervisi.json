@@ -1,0 +1,191 @@
+{
+  "brand": "Supervision",
+  "signOut": "Sign out",
+  "nav": {
+    "overview": "Overview",
+    "home": "Home",
+    "schools": "Schools",
+    "sessions": "Supervisions",
+    "instruments": "Instruments",
+    "portal": "Internal portal",
+    "collapse": "Collapse menu",
+    "open": "Open menu",
+    "close": "Close menu"
+  },
+  "role": {
+    "super": "Super admin",
+    "supervisor": "Supervisor"
+  },
+  "status": {
+    "draft": "Draft",
+    "observing": "Observing",
+    "done": "Finished"
+  },
+  "home": {
+    "greeting": "Assalamu'alaikum, {{name}}",
+    "intro": "PQA teacher supervision with the 5T Method: pre-observation, class observation, recommendations and sign-off.",
+    "schools": "Schools",
+    "teachers": "Teachers",
+    "done": "Supervisions finished",
+    "average": "Average score (1–5)",
+    "open": "Not finished",
+    "noOpen": "No supervision is in progress.",
+    "latest": "Latest reports",
+    "noDone": "No reports yet."
+  },
+  "sessions": {
+    "new": "New supervision",
+    "title": "Supervisions",
+    "empty": "No supervisions yet.",
+    "missing": "This supervision was not found.",
+    "search": "Search teacher, school, supervisor, surah…",
+    "all": "All",
+    "openOnes": "Not finished",
+    "instrument": "Instrument",
+    "start": "Continue to the identity sheet",
+    "noInstrument": "No active instrument yet. Install the PQA 5T instrument on the Instruments page.",
+    "noTeachers": "Add teachers on the school's page first"
+  },
+  "fields": {
+    "teacherName": "Teacher",
+    "schoolName": "School",
+    "date": "Day / date",
+    "className": "Class",
+    "book": "Book no.",
+    "surah": "Surah",
+    "supervisorName": "Supervisor"
+  },
+  "schools": {
+    "title": "Schools",
+    "new": "New school",
+    "edit": "Edit school",
+    "search": "Search schools by name or city",
+    "empty": "No schools yet. Add the first one.",
+    "open": "Open school",
+    "meta": "{{supervised}} of {{teachers}} teachers supervised",
+    "name": "School name",
+    "city": "City",
+    "province": "Province",
+    "addCover": "Add a school photo",
+    "changeCover": "Change photo",
+    "missing": "This school was not found.",
+    "deleteText": "Delete “{{name}}” and its list of teachers? Existing supervision reports are kept."
+  },
+  "teachers": {
+    "title": "Teachers ({{count}})",
+    "addPlaceholder": "New teacher's name",
+    "add": "Add",
+    "empty": "No teachers at this school yet.",
+    "count_one": "{{count}} supervision finished",
+    "count_other": "{{count}} supervisions finished",
+    "count": "{{count}} supervisions finished",
+    "last": "latest",
+    "rename": "Rename",
+    "deleteText": "Remove {{name}} from the teachers? Their reports are kept."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "noMatch": "Nothing matches."
+  },
+  "errors": {
+    "name": "Fill in the name first.",
+    "photo": "This photo could not be read.",
+    "failed": "Could not save. Check the connection and try again.",
+    "identity": "Fill in the teacher's name and the date.",
+    "signatures": "Both the teacher and the supervisor need to sign."
+  },
+  "steps": {
+    "identity": "Pre-observation",
+    "identityHint": "Identity sheet",
+    "observe": "Class observation",
+    "observeHint": "Score 1–5",
+    "notes": "Post-observation",
+    "notesHint": "Recommendations",
+    "sign": "Sign-off",
+    "signHint": "Signatures"
+  },
+  "identity": {
+    "title": "Identity Sheet",
+    "intro": "Filled in at the pre-observation meeting in the staff room, while looking at the class administration and the teacher's readiness to teach with the 5T Method.",
+    "start": "Start observation"
+  },
+  "notes": {
+    "title": "Supervisor's Recommendations",
+    "intro": "Go through the observation with the teacher, clarify the indicators not yet scored, then write the recommendations.",
+    "appreciation": "Strengths of the teacher",
+    "appreciationHint": "What the teacher did well.",
+    "followUp": "Follow-up from this supervision",
+    "followUpHint": "What was not done yet and should be followed up in the next lessons.",
+    "clarify": "{{count}} indicators are not scored — to be clarified with the teacher, not counted as not done."
+  },
+  "sign": {
+    "title": "Sign-off",
+    "intro": "The supervised teacher and the supervisor sign on this screen.",
+    "teacher": "Supervised teacher",
+    "supervisor": "Supervisor",
+    "hint": "Sign here",
+    "clear": "Clear",
+    "finish": "Finish & save report"
+  },
+  "flow": {
+    "scored": "Scored",
+    "average": "Average",
+    "toClarify": "To clarify",
+    "saving": "Saving…",
+    "unsaved": "Not saved yet",
+    "saved": "Saved",
+    "back": "Back",
+    "saveDraft": "Save draft",
+    "next": "Next"
+  },
+  "report": {
+    "title": "Teacher Supervision Report",
+    "edit": "Edit",
+    "print": "Print / PDF",
+    "average": "average (of {{max}})",
+    "percent": "achieved",
+    "scored": "indicators scored",
+    "toClarify": "to clarify",
+    "assessment": "Assessment Sheet",
+    "indicator": "Indicator",
+    "deleteText": "Delete {{name}}'s supervision report? This cannot be undone."
+  },
+  "instruments": {
+    "title": "Instruments",
+    "intro": "The checklists used to score a supervision. Edit them any time; past reports keep the version they used.",
+    "installPqa": "Install the PQA 5T instrument",
+    "new": "New instrument",
+    "empty": "No instruments yet. Install the PQA 5T instrument from the documents, or build your own.",
+    "meta": "{{sections}} sections · {{items}} indicators · score 1–{{max}} · used {{used}}× · version {{version}}",
+    "inactive": "Inactive",
+    "edit": "Edit instrument",
+    "duplicate": "Duplicate",
+    "copy": "copy",
+    "deleteText": "Delete the instrument “{{name}}”? Reports that used it stay intact.",
+    "name": "Instrument name",
+    "note": "Scoring instructions",
+    "scale": "Score scale",
+    "active": "Active (can be picked for a new supervision)",
+    "section": "Section",
+    "description": "Section description",
+    "group": "Subheading (optional, e.g. Tamhid)",
+    "addItem": "Add indicator",
+    "addGroup": "Add subheading",
+    "addSection": "Add section",
+    "versionHint": "Every save is a new version. Supervisions already started keep their version.",
+    "up": "Up",
+    "down": "Down",
+    "lang": {
+      "id": "Bahasa Indonesia (required)",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "errors": {
+      "name": "Fill in the instrument's name (Indonesian).",
+      "empty": "Add at least one indicator.",
+      "itemText": "Every indicator needs its Indonesian text."
+    }
+  }
+}

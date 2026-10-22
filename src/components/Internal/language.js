@@ -9,7 +9,7 @@ export const LANGUAGES = [
 
 export const LANGUAGE_CODES = LANGUAGES.map((l) => l.code);
 
-export const INTERNAL_NS = ["internal/Internal", "internal/Forms", "internal/Website", "internal/Redirects", "internal/Certificates"];
+export const INTERNAL_NS = ["internal/Internal", "internal/Forms", "internal/Website", "internal/Redirects", "internal/Certificates", "internal/Supervisi"];
 
 const STORAGE_KEY = "mt.internalLang";
 

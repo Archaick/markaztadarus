@@ -49,6 +49,10 @@
     "history": {
       "title": "Activity History",
       "description": "Everything admins did in the dashboards, newest first."
+    },
+    "supervisi": {
+      "title": "Teacher Supervision",
+      "description": "PQA teacher supervision with the 5T Method: observation, recommendations, signatures and reports."
     }
   },
   "hub": {
@@ -179,6 +183,30 @@
         "revoke": "Revoked a document",
         "restore": "Made a document valid again",
         "delete": "Deleted a document"
+      },
+      "sup": {
+        "school": {
+          "create": "Added a school",
+          "update": "Edited a school",
+          "delete": "Deleted a school"
+        },
+        "teacher": {
+          "create": "Added a teacher",
+          "update": "Edited a teacher",
+          "delete": "Removed a teacher"
+        },
+        "instrument": {
+          "create": "Created an instrument",
+          "update": "Edited an instrument",
+          "delete": "Deleted an instrument"
+        },
+        "session": {
+          "create": "Started a supervision",
+          "start": "Began an observation",
+          "save": "Saved a supervision",
+          "finish": "Finished a supervision report",
+          "delete": "Deleted a supervision"
+        }
       }
     },
     "fields": {
@@ -230,7 +258,13 @@
       "published": "Published",
       "paths": "Links",
       "provinces": "Provinces",
-      "source": "Link"
+      "source": "Link",
+      "school": "School",
+      "city": "City",
+      "average": "Average",
+      "scored": "Scored",
+      "teachers": "Teachers",
+      "observing": "Observing"
     }
   }
 }

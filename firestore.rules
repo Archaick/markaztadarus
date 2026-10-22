@@ -81,7 +81,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(["at", "actor", "actorName", "area", "action", "target", "label", "details"])
         && request.resource.data.at == request.time
         && request.resource.data.actor == adminEmail()
-        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access"]
+        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access", "supervisi"]
         && request.resource.data.action is string && request.resource.data.action.size() <= 60
         && request.resource.data.target is string && request.resource.data.target.size() <= 200
         && request.resource.data.label is string && request.resource.data.label.size() <= 200
@@ -106,7 +106,7 @@ service cloud.firestore {
       return data.email == email
         && email == email.lower()
         && data.features is list
-        && data.features.hasOnly(["certificates", "redirects", "forms", "site"]);
+        && data.features.hasOnly(["certificates", "redirects", "forms", "site", "supervisi"]);
     }
 
     match /internal_admins/{email} {
@@ -266,6 +266,51 @@ service cloud.firestore {
           && request.resource.data.dataUrl.matches("data:image/jpeg;base64,[A-Za-z0-9+/=]+")
           && audited();
         allow delete: if hasFeature("site") && marked("posts~" + postId + "~thumbs~" + thumbId);
+      }
+    }
+
+    // ---------- Teacher supervision (SKENARIO SUPERVISI GURU) ----------
+    // Schools, their teachers, the editable instruments and one document per
+    // supervision (signatures apart). Admins given "supervisi" only.
+
+    match /supervisi_schools/{schoolId} {
+      allow read: if hasFeature("supervisi");
+      allow create, update: if hasFeature("supervisi") && audited()
+        && request.resource.data.name is string && request.resource.data.name.size() <= 200
+        && request.resource.data.get("cover", "") is string && request.resource.data.get("cover", "").size() <= 160000;
+      allow delete: if hasFeature("supervisi") && marked("supervisi_schools~" + schoolId);
+    }
+
+    match /supervisi_teachers/{teacherId} {
+      allow read: if hasFeature("supervisi");
+      allow create, update: if hasFeature("supervisi") && audited()
+        && request.resource.data.name is string && request.resource.data.name.size() <= 200
+        && request.resource.data.schoolId is string;
+      allow delete: if hasFeature("supervisi") && marked("supervisi_teachers~" + teacherId);
+    }
+
+    match /supervisi_instruments/{instrumentId} {
+      allow read: if hasFeature("supervisi");
+      allow create, update: if hasFeature("supervisi") && audited()
+        && request.resource.data.sections is list && request.resource.data.sections.size() <= 30;
+      allow delete: if hasFeature("supervisi") && marked("supervisi_instruments~" + instrumentId);
+    }
+
+    match /supervisi_sessions/{sessionId} {
+      allow read: if hasFeature("supervisi");
+      allow create, update: if hasFeature("supervisi") && audited()
+        && request.resource.data.status in ["draft", "observing", "done"]
+        && request.resource.data.scores is map && request.resource.data.scores.size() <= 400;
+      allow delete: if hasFeature("supervisi") && marked("supervisi_sessions~" + sessionId);
+
+      // the two signatures, as small PNG pictures
+      match /signatures/{signId} {
+        allow read: if hasFeature("supervisi");
+        allow create, update: if hasFeature("supervisi") && audited()
+          && request.resource.data.keys().hasOnly(["teacher", "supervisor", "auditId"])
+          && request.resource.data.teacher is string && request.resource.data.teacher.size() <= 200000
+          && request.resource.data.supervisor is string && request.resource.data.supervisor.size() <= 200000;
+        allow delete: if hasFeature("supervisi") && marked("supervisi_sessions~" + sessionId + "~signatures~" + signId);
       }
     }
 

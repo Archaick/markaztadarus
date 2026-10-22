@@ -49,6 +49,10 @@
     "history": {
       "title": "Riwayat Aktivitas",
       "description": "Semua yang dilakukan admin di dasbor, terbaru di atas."
+    },
+    "supervisi": {
+      "title": "Supervisi Guru",
+      "description": "Supervisi guru PQA dengan Metode 5T: observasi, rekomendasi, tanda tangan dan laporan."
     }
   },
   "hub": {
@@ -179,6 +183,30 @@
         "revoke": "Mencabut dokumen",
         "restore": "Memberlakukan lagi dokumen",
         "delete": "Menghapus dokumen"
+      },
+      "sup": {
+        "school": {
+          "create": "Menambah sekolah",
+          "update": "Mengubah sekolah",
+          "delete": "Menghapus sekolah"
+        },
+        "teacher": {
+          "create": "Menambah guru",
+          "update": "Mengubah data guru",
+          "delete": "Menghapus guru"
+        },
+        "instrument": {
+          "create": "Membuat instrumen",
+          "update": "Mengubah instrumen",
+          "delete": "Menghapus instrumen"
+        },
+        "session": {
+          "create": "Membuat supervisi",
+          "start": "Memulai observasi",
+          "save": "Menyimpan supervisi",
+          "finish": "Menyelesaikan laporan supervisi",
+          "delete": "Menghapus supervisi"
+        }
       }
     },
     "fields": {
@@ -230,7 +258,13 @@
       "published": "Terbit",
       "paths": "Tautan",
       "provinces": "Provinsi",
-      "source": "Tautan"
+      "source": "Tautan",
+      "school": "Sekolah",
+      "city": "Kota",
+      "average": "Rata-rata",
+      "scored": "Dinilai",
+      "teachers": "Guru",
+      "observing": "Sedang observasi"
     }
   }
 }

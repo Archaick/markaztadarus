@@ -22,6 +22,7 @@ import InternalHub from "./components/Internal/InternalHub";
 import AccessProvider from "./components/Internal/AccessProvider";
 import AccessControl from "./components/Internal/AccessControl";
 import History from "./components/Internal/History";
+import SupervisiApp from "./components/Supervisi/SupervisiApp";
 import RequireFeature, { FeatureLogin } from "./components/Internal/RequireFeature";
 import RedirectAdmin from "./components/RedirectManager/RedirectAdmin";
 import FormsAdmin from "./components/Forms/FormsAdmin";
@@ -72,6 +73,7 @@ const App = () => {
               path="/internal/access"
               element={<RequireFeature feature="super"><AccessControl /></RequireFeature>}
             />
+            <Route path="/internal/supervisi/*" element={<SupervisiApp />} />
             <Route
               path="/internal/history"
               element={<RequireFeature feature="super"><History /></RequireFeature>}

@@ -1,5 +1,6 @@
 import {
   IconBarcode,
+  IconClipboardCheck,
   IconClipboardText,
   IconLink,
   IconWorldWww,
@@ -32,6 +33,12 @@ export const FEATURES = [
     href: "/internal/forms",
     icon: IconClipboardText,
     color: "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+  },
+  {
+    key: "supervisi",
+    href: "/internal/supervisi",
+    icon: IconClipboardCheck,
+    color: "linear-gradient(135deg, #cc9933 0%, #003366 100%)",
   },
   {
     key: "site",

@@ -1,0 +1,189 @@
+{
+  "brand": "Supervisi",
+  "signOut": "Keluar",
+  "nav": {
+    "overview": "Ringkasan",
+    "home": "Beranda",
+    "schools": "Sekolah",
+    "sessions": "Supervisi",
+    "instruments": "Instrumen",
+    "portal": "Portal internal",
+    "collapse": "Ciutkan menu",
+    "open": "Buka menu",
+    "close": "Tutup menu"
+  },
+  "role": {
+    "super": "Super admin",
+    "supervisor": "Supervisor"
+  },
+  "status": {
+    "draft": "Draf",
+    "observing": "Sedang observasi",
+    "done": "Selesai"
+  },
+  "home": {
+    "greeting": "Assalamu'alaikum, {{name}}",
+    "intro": "Supervisi guru PQA dengan Metode 5T: pra-observasi, observasi kelas, rekomendasi, dan pengesahan.",
+    "schools": "Sekolah",
+    "teachers": "Guru",
+    "done": "Supervisi selesai",
+    "average": "Rata-rata nilai (1–5)",
+    "open": "Belum selesai",
+    "noOpen": "Tidak ada supervisi yang sedang berjalan.",
+    "latest": "Laporan terbaru",
+    "noDone": "Belum ada laporan."
+  },
+  "sessions": {
+    "new": "Buat Supervisi Baru",
+    "title": "Supervisi",
+    "empty": "Belum ada supervisi.",
+    "missing": "Supervisi ini tidak ditemukan.",
+    "search": "Cari guru, sekolah, supervisor, surat…",
+    "all": "Semua",
+    "openOnes": "Belum selesai",
+    "instrument": "Instrumen",
+    "start": "Lanjut ke data pendukung",
+    "noInstrument": "Belum ada instrumen aktif. Pasang instrumen PQA 5T di halaman Instrumen.",
+    "noTeachers": "Tambahkan guru di halaman sekolah dulu"
+  },
+  "fields": {
+    "teacherName": "Nama guru",
+    "schoolName": "Nama sekolah",
+    "date": "Waktu pelaksanaan (hari/tanggal)",
+    "className": "Kelas pembelajaran",
+    "book": "Buku ke-",
+    "surah": "Nama surat",
+    "supervisorName": "Nama supervisor"
+  },
+  "schools": {
+    "title": "Sekolah",
+    "new": "Sekolah baru",
+    "edit": "Ubah sekolah",
+    "search": "Cari sekolah berdasarkan nama atau kota",
+    "empty": "Belum ada sekolah. Tambahkan yang pertama.",
+    "open": "Buka sekolah",
+    "meta": "{{supervised}} dari {{teachers}} guru disupervisi",
+    "name": "Nama sekolah",
+    "city": "Kota",
+    "province": "Provinsi",
+    "addCover": "Tambah foto sekolah",
+    "changeCover": "Ganti foto",
+    "missing": "Sekolah ini tidak ditemukan.",
+    "deleteText": "Hapus “{{name}}” beserta daftar gurunya? Laporan supervisi yang sudah ada tetap tersimpan."
+  },
+  "teachers": {
+    "title": "Guru ({{count}})",
+    "addPlaceholder": "Nama guru baru",
+    "add": "Tambah",
+    "empty": "Belum ada guru di sekolah ini.",
+    "count": "{{count}} supervisi selesai",
+    "last": "terakhir",
+    "rename": "Ubah nama",
+    "deleteText": "Hapus {{name}} dari daftar guru? Laporan supervisinya tetap tersimpan."
+  },
+  "common": {
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "noMatch": "Tidak ada yang cocok."
+  },
+  "errors": {
+    "name": "Isi nama terlebih dahulu.",
+    "photo": "Foto ini tidak bisa dibaca.",
+    "failed": "Gagal menyimpan. Periksa koneksi internet lalu coba lagi.",
+    "identity": "Isi nama guru dan tanggal pelaksanaan.",
+    "signatures": "Guru dan supervisor perlu membubuhkan tanda tangan."
+  },
+  "steps": {
+    "identity": "Pra-observasi",
+    "identityHint": "Data pendukung",
+    "observe": "Observasi kelas",
+    "observeHint": "Klik nilai 1–5",
+    "notes": "Pasca-observasi",
+    "notesHint": "Rekomendasi",
+    "sign": "Pengesahan",
+    "signHint": "Tanda tangan"
+  },
+  "identity": {
+    "title": "Lembar Data Pendukung",
+    "intro": "Diisi saat pertemuan pra-observasi di ruang guru, sambil melihat administrasi kelas dan kesiapan guru mengajar dengan Metode 5T.",
+    "start": "Mulai Observasi"
+  },
+  "notes": {
+    "title": "Catatan Rekomendasi Supervisor",
+    "intro": "Ulas hasil observasi bersama guru, klarifikasi indikator yang belum dinilai, lalu tuliskan rekomendasi.",
+    "appreciation": "Catatan apresiasi unggul guru",
+    "appreciationHint": "Kelebihan dan poin positif guru.",
+    "followUp": "Catatan tindak lanjut evaluasi supervisi pembelajaran",
+    "followUpHint": "Hal yang belum dilakukan dan perlu ditindaklanjuti pada pembelajaran berikutnya.",
+    "clarify": "{{count}} indikator belum dinilai — perlu diklarifikasi bersama guru, bukan otomatis dianggap tidak dilakukan."
+  },
+  "sign": {
+    "title": "Pengesahan",
+    "intro": "Guru yang disupervisi dan supervisor menandatangani di layar ini.",
+    "teacher": "Guru yang disupervisi",
+    "supervisor": "Supervisor",
+    "hint": "Tanda tangan di sini",
+    "clear": "Hapus",
+    "finish": "Selesaikan & Simpan Laporan"
+  },
+  "flow": {
+    "scored": "Dinilai",
+    "average": "Rata-rata",
+    "toClarify": "Perlu klarifikasi",
+    "saving": "Menyimpan…",
+    "unsaved": "Belum tersimpan",
+    "saved": "Tersimpan",
+    "back": "Kembali",
+    "saveDraft": "Simpan draf",
+    "next": "Lanjut"
+  },
+  "report": {
+    "title": "Laporan Supervisi Guru",
+    "edit": "Ubah",
+    "print": "Cetak / PDF",
+    "average": "rata-rata (dari {{max}})",
+    "percent": "capaian",
+    "scored": "indikator dinilai",
+    "toClarify": "perlu klarifikasi",
+    "assessment": "Lembar Data Penilaian",
+    "indicator": "Indikator",
+    "deleteText": "Hapus laporan supervisi {{name}}? Tidak bisa dibatalkan."
+  },
+  "instruments": {
+    "title": "Instrumen",
+    "intro": "Lembar penilaian yang dipakai saat supervisi. Bisa diubah kapan saja; laporan lama tetap memakai versi saat itu.",
+    "installPqa": "Pasang instrumen PQA 5T",
+    "new": "Instrumen baru",
+    "empty": "Belum ada instrumen. Pasang instrumen PQA 5T sesuai dokumen, atau buat sendiri.",
+    "meta": "{{sections}} bagian · {{items}} indikator · nilai 1–{{max}} · dipakai {{used}}× · versi {{version}}",
+    "inactive": "Nonaktif",
+    "edit": "Ubah instrumen",
+    "duplicate": "Gandakan",
+    "copy": "salinan",
+    "deleteText": "Hapus instrumen “{{name}}”? Laporan yang sudah memakainya tetap utuh.",
+    "name": "Nama instrumen",
+    "note": "Petunjuk penilaian",
+    "scale": "Skala nilai",
+    "active": "Aktif (bisa dipilih saat supervisi baru)",
+    "section": "Bagian",
+    "description": "Keterangan bagian",
+    "group": "Subjudul (opsional, misal: Tamhid)",
+    "addItem": "Tambah indikator",
+    "addGroup": "Tambah subjudul",
+    "addSection": "Tambah bagian",
+    "versionHint": "Setiap simpan menjadi versi baru. Supervisi yang sudah dibuat tetap memakai versi lamanya.",
+    "up": "Naik",
+    "down": "Turun",
+    "lang": {
+      "id": "Bahasa Indonesia (wajib)",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "errors": {
+      "name": "Isi nama instrumen (Bahasa Indonesia).",
+      "empty": "Tambahkan paling sedikit satu indikator.",
+      "itemText": "Setiap indikator perlu teks Bahasa Indonesia."
+    }
+  }
+}
