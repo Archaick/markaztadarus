@@ -45,7 +45,8 @@
     "start": "Lanjut ke data pendukung",
     "noInstrument": "Belum ada instrumen aktif. Pasang instrumen PQA 5T di halaman Instrumen.",
     "noTeachers": "Tambahkan guru di halaman sekolah dulu",
-    "emptySchool": "Belum ada supervisi. Tekan Supervisi di samping nama guru untuk memulai."
+    "emptySchool": "Belum ada supervisi. Tekan Supervisi di samping nama guru untuk memulai.",
+    "deleteText": "Hapus supervisi {{name}}? Tindakan ini tidak bisa dibatalkan."
   },
   "fields": {
     "teacherName": "Nama guru",
@@ -198,5 +199,17 @@
       "empty": "Tambahkan paling sedikit satu indikator.",
       "itemText": "Setiap indikator perlu teks Bahasa Indonesia."
     }
+  },
+  "charts": {
+    "average": "Nilai rata-rata",
+    "of": "dari {{max}}",
+    "achieved": "{{percent}}% tercapai",
+    "empty": "Muncul setelah laporan pertama selesai.",
+    "profile": "Profil 5T",
+    "aspects": "Per aspek",
+    "months": "Supervisi per bulan",
+    "inProgress": "Berjalan",
+    "schools": "Kemajuan sekolah",
+    "teachersDone": "{{done}}/{{total}} guru"
   }
 }

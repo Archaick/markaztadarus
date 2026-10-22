@@ -8,7 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { deleteSchool, deleteTeacher, saveTeacher } from "./actions";
 import { ProgressRing } from "./parts";
-import { SessionRow } from "./OverviewPage";
+import SessionRow from "./SessionRow";
 import { SchoolCover, SchoolForm, schoolProgress } from "./SchoolsPage";
 import PickInstrument, { useStartSession } from "./NewSession";
 import { formatAverage } from "./supervisiSchema";

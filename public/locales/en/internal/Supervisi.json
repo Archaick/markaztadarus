@@ -45,7 +45,8 @@
     "start": "Continue to the identity sheet",
     "noInstrument": "No active instrument yet. Install the PQA 5T instrument on the Instruments page.",
     "noTeachers": "Add teachers on the school's page first",
-    "emptySchool": "No supervisions yet. Press Supervise next to a teacher to start."
+    "emptySchool": "No supervisions yet. Press Supervise next to a teacher to start.",
+    "deleteText": "Delete {{name}}'s supervision? This cannot be undone."
   },
   "fields": {
     "teacherName": "Teacher",
@@ -200,5 +201,17 @@
       "empty": "Add at least one indicator.",
       "itemText": "Every indicator needs its Indonesian text."
     }
+  },
+  "charts": {
+    "average": "Average score",
+    "of": "of {{max}}",
+    "achieved": "{{percent}}% achieved",
+    "empty": "Shown after the first finished report.",
+    "profile": "5T profile",
+    "aspects": "By aspect",
+    "months": "Supervisions per month",
+    "inProgress": "In progress",
+    "schools": "Schools progress",
+    "teachersDone": "{{done}}/{{total}} teachers"
   }
 }

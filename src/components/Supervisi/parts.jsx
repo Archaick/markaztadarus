@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { IconCheck } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Supervisi.module.css";
@@ -44,14 +45,34 @@ export function StatusChip({ status }) {
   return <span className={`${styles.chip} ${cls}`}>{t(`status.${status || "draft"}`)}</span>;
 }
 
-export function Stat({ icon: Icon, value, label }) {
+/** A number that counts up to `value` (eased, under a second). */
+export function useCountUp(value, ms = 900) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return setShown(value);
+    let frame;
+    const begin = performance.now();
+    const tick = (now) => {
+      const p = Math.min(1, (now - begin) / ms);
+      setShown(value * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [value, ms]);
+  return shown;
+}
+
+/** A key number with its icon; `decimals` for averages, which show "–" while there are none. */
+export function Stat({ icon: Icon, value, label, decimals = 0 }) {
+  const shown = useCountUp(value || 0);
   return (
     <div className={styles.stat}>
       <span className={styles.statIcon}>
         <Icon size={22} />
       </span>
       <div>
-        <div className={styles.statValue}>{value}</div>
+        <div className={styles.statValue}>{decimals && !value ? "–" : shown.toFixed(decimals)}</div>
         <div className={styles.statLabel}>{label}</div>
       </div>
     </div>

@@ -521,8 +521,19 @@
   color: inherit;
   text-decoration: none;
 }
-a.row:hover {
+.row:has(> .rowLink:hover) {
   border-color: var(--gold);
+}
+/* a supervision row: the link fills it, the delete button sits at its end */
+.rowLink {
+  flex: 1 1 220px;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  color: inherit;
+  text-decoration: none;
 }
 /* the name keeps a readable width; the buttons drop below it when the panel is narrow */
 .rowMain {
@@ -1022,4 +1033,12 @@ a.row:hover {
   .scenePicker {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* the home greeting sits on a drawn scene, like a school's header */
+.homeHero {
+  min-height: 200px;
+}
+.homeHero .cardTitle {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
 }
