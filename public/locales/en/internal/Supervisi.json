@@ -44,7 +44,8 @@
     "instrument": "Instrument",
     "start": "Continue to the identity sheet",
     "noInstrument": "No active instrument yet. Install the PQA 5T instrument on the Instruments page.",
-    "noTeachers": "Add teachers on the school's page first"
+    "noTeachers": "Add teachers on the school's page first",
+    "emptySchool": "No supervisions yet. Press Supervise next to a teacher to start."
   },
   "fields": {
     "teacherName": "Teacher",
@@ -91,7 +92,9 @@
     "count": "{{count}} supervisions finished",
     "last": "latest",
     "rename": "Rename",
-    "deleteText": "Remove {{name}} from the teachers? Their reports are kept."
+    "deleteText": "Remove {{name}} from the teachers? Their reports are kept.",
+    "supervise": "Supervise",
+    "continue": "Continue"
   },
   "common": {
     "cancel": "Cancel",

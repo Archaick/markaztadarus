@@ -44,7 +44,8 @@
     "instrument": "Instrumen",
     "start": "Lanjut ke data pendukung",
     "noInstrument": "Belum ada instrumen aktif. Pasang instrumen PQA 5T di halaman Instrumen.",
-    "noTeachers": "Tambahkan guru di halaman sekolah dulu"
+    "noTeachers": "Tambahkan guru di halaman sekolah dulu",
+    "emptySchool": "Belum ada supervisi. Tekan Supervisi di samping nama guru untuk memulai."
   },
   "fields": {
     "teacherName": "Nama guru",
@@ -89,7 +90,9 @@
     "count": "{{count}} supervisi selesai",
     "last": "terakhir",
     "rename": "Ubah nama",
-    "deleteText": "Hapus {{name}} dari daftar guru? Laporan supervisinya tetap tersimpan."
+    "deleteText": "Hapus {{name}} dari daftar guru? Laporan supervisinya tetap tersimpan.",
+    "supervise": "Supervisi",
+    "continue": "Lanjutkan"
   },
   "common": {
     "cancel": "Batal",

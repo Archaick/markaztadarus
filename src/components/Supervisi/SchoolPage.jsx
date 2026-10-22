@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionIcon, Button, Group, Loader, Modal, Text, TextInput, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconPencil, IconPlus, IconTrash, IconUserPlus } from "@tabler/icons-react";
+import { IconArrowLeft, IconClipboardCheck, IconPencil, IconPlayerPlay, IconTrash, IconUserPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useSupervisi } from "./SupervisiData";
@@ -10,7 +10,7 @@ import { deleteSchool, deleteTeacher, saveTeacher } from "./actions";
 import { ProgressRing } from "./parts";
 import { SessionRow } from "./OverviewPage";
 import { SchoolCover, SchoolForm, schoolProgress } from "./SchoolsPage";
-import NewSession from "./NewSession";
+import PickInstrument, { useStartSession } from "./NewSession";
 import { formatAverage } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 
@@ -27,7 +27,8 @@ export default function SchoolPage() {
   const [newName, setNewName] = useState("");
   const [renaming, setRenaming] = useState(null);
   const [removing, setRemoving] = useState(null); // teacher | "school"
-  const [startFor, setStartFor] = useState(null); // teacherId | "" (pick)
+  const [startFor, setStartFor] = useState(null); // the teacher, while an instrument is picked
+  const { active, busy, start } = useStartSession();
 
   if (loading) return <Loader />;
   const school = schoolById.get(schoolId);
@@ -43,6 +44,13 @@ export default function SchoolPage() {
     if (!name) return;
     await saveTeacher(user, null, { name, schoolId: school.id });
     setNewName("");
+  };
+
+  // one active instrument (the usual case) starts straight away
+  const supervise = (teacher) => {
+    if (!active.length) return navigate(`${BASE}/instrumen`);
+    if (active.length === 1) return start(school, teacher, active[0]);
+    setStartFor(teacher);
   };
 
   const confirmRemove = async () => {
@@ -105,6 +113,7 @@ export default function SchoolPage() {
               {list.map((teacher) => {
                 const done = own.filter((s) => s.teacherId === teacher.id && s.status === "done");
                 const last = done[0];
+                const open = own.find((s) => s.teacherId === teacher.id && s.status !== "done");
                 return (
                   <li key={teacher.id} className={styles.row}>
                     <div className={styles.rowMain}>
@@ -120,11 +129,15 @@ export default function SchoolPage() {
                           <small>{t("teachers.last")}</small>
                         </span>
                       )}
-                      <Tooltip label={t("sessions.new")}>
-                        <ActionIcon variant="filled" color="#003366" size="lg" radius="md" onClick={() => setStartFor(teacher.id)}>
-                          <IconPlus size={18} />
-                        </ActionIcon>
-                      </Tooltip>
+                      {open ? (
+                        <Button component={Link} to={`${BASE}/sesi/${open.id}`} size="xs" color="#cc9933" leftSection={<IconPlayerPlay size={14} />}>
+                          {t("teachers.continue")}
+                        </Button>
+                      ) : (
+                        <Button size="xs" color="#003366" leftSection={<IconClipboardCheck size={14} />} loading={busy && startFor === null} onClick={() => supervise(teacher)}>
+                          {t("teachers.supervise")}
+                        </Button>
+                      )}
                       <Tooltip label={t("teachers.rename")}>
                         <ActionIcon variant="subtle" color="gray" onClick={() => setRenaming({ ...teacher })}>
                           <IconPencil size={17} />
@@ -144,14 +157,7 @@ export default function SchoolPage() {
         </section>
 
         <section className={styles.panel}>
-          <Group justify="space-between" mb={14}>
-            <h2 className={styles.panelTitle} style={{ margin: 0 }}>
-              {t("sessions.title")}
-            </h2>
-            <Button size="xs" color="#003366" onClick={() => setStartFor("")} disabled={!list.length}>
-              {t("sessions.new")}
-            </Button>
-          </Group>
+          <h2 className={styles.panelTitle}>{t("sessions.title")}</h2>
           {own.length ? (
             <ul className={styles.rows}>
               {own.map((s) => (
@@ -159,13 +165,13 @@ export default function SchoolPage() {
               ))}
             </ul>
           ) : (
-            <p className={styles.empty}>{t("sessions.empty")}</p>
+            <p className={styles.empty}>{t("sessions.emptySchool")}</p>
           )}
         </section>
       </div>
 
       <SchoolForm opened={editing} school={school} onClose={() => setEditing(false)} />
-      <NewSession opened={startFor !== null} onClose={() => setStartFor(null)} schoolId={school.id} teacherId={startFor || null} />
+      <PickInstrument opened={!!startFor} onClose={() => setStartFor(null)} busy={busy} onPick={(instrument) => start(school, startFor, instrument)} />
 
       <Modal opened={!!renaming} onClose={() => setRenaming(null)} title={t("teachers.rename")} centered>
         {renaming && (

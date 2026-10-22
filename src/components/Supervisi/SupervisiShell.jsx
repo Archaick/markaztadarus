@@ -5,7 +5,6 @@ import {
   IconBuildingCommunity,
   IconChevronLeft,
   IconChevronRight,
-  IconClipboardList,
   IconHome2,
   IconLayoutGrid,
   IconListCheck,
@@ -83,7 +82,6 @@ export default function SupervisiShell({ children }) {
   const nav = [
     { to: BASE, end: true, icon: IconLayoutGrid, label: t("nav.home") },
     { to: `${BASE}/sekolah`, icon: IconBuildingCommunity, label: t("nav.schools") },
-    { to: `${BASE}/supervisi`, icon: IconClipboardList, label: t("nav.sessions") },
     { to: `${BASE}/instrumen`, icon: IconListCheck, label: t("nav.instruments") },
   ];
 
