@@ -198,7 +198,20 @@
       "name": "Isi nama instrumen (Bahasa Indonesia).",
       "empty": "Tambahkan paling sedikit satu indikator.",
       "itemText": "Setiap indikator perlu teks Bahasa Indonesia."
-    }
+    },
+    "editingIn": "Bahasa yang sedang diedit",
+    "langShort": {
+      "id": "Indonesia",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "missing": "{{count}} teks belum diterjemahkan",
+    "sheetHint": "Inilah tampilan lembar penilaian di laporan. Klik teks mana pun untuk mengubahnya.",
+    "noteHint": "Petunjuk penilaian (opsional)",
+    "sectionHint": "Judul bagian",
+    "descriptionHint": "Keterangan bagian (opsional)",
+    "groupHint": "Subjudul (opsional, mis. Tamhid)",
+    "itemHint": "Tulis indikator…"
   },
   "charts": {
     "average": "Nilai rata-rata",

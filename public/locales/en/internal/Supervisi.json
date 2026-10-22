@@ -200,7 +200,20 @@
       "name": "Fill in the instrument's name (Indonesian).",
       "empty": "Add at least one indicator.",
       "itemText": "Every indicator needs its Indonesian text."
-    }
+    },
+    "editingIn": "Editing language",
+    "langShort": {
+      "id": "Indonesia",
+      "en": "English",
+      "ar": "العربية"
+    },
+    "missing": "{{count}} texts not translated yet",
+    "sheetHint": "This is how the assessment sheet looks in a report. Click any text to change it.",
+    "noteHint": "Scoring instructions (optional)",
+    "sectionHint": "Section title",
+    "descriptionHint": "Section description (optional)",
+    "groupHint": "Subheading (optional, e.g. Tamhid)",
+    "itemHint": "Write the indicator…"
   },
   "charts": {
     "average": "Average score",
