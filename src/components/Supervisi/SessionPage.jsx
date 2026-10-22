@@ -8,7 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { finishSession, loadSignatures, updateSession } from "./actions";
 import SignaturePad from "./SignaturePad";
-import { SCALE, formatAverage, summarize, tr } from "./supervisiSchema";
+import { SCALE, formatAverage, itemNo, summarize, tr } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
@@ -239,7 +239,7 @@ export default function SessionPage() {
                       const value = draft.scores[item.id];
                       return (
                         <div key={item.id} className={`${styles.indicator} ${value ? styles.indicatorScored : ""}`}>
-                          <span className={styles.indicatorNum}>{n}</span>
+                          <span className={styles.indicatorNum}>{itemNo(item, n)}</span>
                           <div className={styles.indicatorText} dir="auto">
                             {tr(item.text, lang)}
                           </div>

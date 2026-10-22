@@ -96,6 +96,7 @@ export default function InstrumentSheet({ instrument, onClose }) {
   const max = v.scaleMax || 5;
   const missing = useMemo(() => missingIn(v, lang), [v, lang]);
 
+  const setHeader = (key, text) => setV((x) => ({ ...x, headers: { ...(x.headers || {}), [key]: text } }));
   const setSections = (fn) => setV((x) => ({ ...x, sections: fn(x.sections || []) }));
   const setSection = (si, patch) => setSections((ss) => ss.map((x, i) => (i === si ? { ...x, ...patch } : x)));
   const setGroups = (si, fn) => setSections((ss) => ss.map((x, i) => (i === si ? { ...x, groups: fn(x.groups || []) } : x)));
@@ -175,11 +176,15 @@ export default function InstrumentSheet({ instrument, onClose }) {
             <table className={s.items}>
               <thead>
                 <tr>
-                  <th className={s.numCol}>#</th>
-                  <th>{ts("report.indicator")}</th>
+                  <th className={s.numCol}>
+                    <Words value={v.headers?.num} onChange={(x) => setHeader("num", x)} lang={lang} placeholder="#" className={s.headWords} />
+                  </th>
+                  <th>
+                    <Words value={v.headers?.indicator} onChange={(x) => setHeader("indicator", x)} lang={lang} placeholder={ts("report.indicator")} className={s.headWords} />
+                  </th>
                   {SCALE.slice(0, max).map((x) => (
                     <th key={x} className={s.scoreCol}>
-                      {x}
+                      <Words value={v.headers?.[`s${x}`]} onChange={(w) => setHeader(`s${x}`, w)} lang={lang} placeholder={String(x)} className={s.headWords} />
                     </th>
                   ))}
                   <th className={s.toolCol} aria-hidden="true" />
@@ -203,7 +208,19 @@ export default function InstrumentSheet({ instrument, onClose }) {
                     n += 1;
                     return (
                       <tr key={item.id} className={s.itemRow}>
-                        <td className={s.numCol}>{n}</td>
+                        <td className={s.numCol}>
+                          <TextInput
+                            variant="unstyled"
+                            value={item.no || ""}
+                            placeholder={String(n)}
+                            onChange={(e) => {
+                              const no = e.currentTarget.value.slice(0, 8);
+                              setItems(si, gi, (its) => its.map((x, i) => (i === ii ? { ...x, no } : x)));
+                            }}
+                            aria-label="#"
+                            className={`${s.words} ${s.numWords}`}
+                          />
+                        </td>
                         <td>
                           <Words
                             value={item.text}

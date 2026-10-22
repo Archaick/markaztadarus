@@ -22,6 +22,15 @@ export const tr = (text, lang) => {
   return text[(lang || "id").slice(0, 2)] || text.id || text.en || text.ar || "";
 };
 
+/** What the # column shows: the number the admin wrote, else the running one. */
+export const itemNo = (item, n) => (item?.no || "").trim() || String(n);
+
+/**
+ * A header of the assessment table ("num", "indicator", or "s1"…"s5" for the
+ * score columns) as the admin worded it, else the standard one.
+ */
+export const headerOf = (instrument, key, lang, fallback) => tr(instrument?.headers?.[key], lang) || fallback;
+
 /** A stored document without its bookkeeping fields (for copies). */
 export const withoutMeta = (obj) => {
   const copy = { ...obj };

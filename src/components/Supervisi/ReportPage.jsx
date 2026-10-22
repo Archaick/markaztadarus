@@ -8,7 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { deleteSession, loadSignatures } from "./actions";
 import { useDateFormat } from "./parts";
-import { SCALE, formatAverage, summarize, tr } from "./supervisiSchema";
+import { SCALE, formatAverage, headerOf, itemNo, summarize, tr } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 import report from "./Report.module.css";
 
@@ -139,11 +139,11 @@ export default function ReportPage() {
             <table className={report.items}>
               <thead>
                 <tr>
-                  <th className={report.numCol}>#</th>
-                  <th>{t("report.indicator")}</th>
+                  <th className={report.numCol}>{headerOf(instrument, "num", lang, "#")}</th>
+                  <th>{headerOf(instrument, "indicator", lang, t("report.indicator"))}</th>
                   {SCALE.slice(0, max).map((v) => (
                     <th key={v} className={report.scoreCol}>
-                      {v}
+                      {headerOf(instrument, `s${v}`, lang, String(v))}
                     </th>
                   ))}
                 </tr>
@@ -160,7 +160,7 @@ export default function ReportPage() {
                     const value = session.scores?.[item.id];
                     return (
                       <tr key={item.id} className={value ? "" : report.unscored}>
-                        <td className={report.numCol}>{n}</td>
+                        <td className={report.numCol}>{itemNo(item, n)}</td>
                         <td dir="auto">{tr(item.text, lang)}</td>
                         {SCALE.slice(0, max).map((v) => (
                           <td key={v} className={report.scoreCol}>

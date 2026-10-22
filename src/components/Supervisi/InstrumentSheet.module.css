@@ -123,13 +123,38 @@
   background: transparent;
   border: 0;
 }
+/* the header cells and the numbers are typed into too */
+.headWords input {
+  color: #fff;
+  font-weight: 600;
+  text-align: inherit;
+}
+.headWords input::placeholder {
+  color: #fff;
+  opacity: 1;
+}
+.headWords input:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.headWords input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 2px #cc9933;
+}
+.numWords input {
+  text-align: center;
+  padding: 2px 0;
+}
+.numWords input::placeholder {
+  color: #5d6b7d;
+  opacity: 1;
+}
 .numCol {
-  width: 34px;
+  width: 44px;
   text-align: center !important;
   color: #5d6b7d;
 }
 .scoreCol {
-  width: 36px;
+  width: 44px;
   text-align: center !important;
 }
 .bubble {
