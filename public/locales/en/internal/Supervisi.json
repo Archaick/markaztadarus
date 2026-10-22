@@ -69,7 +69,17 @@
     "addCover": "Add a school photo",
     "changeCover": "Change photo",
     "missing": "This school was not found.",
-    "deleteText": "Delete “{{name}}” and its list of teachers? Existing supervision reports are kept."
+    "deleteText": "Delete “{{name}}” and its list of teachers? Existing supervision reports are kept.",
+    "design": "Card design",
+    "scenes": {
+      "auto": "Automatic",
+      "mosque-sunset": "Mosque · sunset",
+      "mosque-dusk": "Mosque · dusk",
+      "mosque-night": "Mosque · night",
+      "school-sunset": "School · sunset",
+      "school-dusk": "School · dusk",
+      "school-night": "School · night"
+    }
   },
   "teachers": {
     "title": "Teachers ({{count}})",

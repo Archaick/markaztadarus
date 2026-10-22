@@ -55,9 +55,11 @@
   flex-shrink: 0;
 }
 .brandText {
-  font-size: 1.3rem;
+  min-width: 0;
+  font-size: 1.18rem;
   font-weight: 700;
-  white-space: nowrap;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 .brandText b,
 .topBrand b {
@@ -424,6 +426,9 @@
   inset: 0;
   background: linear-gradient(180deg, rgba(0, 20, 45, 0.7) 0%, rgba(0, 20, 45, 0.15) 45%, rgba(0, 20, 45, 0.75) 100%);
 }
+.cardShadeScene {
+  background: linear-gradient(180deg, rgba(0, 20, 45, 0.55) 0%, rgba(0, 20, 45, 0) 34%, rgba(0, 20, 45, 0) 62%, rgba(0, 20, 45, 0.55) 100%);
+}
 .cardTop,
 .cardBottom {
   position: relative;
@@ -460,6 +465,10 @@
   font-weight: 700;
   font-size: 1.05rem;
 }
+.cardTools {
+  display: flex;
+  gap: 8px;
+}
 .cardMeta {
   display: block;
   font-size: 0.78rem;
@@ -478,10 +487,13 @@
   color: var(--ink);
   box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.5);
 }
-.ring svg {
+.ringTrack {
   position: absolute;
   inset: 0;
   transform: rotate(-90deg);
+}
+[dir="rtl"] .ringTrack {
+  transform: rotate(-90deg) scaleY(-1);
 }
 .ringValue {
   position: relative;
@@ -955,4 +967,57 @@ a.row:hover {
 
 [dir="rtl"] .flip {
   transform: scaleX(-1);
+}
+
+/* the card design picker in the school form */
+.pickLabel {
+  margin: 0 0 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.scenePicker {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.sceneOption {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #e6ebf0;
+  color: #5d6b7d;
+  font: inherit;
+  cursor: pointer;
+}
+.sceneOn {
+  border-color: #cc9933;
+  box-shadow: 0 0 0 3px rgba(204, 153, 51, 0.3);
+}
+.sceneName {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 4px 6px;
+  background: rgba(0, 20, 45, 0.6);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+}
+.scenePhoto {
+  border-style: dashed;
+  border-color: #b9c6d4;
+}
+.scenePhoto.sceneOn {
+  border-style: solid;
+  border-color: #cc9933;
+}
+@media (max-width: 560px) {
+  .scenePicker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

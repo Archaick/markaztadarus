@@ -69,7 +69,17 @@
     "addCover": "Tambah foto sekolah",
     "changeCover": "Ganti foto",
     "missing": "Sekolah ini tidak ditemukan.",
-    "deleteText": "Hapus “{{name}}” beserta daftar gurunya? Laporan supervisi yang sudah ada tetap tersimpan."
+    "deleteText": "Hapus “{{name}}” beserta daftar gurunya? Laporan supervisi yang sudah ada tetap tersimpan.",
+    "design": "Desain kartu",
+    "scenes": {
+      "auto": "Otomatis",
+      "mosque-sunset": "Masjid · senja",
+      "mosque-dusk": "Masjid · petang",
+      "mosque-night": "Masjid · malam",
+      "school-sunset": "Sekolah · senja",
+      "school-dusk": "Sekolah · petang",
+      "school-night": "Sekolah · malam"
+    }
   },
   "teachers": {
     "title": "Guru ({{count}})",

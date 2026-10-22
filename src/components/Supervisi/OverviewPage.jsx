@@ -64,9 +64,6 @@ export default function OverviewPage() {
           <h1 className={styles.pageTitle}>{t("home.greeting", { name: (user?.displayName || "").split(" ")[0] || "" })}</h1>
           <p className={styles.pageSub}>{t("home.intro")}</p>
         </div>
-        <Link to={`${BASE}/supervisi?new=1`} className={styles.primary}>
-          {t("sessions.new")}
-        </Link>
       </div>
 
       <div className={styles.stats}>

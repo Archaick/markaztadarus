@@ -13,7 +13,7 @@ export function ProgressRing({ value = 0, size = 96, label }) {
   const done = v >= 100;
   return (
     <span className={styles.ring} style={{ width: size, height: size }}>
-      <svg width={size} height={size} aria-hidden="true">
+      <svg width={size} height={size} aria-hidden="true" className={styles.ringTrack}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e6ebf0" strokeWidth={stroke} />
         <circle
           cx={size / 2}

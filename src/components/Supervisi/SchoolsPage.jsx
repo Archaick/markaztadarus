@@ -9,6 +9,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { saveSchool } from "./actions";
 import { ProgressRing } from "./parts";
+import SchoolScene, { SCENES } from "./SchoolScene";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
@@ -24,8 +25,8 @@ export function schoolProgress(school, teachers, sessions) {
 export function SchoolCover({ school }) {
   return (
     <>
-      {school.cover ? <img src={school.cover} alt="" className={styles.cardCover} /> : <span className={styles.cardPattern} />}
-      <span className={styles.cardShade} />
+      {school.cover ? <img src={school.cover} alt="" className={styles.cardCover} /> : <SchoolScene id={school.id} scene={school.scene} />}
+      <span className={`${styles.cardShade} ${school.cover ? "" : styles.cardShadeScene}`} />
     </>
   );
 }
@@ -37,7 +38,7 @@ export function SchoolForm({ opened, school, onClose, onSaved }) {
   const [values, setValues] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const v = values || { name: school?.name || "", city: school?.city || "", province: school?.province || "", cover: school?.cover || "" };
+  const v = values || { name: school?.name || "", city: school?.city || "", province: school?.province || "", cover: school?.cover || "", scene: school?.scene || "" };
   const set = (k) => (e) => setValues({ ...v, [k]: e.currentTarget.value });
 
   const close = () => {
@@ -57,7 +58,7 @@ export function SchoolForm({ opened, school, onClose, onSaved }) {
     if (!v.name.trim()) return setError(t("errors.name"));
     setBusy(true);
     try {
-      const id = await saveSchool(user, school, { name: v.name.trim(), city: v.city.trim(), province: v.province.trim(), cover: v.cover || "" });
+      const id = await saveSchool(user, school, { name: v.name.trim(), city: v.city.trim(), province: v.province.trim(), cover: v.cover || "", scene: v.scene || "" });
       close();
       onSaved?.(id);
     } catch (err) {
@@ -69,18 +70,35 @@ export function SchoolForm({ opened, school, onClose, onSaved }) {
   };
 
   return (
-    <Modal opened={opened} onClose={close} title={t(school ? "schools.edit" : "schools.new")} centered>
+    <Modal opened={opened} onClose={close} title={t(school ? "schools.edit" : "schools.new")} centered size="lg">
       <div style={{ display: "grid", gap: 12 }}>
         <TextInput label={t("schools.name")} value={v.name} onChange={set("name")} required dir="auto" data-autofocus />
         <Group grow>
           <TextInput label={t("schools.city")} value={v.city} onChange={set("city")} dir="auto" />
           <TextInput label={t("schools.province")} value={v.province} onChange={set("province")} dir="auto" />
         </Group>
-        <label className={styles.ghost} style={{ justifyContent: "center" }}>
-          <IconPhoto size={18} /> {v.cover ? t("schools.changeCover") : t("schools.addCover")}
-          <input type="file" accept="image/*" hidden onChange={(e) => pick(e.target.files?.[0])} />
-        </label>
-        {v.cover && <img src={v.cover} alt="" style={{ width: "100%", borderRadius: 14, maxHeight: 180, objectFit: "cover" }} />}
+        <div>
+          <p className={styles.pickLabel}>{t("schools.design")}</p>
+          <div className={styles.scenePicker}>
+            {["", ...SCENES].map((key) => (
+              <button
+                key={key || "auto"}
+                type="button"
+                className={`${styles.sceneOption} ${!v.cover && v.scene === key ? styles.sceneOn : ""}`}
+                onClick={() => setValues({ ...v, scene: key, cover: "" })}
+                aria-pressed={!v.cover && v.scene === key}
+              >
+                <SchoolScene id={school?.id || v.name || "new"} scene={key} />
+                <span className={styles.sceneName}>{t(`schools.scenes.${key || "auto"}`)}</span>
+              </button>
+            ))}
+            <label className={`${styles.sceneOption} ${styles.scenePhoto} ${v.cover ? styles.sceneOn : ""}`}>
+              {v.cover ? <img src={v.cover} alt="" className={styles.cardCover} /> : <IconPhoto size={26} />}
+              <span className={styles.sceneName}>{v.cover ? t("schools.changeCover") : t("schools.addCover")}</span>
+              <input type="file" accept="image/*" hidden onChange={(e) => pick(e.target.files?.[0])} />
+            </label>
+          </div>
+        </div>
         {error && <p style={{ color: "#c92a2a", margin: 0 }}>{error}</p>}
         <Group justify="flex-end">
           <Button variant="default" onClick={close}>

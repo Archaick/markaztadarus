@@ -6,6 +6,7 @@ import { useAccess } from "../Internal/accessContext";
 import { useSupervisi } from "./SupervisiData";
 import { deleteInstrument, installPqa, saveInstrument } from "./actions";
 import { PQA_5T, indicatorsOf, newId, tr, withoutMeta } from "./supervisiSchema";
+import InstrumentScene from "./InstrumentScene";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
@@ -235,51 +236,60 @@ export default function InstrumentsPage() {
       {instruments.length === 0 ? (
         <p className={styles.empty}>{t("instruments.empty")}</p>
       ) : (
-        <ul className={styles.rows}>
+        <div className={styles.cards}>
           {instruments.map((ins) => {
             const items = indicatorsOf(ins).length;
             const used = sessions.filter((s) => s.instrumentId === ins.id).length;
             return (
-              <li key={ins.id} className={styles.row}>
-                <div className={styles.rowMain}>
-                  <div className={styles.rowTitle} dir="auto">
+              <div key={ins.id} className={styles.card} style={ins.active === false ? { filter: "grayscale(0.7)" } : undefined}>
+                <InstrumentScene id={ins.id} />
+                <span className={`${styles.cardShade} ${styles.cardShadeScene}`} />
+                <div className={styles.cardTop}>
+                  <h2 className={styles.cardTitle} dir="auto" style={{ fontSize: "1.45rem" }}>
                     {tr(ins.name, i18n.language)}
-                  </div>
-                  <div className={styles.rowSub}>
+                  </h2>
+                  <p className={styles.cardPlace}>
                     {t("instruments.meta", { sections: (ins.sections || []).length, items, max: ins.scaleMax || 5, used, version: ins.version || 1 })}
+                  </p>
+                  {ins.active === false && (
+                    <Badge color="gray" mt={8}>
+                      {t("instruments.inactive")}
+                    </Badge>
+                  )}
+                </div>
+                <div className={styles.cardBottom}>
+                  <button type="button" className={styles.cardOpen} onClick={() => setEditing(ins)} style={{ border: 0, color: "#fff", font: "inherit", cursor: "pointer" }}>
+                    <IconPencil size={18} />
+                    <span>{t("instruments.edit")}</span>
+                  </button>
+                  <div className={styles.cardTools}>
+                    <Tooltip label={t("instruments.duplicate")}>
+                      <ActionIcon
+                        size="xl"
+                        radius="xl"
+                        variant="white"
+                        color="dark"
+                        onClick={() => {
+                          const copy = JSON.parse(JSON.stringify(strip(ins)));
+                          delete copy.key;
+                          copy.name = { ...copy.name, id: `${copy.name?.id || ""} (${t("instruments.copy")})` };
+                          setEditing(copy);
+                        }}
+                      >
+                        <IconCopy size={18} />
+                      </ActionIcon>
+                    </Tooltip>
+                    <Tooltip label={t("common.delete")}>
+                      <ActionIcon size="xl" radius="xl" variant="white" color="red" onClick={() => setRemoving(ins)}>
+                        <IconTrash size={18} />
+                      </ActionIcon>
+                    </Tooltip>
                   </div>
                 </div>
-                <div className={styles.rowEnd}>
-                  {ins.active === false && <Badge color="gray">{t("instruments.inactive")}</Badge>}
-                  <Tooltip label={t("instruments.edit")}>
-                    <ActionIcon variant="subtle" color="blue" onClick={() => setEditing(ins)}>
-                      <IconPencil size={18} />
-                    </ActionIcon>
-                  </Tooltip>
-                  <Tooltip label={t("instruments.duplicate")}>
-                    <ActionIcon
-                      variant="subtle"
-                      color="gray"
-                      onClick={() => {
-                        const copy = JSON.parse(JSON.stringify(strip(ins)));
-                        delete copy.key;
-                        copy.name = { ...copy.name, id: `${copy.name?.id || ""} (${t("instruments.copy")})` };
-                        setEditing(copy);
-                      }}
-                    >
-                      <IconCopy size={18} />
-                    </ActionIcon>
-                  </Tooltip>
-                  <Tooltip label={t("common.delete")}>
-                    <ActionIcon variant="subtle" color="red" onClick={() => setRemoving(ins)}>
-                      <IconTrash size={18} />
-                    </ActionIcon>
-                  </Tooltip>
-                </div>
-              </li>
+              </div>
             );
           })}
-        </ul>
+        </div>
       )}
 
       <Modal opened={!!editing} onClose={() => setEditing(null)} title={t(editing?.id ? "instruments.edit" : "instruments.new")} size="90rem" centered>
