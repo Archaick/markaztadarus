@@ -61,7 +61,10 @@
   },
   "hub": {
     "pick": "Select an internal system below.",
-    "single": "Your dashboard:"
+    "single": "Your dashboard:",
+    "search": "Search dashboards…",
+    "recent": "Last opened",
+    "noMatch": "No dashboard matches."
   },
   "access": {
     "intro": "Invite a Google account and choose the dashboards it can open. Changes apply instantly — no password is ever shared.",

@@ -61,7 +61,10 @@
   },
   "hub": {
     "pick": "Pilih sistem internal di bawah ini.",
-    "single": "Dasbor Anda:"
+    "single": "Dasbor Anda:",
+    "search": "Cari dashboard…",
+    "recent": "Terakhir dibuka",
+    "noMatch": "Tidak ada dashboard yang cocok."
   },
   "access": {
     "intro": "Undang akun Google dan pilih dasbor yang boleh dibukanya. Perubahan langsung berlaku — tanpa berbagi kata sandi.",
