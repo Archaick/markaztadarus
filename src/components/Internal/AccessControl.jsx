@@ -23,6 +23,7 @@ import {
   IconCopy,
   IconHistory,
   IconMail,
+  IconEye,
   IconTrash,
   IconUserPlus,
   IconUsersGroup,
@@ -340,62 +341,73 @@ export default function AccessControl() {
             )}
 
             {admins?.map((admin) => (
-              <div className={styles.row} key={admin.id}>
-                <div className={styles.person}>
-                  <Avatar src={admin.photoURL || null} radius="xl">
-                    {(admin.displayName || admin.id).charAt(0).toUpperCase()}
-                  </Avatar>
-                  <div className={styles.personText}>
-                    <span className={styles.personEmail}>
-                      {admin.displayName ? `${admin.displayName} · ` : ""}
-                      <bdi>{admin.id}</bdi>
-                    </span>
-                    <span className={styles.personMeta}>
-                      {admin.lastLoginAt ? (
-                        <Badge size="xs" color="teal" variant="dot">
-                          {t("access.active", { time: timeAgo(admin.lastLoginAt) })}
-                        </Badge>
-                      ) : (
-                        <Badge size="xs" color="gray" variant="dot">
-                          {t("access.pending", { time: timeAgo(admin.invitedAt) })}
-                        </Badge>
-                      )}
-                    </span>
+              <div className={`${styles.row} ${styles.adminRow}`} key={admin.id}>
+                <div className={styles.adminTop}>
+                  <div className={styles.person}>
+                    <Avatar src={admin.photoURL || null} radius="xl">
+                      {(admin.displayName || admin.id).charAt(0).toUpperCase()}
+                    </Avatar>
+                    <div className={styles.personText}>
+                      {admin.displayName && <span className={styles.personName}>{admin.displayName}</span>}
+                      <bdi className={admin.displayName ? styles.personMail : styles.personEmail}>{admin.id}</bdi>
+                      <span className={styles.personMeta}>
+                        {admin.lastLoginAt ? (
+                          <Badge size="xs" color="teal" variant="dot">
+                            {t("access.active", { time: timeAgo(admin.lastLoginAt) })}
+                          </Badge>
+                        ) : (
+                          <Badge size="xs" color="gray" variant="dot">
+                            {t("access.pending", { time: timeAgo(admin.invitedAt) })}
+                          </Badge>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles.rowActions}>
+                    <Button
+                      component="a"
+                      href={`/internal?previewAs=${encodeURIComponent(admin.id)}`}
+                      size="xs"
+                      radius="xl"
+                      variant="light"
+                      color="violet"
+                      leftSection={<IconEye size={15} />}
+                    >
+                      {t("access.preview")}
+                    </Button>
+                    <Tooltip label={t("access.removeTip")}>
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        onClick={() => setRemoveTarget(admin)}
+                        loading={busyEmail === admin.id}
+                        aria-label={t("access.removeTip")}
+                      >
+                        <IconTrash size={17} />
+                      </ActionIcon>
+                    </Tooltip>
                   </div>
                 </div>
 
-                <div className={styles.rowActions}>
-                  <Group gap={6} className={styles.featureChips}>
-                    {FEATURES.map((f) => {
-                      const on = (admin.features || []).includes(f.key);
-                      const title = featureTitle(f.key);
-                      return (
-                        <button
-                          type="button"
-                          key={f.key}
-                          className={`${styles.featureToggle} ${on ? styles.featureOn : ""}`}
-                          onClick={() => toggleFeature(admin, f.key)}
-                          disabled={busyEmail === admin.id}
-                          aria-pressed={on}
-                          title={on ? t("access.take", { title }) : t("access.give", { title })}
-                        >
-                          {on ? <IconCheck size={13} /> : null}
-                          {title}
-                        </button>
-                      );
-                    })}
-                  </Group>
-                  <Tooltip label={t("access.removeTip")}>
-                    <ActionIcon
-                      variant="subtle"
-                      color="red"
-                      onClick={() => setRemoveTarget(admin)}
-                      loading={busyEmail === admin.id}
-                      aria-label={t("access.removeTip")}
-                    >
-                      <IconTrash size={17} />
-                    </ActionIcon>
-                  </Tooltip>
+                <div className={styles.featureChips}>
+                  {FEATURES.map((f) => {
+                    const on = (admin.features || []).includes(f.key);
+                    const title = featureTitle(f.key);
+                    return (
+                      <button
+                        type="button"
+                        key={f.key}
+                        className={`${styles.featureToggle} ${on ? styles.featureOn : ""}`}
+                        onClick={() => toggleFeature(admin, f.key)}
+                        disabled={busyEmail === admin.id}
+                        aria-pressed={on}
+                        title={on ? t("access.take", { title }) : t("access.give", { title })}
+                      >
+                        {on ? <IconCheck size={13} /> : null}
+                        {title}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}

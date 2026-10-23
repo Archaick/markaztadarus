@@ -64,7 +64,11 @@
     "single": "Your dashboard:",
     "search": "Search dashboards…",
     "recent": "Last opened",
-    "noMatch": "No dashboard matches."
+    "noMatch": "No dashboard matches.",
+    "previewing": "Preview: this is the portal exactly as {{name}} sees it.",
+    "previewMissing": "No admin {{email}} was found.",
+    "exitPreview": "Exit preview",
+    "previewNone": "This admin has no dashboards ticked, so they see the \"no access\" page."
   },
   "access": {
     "intro": "Invite a Google account and choose the dashboards it can open. Changes apply instantly — no password is ever shared.",
@@ -104,7 +108,8 @@
       "greeting": "Assalamu'alaikum,",
       "body": "You have been given access to the Markaz Tadarus internal dashboard ({{dashboards}}).",
       "howTo": "Open {{link}} and choose \"Continue with Google\" with this account: {{email}}"
-    }
+    },
+    "preview": "Preview"
   },
   "history": {
     "intro": "Every change made in the dashboards, newest first: who did it, when, and what changed.",

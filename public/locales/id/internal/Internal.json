@@ -64,7 +64,11 @@
     "single": "Dasbor Anda:",
     "search": "Cari dashboard…",
     "recent": "Terakhir dibuka",
-    "noMatch": "Tidak ada dashboard yang cocok."
+    "noMatch": "Tidak ada dashboard yang cocok.",
+    "previewing": "Pratinjau: beginilah portal yang dilihat {{name}}.",
+    "previewMissing": "Admin {{email}} tidak ditemukan.",
+    "exitPreview": "Keluar dari pratinjau",
+    "previewNone": "Admin ini belum diberi dashboard, jadi ia melihat halaman \"tidak ada akses\"."
   },
   "access": {
     "intro": "Undang akun Google dan pilih dasbor yang boleh dibukanya. Perubahan langsung berlaku — tanpa berbagi kata sandi.",
@@ -104,7 +108,8 @@
       "greeting": "Assalamu'alaikum,",
       "body": "Anda telah diberi akses ke dasbor internal Markaz Tadarus ({{dashboards}}).",
       "howTo": "Buka {{link}} lalu pilih \"Lanjutkan dengan Google\" menggunakan akun ini: {{email}}"
-    }
+    },
+    "preview": "Pratinjau"
   },
   "history": {
     "intro": "Setiap perubahan di dasbor, terbaru di atas: siapa, kapan, dan apa yang berubah.",
