@@ -158,7 +158,7 @@ export default function InternalHub() {
             {isSuperAdmin && (
               <div className={styles.adminTools}>
                 {ADMIN_TOOLS.map((tool) => (
-                  <a key={tool.key} href={tool.href} className={styles.adminTool} title={t(`features.${tool.key}.description`)}>
+                  <a key={tool.key} href={tool.href} className={styles.adminTool} title={t(`features.${tool.key}.description`)} aria-label={t(`features.${tool.key}.title`)}>
                     <tool.icon size={17} />
                     <span>{t(`features.${tool.key}.title`)}</span>
                   </a>

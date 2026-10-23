@@ -32,7 +32,7 @@ const wrapDelta = (a, b) => ((((b - a) % 360) + 540) % 360) - 180;
  * `.zoomBy(factor)` and `.flyTo(code)`.
  */
 const WorldGlobe = forwardRef(function WorldGlobe(
-  { programs = {}, selected = null, onSelect, onPoint, provinces = {}, labels, highlightCity, className = "", autoSpin = true },
+  { programs = {}, selected = null, onSelect, onPoint, provinces = {}, labels, highlightCity, className = "", autoSpin = true, initialView, sky = true },
   ref
 ) {
   const boxRef = useRef(null);
@@ -41,7 +41,8 @@ const WorldGlobe = forwardRef(function WorldGlobe(
   const base = size.h > size.w * 1.15 ? Math.min(size.w * 0.34, size.h * 0.42) : Math.min(size.w, size.h) * 0.42;
 
   // the view lives in a ref (it changes every frame); `tick` re-renders
-  const view = useRef({ lambda: -100, phi: -5, zoom: 1 });
+  // where it opens: given, or over the Indian Ocean (Makkah to Indonesia)
+  const view = useRef(initialView ? { zoom: 1, ...initialView } : { lambda: -100, phi: -5, zoom: 1 });
   const [, setTick] = useState(0);
   const redraw = useCallback(() => setTick((n) => (n + 1) % 1e9), []);
 
@@ -315,7 +316,7 @@ const WorldGlobe = forwardRef(function WorldGlobe(
         </defs>
 
         {/* the real Sun and Moon, far off in the direction they truly are */}
-        <Sky view={view.current} size={size} sun={sun} moon={moon} globe={base} />
+        {sky && <Sky view={view.current} size={size} sun={sun} moon={moon} globe={base} />}
 
         {/* the thin glowing air around the Earth */}
         <circle cx={size.w / 2} cy={size.h / 2} r={scale * 1.16} fill="url(#wg-air)" />

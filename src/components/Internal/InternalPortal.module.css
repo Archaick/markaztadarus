@@ -641,7 +641,7 @@
 .hubBanner {
   position: relative;
   overflow: hidden;
-  min-height: 210px;
+  min-height: 250px;
   align-items: flex-start;
   padding: 26px 26px 22px;
   border-radius: 20px;
@@ -686,8 +686,27 @@
   background: rgba(242, 201, 76, 0.18);
 }
 @media (max-width: 560px) {
+  /* phones: the admin tools become round icons in the banner's empty corner, clear of the globe's story */
+  .hubBanner .adminTools {
+    position: absolute;
+    left: 16px;
+    bottom: 14px;
+  }
+  [dir="rtl"] .hubBanner .adminTools {
+    left: auto;
+    right: 16px;
+  }
+  .hubBanner .adminTool {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+  .hubBanner .adminTool span {
+    display: none;
+  }
   .hubBanner {
-    min-height: 230px;
+    min-height: 300px;
     padding: 20px 16px;
   }
 }
