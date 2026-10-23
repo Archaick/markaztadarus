@@ -33,9 +33,13 @@ import PostEditor from "./components/Website/PostEditor";
 import BlogList from "./components/Blog/BlogList";
 import BlogPost from "./components/Blog/BlogPost";
 import PostPreviewPage from "./components/Blog/PostPreviewPage";
-import GlobalPage from "./components/Global/GlobalPage";
-import GlobalAdmin from "./components/Global/GlobalAdmin";
 // import Hidayah from "./components/Hidayah/Hidayah";
+
+// Tadarus Global carries the whole world map: loaded only when it is opened,
+// so the rest of the site stays light.
+const GlobalPage = React.lazy(() => import("./components/Global/GlobalPage"));
+const GlobalAdmin = React.lazy(() => import("./components/Global/GlobalAdmin"));
+const lazyPage = (page) => <React.Suspense fallback={null}>{page}</React.Suspense>;
 
 // Certify
 import Admin from "./components/Certify/Admin";
@@ -100,9 +104,9 @@ const App = () => {
             />
             <Route
               path="/internal/global"
-              element={<RequireFeature feature="global"><GlobalAdmin /></RequireFeature>}
+              element={lazyPage(<RequireFeature feature="global"><GlobalAdmin /></RequireFeature>)}
             />
-            <Route path="/global" element={<GlobalPage />} />
+            <Route path="/global" element={lazyPage(<GlobalPage />)} />
             <Route
               path="/internal/website"
               element={<RequireFeature feature="site"><WebsiteAdmin /></RequireFeature>}

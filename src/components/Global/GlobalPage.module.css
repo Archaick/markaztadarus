@@ -399,8 +399,45 @@
   text-decoration: none;
 }
 
+.peek {
+  display: none;
+}
+
 /* phones and narrow tablets: the globe on top, the panel as a sheet below */
 @media (max-width: 900px) {
+  .peek {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: calc(100% - 90px);
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(242, 201, 76, 0.5);
+    background: rgba(10, 25, 60, 0.85);
+    color: #fff;
+    font: inherit;
+    font-size: 0.85rem;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    animation: rise 0.3s ease-out both;
+  }
+  .peek b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .peek span {
+    color: #f2c94c;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .panel {
+    scroll-margin-top: 12px;
+  }
   .page {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(360px, 58vh) auto;

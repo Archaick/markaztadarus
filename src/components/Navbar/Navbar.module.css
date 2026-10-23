@@ -85,7 +85,27 @@
   font-weight: 700;
 }
 
-@media (max-width: 768px) {
+/* the links stay on one line; on tablets and small laptops they sit closer */
+.navLinks {
+  flex-wrap: nowrap !important;
+}
+.navLink {
+  white-space: nowrap;
+}
+@media (min-width: 992px) and (max-width: 1180px) {
+  .navbar {
+    padding: 1rem 1.25rem;
+  }
+  .navLinks {
+    gap: 1.1rem !important;
+  }
+  .navLink {
+    font-size: 0.88rem;
+  }
+}
+
+/* tablets and phones use the menu button */
+@media (max-width: 991px) {
   .navLinks {
     display: none;
   }

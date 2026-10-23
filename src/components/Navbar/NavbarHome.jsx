@@ -19,6 +19,7 @@ export default function NavbarHome() {
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
     { id: "news", key: "menu.news", href: "/berita" },
+    { id: "global", key: "menu.global", href: "/global" },
     { id: "internal", key: "menu.internal", href: "/internal" },
   ];
   // Section links jump within the home page, or back to it from other pages.
@@ -86,7 +87,7 @@ export default function NavbarHome() {
           />
         </a>
 
-        <Group spacing="xl" className={styles.navLinks} visibleFrom="sm">
+        <Group spacing="xl" className={styles.navLinks} visibleFrom="md">
           {navItems.map((item) => {
             const isHidayahLink = item.id === "hidayah";
             const href = item.href || (isHidayahLink ? (isClosed ? "#" : "/hidayah") : sectionHref(item.id));
@@ -158,7 +159,7 @@ export default function NavbarHome() {
             opened={opened}
             onClick={toggle}
             className={styles.burger}
-            hiddenFrom="sm"
+            hiddenFrom="md"
             color="black"
           />
         </div>

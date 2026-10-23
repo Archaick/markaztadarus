@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { IconArrowLeft, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
+import { IconArrowLeft, IconChevronDown, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import WorldGlobe from "./WorldGlobe";
 import { countryName, useGlobalContent } from "./globalData";
@@ -45,6 +45,7 @@ export default function GlobalPage() {
   const [selected, setSelected] = useState(null);
   const [litCity, setLitCity] = useState(null);
   const globe = useRef(null);
+  const panel = useRef(null);
   const makkah = useMakkahTime(lang);
 
   useEffect(() => {
@@ -125,10 +126,19 @@ export default function GlobalPage() {
             <IconWorld size={18} />
           </button>
         </div>
-        <p className={styles.hint}>{t("hint")}</p>
+        {!sel && <p className={styles.hint}>{t("hint")}</p>}
+        {/* phones: the picked country over the globe; tap to read about it below */}
+        {sel && (
+          <button type="button" className={styles.peek} onClick={() => panel.current?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+            <Flag code={sel.code} size={18} />
+            <b>{sel.name}</b>
+            <span>{sel.program ? `${sel.programs} ${t("programs")}` : t("noPrograms")}</span>
+            <IconChevronDown size={16} />
+          </button>
+        )}
       </main>
 
-      <aside className={styles.panel}>
+      <aside ref={panel} className={styles.panel}>
         {!sel ? (
           <>
             <p className={styles.kicker}>{t("from")}</p>
