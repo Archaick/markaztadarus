@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { geoCentroid, geoDistance } from "d3-geo";
-import { feature } from "topojson-client";
+import { feature, merge } from "topojson-client";
 import countries110 from "world-atlas/countries-110m.json";
 import { numericToAlpha2 } from "i18n-iso-countries";
 import { db } from "../../../firebaseConfig";
@@ -18,9 +18,28 @@ export const JAKARTA = [106.8456, -6.2088];
 // a few shapes world-atlas leaves without an ISO number
 const UNNUMBERED = { Kosovo: "XK", "N. Cyprus": "CY", Somaliland: "SO" };
 
+// Palestine is drawn as one country: world-atlas has the land of historic
+// Palestine in two shapes ("Israel" 376 and "Palestine" 275); they are merged
+// into a single Palestine, the country of Al-Quds.
+const PALESTINE_PARTS = ["376", "275"];
+const geometries = countries110.objects.countries.geometries;
+const palestine = {
+  type: "Feature",
+  id: "275",
+  properties: { name: "Palestine" },
+  geometry: merge(countries110, geometries.filter((g) => PALESTINE_PARTS.includes(g.id))),
+};
+const shapes = [
+  ...feature(countries110, { type: "GeometryCollection", geometries: geometries.filter((g) => !PALESTINE_PARTS.includes(g.id)) }).features,
+  palestine,
+];
+
+/** Where Tadarus began: Makkah, in Saudi Arabia. */
+export const ORIGIN = "SA";
+
 /** Every country: its ISO alpha-2 code, shape, centre and how big it is (radians). */
-export const COUNTRIES = feature(countries110, countries110.objects.countries)
-  .features.map((f) => {
+export const COUNTRIES = shapes
+  .map((f) => {
     const code = (f.id && numericToAlpha2(f.id)) || UNNUMBERED[f.properties.name] || null;
     const centre = geoCentroid(f);
     let radius = 0;
@@ -32,10 +51,14 @@ export const COUNTRIES = feature(countries110, countries110.objects.countries)
 
 export const countryByCode = new Map(COUNTRIES.map((c) => [c.code, c]));
 
+// names we give ourselves rather than the browser's
+const OWN_NAMES = { PS: { id: "Palestina", en: "Palestine", ar: "فلسطين" } };
+
 const namers = {};
 /** The country's name in id, en or ar (the browser knows them all). */
 export function countryName(code, lang = "id") {
   const l = (lang || "id").slice(0, 2);
+  if (OWN_NAMES[code]) return OWN_NAMES[code][l] || OWN_NAMES[code].en;
   try {
     namers[l] ||= new Intl.DisplayNames([l], { type: "region" });
     return namers[l].of(code) || countryByCode.get(code)?.name || code;

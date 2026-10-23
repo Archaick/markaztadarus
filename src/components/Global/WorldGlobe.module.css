@@ -36,6 +36,20 @@
 .program.hover {
   fill: #e8bf2c;
 }
+/* where Tadarus began (Makkah's country): its own green, above the program gold */
+.origin,
+.origin.program {
+  fill: #1f8f6a;
+  stroke: #c9f2df;
+  stroke-width: 0.8;
+  animation: none;
+}
+.origin.hover {
+  fill: #27a57b;
+}
+.origin.selected {
+  fill: #2fbf8e;
+}
 /* picked: light blue, or brighter gold when it has programs */
 .selected {
   fill: #8fbaff;

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { IconArrowLeft, IconChevronDown, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import WorldGlobe from "./WorldGlobe";
-import { countryName, useGlobalContent } from "./globalData";
+import { ORIGIN, countryName, useGlobalContent } from "./globalData";
 import Flag from "./Flag";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
 import { mtiProvinces, provinceTotals } from "../../data/mtiProvinceData";
@@ -163,6 +163,13 @@ export default function GlobalPage() {
                 <span>{t("programs")}</span>
               </div>
             </div>
+            <button type="button" className={styles.originCard} onClick={() => pick(ORIGIN)}>
+              <Flag code={ORIGIN} size={22} />
+              <span>
+                <b>{t("origin.badge")}</b>
+                <small>{t("origin.short")}</small>
+              </span>
+            </button>
             <ul className={styles.list}>
               {list.map((c) => (
                 <li key={c.code}>
@@ -175,6 +182,7 @@ export default function GlobalPage() {
               ))}
             </ul>
             <p className={styles.legend}>
+              <i className={styles.legendOrigin} /> {t("origin.badge")}
               <i className={styles.legendGold} /> {t("legendPrograms")}
               <i className={styles.legendNight} /> {t("legendNight")}
             </p>
@@ -188,7 +196,12 @@ export default function GlobalPage() {
               <Flag code={sel.code} size={40} />
               <div>
                 <h2 className={styles.panelTitle}>{sel.name}</h2>
-                {sel.program ? <span className={styles.badge}>{t("hasPrograms")}</span> : <span className={styles.badgeMuted}>{t("noPrograms")}</span>}
+                {sel.code === ORIGIN && <span className={styles.badgeOrigin}>{t("origin.badge")}</span>}
+                {sel.program ? (
+                  <span className={styles.badge}>{t("hasPrograms")}</span>
+                ) : sel.code !== ORIGIN ? (
+                  <span className={styles.badgeMuted}>{t("noPrograms")}</span>
+                ) : null}
               </div>
             </div>
 
@@ -241,6 +254,8 @@ export default function GlobalPage() {
                   </Link>
                 )}
               </>
+            ) : sel.code === ORIGIN ? (
+              <p className={styles.note}>{t("origin.text")}</p>
             ) : (
               <p className={styles.note}>{t("soon")}</p>
             )}

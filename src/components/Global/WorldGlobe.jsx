@@ -2,7 +2,7 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState,
 import { geoCircle, geoContains, geoDistance, geoGraticule10, geoOrthographic, geoPath, geoRotation } from "d3-geo";
 import HolyPlaces from "../Common/HolyPlaces";
 import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
-import { COUNTRIES, anchorOf, countryByCode, moonNow, subsolarPoint } from "./globalData";
+import { COUNTRIES, ORIGIN, anchorOf, countryByCode, moonNow, subsolarPoint } from "./globalData";
 import styles from "./WorldGlobe.module.css";
 
 const GRATICULE = geoGraticule10();
@@ -328,7 +328,7 @@ const WorldGlobe = forwardRef(function WorldGlobe(
           if (!d) return null;
           const program = !!programs[c.code];
           const isSel = c.code === selected;
-          const cls = [styles.country, program && styles.program, isSel && styles.selected, hover === c.code && styles.hover].filter(Boolean).join(" ");
+          const cls = [styles.country, program && styles.program, c.code === ORIGIN && styles.origin, isSel && styles.selected, hover === c.code && styles.hover].filter(Boolean).join(" ");
           return <path key={c.code + c.name} d={d} className={cls} />;
         })}
 
