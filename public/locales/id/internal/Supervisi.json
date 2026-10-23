@@ -93,7 +93,20 @@
     "rename": "Ubah nama",
     "deleteText": "Hapus {{name}} dari daftar guru? Laporan supervisinya tetap tersimpan.",
     "supervise": "Supervisi",
-    "continue": "Lanjutkan"
+    "continue": "Lanjutkan",
+    "edit": "Ubah guru",
+    "picture": "Gambar profil",
+    "choosePhoto": "Pilih foto",
+    "takePhoto": "Ambil dengan kamera",
+    "removePhoto": "Hapus foto",
+    "pictureHint": "Opsional. Tanpa foto, tampil gambar ustadz atau ustadzah; pilih \"Tanpa gambar\" untuk tidak menampilkan apa pun.",
+    "inReport": "Seperti ini di laporan.",
+    "avatars": {
+      "photo": "Foto",
+      "male": "Ustadz",
+      "female": "Ustadzah",
+      "none": "Tanpa gambar"
+    }
   },
   "common": {
     "cancel": "Batal",
@@ -106,7 +119,7 @@
     "photo": "Foto ini tidak bisa dibaca.",
     "failed": "Gagal menyimpan. Periksa koneksi internet lalu coba lagi.",
     "identity": "Isi nama guru dan tanggal pelaksanaan.",
-    "signatures": "Guru dan supervisor perlu membubuhkan tanda tangan."
+    "signatures": "Tanda tangan dulu, atau matikan penanda tangan yang tidak menandatangani."
   },
   "steps": {
     "identity": "Pra-observasi",
@@ -139,7 +152,12 @@
     "supervisor": "Supervisor",
     "hint": "Tanda tangan di sini",
     "clear": "Hapus",
-    "finish": "Selesaikan & Simpan Laporan"
+    "finish": "Selesaikan & Simpan Laporan",
+    "upload": "Unggah",
+    "teacherSigns": "Guru menandatangani",
+    "supervisorSigns": "Supervisor menandatangani",
+    "defaultUsed": "Tanda tangan bawaan dipakai. Hapus untuk menandatangani ulang.",
+    "off": "Tidak menandatangani; tidak tampil di laporan."
   },
   "flow": {
     "scored": "Dinilai",
@@ -224,5 +242,16 @@
     "inProgress": "Berjalan",
     "schools": "Kemajuan sekolah",
     "teachersDone": "{{done}}/{{total}} guru"
+  },
+  "defaults": {
+    "title": "Bawaan setiap supervisi",
+    "intro": "Nama dan tanda tangan supervisor dipakai otomatis di setiap supervisi baru.",
+    "name": "Nama supervisor",
+    "signs": "Supervisor menandatangani laporan",
+    "signsHint": "Matikan bila supervisor biasanya tidak menandatangani; tetap bisa diubah di setiap supervisi.",
+    "photos": "Tampilkan gambar guru di laporan",
+    "photosHint": "Foto atau gambar ustadz/ustadzah di samping lembar identitas.",
+    "signature": "Tanda tangan supervisor (gambar atau unggah)",
+    "saved": "Tersimpan. Supervisi berikutnya memakai bawaan ini."
   }
 }

@@ -5,6 +5,9 @@ export const SCHOOLS = "supervisi_schools";
 export const TEACHERS = "supervisi_teachers";
 export const INSTRUMENTS = "supervisi_instruments";
 export const SESSIONS = "supervisi_sessions";
+// one document of defaults for every supervision (supervisor, signature, photos)
+export const SETTINGS = "supervisi_settings";
+export const SETTINGS_DOC = "defaults";
 
 export const SCALE = [1, 2, 3, 4, 5];
 

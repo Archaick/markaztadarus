@@ -210,7 +210,8 @@
           "save": "Saved a supervision",
           "finish": "Finished a supervision report",
           "delete": "Deleted a supervision"
-        }
+        },
+        "settings": "Edited the supervision defaults"
       },
       "global": {
         "global": "Edited Tadarus Global"

@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
-import { INSTRUMENTS, PQA_5T, SCHOOLS, SESSIONS, TEACHERS } from "./supervisiSchema";
+import { INSTRUMENTS, PQA_5T, SCHOOLS, SESSIONS, SETTINGS, SETTINGS_DOC, TEACHERS } from "./supervisiSchema";
 
 // Every write of the supervision dashboard, each recorded in the activity
 // history (see Internal/audit.js).
@@ -119,3 +119,10 @@ export const loadSignatures = async (sessionId) => {
   const snap = await getDoc(doc(db, SESSIONS, sessionId, SIGNATURES, SIGN_DOC));
   return snap.exists() ? snap.data() : {};
 };
+
+/** The defaults every supervision starts from: the supervisor's name and signature, and whether photos show. */
+export async function saveSettings(user, data) {
+  await auditedWrite(user, entry("sup.settings", data.supervisorName || "", { signature: !!data.supervisorSignature, photos: data.showPhotos !== false }), (batch, auditId) =>
+    batch.set(doc(db, SETTINGS, SETTINGS_DOC), { ...data, auditId, updatedAt: serverTimestamp() })
+  );
+}

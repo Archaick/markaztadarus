@@ -210,7 +210,8 @@
           "save": "Menyimpan supervisi",
           "finish": "Menyelesaikan laporan supervisi",
           "delete": "Menghapus supervisi"
-        }
+        },
+        "settings": "Mengubah bawaan supervisi"
       },
       "global": {
         "global": "Mengubah Tadarus Global"

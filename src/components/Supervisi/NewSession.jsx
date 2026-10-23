@@ -22,7 +22,7 @@ const today = () => {
 export function useStartSession() {
   const { user } = useAccess();
   const navigate = useNavigate();
-  const { instruments } = useSupervisi();
+  const { instruments, settings } = useSupervisi();
   const active = useMemo(() => (instruments || []).filter((i) => i.active !== false), [instruments]);
   const [busy, setBusy] = useState(false);
 
@@ -34,7 +34,7 @@ export function useStartSession() {
         schoolName: school.name,
         teacherId: teacher.id,
         teacherName: teacher.name,
-        supervisorName: user?.displayName || "",
+        supervisorName: settings?.supervisorName || user?.displayName || "",
         date: today(),
         className: "",
         book: "",

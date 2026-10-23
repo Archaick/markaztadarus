@@ -290,8 +290,19 @@ service cloud.firestore {
       allow read: if hasFeature("supervisi");
       allow create, update: if hasFeature("supervisi") && audited()
         && request.resource.data.name is string && request.resource.data.name.size() <= 200
-        && request.resource.data.schoolId is string;
+        && request.resource.data.schoolId is string
+        && request.resource.data.get("photo", "") is string && request.resource.data.get("photo", "").size() <= 80000;
       allow delete: if hasFeature("supervisi") && marked("supervisi_teachers~" + teacherId);
+    }
+
+    // the defaults every supervision starts from
+    match /supervisi_settings/{docId} {
+      allow read: if hasFeature("supervisi");
+      allow create, update: if hasFeature("supervisi") && audited()
+        && docId == "defaults"
+        && request.resource.data.keys().hasOnly(["supervisorName", "supervisorSignature", "supervisorSigns", "showPhotos", "auditId", "updatedAt"])
+        && request.resource.data.get("supervisorSignature", "") is string && request.resource.data.get("supervisorSignature", "").size() <= 200000;
+      allow delete: if false;
     }
 
     match /supervisi_instruments/{instrumentId} {

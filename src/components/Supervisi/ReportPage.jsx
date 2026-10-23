@@ -8,6 +8,7 @@ import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { deleteSession, loadSignatures } from "./actions";
 import { useDateFormat } from "./parts";
+import TeacherAvatar, { avatarKind } from "./TeacherAvatar";
 import { SCALE, formatAverage, headerOf, itemNo, summarize, tr, withLiveLabels } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
 import report from "./Report.module.css";
@@ -28,7 +29,7 @@ export default function ReportPage() {
   const { user } = useAccess();
   const navigate = useNavigate();
   const dates = useDateFormat();
-  const { sessions, instruments, loading } = useSupervisi();
+  const { sessions, instruments, settings, teacherById, loading } = useSupervisi();
   const session = (sessions || []).find((s) => s.id === sessionId);
   const [signs, setSigns] = useState(null);
   const [removing, setRemoving] = useState(false);
@@ -52,6 +53,12 @@ export default function ReportPage() {
 
   const instrument = withLiveLabels(session.instrument, instruments.find((i) => i.id === session.instrumentId));
   const summary = summarize(instrument, session.scores);
+  const teacher = teacherById.get(session.teacherId) || { name: session.teacherName };
+  // who signs the report: both, unless one was switched off at sign-off
+  const signers = [
+    ["teacher", session.teacherName],
+    ["supervisor", session.supervisorName],
+  ].filter(([who]) => session.signOff?.[who] !== false);
   const max = instrument?.scaleMax || 5;
   const identity = [
     ["teacherName", session.teacherName],
@@ -94,16 +101,24 @@ export default function ReportPage() {
         </div>
 
         <h2 className={report.h2}>{t("identity.title")}</h2>
-        <table className={report.identity}>
-          <tbody>
-            {identity.map(([key, value]) => (
-              <tr key={key}>
-                <th>{t(`fields.${key}`)}</th>
-                <td dir="auto">{value || "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className={report.identityRow}>
+          <table className={report.identity}>
+            <tbody>
+              {identity.map(([key, value]) => (
+                <tr key={key}>
+                  <th>{t(`fields.${key}`)}</th>
+                  <td dir="auto">{value || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* the teacher's photo or figure, unless photos are switched off or this teacher shows none */}
+          {settings?.showPhotos !== false && avatarKind(teacher) !== "none" && (
+            <div className={report.portrait}>
+              <TeacherAvatar teacher={teacher} size={112} />
+            </div>
+          )}
+        </div>
 
         <div className={report.summary}>
           <div>
@@ -188,11 +203,9 @@ export default function ReportPage() {
           </div>
         </div>
 
-        <div className={report.signs}>
-          {[
-            ["teacher", session.teacherName],
-            ["supervisor", session.supervisorName],
-          ].map(([who, name]) => (
+        {signers.length > 0 && (
+        <div className={report.signs} style={signers.length === 1 ? { gridTemplateColumns: "minmax(0, 320px)", justifyContent: "end" } : undefined}>
+          {signers.map(([who, name]) => (
             <div key={who} className={report.sign}>
               <p>{t(`sign.${who}`)}</p>
               <div className={report.signBox}>{signs?.[who] ? <img src={signs[who]} alt="" /> : null}</div>
@@ -202,6 +215,7 @@ export default function ReportPage() {
             </div>
           ))}
         </div>
+        )}
       </article>
 
       <Modal opened={removing} onClose={() => setRemoving(false)} title={t("common.delete")} centered>

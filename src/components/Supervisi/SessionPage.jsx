@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Alert, Button, Loader, TextInput, Textarea } from "@mantine/core";
+import { Alert, Button, Loader, Switch, TextInput, Textarea } from "@mantine/core";
 import { IconArrowLeft, IconArrowRight, IconCheck, IconDeviceFloppy } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
@@ -28,7 +28,7 @@ export default function SessionPage() {
   const lang = i18n.language;
   const { user } = useAccess();
   const navigate = useNavigate();
-  const { sessions, instruments, loading } = useSupervisi();
+  const { sessions, instruments, settings, loading } = useSupervisi();
   const session = (sessions || []).find((s) => s.id === sessionId);
 
   const [step, setStep] = useState(null);
@@ -37,6 +37,8 @@ export default function SessionPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [signs, setSigns] = useState(null);
+  // who signs: both, unless the supervisor chose not to sign by default; a choice made here is kept
+  const [signOff, setSignOff] = useState(null);
   const teacherPad = useRef(null);
   const supervisorPad = useRef(null);
 
@@ -55,7 +57,8 @@ export default function SessionPage() {
       notes: { appreciation: "", followUp: "", ...(session.notes || {}) },
     });
     setStep(session.status === "draft" ? 0 : session.status === "done" ? 3 : 1);
-  }, [session, draft]);
+    setSignOff({ teacher: true, supervisor: settings?.supervisorSigns !== false, ...(session.signOff || {}) });
+  }, [session, draft, settings]);
 
   useEffect(() => {
     if (step === 3 && !signs && session) loadSignatures(session.id).then(setSigns).catch(() => setSigns({}));
@@ -140,16 +143,17 @@ export default function SessionPage() {
   // Langkah 4.1: "Selesaikan & Simpan Laporan"
   const finish = async () => {
     setError("");
-    const teacher = teacherPad.current?.toDataUrl() || "";
-    const supervisor = supervisorPad.current?.toDataUrl() || "";
-    if (!teacher || !supervisor) return setError(t("errors.signatures"));
+    const teacher = signOff.teacher ? teacherPad.current?.toDataUrl() || "" : "";
+    const supervisor = signOff.supervisor ? supervisorPad.current?.toDataUrl() || "" : "";
+    // a signer who signs must sign; one switched off is left out of the report
+    if ((signOff.teacher && !teacher) || (signOff.supervisor && !supervisor)) return setError(t("errors.signatures"));
     setSaving(true);
     try {
       const { scores, notes, ...identity } = draft;
       await finishSession(
         user,
         session,
-        { ...identity, scores, notes, average: summary.average, percent: summary.percent, scored: summary.scored },
+        { ...identity, scores, notes, average: summary.average, percent: summary.percent, scored: summary.scored, signOff },
         { teacher, supervisor }
       );
       setDirty(false);
@@ -304,8 +308,38 @@ export default function SessionPage() {
             <Loader size="sm" />
           ) : (
             <div className={styles.signGrid}>
-              <SignaturePad ref={teacherPad} label={t("sign.teacher")} name={draft.teacherName} value={signs.teacher} />
-              <SignaturePad ref={supervisorPad} label={t("sign.supervisor")} name={draft.supervisorName} value={signs.supervisor} />
+              {[
+                ["teacher", teacherPad, draft.teacherName, signs.teacher || ""],
+                ["supervisor", supervisorPad, draft.supervisorName, signs.supervisor || settings?.supervisorSignature || ""],
+              ].map(([who, ref, name, value]) => (
+                <div key={who}>
+                  <Switch
+                    mb={8}
+                    color="#003366"
+                    label={t(`sign.${who}Signs`)}
+                    checked={signOff[who]}
+                    onChange={(e) => {
+                      const on = e.currentTarget.checked;
+                      setSignOff((x) => ({ ...x, [who]: on }));
+                      setDirty(true);
+                    }}
+                  />
+                  {signOff[who] ? (
+                    <SignaturePad
+                      ref={ref}
+                      label={t(`sign.${who}`)}
+                      name={name}
+                      value={value}
+                      note={who === "supervisor" && !signs.supervisor && settings?.supervisorSignature ? t("sign.defaultUsed") : null}
+                    />
+                  ) : (
+                    <div className={styles.padOff}>
+                      <b>{t(`sign.${who}`)}</b>
+                      <span>{t("sign.off")}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </section>

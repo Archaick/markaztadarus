@@ -1,19 +1,23 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Button } from "@mantine/core";
-import { IconEraser } from "@tabler/icons-react";
+import { IconEraser, IconUpload } from "@tabler/icons-react";
+import { loadImage } from "../Internal/images";
 import { useTranslation } from "react-i18next";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
 
 /**
- * A signature drawn with a finger, pen or mouse. `ref.current.toDataUrl()`
- * gives a trimmed PNG (or "" when empty); `value` shows a saved one.
+ * A signature drawn with a finger, pen or mouse, or uploaded as a picture
+ * (a photo of a signature on paper: the paper is made transparent, so only
+ * the ink stays). `ref.current.toDataUrl()` gives a trimmed PNG (or "" when
+ * empty); `value` shows a saved one. `note` is a line under the pad.
  */
-const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onChange }, ref) {
+const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onChange, note }, ref) {
   const { t } = useTranslation(NS);
   const canvas = useRef(null);
   const drawing = useRef(false);
+  const file = useRef(null);
   const [empty, setEmpty] = useState(!value);
 
   // size the canvas to its box (sharp on high-density screens) and draw any saved signature
@@ -47,7 +51,11 @@ const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onCh
   };
   const down = (e) => {
     e.preventDefault();
-    canvas.current.setPointerCapture(e.pointerId);
+    try {
+      canvas.current.setPointerCapture(e.pointerId);
+    } catch {
+      // a pointer the browser no longer tracks; drawing still works
+    }
     drawing.current = true;
     const ctx = canvas.current.getContext("2d");
     ctx.beginPath();
@@ -70,6 +78,44 @@ const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onCh
     c.getContext("2d").clearRect(0, 0, c.width, c.height);
     setEmpty(true);
     onChange?.();
+  };
+
+  // a picture of a signature: fitted into the pad, the light paper made see-through
+  const upload = async (e) => {
+    const f = e.currentTarget.files?.[0];
+    e.currentTarget.value = "";
+    if (!f) return;
+    try {
+      const img = await loadImage(f);
+      const scale = Math.min(1, 900 / img.naturalWidth);
+      const tmp = document.createElement("canvas");
+      tmp.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      tmp.height = Math.max(1, Math.round(img.naturalHeight * scale));
+      const tctx = tmp.getContext("2d");
+      tctx.drawImage(img, 0, 0, tmp.width, tmp.height);
+      const pixels = tctx.getImageData(0, 0, tmp.width, tmp.height);
+      const d = pixels.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const light = (d[i] + d[i + 1] + d[i + 2]) / 3;
+        // paper fades out, ink stays (and gets a little darker)
+        const alpha = light > 200 ? 0 : light > 150 ? Math.round(((200 - light) / 50) * 255) : 255;
+        d[i + 3] = Math.min(d[i + 3], alpha);
+        d[i] = Math.round(d[i] * 0.7);
+        d[i + 1] = Math.round(d[i + 1] * 0.7);
+        d[i + 2] = Math.round(d[i + 2] * 0.75);
+      }
+      tctx.putImageData(pixels, 0, 0);
+      const c = canvas.current;
+      const ctx = c.getContext("2d");
+      const { width, height } = c.getBoundingClientRect();
+      ctx.clearRect(0, 0, c.width, c.height);
+      const s = Math.min((width * 0.9) / tmp.width, (height * 0.85) / tmp.height);
+      ctx.drawImage(tmp, (width - tmp.width * s) / 2, (height - tmp.height * s) / 2, tmp.width * s, tmp.height * s);
+      setEmpty(false);
+      onChange?.();
+    } catch (err) {
+      console.error("Could not read the signature picture:", err);
+    }
   };
 
   useImperativeHandle(ref, () => ({
@@ -115,10 +161,17 @@ const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onCh
         <span className={styles.padName} dir="auto">
           {name}
         </span>
-        <Button size="xs" variant="subtle" color="gray" leftSection={<IconEraser size={14} />} onClick={clear}>
-          {t("sign.clear")}
-        </Button>
+        <span style={{ display: "inline-flex", gap: 2 }}>
+          <Button size="xs" variant="subtle" color="gray" leftSection={<IconUpload size={14} />} onClick={() => file.current?.click()}>
+            {t("sign.upload")}
+          </Button>
+          <Button size="xs" variant="subtle" color="gray" leftSection={<IconEraser size={14} />} onClick={clear}>
+            {t("sign.clear")}
+          </Button>
+        </span>
+        <input ref={file} type="file" accept="image/*" hidden onChange={upload} />
       </div>
+      {note && <span className={styles.padNote}>{note}</span>}
     </div>
   );
 });

@@ -95,7 +95,20 @@
     "rename": "Rename",
     "deleteText": "Remove {{name}} from the teachers? Their reports are kept.",
     "supervise": "Supervise",
-    "continue": "Continue"
+    "continue": "Continue",
+    "edit": "Edit teacher",
+    "picture": "Profile picture",
+    "choosePhoto": "Choose a photo",
+    "takePhoto": "Take with the camera",
+    "removePhoto": "Remove photo",
+    "pictureHint": "Optional. Without a photo, a friendly ustadz or ustadzah figure shows; choose \"No picture\" to show nothing.",
+    "inReport": "This is how it shows in the report.",
+    "avatars": {
+      "photo": "Photo",
+      "male": "Ustadz",
+      "female": "Ustadzah",
+      "none": "No picture"
+    }
   },
   "common": {
     "cancel": "Cancel",
@@ -108,7 +121,7 @@
     "photo": "This photo could not be read.",
     "failed": "Could not save. Check the connection and try again.",
     "identity": "Fill in the teacher's name and the date.",
-    "signatures": "Both the teacher and the supervisor need to sign."
+    "signatures": "Sign first, or switch off whoever does not sign."
   },
   "steps": {
     "identity": "Pre-observation",
@@ -141,7 +154,12 @@
     "supervisor": "Supervisor",
     "hint": "Sign here",
     "clear": "Clear",
-    "finish": "Finish & save report"
+    "finish": "Finish & save report",
+    "upload": "Upload",
+    "teacherSigns": "The teacher signs",
+    "supervisorSigns": "The supervisor signs",
+    "defaultUsed": "Your default signature is used. Clear it to sign again.",
+    "off": "Does not sign; left out of the report."
   },
   "flow": {
     "scored": "Scored",
@@ -226,5 +244,16 @@
     "inProgress": "In progress",
     "schools": "Schools progress",
     "teachersDone": "{{done}}/{{total}} teachers"
+  },
+  "defaults": {
+    "title": "Defaults for every supervision",
+    "intro": "The supervisor's name and signature are filled in on every new supervision.",
+    "name": "Supervisor's name",
+    "signs": "The supervisor signs the report",
+    "signsHint": "Turn off if the supervisor usually does not sign; it can still be changed on each supervision.",
+    "photos": "Show teachers' pictures in reports",
+    "photosHint": "Their photo, or the ustadz/ustadzah figure, beside the identity sheet.",
+    "signature": "Supervisor's signature (draw or upload)",
+    "saved": "Saved. The next supervisions use these defaults."
   }
 }

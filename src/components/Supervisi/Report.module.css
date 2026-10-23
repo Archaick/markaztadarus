@@ -250,3 +250,26 @@
     print-color-adjust: exact;
   }
 }
+
+/* the identity table with the teacher's picture beside it */
+.identityRow {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.identityRow .identity {
+  flex: 1;
+}
+.portrait {
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid #d6dde6;
+  border-radius: 10px;
+  break-inside: avoid;
+}
+@media (max-width: 560px) {
+  .identityRow {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+}

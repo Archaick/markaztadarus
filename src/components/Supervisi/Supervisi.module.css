@@ -1042,3 +1042,81 @@
 .homeHero .cardTitle {
   font-size: clamp(1.5rem, 3vw, 2.1rem);
 }
+
+/* sign-off: a note under a pad, and the box shown for someone who does not sign */
+.padNote {
+  font-size: 0.78rem;
+  color: #9a6400;
+}
+.padOff {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  min-height: 180px;
+  padding: 16px;
+  border: 1.5px dashed var(--line);
+  border-radius: 16px;
+  background: var(--navy-50);
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.88rem;
+}
+.padOff b {
+  color: var(--ink);
+}
+
+/* the teacher's picture choice */
+.avatarChoices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.avatarChoice {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line);
+  background: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.avatarOn {
+  border-color: var(--gold);
+  background: var(--gold-100);
+}
+.avatarNone {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 17px;
+  background: var(--navy-50);
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+/* defaults for every supervision, on the Instruments page */
+.defaults {
+  margin-bottom: 26px;
+}
+.defaultsHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.defaultsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 22px;
+}
+@media (max-width: 800px) {
+  .defaultsGrid {
+    grid-template-columns: 1fr;
+  }
+}

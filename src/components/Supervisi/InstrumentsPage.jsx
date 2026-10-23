@@ -8,6 +8,7 @@ import { deleteInstrument, installPqa } from "./actions";
 import { PQA_5T, indicatorsOf, tr, withoutMeta } from "./supervisiSchema";
 import InstrumentSheet, { blankSection } from "./InstrumentSheet";
 import InstrumentScene from "./InstrumentScene";
+import SupervisorDefaults from "./SupervisorDefaults";
 import styles from "./Supervisi.module.css";
 
 const NS = "internal/Supervisi";
@@ -60,6 +61,8 @@ export default function InstrumentsPage() {
           </button>
         </Group>
       </div>
+
+      <SupervisorDefaults />
 
       {instruments.length === 0 ? (
         <p className={styles.empty}>{t("instruments.empty")}</p>

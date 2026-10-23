@@ -9,6 +9,8 @@ import { BASE } from "./SupervisiShell";
 import { deleteSchool, deleteTeacher, saveTeacher } from "./actions";
 import { ProgressRing } from "./parts";
 import SessionRow from "./SessionRow";
+import TeacherForm from "./TeacherForm";
+import TeacherAvatar from "./TeacherAvatar";
 import { SchoolCover, SchoolForm, schoolProgress } from "./SchoolsPage";
 import PickInstrument, { useStartSession } from "./NewSession";
 import { formatAverage } from "./supervisiSchema";
@@ -116,6 +118,7 @@ export default function SchoolPage() {
                 const open = own.find((s) => s.teacherId === teacher.id && s.status !== "done");
                 return (
                   <li key={teacher.id} className={styles.row}>
+                    <TeacherAvatar teacher={teacher} size={40} />
                     <div className={styles.rowMain}>
                       <div className={styles.rowTitle} dir="auto">
                         {teacher.name}
@@ -138,8 +141,8 @@ export default function SchoolPage() {
                           {t("teachers.supervise")}
                         </Button>
                       )}
-                      <Tooltip label={t("teachers.rename")}>
-                        <ActionIcon variant="subtle" color="gray" onClick={() => setRenaming({ ...teacher })}>
+                      <Tooltip label={t("teachers.edit")}>
+                        <ActionIcon variant="subtle" color="gray" onClick={() => setRenaming(teacher)}>
                           <IconPencil size={17} />
                         </ActionIcon>
                       </Tooltip>
@@ -173,28 +176,7 @@ export default function SchoolPage() {
       <SchoolForm opened={editing} school={school} onClose={() => setEditing(false)} />
       <PickInstrument opened={!!startFor} onClose={() => setStartFor(null)} busy={busy} onPick={(instrument) => start(school, startFor, instrument)} />
 
-      <Modal opened={!!renaming} onClose={() => setRenaming(null)} title={t("teachers.rename")} centered>
-        {renaming && (
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const original = list.find((x) => x.id === renaming.id);
-              await saveTeacher(user, original, { name: renaming.name.trim(), schoolId: school.id });
-              setRenaming(null);
-            }}
-          >
-            <TextInput value={renaming.name} onChange={(e) => setRenaming({ ...renaming, name: e.currentTarget.value })} dir="auto" data-autofocus />
-            <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={() => setRenaming(null)}>
-                {t("common.cancel")}
-              </Button>
-              <Button type="submit" color="#003366" disabled={!renaming.name.trim()}>
-                {t("common.save")}
-              </Button>
-            </Group>
-          </form>
-        )}
-      </Modal>
+      <TeacherForm teacher={renaming} schoolId={school.id} opened={!!renaming} onClose={() => setRenaming(null)} />
 
       <Modal opened={!!removing} onClose={() => setRemoving(null)} title={t("common.delete")} centered>
         <Text size="sm">
