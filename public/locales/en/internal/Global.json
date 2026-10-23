@@ -1,0 +1,32 @@
+{
+  "title": "Tadarus Global",
+  "intro": "The countries with Tadarus programs. Every country you add glows gold on the globe and gets a line of light from Makkah.",
+  "open": "Open the public page",
+  "loadFailed": "Could not load the data.",
+  "builtIn": "Never saved yet: only Indonesia shows. Save to start.",
+  "add": "Add a country",
+  "addPlaceholder": "Search a country…",
+  "noMatch": "Nothing found.",
+  "notYet": "This country has no Tadarus programs yet.",
+  "addThis": "Add as a Tadarus country",
+  "remove": "Remove",
+  "programs": "Number of programs",
+  "programsHint": "Leave at 0 to use the number of cities.",
+  "programsIndonesia": "Leave at 0 to use the Website map: {{count}} locations.",
+  "note": "Note (shown on the public page)",
+  "lang": {
+    "id": "Bahasa Indonesia",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "cities": "Cities",
+  "placeCity": "Add a city on the globe",
+  "placingDone": "Done",
+  "placingHint": "Tap the globe where the city is. Every tap adds a city; then type its name.",
+  "noCities": "No cities yet. Cities show as glowing dots, and the first one is where the line from Makkah lands.",
+  "cityName": "City name",
+  "showOnGlobe": "Show on the globe",
+  "preview": "Live preview",
+  "saved": "Saved. The public page is updated.",
+  "saveFailed": "Could not save. Try again."
+}

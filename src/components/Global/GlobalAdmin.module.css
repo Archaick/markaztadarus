@@ -1,0 +1,151 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 440px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+.editor {
+  display: grid;
+  gap: 14px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip,
+.chipOn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #dfe5ee;
+  background: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chipOn {
+  border-color: #d4a912;
+  background: #fff8e1;
+  color: #6a4d16;
+}
+.card,
+.offer {
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid #e3e8ee;
+  background: #fbfcfd;
+}
+.offer {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.offer p {
+  margin: 2px 0 8px;
+  font-size: 0.85rem;
+  color: #5d6b7d;
+}
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.cardHead h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.15rem;
+}
+.bigFlag {
+  font-size: 2rem;
+  line-height: 1;
+}
+.notes {
+  display: grid;
+  gap: 8px;
+}
+.citiesHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 16px 0 8px;
+}
+.cities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.cities li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cities li > :first-child {
+  flex: 1;
+}
+.coords {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.72rem;
+  color: #5d6b7d;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.coords:hover {
+  color: #b8860b;
+}
+.preview {
+  position: sticky;
+  top: 16px;
+  height: min(640px, 75vh);
+  border-radius: 24px;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 30% 40%, #0e2552 0%, #061331 50%, #020817 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.placing {
+  box-shadow: inset 0 0 0 3px #f08c00;
+}
+.placing > div {
+  cursor: crosshair !important;
+}
+.previewTag {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .preview {
+    position: relative;
+    top: 0;
+    height: 420px;
+    order: -1;
+  }
+}
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

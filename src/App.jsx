@@ -33,6 +33,8 @@ import PostEditor from "./components/Website/PostEditor";
 import BlogList from "./components/Blog/BlogList";
 import BlogPost from "./components/Blog/BlogPost";
 import PostPreviewPage from "./components/Blog/PostPreviewPage";
+import GlobalPage from "./components/Global/GlobalPage";
+import GlobalAdmin from "./components/Global/GlobalAdmin";
 // import Hidayah from "./components/Hidayah/Hidayah";
 
 // Certify
@@ -96,6 +98,11 @@ const App = () => {
               path="/internal/forms/:formId"
               element={<RequireFeature feature="forms"><FormDetail /></RequireFeature>}
             />
+            <Route
+              path="/internal/global"
+              element={<RequireFeature feature="global"><GlobalAdmin /></RequireFeature>}
+            />
+            <Route path="/global" element={<GlobalPage />} />
             <Route
               path="/internal/website"
               element={<RequireFeature feature="site"><WebsiteAdmin /></RequireFeature>}

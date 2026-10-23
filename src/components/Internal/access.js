@@ -3,6 +3,7 @@ import {
   IconClipboardCheck,
   IconClipboardText,
   IconLink,
+  IconWorld,
   IconWorldWww,
 } from "@tabler/icons-react";
 
@@ -45,6 +46,12 @@ export const FEATURES = [
     href: "/internal/website",
     icon: IconWorldWww,
     color: "linear-gradient(135deg, #b8960c 0%, #102141 100%)",
+  },
+  {
+    key: "global",
+    href: "/internal/global",
+    icon: IconWorld,
+    color: "linear-gradient(135deg, #f2c94c 0%, #0a1d4a 100%)",
   },
 ];
 

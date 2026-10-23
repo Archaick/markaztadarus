@@ -1,0 +1,29 @@
+{
+  "title": "Tadarus Global",
+  "subtitle": "Markaz Tadarus around the world",
+  "live": "Live",
+  "makkahTime": "Makkah {{time}}",
+  "language": "Language",
+  "from": "Knowledge from Makkah, for the world",
+  "where": "Where Tadarus is",
+  "countries": "Countries",
+  "programs": "Programs",
+  "cities": "Cities",
+  "provinces": "Provinces",
+  "islands": "Islands",
+  "hasPrograms": "Tadarus programs",
+  "noPrograms": "No programs yet",
+  "soon": "There are no Tadarus programs in this country yet. Insha'Allah, soon.",
+  "back": "Back to the whole world",
+  "hint": "Drag to spin · scroll or pinch to zoom · tap a country",
+  "mapLink": "Open the Indonesia map",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "legendPrograms": "Tadarus programs",
+  "legendNight": "Night right now",
+  "holy": {
+    "makkah": "Makkah",
+    "madinah": "Madinah",
+    "quds": "Al-Quds"
+  }
+}

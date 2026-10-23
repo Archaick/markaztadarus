@@ -7,9 +7,12 @@ const MADINAH = [39.6111, 24.4672];
 const QUDS = [35.236, 31.7781];
 const JAKARTA = [106.8456, -6.2088];
 
-// Makkah → Indonesia along the great circle, as a line the globe can clip.
-const interpolate = geoInterpolate(MAKKAH, JAKARTA);
-const ROUTE = { type: "LineString", coordinates: Array.from({ length: 65 }, (_, i) => interpolate(i / 64)) };
+// Makkah → a place along the great circle, as a line the globe can clip.
+const routeTo = (target) => {
+  const interpolate = geoInterpolate(MAKKAH, target);
+  return { type: "LineString", coordinates: Array.from({ length: 65 }, (_, i) => interpolate(i / 64)) };
+};
+const DEFAULT_TARGETS = [JAKARTA];
 
 // Each icon sits on its own city, nudged a little (in icon sizes) so Makkah
 // and Madinah, three degrees apart, do not cover each other. `side` is where
@@ -26,49 +29,56 @@ const PLACES = [
  * the globe's own projection; `opacity` lets it fade out as the view flies
  * in. `size` is the icon diameter in the svg's units, `labels` optional.
  * `reveal` (0–1) draws the line that far from Makkah; without it the line
- * draws itself once.
+ * draws itself once. `targets` are the [lon, lat] the lines go to (Indonesia
+ * unless given: Tadarus Global passes every country with programs).
  */
-export default function HolyPlaces({ projection, opacity = 1, size = 26, labels, reveal }) {
+export default function HolyPlaces({ projection, opacity = 1, size = 26, labels, reveal, targets = DEFAULT_TARGETS }) {
   const path = useMemo(() => geoPath(projection), [projection]);
+  const routes = useMemo(() => targets.map((to) => ({ to, line: routeTo(to) })), [targets]);
   if (opacity <= 0.01) return null;
 
   const [lambda, phi] = projection.rotate();
   const centre = [-lambda, -phi];
   const visible = (point) => geoDistance(point, centre) < Math.PI / 2 - 0.08;
-  const route = path(ROUTE);
   const manual = reveal !== undefined;
   const drawn = manual ? { strokeDasharray: 100, strokeDashoffset: 100 * (1 - reveal) } : undefined;
   const lineWidth = Math.min(size, 26) * 0.09;
-  const end = visible(JAKARTA) && (!manual || reveal >= 0.98) ? projection(JAKARTA) : null;
+  const arrived = !manual || reveal >= 0.98;
 
   return (
     <g className={styles.layer} style={{ opacity }} pointerEvents="none">
-      {route && (
-        <>
-          {/* the line's width stays the same while the icons grow in the close-up */}
-          <path
-            d={route}
-            pathLength="100"
-            className={styles.routeGlow}
-            style={{ strokeWidth: lineWidth * 3.5, ...drawn }}
-          />
-          <path
-            d={route}
-            pathLength="100"
-            className={manual ? styles.routeManual : styles.route}
-            style={{ strokeWidth: lineWidth, ...drawn }}
-          />
-          {(!manual || reveal >= 0.98) && (
-            <path d={route} pathLength="100" className={styles.flow} style={{ strokeWidth: lineWidth * 1.3 }} />
-          )}
-        </>
-      )}
-      {end && (
-        <g transform={`translate(${end[0]} ${end[1]})`}>
-          <circle r={Math.min(size, 26) * 0.42} className={styles.arrival} />
-          <circle r={Math.min(size, 26) * 0.14} className={styles.arrivalDot} />
-        </g>
-      )}
+      {routes.map(({ to, line }, i) => {
+        const route = path(line);
+        const end = visible(to) && arrived ? projection(to) : null;
+        return (
+          <g key={i}>
+            {route && (
+              <>
+                {/* the line's width stays the same while the icons grow in the close-up */}
+                <path
+                  d={route}
+                  pathLength="100"
+                  className={styles.routeGlow}
+                  style={{ strokeWidth: lineWidth * 3.5, ...drawn }}
+                />
+                <path
+                  d={route}
+                  pathLength="100"
+                  className={manual ? styles.routeManual : styles.route}
+                  style={{ strokeWidth: lineWidth, ...drawn }}
+                />
+                {arrived && <path d={route} pathLength="100" className={styles.flow} style={{ strokeWidth: lineWidth * 1.3 }} />}
+              </>
+            )}
+            {end && (
+              <g transform={`translate(${end[0]} ${end[1]})`}>
+                <circle r={Math.min(size, 26) * 0.42} className={styles.arrival} />
+                <circle r={Math.min(size, 26) * 0.14} className={styles.arrivalDot} />
+              </g>
+            )}
+          </g>
+        );
+      })}
 
       {PLACES.map(({ key, at, dx, dy, side, Icon, source }) => {
         if (!visible(at)) return null;

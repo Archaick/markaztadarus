@@ -1,0 +1,138 @@
+.box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.box:active {
+  cursor: grabbing !important;
+}
+/* out of the layout flow, so the drawing never widens the page while it measures its box */
+.svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+}
+
+.country {
+  fill: #2a4f86;
+  stroke: rgba(190, 215, 255, 0.35);
+  stroke-width: 0.5;
+  transition: fill 0.25s;
+}
+.hover {
+  fill: #3d6bb0;
+}
+.program {
+  fill: #d4a912;
+  stroke: #fff3c4;
+  stroke-width: 0.7;
+  animation: glow 3.2s ease-in-out infinite;
+}
+.program.hover {
+  fill: #e8bf2c;
+}
+/* picked: light blue, or brighter gold when it has programs */
+.selected {
+  fill: #8fbaff;
+}
+.program.selected {
+  fill: #ffd95a;
+}
+.selectedRing {
+  fill: rgba(255, 255, 255, 0.08);
+  stroke: #fff6d6;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  pointer-events: none;
+  animation: ring 2s ease-in-out infinite;
+}
+
+.province {
+  fill: #33609f;
+  stroke: rgba(255, 255, 255, 0.4);
+  stroke-width: 0.4;
+  pointer-events: none;
+}
+.provinceOn {
+  fill: #f2c94c;
+  stroke: #fff6d6;
+  stroke-width: 0.5;
+  pointer-events: none;
+}
+
+.night {
+  fill: rgba(2, 6, 22, 0.42);
+  pointer-events: none;
+}
+.twilight {
+  fill: rgba(2, 6, 22, 0.14);
+  pointer-events: none;
+}
+
+.city {
+  pointer-events: none;
+}
+.cityPulse {
+  fill: rgba(255, 233, 160, 0.25);
+  stroke: rgba(255, 233, 160, 0.7);
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2.2s ease-out infinite;
+}
+.cityDot {
+  fill: #fff6d6;
+  stroke: #b8860b;
+  stroke-width: 1;
+}
+.cityName {
+  fill: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(5, 13, 38, 0.85);
+  stroke-width: 3px;
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    fill-opacity: 0.88;
+  }
+  50% {
+    fill-opacity: 1;
+  }
+}
+@keyframes ring {
+  0%,
+  100% {
+    stroke-opacity: 0.6;
+  }
+  50% {
+    stroke-opacity: 1;
+  }
+}
+@keyframes pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .program,
+  .selectedRing,
+  .cityPulse {
+    animation: none;
+  }
+}

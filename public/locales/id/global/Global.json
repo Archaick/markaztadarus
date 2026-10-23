@@ -1,0 +1,29 @@
+{
+  "title": "Tadarus Global",
+  "subtitle": "Markaz Tadarus di seluruh dunia",
+  "live": "Langsung",
+  "makkahTime": "Makkah {{time}}",
+  "language": "Bahasa",
+  "from": "Ilmu dari Makkah, untuk dunia",
+  "where": "Di mana Tadarus hadir",
+  "countries": "Negara",
+  "programs": "Program",
+  "cities": "Kota",
+  "provinces": "Provinsi",
+  "islands": "Pulau",
+  "hasPrograms": "Ada program Tadarus",
+  "noPrograms": "Belum ada program",
+  "soon": "Belum ada program Tadarus di negara ini. Insya Allah, segera.",
+  "back": "Kembali ke seluruh dunia",
+  "hint": "Geser untuk memutar · gulir atau cubit untuk memperbesar · ketuk sebuah negara",
+  "mapLink": "Buka peta Indonesia",
+  "zoomIn": "Perbesar",
+  "zoomOut": "Perkecil",
+  "legendPrograms": "Ada program Tadarus",
+  "legendNight": "Sedang malam",
+  "holy": {
+    "makkah": "Makkah",
+    "madinah": "Madinah",
+    "quds": "Al-Quds"
+  }
+}

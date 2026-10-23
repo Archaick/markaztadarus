@@ -53,6 +53,10 @@
     "supervisi": {
       "title": "Teacher Supervision",
       "description": "PQA teacher supervision with the 5T Method: observation, recommendations, signatures and reports."
+    },
+    "global": {
+      "title": "Tadarus Global",
+      "description": "The Tadarus world globe: countries, programs and cities."
     }
   },
   "hub": {
@@ -207,6 +211,9 @@
           "finish": "Finished a supervision report",
           "delete": "Deleted a supervision"
         }
+      },
+      "global": {
+        "global": "Edited Tadarus Global"
       }
     },
     "fields": {
@@ -264,7 +271,8 @@
       "average": "Average",
       "scored": "Scored",
       "teachers": "Teachers",
-      "observing": "Observing"
+      "observing": "Observing",
+      "countries": "Countries"
     }
   }
 }

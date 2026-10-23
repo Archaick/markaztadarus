@@ -1,0 +1,32 @@
+{
+  "title": "Tadarus Global",
+  "intro": "Negara yang memiliki program Tadarus. Setiap negara yang ditambahkan menyala emas di globe dan tersambung dengan garis cahaya dari Makkah.",
+  "open": "Buka halaman publik",
+  "loadFailed": "Data tidak bisa dimuat.",
+  "builtIn": "Belum pernah disimpan: hanya Indonesia yang tampil. Simpan untuk mulai.",
+  "add": "Tambah negara",
+  "addPlaceholder": "Cari negara…",
+  "noMatch": "Tidak ditemukan.",
+  "notYet": "Negara ini belum punya program Tadarus.",
+  "addThis": "Tambahkan sebagai negara Tadarus",
+  "remove": "Hapus",
+  "programs": "Jumlah program",
+  "programsHint": "Biarkan 0 untuk memakai jumlah kota.",
+  "programsIndonesia": "Biarkan 0 untuk memakai peta Website: {{count}} lokasi.",
+  "note": "Keterangan (ditampilkan di halaman publik)",
+  "lang": {
+    "id": "Bahasa Indonesia",
+    "en": "English",
+    "ar": "العربية"
+  },
+  "cities": "Kota",
+  "placeCity": "Tambah kota di globe",
+  "placingDone": "Selesai",
+  "placingHint": "Ketuk globe di tempat kota itu. Setiap ketukan menambah satu kota; lalu tulis namanya.",
+  "noCities": "Belum ada kota. Kota menjadi titik bercahaya, dan kota pertama menjadi ujung garis dari Makkah.",
+  "cityName": "Nama kota",
+  "showOnGlobe": "Tampilkan di globe",
+  "preview": "Pratinjau langsung",
+  "saved": "Tersimpan. Halaman publik sudah diperbarui.",
+  "saveFailed": "Gagal menyimpan. Coba lagi."
+}

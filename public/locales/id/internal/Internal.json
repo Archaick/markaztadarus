@@ -53,6 +53,10 @@
     "supervisi": {
       "title": "Supervisi Guru",
       "description": "Supervisi guru PQA dengan Metode 5T: observasi, rekomendasi, tanda tangan dan laporan."
+    },
+    "global": {
+      "title": "Tadarus Global",
+      "description": "Globe Tadarus di seluruh dunia: negara, program, dan kota."
     }
   },
   "hub": {
@@ -207,6 +211,9 @@
           "finish": "Menyelesaikan laporan supervisi",
           "delete": "Menghapus supervisi"
         }
+      },
+      "global": {
+        "global": "Mengubah Tadarus Global"
       }
     },
     "fields": {
@@ -264,7 +271,8 @@
       "average": "Rata-rata",
       "scored": "Dinilai",
       "teachers": "Guru",
-      "observing": "Sedang observasi"
+      "observing": "Sedang observasi",
+      "countries": "Negara"
     }
   }
 }

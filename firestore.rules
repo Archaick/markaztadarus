@@ -81,7 +81,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(["at", "actor", "actorName", "area", "action", "target", "label", "details"])
         && request.resource.data.at == request.time
         && request.resource.data.actor == adminEmail()
-        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access", "supervisi"]
+        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access", "supervisi", "global"]
         && request.resource.data.action is string && request.resource.data.action.size() <= 60
         && request.resource.data.target is string && request.resource.data.target.size() <= 200
         && request.resource.data.label is string && request.resource.data.label.size() <= 200
@@ -106,7 +106,7 @@ service cloud.firestore {
       return data.email == email
         && email == email.lower()
         && data.features is list
-        && data.features.hasOnly(["certificates", "redirects", "forms", "site", "supervisi"]);
+        && data.features.hasOnly(["certificates", "redirects", "forms", "site", "supervisi", "global"]);
     }
 
     match /internal_admins/{email} {
@@ -212,14 +212,19 @@ service cloud.firestore {
     match /site_content/{docId} {
       // The home page reads these for every visitor.
       allow read: if true;
-      allow write: if hasFeature("site")
-        && (
-          (docId == "map"
-            && request.resource.data.provinces is map
-            && request.resource.data.provinces.size() <= 40)
-          || (docId == "stats"
-            && request.resource.data.items is list
-            && request.resource.data.items.size() <= 30)
+      allow write: if (
+          (hasFeature("site")
+            && ((docId == "map"
+                && request.resource.data.provinces is map
+                && request.resource.data.provinces.size() <= 40)
+              || (docId == "stats"
+                && request.resource.data.items is list
+                && request.resource.data.items.size() <= 30)))
+          // Tadarus Global: the countries with programs, from its own dashboard
+          || (hasFeature("global")
+            && docId == "global"
+            && request.resource.data.countries is map
+            && request.resource.data.countries.size() <= 80)
         )
         && audited();
       allow delete: if false;

@@ -15,13 +15,18 @@ function whatChanged(before, after) {
     return { provinces: changed, count: Object.keys(after.provinces).length };
   }
   if (after.items) return { count: after.items.length };
+  if (after.countries) {
+    const old = before?.countries || {};
+    const codes = [...new Set([...Object.keys(old), ...Object.keys(after.countries)])];
+    return { countries: codes.filter((c) => stableKey(old[c] ?? null) !== stableKey(after.countries[c] ?? null)), count: Object.keys(after.countries).length };
+  }
   return {};
 }
 
 // Edits one site_content document. `toDraft` turns the stored document (or
 // null when it has never been saved, which means "start from the built-in
-// data") into the editor's shape.
-export function useSiteDraft(docId, toDraft, editorEmail) {
+// data") into the editor's shape. `area` is the dashboard the history files it under.
+export function useSiteDraft(docId, toDraft, editorEmail, area = "site") {
   const { user } = useAccess();
   const [stored, setStored] = useState(undefined); // undefined = loading
   const [loadFailed, setLoadFailed] = useState(false);
@@ -76,7 +81,7 @@ export function useSiteDraft(docId, toDraft, editorEmail) {
   const save = async (data) => {
     setSaving(true);
     try {
-      await auditedWrite(user, { area: "site", action: `site.${docId}`, target: docId, details: whatChanged(stored, data) }, (batch, auditId) =>
+      await auditedWrite(user, { area, action: `${area}.${docId}`, target: docId, details: whatChanged(stored, data) }, (batch, auditId) =>
         batch.set(doc(db, SITE_COLLECTION, docId), {
           ...data,
           auditId,
