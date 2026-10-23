@@ -1,28 +1,27 @@
-/* the Earth rising at the foot of the screen: only its top shows, a curved
-   horizon with its glowing air, turning slowly under the portal */
+/* the Earth rising inside the portal's banner: a fixed-size globe whose top
+   (the drawn disc starts 8% below its box) shows as a curved horizon */
 .backdrop {
-  position: fixed;
-  z-index: 1;
-  left: 50%;
-  top: 68vh;
-  width: max(1300px, 120vw);
+  position: absolute;
+  z-index: 0;
+  left: 58%;
+  top: -40px;
+  width: 1400px;
   aspect-ratio: 1;
   transform: translateX(-50%);
-  opacity: 0.85;
   pointer-events: none;
   animation: rise 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(18vh);
+    transform: translateX(-50%) translateY(60px);
   }
 }
 @media (max-width: 760px) {
   .backdrop {
-    top: 74vh;
-    width: 220vw;
-    opacity: 0.7;
+    left: 50%;
+    top: 64px;
+    width: 900px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

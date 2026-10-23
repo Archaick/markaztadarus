@@ -70,13 +70,14 @@ export default function InternalHub() {
 
   return (
     <InternalLayout align="top">
-      <Suspense fallback={null}>
-        <HubGlobe />
-      </Suspense>
       <Card className={`${styles.card} ${styles.hubCard}`}>
         <AccountBar />
 
-        <div className={styles.hubHead}>
+        {/* a night-sky banner with the Tadarus Global Earth rising behind the title */}
+        <div className={`${styles.hubHead} ${styles.hubBanner}`}>
+          <Suspense fallback={null}>
+            <HubGlobe />
+          </Suspense>
           <div className={styles.hubTitleRow}>
             <span className={styles.hubIcon}>
               <IconShieldLock size={24} />
