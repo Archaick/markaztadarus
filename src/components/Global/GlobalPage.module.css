@@ -183,7 +183,7 @@
 .hint {
   position: absolute;
   bottom: 14px;
-  inset-inline: 0;
+  inset-inline: 64px;
   margin: 0;
   text-align: center;
   font-size: 0.8rem;
@@ -445,7 +445,8 @@
       "top"
       "stage"
       "panel";
-    overflow: visible;
+    /* the drifting stars are drawn larger than the page: keep them inside it */
+    overflow: hidden;
   }
   .top {
     flex-wrap: wrap;

@@ -37,7 +37,8 @@ const WorldGlobe = forwardRef(function WorldGlobe(
 ) {
   const boxRef = useRef(null);
   const [size, setSize] = useState({ w: 600, h: 600 });
-  const base = Math.min(size.w, size.h) * 0.42;
+  // on a tall, narrow phone screen a little smaller, so the Sun and Moon have room beside it
+  const base = size.h > size.w * 1.15 ? Math.min(size.w * 0.34, size.h * 0.42) : Math.min(size.w, size.h) * 0.42;
 
   // the view lives in a ref (it changes every frame); `tick` re-renders
   const view = useRef({ lambda: -100, phi: -5, zoom: 1 });
@@ -314,7 +315,7 @@ const WorldGlobe = forwardRef(function WorldGlobe(
         </defs>
 
         {/* the real Sun and Moon, far off in the direction they truly are */}
-        <Sky view={view.current} size={size} sun={sun} moon={moon} />
+        <Sky view={view.current} size={size} sun={sun} moon={moon} globe={base} />
 
         {/* the thin glowing air around the Earth */}
         <circle cx={size.w / 2} cy={size.h / 2} r={scale * 1.16} fill="url(#wg-air)" />
@@ -393,9 +394,30 @@ function skyDirection([lon, lat], view) {
  * is in daylight), the Moon in its true phase with its lit edge towards the
  * Sun. Small and soft, behind the globe, so they never get in the way.
  */
-function Sky({ view, size, sun, moon }) {
-  const margin = Math.min(56, Math.min(size.w, size.h) * 0.1);
-  const place = (dir) => [size.w / 2 + dir.x * (size.w / 2 - margin), size.h / 2 + dir.y * (size.h / 2 - margin)];
+function Sky({ view, size, sun, moon, globe }) {
+  // smaller on phones; the glow scales with it
+  const r = clamp(Math.min(size.w, size.h) / 55, 5, 11);
+  const margin = r * 3.2;
+  const cx = size.w / 2;
+  const cy = size.h / 2;
+  // along its true direction to the edge of the view; where that edge is too
+  // close to the globe (a narrow phone screen), lift it above or below the
+  // globe on the same side, so it never sits on the Earth's rim
+  const place = (dir) => {
+    // the bottom strip holds the hint and the zoom buttons
+    const roomY = dir.y > 0 ? cy - margin - 64 : cy - margin;
+    const roomX = dir.y > 0.2 ? cx - margin - 56 : cx - margin;
+    const t = Math.min(roomX / Math.max(Math.abs(dir.x), 1e-6), roomY / Math.max(Math.abs(dir.y), 1e-6));
+    let x = cx + dir.x * t;
+    let y = cy + dir.y * t;
+    const need = globe * 1.12 + r * 2.4;
+    if (Math.hypot(x - cx, y - cy) < need) {
+      const dy = dir.y >= 0 ? 1 : -1;
+      y = cy + dy * Math.min(roomY, need);
+      x = cx + dir.x * Math.min(roomX, Math.sqrt(Math.max(0, need * need - (y - cy) * (y - cy))) + r);
+    }
+    return [x, y];
+  };
   const sunDir = skyDirection(sun, view);
   const moonDir = skyDirection(moon.at, view);
   const [sx, sy] = place(sunDir);
@@ -403,7 +425,6 @@ function Sky({ view, size, sun, moon }) {
   // behind the camera they are only a soft hint
   const fade = (z) => clamp(1 - Math.max(0, z) * 0.55, 0.35, 1);
 
-  const r = Math.max(7, Math.min(11, size.w / 70));
   const k = Math.cos(moon.phase * RAD);
   const rx = Math.abs(k) * r;
   // lit half towards the Sun, closed by the terminator: inside it for a crescent, outside for a gibbous moon
@@ -425,7 +446,7 @@ function Sky({ view, size, sun, moon }) {
         </radialGradient>
       </defs>
       <g transform={`translate(${sx} ${sy})`} opacity={fade(sunDir.z)}>
-        <circle r={r * 7} fill="url(#wg-sun)" className={styles.sunGlow} />
+        <circle r={r * 5.5} fill="url(#wg-sun)" className={styles.sunGlow} />
         <g className={styles.sunRays}>
           {Array.from({ length: 12 }, (_, i) => (
             <rect key={i} x={r * 1.6} y={-0.6} width={r * (i % 2 ? 1.1 : 1.8)} height={1.2} rx={0.6} fill="#ffe7a3" opacity="0.55" transform={`rotate(${i * 30})`} />

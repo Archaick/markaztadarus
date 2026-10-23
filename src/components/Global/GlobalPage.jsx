@@ -52,6 +52,16 @@ export default function GlobalPage() {
     document.title = `${t("title")} · Markaz Tadarus`;
   }, [t]);
 
+  // the page's night sky also behind it, so no white shows when a phone
+  // scrolls or bounces past the ends
+  useEffect(() => {
+    const before = document.body.style.background;
+    document.body.style.background = "#020817";
+    return () => {
+      document.body.style.background = before;
+    };
+  }, []);
+
   // Indonesia's figures follow the home page map
   const figures = (code) => {
     const data = programs[code] || {};
