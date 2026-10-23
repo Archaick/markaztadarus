@@ -100,6 +100,29 @@
   stroke-width: 3px;
 }
 
+.sunGlow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: breathe 5s ease-in-out infinite;
+}
+.sunRays {
+  animation: spin 60s linear infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 @keyframes glow {
   0%,
   100% {
@@ -132,7 +155,9 @@
 @media (prefers-reduced-motion: reduce) {
   .program,
   .selectedRing,
-  .cityPulse {
+  .cityPulse,
+  .sunGlow,
+  .sunRays {
     animation: none;
   }
 }

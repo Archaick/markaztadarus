@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, forwardRef } from "react";
-import { geoCircle, geoContains, geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+import { geoCircle, geoContains, geoDistance, geoGraticule10, geoOrthographic, geoPath, geoRotation } from "d3-geo";
 import HolyPlaces from "../Common/HolyPlaces";
 import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
-import { COUNTRIES, anchorOf, countryByCode, subsolarPoint } from "./globalData";
+import { COUNTRIES, anchorOf, countryByCode, moonNow, subsolarPoint } from "./globalData";
 import styles from "./WorldGlobe.module.css";
 
 const GRATICULE = geoGraticule10();
@@ -47,6 +47,7 @@ const WorldGlobe = forwardRef(function WorldGlobe(
   const motion = useRef({ flight: null, vx: 0, vy: 0, lastInput: 0, dragging: false });
   const [hover, setHover] = useState(null);
   const [sun, setSun] = useState(() => subsolarPoint());
+  const [moon, setMoon] = useState(() => moonNow());
 
   // keep the drawing the size of its box
   useEffect(() => {
@@ -62,7 +63,10 @@ const WorldGlobe = forwardRef(function WorldGlobe(
 
   // day and night move on: once a minute
   useEffect(() => {
-    const id = setInterval(() => setSun(subsolarPoint()), 60000);
+    const id = setInterval(() => {
+      setSun(subsolarPoint());
+      setMoon(moonNow());
+    }, 60000);
     return () => clearInterval(id);
   }, []);
 
@@ -309,6 +313,9 @@ const WorldGlobe = forwardRef(function WorldGlobe(
           </radialGradient>
         </defs>
 
+        {/* the real Sun and Moon, far off in the direction they truly are */}
+        <Sky view={view.current} size={size} sun={sun} moon={moon} />
+
         {/* the thin glowing air around the Earth */}
         <circle cx={size.w / 2} cy={size.h / 2} r={scale * 1.16} fill="url(#wg-air)" />
         <path d={path(SPHERE)} fill="url(#wg-ocean)" />
@@ -366,3 +373,75 @@ const WorldGlobe = forwardRef(function WorldGlobe(
 });
 
 export default WorldGlobe;
+
+const RAD = Math.PI / 180;
+
+/** Where a point of the sky over [lon, lat] lies on screen, seen from the globe's camera: x, y (screen) and z (towards the viewer). */
+function skyDirection([lon, lat], view) {
+  const [l, p] = geoRotation([view.lambda, view.phi])([lon, lat]);
+  const x = Math.cos(p * RAD) * Math.sin(l * RAD);
+  const y = -Math.sin(p * RAD);
+  const z = Math.cos(p * RAD) * Math.cos(l * RAD);
+  const len = Math.hypot(x, y);
+  // straight behind or in front of the camera: put it up and to the side
+  return len < 0.12 ? { x: 0.7, y: -0.7, z } : { x: x / len, y: y / len, z };
+}
+
+/**
+ * The Sun and the Moon near the edge of the view, each in the direction it
+ * really is from the Earth now (so the Sun is on the side of the globe that
+ * is in daylight), the Moon in its true phase with its lit edge towards the
+ * Sun. Small and soft, behind the globe, so they never get in the way.
+ */
+function Sky({ view, size, sun, moon }) {
+  const margin = Math.min(56, Math.min(size.w, size.h) * 0.1);
+  const place = (dir) => [size.w / 2 + dir.x * (size.w / 2 - margin), size.h / 2 + dir.y * (size.h / 2 - margin)];
+  const sunDir = skyDirection(sun, view);
+  const moonDir = skyDirection(moon.at, view);
+  const [sx, sy] = place(sunDir);
+  const [mx, my] = place(moonDir);
+  // behind the camera they are only a soft hint
+  const fade = (z) => clamp(1 - Math.max(0, z) * 0.55, 0.35, 1);
+
+  const r = Math.max(7, Math.min(11, size.w / 70));
+  const k = Math.cos(moon.phase * RAD);
+  const rx = Math.abs(k) * r;
+  // lit half towards the Sun, closed by the terminator: inside it for a crescent, outside for a gibbous moon
+  const lit = `M0 ${-r} A${r} ${r} 0 0 1 0 ${r} A${rx} ${r} 0 0 ${k > 0 ? 0 : 1} 0 ${-r} Z`;
+  const towardsSun = (Math.atan2(sy - my, sx - mx) * 180) / Math.PI;
+
+  return (
+    <g className={styles.sky} pointerEvents="none">
+      <defs>
+        <radialGradient id="wg-sun">
+          <stop offset="0" stopColor="#fff8dc" stopOpacity="0.95" />
+          <stop offset="0.18" stopColor="#ffe28a" stopOpacity="0.6" />
+          <stop offset="0.5" stopColor="#ffb84a" stopOpacity="0.14" />
+          <stop offset="1" stopColor="#ffb84a" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="wg-moonglow">
+          <stop offset="0.4" stopColor="#dfe8ff" stopOpacity="0.25" />
+          <stop offset="1" stopColor="#dfe8ff" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <g transform={`translate(${sx} ${sy})`} opacity={fade(sunDir.z)}>
+        <circle r={r * 7} fill="url(#wg-sun)" className={styles.sunGlow} />
+        <g className={styles.sunRays}>
+          {Array.from({ length: 12 }, (_, i) => (
+            <rect key={i} x={r * 1.6} y={-0.6} width={r * (i % 2 ? 1.1 : 1.8)} height={1.2} rx={0.6} fill="#ffe7a3" opacity="0.55" transform={`rotate(${i * 30})`} />
+          ))}
+        </g>
+        <circle r={r * 1.15} fill="#fff4cf" />
+      </g>
+      <g transform={`translate(${mx} ${my})`} opacity={fade(moonDir.z)}>
+        <circle r={r * 2.6} fill="url(#wg-moonglow)" />
+        <circle r={r * 0.85} fill="#2a3552" />
+        <g transform={`rotate(${towardsSun}) scale(0.85)`}>
+          <path d={lit} fill="#eef2ff" />
+          <circle cx={-r * 0.2} cy={r * 0.25} r={r * 0.16} fill="#c9d2ea" opacity="0.6" />
+          <circle cx={r * 0.35} cy={-r * 0.3} r={r * 0.11} fill="#c9d2ea" opacity="0.6" />
+        </g>
+      </g>
+    </g>
+  );
+}

@@ -93,3 +93,30 @@ export function subsolarPoint(date = new Date()) {
   const lon = ((((ra - gmst) % 360) + 540) % 360) - 180;
   return [lon, dec];
 }
+
+/**
+ * Where the Moon is overhead right now, [lon, lat], and its phase: `phase`
+ * is the Sun–Moon angle in degrees (0 new, 180 full), `waxing` whether it is
+ * growing. A few-term formula, good to a degree or two, which is plenty for
+ * drawing it in the sky.
+ */
+export function moonNow(date = new Date()) {
+  const rad = Math.PI / 180;
+  const d = date.getTime() / 86400000 - 10957.5;
+  const L = 218.316 + 13.176396 * d;
+  const M = (134.963 + 13.064993 * d) * rad;
+  const F = (93.272 + 13.22935 * d) * rad;
+  const lambda = (L + 6.289 * Math.sin(M)) * rad;
+  const beta = 5.128 * Math.sin(F) * rad;
+  const e = 23.439 * rad;
+  const ra = Math.atan2(Math.sin(lambda) * Math.cos(e) - Math.tan(beta) * Math.sin(e), Math.cos(lambda)) / rad;
+  const dec = Math.asin(Math.sin(beta) * Math.cos(e) + Math.cos(beta) * Math.sin(e) * Math.sin(lambda)) / rad;
+  const gmst = (18.697374558 + 24.06570982441908 * d) * 15;
+  const lon = ((((ra - gmst) % 360) + 540) % 360) - 180;
+
+  // the Sun's ecliptic longitude, for the phase
+  const g = (357.529 + 0.98560028 * d) * rad;
+  const sunLambda = 280.459 + 0.98564736 * d + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g);
+  const elongation = ((((lambda / rad - sunLambda) % 360) + 360) % 360);
+  return { at: [lon, dec], phase: elongation <= 180 ? elongation : 360 - elongation, waxing: elongation < 180 };
+}
