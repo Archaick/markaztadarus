@@ -145,8 +145,8 @@ export default function SessionPage() {
     setError("");
     const teacher = signOff.teacher ? teacherPad.current?.toDataUrl() || "" : "";
     const supervisor = signOff.supervisor ? supervisorPad.current?.toDataUrl() || "" : "";
-    // a signer who signs must sign; one switched off is left out of the report
-    if ((signOff.teacher && !teacher) || (signOff.supervisor && !supervisor)) return setError(t("errors.signatures"));
+    // signing is never required: a signer left blank keeps an empty line in the
+    // report (to sign on paper); one switched off is left out of it
     setSaving(true);
     try {
       const { scores, notes, ...identity } = draft;
