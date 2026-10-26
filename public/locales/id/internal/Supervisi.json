@@ -180,7 +180,13 @@
     "toClarify": "perlu klarifikasi",
     "assessment": "Lembar Data Penilaian",
     "indicator": "Indikator",
-    "deleteText": "Hapus laporan supervisi {{name}}? Tidak bisa dibatalkan."
+    "deleteText": "Hapus laporan supervisi {{name}}? Tidak bisa dibatalkan.",
+    "share": "Bagikan PDF",
+    "printOnly": "Cetak",
+    "fileName": "Laporan Supervisi",
+    "savedNote": "Laporan tersimpan. Tekan \"Bagikan PDF\" untuk mengirimnya lewat WhatsApp, email, atau aplikasi lain.",
+    "downloaded": "PDF sudah diunduh; lampirkan dari folder Unduhan.",
+    "pdfFailed": "PDF tidak bisa dibuat. Gunakan Cetak lalu pilih \"Simpan sebagai PDF\"."
   },
   "instruments": {
     "title": "Instrumen",

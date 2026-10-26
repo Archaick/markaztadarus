@@ -157,7 +157,7 @@ export default function SessionPage() {
         { teacher, supervisor }
       );
       setDirty(false);
-      navigate(`${BASE}/laporan/${session.id}?print=1`);
+      navigate(`${BASE}/laporan/${session.id}?done=1`);
     } catch (err) {
       console.error("Could not finish the supervision:", err);
       setError(t("errors.failed"));

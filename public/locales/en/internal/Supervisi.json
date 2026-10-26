@@ -182,7 +182,13 @@
     "toClarify": "to clarify",
     "assessment": "Assessment Sheet",
     "indicator": "Indicator",
-    "deleteText": "Delete {{name}}'s supervision report? This cannot be undone."
+    "deleteText": "Delete {{name}}'s supervision report? This cannot be undone.",
+    "share": "Share PDF",
+    "printOnly": "Print",
+    "fileName": "Supervision Report",
+    "savedNote": "The report is saved. Press \"Share PDF\" to send it by WhatsApp, email or any app.",
+    "downloaded": "The PDF was downloaded; attach it from your Downloads folder.",
+    "pdfFailed": "The PDF could not be made. Use Print and choose \"Save as PDF\"."
   },
   "instruments": {
     "title": "Instruments",

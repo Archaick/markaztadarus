@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button, Group, Loader, Modal, Text } from "@mantine/core";
-import { IconArrowLeft, IconPencil, IconPrinter, IconTrash } from "@tabler/icons-react";
+import { IconArrowLeft, IconCircleCheck, IconPencil, IconPrinter, IconShare, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useSupervisi } from "./SupervisiData";
 import { BASE } from "./SupervisiShell";
 import { deleteSession, loadSignatures } from "./actions";
 import { useDateFormat } from "./parts";
+import { reportToPdf, sharePdf } from "./reportPdf";
 import TeacherAvatar, { avatarKind } from "./TeacherAvatar";
 import { SCALE, formatAverage, headerOf, itemNo, summarize, tr, withLiveLabels } from "./supervisiSchema";
 import styles from "./Supervisi.module.css";
@@ -19,7 +20,7 @@ const NS = "internal/Supervisi";
  * Laporan Supervisi: the identity sheet, every indicator with its score, the
  * two notes and both signatures, laid out for A4. "Cetak / PDF" uses the
  * browser's print dialog, where "Save as PDF" gives the file; finishing a
- * supervision opens it straight away (?print=1).
+ * supervision opens it with a note to share it (?done=1).
  */
 export default function ReportPage() {
   const { sessionId } = useParams();
@@ -38,15 +39,33 @@ export default function ReportPage() {
     if (session) loadSignatures(session.id).then(setSigns).catch(() => setSigns({}));
   }, [session?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // straight to the print dialog after "Selesaikan & Simpan Laporan"
+  // The PDF is made in the background as soon as the report is on screen, so
+  // that "Share PDF" can open the share sheet at once (browsers only allow it
+  // right after a tap). Made again whenever the report changes.
+  const sheetRef = useRef(null);
+  const [pdf, setPdf] = useState(null); // { blob, key }
+  const [pdfState, setPdfState] = useState(""); // "", "shared", "downloaded", "failed"
+  const pdfKey = session ? `${session.id}:${session.updatedAt?.seconds || 0}:${signs ? 1 : 0}:${i18n.language}` : "";
   useEffect(() => {
-    if (params.get("print") !== "1" || !session || signs === null) return undefined;
+    if (!session || signs === null || !sheetRef.current) return undefined;
+    let alive = true;
     const timer = setTimeout(() => {
-      setParams({}, { replace: true });
-      window.print();
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [params, session, signs, setParams]);
+      reportToPdf(sheetRef.current)
+        .then((blob) => alive && setPdf({ blob, key: pdfKey }))
+        .catch((err) => {
+          console.error("Could not make the PDF:", err);
+          if (alive) setPdfState("failed");
+        });
+    }, 700);
+    return () => {
+      alive = false;
+      clearTimeout(timer);
+    };
+  }, [pdfKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const pdfReady = pdf?.key === pdfKey;
+
+  // after "Selesaikan & Simpan Laporan": a note that the report is saved, with Share at hand
+  const justDone = params.get("done") === "1";
 
   if (loading) return <Loader />;
   if (!session) return <p className={styles.empty}>{t("sessions.missing")}</p>;
@@ -71,8 +90,24 @@ export default function ReportPage() {
   ];
   let n = 0;
 
+  const fileName = `${t("report.fileName")} - ${session.teacherName || ""} - ${session.date || ""}.pdf`.replace(/[\\/:*?"<>|]+/g, " ");
+  const share = async () => {
+    if (!pdfReady) return;
+    const result = await sharePdf(pdf.blob, fileName, `${t("report.title")} · ${session.teacherName || ""}`);
+    if (result !== "cancelled") setPdfState(result);
+    if (justDone) setParams({}, { replace: true });
+  };
+
   return (
     <>
+      {justDone && (
+        <div className={report.doneNote}>
+          <IconCircleCheck size={20} />
+          <span>{t("report.savedNote")}</span>
+        </div>
+      )}
+      {pdfState === "downloaded" && <p className={report.pdfNote}>{t("report.downloaded")}</p>}
+      {pdfState === "failed" && <p className={report.pdfNote}>{t("report.pdfFailed")}</p>}
       <div className={report.toolbar}>
         <Link to={`${BASE}/sekolah/${session.schoolId}`} className={styles.crumb} style={{ margin: 0 }}>
           <IconArrowLeft size={16} className={styles.flip} /> {session.schoolName}
@@ -84,13 +119,16 @@ export default function ReportPage() {
           <Button variant="default" color="red" leftSection={<IconTrash size={16} />} onClick={() => setRemoving(true)}>
             {t("common.delete")}
           </Button>
-          <Button color="#003366" leftSection={<IconPrinter size={16} />} onClick={() => window.print()}>
-            {t("report.print")}
+          <Button variant="default" leftSection={<IconPrinter size={16} />} onClick={() => window.print()}>
+            {t("report.printOnly")}
+          </Button>
+          <Button color="#003366" leftSection={<IconShare size={16} />} loading={!pdfReady && pdfState !== "failed"} disabled={!pdfReady} onClick={share}>
+            {t("report.share")}
           </Button>
         </Group>
       </div>
 
-      <article className={report.sheet} dir={lang.startsWith("ar") ? "rtl" : "ltr"}>
+      <article ref={sheetRef} className={report.sheet} dir={lang.startsWith("ar") ? "rtl" : "ltr"}>
         <div className={report.head}>
           <img src="/MTIFavicon.png" alt="" />
           <div>
