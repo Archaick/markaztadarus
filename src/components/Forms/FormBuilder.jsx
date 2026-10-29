@@ -5,7 +5,9 @@ import {
   Button,
   Group,
   Select,
+  NumberInput,
   Switch,
+  TagsInput,
   Text,
   TextInput,
   Textarea,
@@ -15,6 +17,7 @@ import {
   IconArrowDown,
   IconArrowUp,
   IconArrowsSort,
+  IconCheck,
   IconCopy,
   IconDeviceFloppy,
   IconLanguage,
@@ -24,7 +27,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { doc, serverTimestamp } from "firebase/firestore";
+import { deleteField, doc, serverTimestamp } from "firebase/firestore";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { db } from "../../../firebaseConfig";
@@ -32,14 +35,15 @@ import { LANGUAGES } from "../Internal/language";
 import { stableKey } from "../Internal/stableKey";
 import styles from "./Forms.module.css";
 import ReorderSections from "./ReorderSections";
-import { FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, SECTION, isSection, newField, newId, newSection, sectionsOf } from "./formSchema";
+import { AUTO_GRADED, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, quizOf, sectionsOf } from "./formSchema";
 
-const editableOf = (form) => ({
+const editableOf = (form, key) => ({
   title: form.title || "",
   description: form.description || "",
   language: form.language || "id",
   fields: form.fields || [],
   firstNext: form.firstNext || "next",
+  key: key || {}, // the quiz answer key: question id → accepted answers
 });
 
 // Where a section card's block of questions ends (the next section card, or the end).
@@ -65,11 +69,11 @@ const problemIn = (draft) => {
   return null;
 };
 
-export default function FormBuilder({ form, editorEmail }) {
+export default function FormBuilder({ form, editorEmail, quizKey }) {
   const { user } = useAccess();
   const { t } = useTranslation("internal/Forms");
-  const [draft, setDraft] = useState(() => editableOf(form));
-  const [baseline, setBaseline] = useState(() => stableKey(editableOf(form)));
+  const [draft, setDraft] = useState(() => editableOf(form, quizKey));
+  const [baseline, setBaseline] = useState(() => stableKey(editableOf(form, quizKey)));
   const baselineRef = useRef(baseline);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
@@ -79,15 +83,25 @@ export default function FormBuilder({ form, editorEmail }) {
   // Starter option names are content, so they follow the form's language.
   const optionLabel = (n) => t("builder.optionN", { n, lng: draft.language });
 
+  // a quiz: points on every question and an answer key
+  const quiz = quizOf(form);
+  const withPoints = (f) => (quiz.enabled ? { ...f, points: quiz.defaultPoints } : f);
+  const setKey = (id, answers) => setDraft((d) => ({ ...d, key: { ...d.key, [id]: answers } }));
+  const toggleCorrect = (f, option) => {
+    const current = draft.key[f.id] || [];
+    if (f.type === "choice") setKey(f.id, current[0] === option ? [] : [option]);
+    else setKey(f.id, current.includes(option) ? current.filter((o) => o !== option) : [...current, option]);
+  };
+
   // Take in changes saved elsewhere, unless there are local edits to keep.
   useEffect(() => {
-    const incoming = stableKey(editableOf(form));
+    const incoming = stableKey(editableOf(form, quizKey));
     const previous = baselineRef.current;
     if (incoming === previous) return;
     baselineRef.current = incoming;
     setBaseline(incoming);
-    setDraft((current) => (stableKey(current) === previous ? editableOf(form) : current));
-  }, [form]);
+    setDraft((current) => (stableKey(current) === previous ? editableOf(form, quizKey) : current));
+  }, [form, quizKey]);
 
   useEffect(() => {
     if (!dirty) return undefined;
@@ -132,9 +146,9 @@ export default function FormBuilder({ form, editorEmail }) {
 
   const remove = (index) => setDraft((d) => ({ ...d, fields: d.fields.filter((_, i) => i !== index) }));
 
-  const addField = () => setDraft((d) => ({ ...d, fields: [...d.fields, newField("short", optionLabel)] }));
+  const addField = () => setDraft((d) => ({ ...d, fields: [...d.fields, withPoints(newField("short", optionLabel))] }));
 
-  const addSection = () => setDraft((d) => ({ ...d, fields: [...d.fields, newSection(), newField("short", optionLabel)] }));
+  const addSection = () => setDraft((d) => ({ ...d, fields: [...d.fields, newSection(), withPoints(newField("short", optionLabel))] }));
 
   // a whole section (its card and its questions) swaps with the one above or below
   const moveSection = (start, delta) =>
@@ -194,6 +208,9 @@ export default function FormBuilder({ form, editorEmail }) {
           return { id: f.id, type: SECTION, title: (f.title || "").trim(), description: (f.description || "").trim(), next: targets.has(f.next) ? f.next : "next" };
         }
         const out = { id: f.id, type: f.type, label: f.label.trim(), required: !!f.required };
+        // questions that were there before the quiz start at 0 points (a name is not graded);
+        // new ones get the default
+        if (quiz.enabled) out.points = Math.max(0, Math.min(1000, Number(f.points ?? 0) || 0));
         if (f.placeholder?.trim()) out.placeholder = f.placeholder.trim();
         if (HAS_OPTIONS.has(f.type)) out.options = f.options.map((o) => o.trim());
         // leading on by the answer (one-choice or checkboxes) in a form with sections
@@ -205,6 +222,21 @@ export default function FormBuilder({ form, editorEmail }) {
         return out;
       }),
     };
+    // the answer key, only for questions that still exist and options that still exist
+    const key = {};
+    clean.fields.forEach((f) => {
+      const answers = (draft.key[f.id] || []).map((a) => String(a).trim()).filter(Boolean);
+      if (!answers.length || isSection(f)) return;
+      if (f.type === "choice") {
+        if (f.options.includes(answers[0])) key[f.id] = [answers[0]];
+      } else if (f.type === "checkbox") {
+        const ok = answers.filter((a) => f.options.includes(a));
+        if (ok.length) key[f.id] = ok;
+      } else if (AUTO_GRADED.has(f.type)) {
+        key[f.id] = answers.slice(0, 20).map((a) => a.slice(0, 300));
+      }
+    });
+    const keyChanged = JSON.stringify(key) !== JSON.stringify(quizKey || {});
     setSaving(true);
     try {
       const changed = ["title", "description", "language", "fields", "firstNext"].filter(
@@ -212,16 +244,21 @@ export default function FormBuilder({ form, editorEmail }) {
       );
       await auditedWrite(
         user,
-        { area: "forms", action: "form.update", target: form.id, label: clean.title, details: { changed, questions: clean.fields.filter((f) => !isSection(f)).length } },
+        { area: "forms", action: "form.update", target: form.id, label: clean.title, details: { changed: keyChanged ? [...changed, "answerKey"] : changed, questions: clean.fields.filter((f) => !isSection(f)).length } },
         (batch, auditId) =>
+        {
           batch.update(doc(db, FORMS_COLLECTION, form.id), {
             ...clean,
+            // the browser grades only when results show right after sending
+            quizKey: quiz.enabled && quiz.release === "immediate" ? key : deleteField(),
             auditId,
             updatedBy: editorEmail,
             updatedAt: serverTimestamp(),
-          })
+          });
+          if (keyChanged || quiz.enabled) batch.set(doc(db, FORMS_COLLECTION, form.id, PRIVATE, KEY_DOC), { key, auditId, updatedAt: serverTimestamp() });
+        }
       );
-      setDraft(clean);
+      setDraft({ ...clean, key });
       setMessage({ color: "teal", text: t("builder.saved") });
     } catch (err) {
       console.error("Could not save form:", err);
@@ -407,7 +444,19 @@ export default function FormBuilder({ form, editorEmail }) {
             <div className={styles.options}>
               {(f.options || []).map((option, oi) => (
                 <div className={styles.optionRow} key={oi}>
-                  <span className={f.type === "choice" ? styles.radioDot : styles.checkDot} />
+                  {quiz.enabled ? (
+                    <button
+                      type="button"
+                      className={`${f.type === "choice" ? styles.radioDot : styles.checkDot} ${styles.keyDot} ${(draft.key[f.id] || []).includes(option) ? styles.keyOn : ""}`}
+                      onClick={() => toggleCorrect(f, option)}
+                      aria-pressed={(draft.key[f.id] || []).includes(option)}
+                      title={t("quiz.markCorrect")}
+                    >
+                      {(draft.key[f.id] || []).includes(option) && <IconCheck size={11} stroke={3} />}
+                    </button>
+                  ) : (
+                    <span className={f.type === "choice" ? styles.radioDot : styles.checkDot} />
+                  )}
                   <TextInput
                     className={styles.optionInput}
                     dir={contentDir}
@@ -415,6 +464,8 @@ export default function FormBuilder({ form, editorEmail }) {
                     onChange={(e) => {
                       const text = e.target.value;
                       const patch = { options: f.options.map((o, i) => (i === oi ? text : o)) };
+                      // a correct option stays correct when renamed
+                      if ((draft.key[f.id] || []).includes(option)) setKey(f.id, draft.key[f.id].map((o) => (o === option ? text : o)));
                       // the option keeps where it leads when renamed
                       if (f.goTo) {
                         const { [option]: target, ...rest } = f.goTo;
@@ -479,6 +530,39 @@ export default function FormBuilder({ form, editorEmail }) {
                 aria-label={t("builder.placeholder")}
               />
             )
+          )}
+
+          {quiz.enabled && (
+            <div className={styles.quizRow}>
+              {f.type === "short" || f.type === "number" ? (
+                <TagsInput
+                  className={styles.quizAnswers}
+                  size="xs"
+                  label={t("quiz.accepted")}
+                  placeholder={t("quiz.acceptedHint")}
+                  value={draft.key[f.id] || []}
+                  onChange={(answers) => setKey(f.id, answers)}
+                  dir={contentDir}
+                />
+              ) : HAS_OPTIONS.has(f.type) ? (
+                <Text size="xs" c={(draft.key[f.id] || []).length ? "teal.8" : "orange.8"} fw={600}>
+                  {(draft.key[f.id] || []).length ? t("quiz.keySet", { count: draft.key[f.id].length }) : t("quiz.tapCorrect")}
+                </Text>
+              ) : (
+                <Text size="xs" c="dimmed">
+                  {t("quiz.byHand")}
+                </Text>
+              )}
+              <NumberInput
+                size="xs"
+                w={110}
+                min={0}
+                max={1000}
+                label={t("quiz.points")}
+                value={f.points ?? 0}
+                onChange={(v) => setField(index, { points: Number(v) || 0 })}
+              />
+            </div>
           )}
 
           <div className={styles.questionFooter}>
@@ -578,7 +662,7 @@ export default function FormBuilder({ form, editorEmail }) {
         )}
         <Group gap="xs">
           {dirty && (
-            <Button variant="default" onClick={() => setDraft(editableOf(form))}>
+            <Button variant="default" onClick={() => setDraft(editableOf(form, quizKey))}>
               {t("builder.discard")}
             </Button>
           )}

@@ -145,13 +145,15 @@
         "cover": "Uploaded a form cover",
         "cover_remove": "Removed a form cover",
         "cover_position": "Moved a form cover",
-        "delete": "Deleted a form"
+        "delete": "Deleted a form",
+        "quiz": "Changed the quiz settings"
       },
       "response": {
         "delete": "Deleted a form response"
       },
       "responses": {
-        "clear": "Deleted form responses"
+        "clear": "Deleted form responses",
+        "grade": "Graded quiz answers"
       },
       "cert": {
         "issue": "Issued certificates",

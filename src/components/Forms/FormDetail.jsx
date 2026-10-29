@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Alert, Badge, Card, Group, Loader, SegmentedControl, Tabs, Text, Title } from "@mantine/core";
-import { IconArrowLeft, IconListDetails, IconMessages, IconShare } from "@tabler/icons-react";
+import { IconArrowLeft, IconListDetails, IconMessages, IconSettings, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -11,11 +11,12 @@ import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import layout from "../Internal/AccessControl.module.css";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
-import { FORMS_COLLECTION, STATUSES, STATUS_COLORS } from "./formSchema";
+import { FORMS_COLLECTION, KEY_DOC, PRIVATE, STATUSES, STATUS_COLORS } from "./formSchema";
 import FormBuilder from "./FormBuilder";
 import FormCoverEditor from "./FormCoverEditor";
 import ResponsesPanel from "./ResponsesPanel";
 import SharePanel from "./SharePanel";
+import QuizSettings from "./QuizSettings";
 
 export default function FormDetail() {
   const { t } = useTranslation("internal/Forms");
@@ -24,6 +25,8 @@ export default function FormDetail() {
   const [form, setForm] = useState(undefined);
   const [tab, setTab] = useState("questions");
   const [statusError, setStatusError] = useState(false);
+  // the quiz answer key (question id → accepted answers), admins only
+  const [quizKey, setQuizKey] = useState({});
 
   useEffect(
     () =>
@@ -34,6 +37,16 @@ export default function FormDetail() {
           console.error("Could not load form:", err);
           setForm(null);
         }
+      ),
+    [formId]
+  );
+
+  useEffect(
+    () =>
+      onSnapshot(
+        doc(db, FORMS_COLLECTION, formId, PRIVATE, KEY_DOC),
+        (snap) => setQuizKey(snap.exists() ? snap.data().key || {} : {}),
+        () => setQuizKey({})
       ),
     [formId]
   );
@@ -119,6 +132,9 @@ export default function FormDetail() {
                   <Tabs.Tab value="responses" leftSection={<IconMessages size={16} />}>
                     {t("detail.tabs.responses")}
                   </Tabs.Tab>
+                  <Tabs.Tab value="settings" leftSection={<IconSettings size={16} />}>
+                    {t("detail.tabs.settings")}
+                  </Tabs.Tab>
                   <Tabs.Tab value="share" leftSection={<IconShare size={16} />}>
                     {t("detail.tabs.share")}
                     {form.status !== "open" && (
@@ -131,10 +147,13 @@ export default function FormDetail() {
 
                 <Tabs.Panel value="questions" pt="lg">
                   <FormCoverEditor form={form} editorEmail={email} />
-                  <FormBuilder form={form} editorEmail={email} />
+                  <FormBuilder form={form} editorEmail={email} quizKey={quizKey} />
                 </Tabs.Panel>
                 <Tabs.Panel value="responses" pt="lg">
-                  <ResponsesPanel form={form} />
+                  <ResponsesPanel form={form} quizKey={quizKey} />
+                </Tabs.Panel>
+                <Tabs.Panel value="settings" pt="lg">
+                  <QuizSettings form={form} quizKey={quizKey} editorEmail={email} />
                 </Tabs.Panel>
                 <Tabs.Panel value="share" pt="lg">
                   <SharePanel form={form} onOpen={() => changeStatus("open")} />

@@ -63,7 +63,8 @@
     "tabs": {
       "questions": "Questions",
       "responses": "Responses",
-      "share": "Share"
+      "share": "Share",
+      "settings": "Settings"
     }
   },
   "builder": {
@@ -226,7 +227,14 @@
     },
     "next": "Next",
     "back": "Back",
-    "sectionStep": "Section {{n}}"
+    "sectionStep": "Section {{n}}",
+    "quiz": {
+      "points": "{{count}} point(s)",
+      "score": "Your score",
+      "pending": "{{count}} question(s) will still be reviewed",
+      "correct": "Correct answer",
+      "later": "Your answers are recorded. Your score will be shared after review."
+    }
   },
   "print": {
     "button": "Print / PDF",
@@ -239,5 +247,41 @@
     "share": "Share PDF",
     "downloaded": "The PDF was downloaded.",
     "failed": "The PDF could not be made. Use Print and choose \"Save as PDF\"."
+  },
+  "quiz": {
+    "make": "Make this a quiz",
+    "makeHint": "Assign point values, set answers, and show results automatically.",
+    "release": "Release grades",
+    "releaseNow": "Immediately after each submission",
+    "releaseNowHint": "People see their score right away. The answer key travels to their browser, so use this for practice, not for serious exams.",
+    "releaseLater": "Later, after manual review",
+    "releaseLaterHint": "The answer key stays with the admins. Scores show in the Responses tab.",
+    "respondent": "Respondent settings",
+    "missed": "Missed questions",
+    "missedHint": "People see which questions were answered incorrectly.",
+    "correct": "Correct answers",
+    "correctHint": "People see the correct answers once grades are released.",
+    "points": "Point values",
+    "pointsHint": "People see the points of each question and their total.",
+    "defaults": "Global quiz defaults",
+    "defaultPoints": "Default question point value",
+    "defaultPointsHint": "Points for every new question.",
+    "pts": "points",
+    "saved": "Settings saved.",
+    "markCorrect": "Mark as a correct answer",
+    "accepted": "Accepted answers",
+    "acceptedHint": "Type and press Enter; capitals do not matter",
+    "keySet": "{{count}} correct answer(s) marked",
+    "tapCorrect": "Tap a circle or box to mark the correct answer",
+    "byHand": "Graded by hand in the Responses tab",
+    "scoreColumn": "Score",
+    "average": "Average score",
+    "graded": "Responses",
+    "toReview": "To grade by hand",
+    "pendingN": "{{count}} question(s) waiting for a grade",
+    "total": "Score",
+    "key": "Key",
+    "give": "Give points",
+    "saveGrades": "Save grades"
   }
 }

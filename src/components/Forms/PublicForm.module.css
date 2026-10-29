@@ -427,3 +427,76 @@
 :global([dir="rtl"]) .flip {
   transform: scaleX(-1);
 }
+
+/* ---------- a quiz ---------- */
+.pointsTag {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.quizCard {
+  margin-bottom: 1rem;
+}
+.quizLater {
+  margin: 0.4rem 0 0;
+  color: #475569;
+}
+.quizScore {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+.quizScore span {
+  color: #475569;
+  font-weight: 600;
+}
+.quizScore b {
+  font-size: 1.8rem;
+  color: #047857;
+}
+.quizScore small {
+  color: #b45309;
+}
+.quizList {
+  list-style: none;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.quizList li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.quizList li > div {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.quizList small {
+  color: #64748b;
+}
+.quizRight svg {
+  color: #10b981;
+}
+.quizWrong svg {
+  color: #ef4444;
+}
+.quizWait svg {
+  color: #f59e0b;
+}
+.quizAnswer {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #047857;
+}

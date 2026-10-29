@@ -97,6 +97,53 @@ export const nextStep = (sections, step, answers) => {
   return at < sections.length ? { index: at, queue: [] } : null;
 };
 
+// --- quiz ----------------------------------------------------------------------
+// A form can be a quiz (form.quiz.enabled): questions carry `points`, and the
+// answer key (question id → accepted answers) is kept in forms/{id}/private/key,
+// readable by admins only. When results are released right after sending, a
+// copy goes on the form itself (form.quizKey) so the browser can grade.
+
+export const PRIVATE = "private";
+export const KEY_DOC = "key";
+export const QUIZ_DEFAULTS = { enabled: false, release: "immediate", showMissed: true, showCorrect: true, showPoints: true, defaultPoints: 1 };
+export const quizOf = (form) => ({ ...QUIZ_DEFAULTS, ...(form?.quiz || {}) });
+// questions an answer key can grade by itself; the rest are graded by hand
+export const AUTO_GRADED = new Set(["choice", "checkbox", "short", "number"]);
+
+const same = (a, b) => String(a ?? "").trim().toLowerCase().replace(/\s+/g, " ") === String(b ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+
+/**
+ * One response's score: { score, max, pending, per: { id: { points, earned, correct, accepted } } }.
+ * `grades` (question id → points given by hand) win over the key; a question
+ * with points but no key and no grade waits for review (earned null).
+ */
+export function gradeResponse(fields, key = {}, answers = {}, grades = {}) {
+  let score = 0;
+  let max = 0;
+  const per = {};
+  questionsOf(fields).forEach((q) => {
+    const points = Number(q.points) || 0;
+    if (!points) return;
+    max += points;
+    const accepted = key[q.id] || [];
+    const answer = answers[q.id];
+    let earned = null;
+    let correct = null;
+    if (grades[q.id] !== undefined && grades[q.id] !== null && grades[q.id] !== "") {
+      earned = Math.max(0, Math.min(points, Number(grades[q.id]) || 0));
+      correct = earned === points;
+    } else if (accepted.length && AUTO_GRADED.has(q.type)) {
+      if (q.type === "checkbox") correct = Array.isArray(answer) && answer.length === accepted.length && accepted.every((x) => answer.includes(x));
+      else if (q.type === "choice") correct = answer === accepted[0];
+      else correct = !isEmptyAnswer(answer) && accepted.some((x) => same(x, answer));
+      earned = correct ? points : 0;
+    }
+    if (earned !== null) score += earned;
+    per[q.id] = { points, earned, correct, accepted };
+  });
+  return { score, max, per, pending: Object.values(per).filter((p) => p.earned === null).length };
+}
+
 // Picker labels live under templates.<key> in the Forms translations; the
 // questions themselves are content, written in the form's own language.
 export const TEMPLATES = [
@@ -208,9 +255,11 @@ export const responsesToCsv = (allFields, responses, formatTime, labels) => {
   const extra = Array.from(
     new Set(responses.flatMap((r) => Object.keys(r.answers || {}).filter((k) => !known.has(k))))
   );
-  const header = [labels.submitted, ...fields.map((f) => f.label || "—"), ...extra.map(labels.removed)];
+  const scored = !!labels.scoreOf;
+  const header = [labels.submitted, ...(scored ? [labels.score] : []), ...fields.map((f) => f.label || "—"), ...extra.map(labels.removed)];
   const rows = responses.map((r) => [
     formatTime(r.submittedAt),
+    ...(scored ? [labels.scoreOf(r)] : []),
     ...fields.map((f) => r.answers?.[f.id]),
     ...extra.map((k) => r.answers?.[k]),
   ]);

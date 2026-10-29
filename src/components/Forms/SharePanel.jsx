@@ -17,7 +17,7 @@ import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { AUDIT_CHUNK, auditedWrite } from "../Internal/audit";
 import styles from "./Forms.module.css";
-import { COVER_DOC, FORMS_COLLECTION, MEDIA, RESPONSES, formLink } from "./formSchema";
+import { COVER_DOC, FORMS_COLLECTION, KEY_DOC, MEDIA, PRIVATE, RESPONSES, formLink } from "./formSchema";
 
 export default function SharePanel({ form, onOpen }) {
   const { t } = useTranslation("internal/Forms");
@@ -69,6 +69,7 @@ export default function SharePanel({ form, onOpen }) {
         removed += snap.size;
       }
       const cover = await getDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
+      const key = await getDoc(doc(db, FORMS_COLLECTION, form.id, PRIVATE, KEY_DOC));
       await auditedWrite(
         user,
         { area: "forms", action: "form.delete", target: form.id, label: form.title, details: { status: form.status, responses: removed } },
@@ -76,6 +77,10 @@ export default function SharePanel({ form, onOpen }) {
           if (cover.exists()) {
             batch.delete(cover.ref);
             markDelete(`forms~${form.id}~media~${COVER_DOC}`, cover.data().auditId);
+          }
+          if (key.exists()) {
+            batch.delete(key.ref);
+            markDelete(`forms~${form.id}~private~${KEY_DOC}`, key.data().auditId);
           }
           batch.delete(doc(db, FORMS_COLLECTION, form.id));
           markDelete(`forms~${form.id}`, form.auditId);

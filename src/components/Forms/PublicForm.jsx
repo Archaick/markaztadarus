@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Loader, Radio, TextInput, Textarea } from "@mantine/core";
-import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconEye, IconLock, IconSend } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconCircleX, IconClock, IconEye, IconLock, IconSend } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -19,6 +19,9 @@ import {
   RESPONSES,
   answerError,
   cleanAnswers,
+  displayAnswer,
+  gradeResponse,
+  quizOf,
   nextStep,
   questionsOf,
   sectionsOf,
@@ -148,6 +151,59 @@ function FieldInput({ field, value, onChange, error }) {
   }
 }
 
+/** A quiz's result right after sending: the score, and (as the form allows) what was missed and the right answers. */
+function QuizResult({ form, result }) {
+  const { t } = useTranslation(NS);
+  const quiz = quizOf(form);
+  if (result.later) {
+    return (
+      <div className={`${styles.card} ${styles.quizCard}`}>
+        <IconClock size={22} />
+        <p className={styles.quizLater}>{t("public.quiz.later")}</p>
+      </div>
+    );
+  }
+  const questions = questionsOf(form.fields || []).filter((q) => result.per[q.id]);
+  return (
+    <div className={`${styles.card} ${styles.quizCard}`}>
+      {quiz.showPoints && (
+        <div className={styles.quizScore}>
+          <span>{t("public.quiz.score")}</span>
+          <b>
+            {result.score} / {result.max}
+          </b>
+          {result.pending > 0 && <small>{t("public.quiz.pending", { count: result.pending })}</small>}
+        </div>
+      )}
+      {quiz.showMissed && (
+        <ul className={styles.quizList}>
+          {questions.map((q) => {
+            const r = result.per[q.id];
+            return (
+              <li key={q.id} className={r.correct ? styles.quizRight : r.correct === false ? styles.quizWrong : styles.quizWait}>
+                {r.correct ? <IconCircleCheck size={18} /> : r.correct === false ? <IconCircleX size={18} /> : <IconClock size={18} />}
+                <div>
+                  <span dir="auto">{q.label}</span>
+                  {quiz.showPoints && (
+                    <small>
+                      {r.earned === null ? "—" : r.earned} / {r.points}
+                    </small>
+                  )}
+                  {quiz.showCorrect && r.correct === false && r.accepted.length > 0 && (
+                    <p className={styles.quizAnswer} dir="auto">
+                      {t("public.quiz.correct")}: {displayAnswer(q.type === "checkbox" ? r.accepted : r.accepted[0])}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function PublicForm() {
   const { t } = useTranslation(NS);
   const { formId } = useParams();
@@ -159,6 +215,7 @@ export default function PublicForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [result, setResult] = useState(null); // a quiz's result after sending
   const [cover, setCover] = useState(null);
   // with sections: the steps taken so far, in order (Back walks it back);
   // a step's queue holds sections still to visit (several checkbox answers)
@@ -239,6 +296,7 @@ export default function PublicForm() {
   if (submitted) {
     return (
       <Shell {...shellProps}>
+        {result && <QuizResult form={form} result={result} />}
         <StateCard icon={IconCircleCheck} tone="toneGreen" title={t("public.thanksTitle")} text={t("public.thanksText")}>
           <button
             type="button"
@@ -247,6 +305,7 @@ export default function PublicForm() {
               setAnswers({});
               setErrors({});
               setPath(START);
+              setResult(null);
               setSubmitted(false);
               window.scrollTo({ top: 0 });
             }}
@@ -307,10 +366,14 @@ export default function PublicForm() {
 
     setSubmitting(true);
     try {
+      const sent = cleanAnswers(paged ? path.flatMap((p) => sections[p.index].questions) : fields, answers);
       await addDoc(collection(db, FORMS_COLLECTION, form.id, RESPONSES), {
-        answers: cleanAnswers(paged ? path.flatMap((p) => sections[p.index].questions) : fields, answers),
+        answers: sent,
         submittedAt: serverTimestamp(),
       });
+      // a quiz: graded here when results are released right away, else announced for later
+      const quiz = quizOf(form);
+      if (quiz.enabled) setResult(quiz.release === "immediate" && form.quizKey ? gradeResponse(form.fields, form.quizKey, sent) : { later: true });
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -381,6 +444,9 @@ export default function PublicForm() {
                 {f.label}
                 {f.required && <span className={styles.star}> *</span>}
               </span>
+              {quizOf(form).enabled && quizOf(form).showPoints && Number(f.points) > 0 && (
+                <span className={styles.pointsTag}>{t("public.quiz.points", { count: Number(f.points) })}</span>
+              )}
             </label>
             <FieldInput
               field={f}

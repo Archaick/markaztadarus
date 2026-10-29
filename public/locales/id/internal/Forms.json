@@ -61,7 +61,8 @@
     "tabs": {
       "questions": "Pertanyaan",
       "responses": "Jawaban",
-      "share": "Bagikan"
+      "share": "Bagikan",
+      "settings": "Pengaturan"
     }
   },
   "builder": {
@@ -224,7 +225,14 @@
     },
     "next": "Berikutnya",
     "back": "Kembali",
-    "sectionStep": "Bagian {{n}}"
+    "sectionStep": "Bagian {{n}}",
+    "quiz": {
+      "points": "{{count}} poin",
+      "score": "Nilai Anda",
+      "pending": "{{count}} pertanyaan masih akan diperiksa",
+      "correct": "Jawaban benar",
+      "later": "Jawaban Anda tercatat. Nilai akan dibagikan setelah diperiksa."
+    }
   },
   "print": {
     "button": "Cetak / PDF",
@@ -237,5 +245,41 @@
     "share": "Bagikan PDF",
     "downloaded": "PDF sudah diunduh.",
     "failed": "PDF tidak bisa dibuat. Gunakan Cetak lalu \"Simpan sebagai PDF\"."
+  },
+  "quiz": {
+    "make": "Jadikan kuis",
+    "makeHint": "Beri poin, tetapkan kunci jawaban, dan tampilkan nilai secara otomatis.",
+    "release": "Pengumuman nilai",
+    "releaseNow": "Langsung setelah dikirim",
+    "releaseNowHint": "Peserta langsung melihat nilainya. Kunci jawaban ikut terkirim ke peramban, jadi gunakan untuk latihan, bukan ujian penting.",
+    "releaseLater": "Nanti, setelah diperiksa",
+    "releaseLaterHint": "Kunci jawaban hanya untuk admin. Nilai terlihat di tab Jawaban.",
+    "respondent": "Yang dilihat peserta",
+    "missed": "Pertanyaan yang salah",
+    "missedHint": "Peserta melihat pertanyaan mana yang benar dan salah.",
+    "correct": "Jawaban yang benar",
+    "correctHint": "Peserta melihat jawaban yang benar setelah nilai diumumkan.",
+    "points": "Poin",
+    "pointsHint": "Peserta melihat poin tiap pertanyaan dan total nilainya.",
+    "defaults": "Bawaan kuis",
+    "defaultPoints": "Poin bawaan per pertanyaan",
+    "defaultPointsHint": "Poin untuk setiap pertanyaan baru.",
+    "pts": "poin",
+    "saved": "Pengaturan tersimpan.",
+    "markCorrect": "Tandai sebagai jawaban benar",
+    "accepted": "Jawaban yang diterima",
+    "acceptedHint": "Ketik lalu Enter; huruf besar/kecil tidak berpengaruh",
+    "keySet": "{{count}} jawaban benar ditandai",
+    "tapCorrect": "Ketuk lingkaran/kotak untuk menandai jawaban yang benar",
+    "byHand": "Dinilai manual di tab Jawaban",
+    "scoreColumn": "Nilai",
+    "average": "Rata-rata nilai",
+    "graded": "Jawaban",
+    "toReview": "Perlu dinilai manual",
+    "pendingN": "{{count}} pertanyaan menunggu dinilai",
+    "total": "Nilai",
+    "key": "Kunci",
+    "give": "Beri poin",
+    "saveGrades": "Simpan nilai"
   }
 }

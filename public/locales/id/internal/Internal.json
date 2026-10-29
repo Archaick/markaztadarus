@@ -145,13 +145,15 @@
         "cover": "Mengunggah sampul formulir",
         "cover_remove": "Menghapus sampul formulir",
         "cover_position": "Menggeser sampul formulir",
-        "delete": "Menghapus formulir"
+        "delete": "Menghapus formulir",
+        "quiz": "Mengubah pengaturan kuis"
       },
       "response": {
         "delete": "Menghapus jawaban formulir"
       },
       "responses": {
-        "clear": "Menghapus jawaban formulir"
+        "clear": "Menghapus jawaban formulir",
+        "grade": "Menilai jawaban kuis"
       },
       "cert": {
         "issue": "Menerbitkan sertifikat",

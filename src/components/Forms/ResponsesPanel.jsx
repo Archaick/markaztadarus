@@ -6,12 +6,16 @@ import {
   Group,
   Loader,
   Modal,
+  NumberInput,
   Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
 import {
   IconBrandWhatsapp,
+  IconCircleCheck,
+  IconCircleX,
+  IconClock,
   IconChevronLeft,
   IconChevronRight,
   IconDownload,
@@ -43,13 +47,15 @@ import {
   displayAnswer,
   downloadText,
   responsesToCsv,
+  gradeResponse,
   questionsOf,
+  quizOf,
   whatsappNumber,
 } from "./formSchema";
 
 const MAX_RESPONSES = 2000;
 
-export default function ResponsesPanel({ form }) {
+export default function ResponsesPanel({ form, quizKey }) {
   const { t } = useTranslation("internal/Forms");
   const { user } = useAccess();
   // questions only: section cards hold no answers
@@ -119,10 +125,44 @@ export default function ResponsesPanel({ form }) {
 
   const open = openIndex >= 0 ? filtered[openIndex] : null;
 
+  // a quiz: every response's score (hand grades win over the key), and the average
+  const quiz = quizOf(form);
+  const allFields = useMemo(() => form.fields || [], [form.fields]);
+  const gradeOf = (r) => gradeResponse(allFields, quizKey || {}, r.answers || {}, r.grades || {});
+  const quizStats = useMemo(() => {
+    if (!quiz.enabled || !responses?.length) return null;
+    const grades = responses.map((r) => gradeResponse(allFields, quizKey || {}, r.answers || {}, r.grades || {}));
+    const max = grades[0]?.max || 0;
+    const average = grades.reduce((a, g) => a + g.score, 0) / grades.length;
+    return { max, average, toReview: grades.filter((g) => g.pending > 0).length };
+  }, [quiz.enabled, responses, allFields, quizKey]);
+
+  // points given by hand to one response, saved together
+  const [handGrades, setHandGrades] = useState({});
+  const [savingGrades, setSavingGrades] = useState(false);
+  useEffect(() => setHandGrades(open?.grades || {}), [open?.id, open?.grades]);
+  const saveGrades = async () => {
+    if (!open) return;
+    setSavingGrades(true);
+    try {
+      const grades = Object.fromEntries(Object.entries(handGrades).filter(([, v]) => v !== "" && v !== null && v !== undefined).map(([k, v]) => [k, Number(v)]));
+      await auditedWrite(
+        user,
+        { area: "forms", action: "responses.grade", target: form.id, label: form.title, details: { response: open.id, graded: Object.keys(grades).length } },
+        (batch, auditId) => batch.update(doc(db, FORMS_COLLECTION, form.id, RESPONSES, open.id), { grades, auditId })
+      );
+    } catch (err) {
+      console.error("Could not save the grades:", err);
+    } finally {
+      setSavingGrades(false);
+    }
+  };
+
   const exportCsv = () => {
     const csv = responsesToCsv(fields, responses || [], formatDateTime, {
       submitted: t("responses.csvSubmitted"),
       removed: (id) => t("responses.csvRemoved", { id }),
+      ...(quiz.enabled ? { score: t("quiz.scoreColumn"), scoreOf: (r) => { const g = gradeOf(r); return `${g.score}/${g.max}`; } } : {}),
     });
     const date = new Date().toISOString().slice(0, 10);
     downloadText(`${form.id}-responses-${date}.csv`, csv);
@@ -193,6 +233,27 @@ export default function ResponsesPanel({ form }) {
         </Alert>
       )}
 
+      {quizStats && (
+        <div className={styles.quizStats}>
+          <div>
+            <b>
+              {Math.round(quizStats.average * 10) / 10} / {quizStats.max}
+            </b>
+            <span>{t("quiz.average")}</span>
+          </div>
+          <div>
+            <b>{responses.length}</b>
+            <span>{t("quiz.graded")}</span>
+          </div>
+          {quizStats.toReview > 0 && (
+            <div className={styles.quizStatsWarn}>
+              <b>{quizStats.toReview}</b>
+              <span>{t("quiz.toReview")}</span>
+            </div>
+          )}
+        </div>
+      )}
+
       {summaries.length > 0 && responses.length > 0 && (
         <div className={styles.summaryGrid}>
           {summaries.map(({ field, counts, answered }) => (
@@ -248,6 +309,15 @@ export default function ResponsesPanel({ form }) {
                     <span className={styles.responseSub} dir="auto">{displayAnswer(r.answers?.[secondary.id]) || "—"}</span>
                   )}
                 </span>
+                {quiz.enabled && (() => {
+                  const g = gradeOf(r);
+                  return (
+                    <span className={`${styles.scoreBadge} ${g.pending ? styles.scorePending : ""}`}>
+                      {g.score}/{g.max}
+                      {g.pending ? " ·?" : ""}
+                    </span>
+                  );
+                })()}
                 <span className={styles.responseTime}>{timeAgo(r.submittedAt)}</span>
                 <IconChevronRight size={16} className={`${styles.responseChevron} ${portal.flipRtl}`} />
               </button>
@@ -280,13 +350,49 @@ export default function ResponsesPanel({ form }) {
         {open && (
           <>
             <div className={styles.answerList}>
+              {quiz.enabled && (() => {
+                const g = gradeOf({ ...open, grades: handGrades });
+                return (
+                  <div className={styles.quizStats}>
+                    <div>
+                      <b>
+                        {g.score} / {g.max}
+                      </b>
+                      <span>{g.pending ? t("quiz.pendingN", { count: g.pending }) : t("quiz.total")}</span>
+                    </div>
+                  </div>
+                );
+              })()}
               {fields.map((f, i) => {
                 const value = open.answers?.[f.id];
+                const mark = quiz.enabled ? gradeOf({ ...open, grades: handGrades }).per[f.id] : null;
                 return (
                   <div className={styles.answerItem} key={f.id}>
                     <p className={styles.answerQuestion}>
+                      {mark && (mark.correct ? <IconCircleCheck size={16} color="#10b981" /> : mark.correct === false ? <IconCircleX size={16} color="#ef4444" /> : <IconClock size={16} color="#f59e0b" />)}{" "}
                       {i + 1}. {f.label}
                     </p>
+                    {mark && (
+                      <div className={styles.gradeRow}>
+                        {mark.accepted.length > 0 && (
+                          <Text size="xs" c="dimmed" dir="auto">
+                            {t("quiz.key")}: {displayAnswer(f.type === "checkbox" ? mark.accepted : mark.accepted[0])}
+                          </Text>
+                        )}
+                        <NumberInput
+                          size="xs"
+                          w={130}
+                          min={0}
+                          max={mark.points}
+                          placeholder={mark.earned === null ? t("quiz.give") : String(mark.earned)}
+                          value={handGrades[f.id] ?? ""}
+                          onChange={(v) => setHandGrades((h) => ({ ...h, [f.id]: v === "" ? "" : Number(v) }))}
+                          rightSection={<Text size="xs" c="dimmed" pe={6}>/ {mark.points}</Text>}
+                          rightSectionWidth={44}
+                          aria-label={t("quiz.give")}
+                        />
+                      </div>
+                    )}
                     <div className={styles.answerValueRow}>
                       <p className={styles.answerValue} dir="auto">{displayAnswer(value) || <em>{t("responses.noAnswer")}</em>}</p>
                       {f.type === "phone" && value && (
@@ -327,6 +433,11 @@ export default function ResponsesPanel({ form }) {
                 {t("responses.delete")}
               </Button>
               <Group gap={4}>
+                {quiz.enabled && JSON.stringify(handGrades) !== JSON.stringify(open.grades || {}) && (
+                  <Button color="teal" loading={savingGrades} onClick={saveGrades} me="xs">
+                    {t("quiz.saveGrades")}
+                  </Button>
+                )}
                 <Button variant="light" color="teal" leftSection={<IconPrinter size={15} />} onClick={() => setPrinting(true)} me="xs">
                   {t("print.button")}
                 </Button>

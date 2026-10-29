@@ -358,6 +358,18 @@ service cloud.firestore {
         allow delete: if hasFeature("forms") && marked("forms~" + formId + "~media~" + mediaId);
       }
 
+      // A quiz's answer key: admins only (a copy goes on the form itself only
+      // when results are shown right after sending).
+      match /private/{docId} {
+        allow read: if hasFeature("forms");
+        allow create, update: if hasFeature("forms")
+          && docId == "key"
+          && request.resource.data.key is map
+          && request.resource.data.key.size() <= 100
+          && audited();
+        allow delete: if hasFeature("forms") && marked("forms~" + formId + "~private~" + docId);
+      }
+
       match /responses/{responseId} {
         // Anyone may answer an open form, once per write, with only answers.
         allow create: if get(/databases/$(database)/documents/forms/$(formId)).data.status == "open"
@@ -366,6 +378,12 @@ service cloud.firestore {
           && request.resource.data.answers.size() <= 100
           && request.resource.data.submittedAt == request.time;
         allow read: if hasFeature("forms");
+        // a quiz's points given by hand; nothing else of an answer changes
+        allow update: if hasFeature("forms")
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["grades", "auditId"])
+          && request.resource.data.grades is map
+          && request.resource.data.grades.size() <= 100
+          && audited();
         allow delete: if hasFeature("forms") && marked("forms~" + formId + "~responses~" + responseId);
       }
     }
