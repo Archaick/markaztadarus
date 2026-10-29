@@ -95,7 +95,21 @@
       "noLabel": "Pertanyaan {{n}} belum berisi teks.",
       "emptyOption": "Pertanyaan {{n}} memiliki opsi kosong.",
       "duplicateOption": "Pertanyaan {{n}} memiliki opsi yang sama dua kali."
-    }
+    },
+    "addSection": "Tambah bagian",
+    "sectionOf": "Bagian {{n}} dari {{total}}",
+    "sectionTitle": "Judul bagian (opsional)",
+    "sectionDescription": "Keterangan (opsional)",
+    "afterSection": "Setelah bagian {{n}}",
+    "toNext": "Lanjut ke bagian berikutnya",
+    "toSection": "Ke bagian {{n}}",
+    "toSectionTitled": "Ke bagian {{n}} ({{title}})",
+    "toSubmit": "Kirim formulir",
+    "branch": "Ke bagian sesuai jawaban",
+    "branchFor": "Ke mana setelah memilih \"{{option}}\"",
+    "moveSectionUp": "Naikkan bagian",
+    "moveSectionDown": "Turunkan bagian",
+    "deleteSection": "Hapus bagian (pertanyaannya tetap ada)"
   },
   "types": {
     "short": "Jawaban singkat",
@@ -199,6 +213,9 @@
       "required": "Pertanyaan ini wajib diisi.",
       "number": "Masukkan angka saja.",
       "phone": "Nomor WhatsApp tidak valid."
-    }
+    },
+    "next": "Berikutnya",
+    "back": "Kembali",
+    "sectionStep": "Bagian {{n}}"
   }
 }

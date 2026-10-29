@@ -29,6 +29,48 @@ export const newField = (type = "short", optionLabel = (n) => `Option ${n}`) => 
 
 const field = (type, label, extra = {}) => ({ ...newField(type), label, ...extra });
 
+// --- sections ------------------------------------------------------------------
+// A section is a card in the same `fields` list: the questions after it, up to
+// the next section, belong to it. Questions before the first section card are
+// section 1 (under the form's own title). Where a section leads is its `next`:
+// "next", "submit" or another section's id; section 1 keeps it in the form's
+// `firstNext`. A choice question may lead on by its answer instead (`goTo`:
+// option → "next" | "submit" | section id), as Google Forms does.
+
+export const SECTION = "section";
+export const FIRST_SECTION = "first";
+export const isSection = (f) => f?.type === SECTION;
+export const questionsOf = (fields = []) => fields.filter((f) => !isSection(f));
+export const newSection = () => ({ id: randomId(), type: SECTION, title: "", description: "", next: "next" });
+
+/** The form as pages: [{ id, title, description, next, questions }]; an empty section 1 is left out. */
+export const sectionsOf = (fields = [], firstNext = "next") => {
+  const sections = [{ id: FIRST_SECTION, title: "", description: "", next: firstNext || "next", questions: [] }];
+  fields.forEach((f) => {
+    if (isSection(f)) sections.push({ id: f.id, title: f.title || "", description: f.description || "", next: f.next || "next", questions: [] });
+    else sections[sections.length - 1].questions.push(f);
+  });
+  return sections.length > 1 && sections[0].questions.length === 0 ? sections.slice(1) : sections;
+};
+
+/**
+ * Where to go after the section at `index`, given the answers so far: the
+ * index of the next section, or -1 to submit. A choice answer that leads
+ * somewhere wins over the section's own rule.
+ */
+export const nextSectionIndex = (sections, index, answers) => {
+  const section = sections[index];
+  let target = section.next || "next";
+  section.questions.forEach((q) => {
+    const chosen = q.goTo && answers[q.id];
+    if (chosen && q.goTo[chosen]) target = q.goTo[chosen];
+  });
+  if (target === "submit") return -1;
+  if (target === "next") return index + 1 < sections.length ? index + 1 : -1;
+  const found = sections.findIndex((s) => s.id === target);
+  return found === -1 ? (index + 1 < sections.length ? index + 1 : -1) : found;
+};
+
 // Picker labels live under templates.<key> in the Forms translations; the
 // questions themselves are content, written in the form's own language.
 export const TEMPLATES = [
@@ -103,7 +145,7 @@ export const answerError = (fieldDef, value) => {
 
 export const cleanAnswers = (fields, answers) => {
   const out = {};
-  fields.forEach((f) => {
+  questionsOf(fields).forEach((f) => {
     const value = answers[f.id];
     if (isEmptyAnswer(value)) return;
     if (Array.isArray(value)) {
@@ -134,7 +176,8 @@ const csvCell = (value) => {
 };
 
 // `labels` = { submitted, removed: (id) => string } in the admin's language
-export const responsesToCsv = (fields, responses, formatTime, labels) => {
+export const responsesToCsv = (allFields, responses, formatTime, labels) => {
+  const fields = questionsOf(allFields);
   const known = new Set(fields.map((f) => f.id));
   const extra = Array.from(
     new Set(responses.flatMap((r) => Object.keys(r.answers || {}).filter((k) => !known.has(k))))

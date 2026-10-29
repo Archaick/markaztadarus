@@ -97,7 +97,21 @@
       "noLabel": "Question {{n}} has no text.",
       "emptyOption": "Question {{n}} has an empty option.",
       "duplicateOption": "Question {{n}} has the same option twice."
-    }
+    },
+    "addSection": "Add section",
+    "sectionOf": "Section {{n}} of {{total}}",
+    "sectionTitle": "Section title (optional)",
+    "sectionDescription": "Description (optional)",
+    "afterSection": "After section {{n}}",
+    "toNext": "Continue to next section",
+    "toSection": "Go to section {{n}}",
+    "toSectionTitled": "Go to section {{n}} ({{title}})",
+    "toSubmit": "Submit form",
+    "branch": "Go to section based on answer",
+    "branchFor": "Where to go after choosing \"{{option}}\"",
+    "moveSectionUp": "Move section up",
+    "moveSectionDown": "Move section down",
+    "deleteSection": "Delete section (its questions stay)"
   },
   "types": {
     "short": "Short answer",
@@ -201,6 +215,9 @@
       "required": "This question is required.",
       "number": "Enter numbers only.",
       "phone": "This WhatsApp number is not valid."
-    }
+    },
+    "next": "Next",
+    "back": "Back",
+    "sectionStep": "Section {{n}}"
   }
 }

@@ -386,3 +386,44 @@
     width: 100%;
   }
 }
+
+/* ---------- a form in sections: one section per page ---------- */
+.sectionCard {
+  border-top: 6px solid #7c3aed;
+}
+.sectionStep {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #f5f3ff;
+  color: #5b21b6;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.sectionTitle {
+  margin: 0 0 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.8rem 1.3rem;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.backButton:hover {
+  border-color: #94a3b8;
+}
+:global([dir="rtl"]) .flip {
+  transform: scaleX(-1);
+}

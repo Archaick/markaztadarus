@@ -50,6 +50,7 @@ import {
   TEMPLATES,
   formLink,
   isValidSlug,
+  questionsOf,
   slugify,
 } from "./formSchema";
 
@@ -174,7 +175,7 @@ export default function FormsAdmin() {
                   </div>
                   <p className={styles.formCardTitle}>{form.title || t("untitled")}</p>
                   <p className={styles.formCardMeta}>
-                    {t("card.questions", { count: (form.fields || []).length })} ·{" "}
+                    {t("card.questions", { count: questionsOf(form.fields || []).length })} ·{" "}
                     {t("card.updated", { time: timeAgo(form.updatedAt) })}
                   </p>
                   <div className={styles.formCardLink} onClick={(e) => e.stopPropagation()}>

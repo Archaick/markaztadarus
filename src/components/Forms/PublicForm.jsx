@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Loader, Radio, TextInput, Textarea } from "@mantine/core";
-import { IconAlertCircle, IconCircleCheck, IconEye, IconLock, IconSend } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconEye, IconLock, IconSend } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -19,6 +19,9 @@ import {
   RESPONSES,
   answerError,
   cleanAnswers,
+  nextSectionIndex,
+  questionsOf,
+  sectionsOf,
 } from "./formSchema";
 
 const NS = "internal/Forms";
@@ -157,6 +160,8 @@ export default function PublicForm() {
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [cover, setCover] = useState(null);
+  // with sections: the sections visited so far, in order (Back walks it back)
+  const [path, setPath] = useState([0]);
   const questionRefs = useRef({});
   const language = useLanguageDirection(form?.language);
 
@@ -239,6 +244,7 @@ export default function PublicForm() {
             onClick={() => {
               setAnswers({});
               setErrors({});
+              setPath([0]);
               setSubmitted(false);
               window.scrollTo({ top: 0 });
             }}
@@ -250,11 +256,26 @@ export default function PublicForm() {
     );
   }
 
-  const fields = form.fields || [];
+  // One page per section; a form without sections is a single page, as before.
+  const sections = sectionsOf(form.fields || [], form.firstNext);
+  const paged = sections.length > 1;
+  const at = Math.min(path[path.length - 1], sections.length - 1);
+  const section = sections[at];
+  const fields = paged ? section.questions : questionsOf(form.fields || []);
+  const nextIndex = paged ? nextSectionIndex(sections, at, answers) : -1;
+  const isLast = nextIndex === -1;
+  // numbers run on across pages
+  const numberOf = new Map(questionsOf(form.fields || []).map((q, i) => [q.id, i + 1]));
 
   const setAnswer = (id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
     if (errors[id]) setErrors((prev) => ({ ...prev, [id]: "" }));
+  };
+
+  const back = () => {
+    setPath((p) => (p.length > 1 ? p.slice(0, -1) : p));
+    setErrors({});
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSubmit = async (event) => {
@@ -273,12 +294,18 @@ export default function PublicForm() {
       questionRefs.current[firstBad.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    // not the last page yet: on to the next section
+    if (!isLast) {
+      setPath((p) => [...p, nextIndex]);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     if (!isOpen) return;
 
     setSubmitting(true);
     try {
       await addDoc(collection(db, FORMS_COLLECTION, form.id, RESPONSES), {
-        answers: cleanAnswers(fields, answers),
+        answers: cleanAnswers(paged ? path.flatMap((i) => sections[i].questions) : fields, answers),
         submittedAt: serverTimestamp(),
       });
       setSubmitted(true);
@@ -291,7 +318,7 @@ export default function PublicForm() {
     }
   };
 
-  const hasRequired = fields.some((f) => f.required);
+  const hasRequired = questionsOf(form.fields || []).some((f) => f.required);
 
   return (
     <Shell {...shellProps}>
@@ -314,12 +341,28 @@ export default function PublicForm() {
               {form.description}
             </p>
           )}
-          {hasRequired && (
+          {hasRequired && at === 0 && (
             <p className={styles.requiredNote}>
               <span className={styles.star}>*</span> {t("public.requiredNote")}
             </p>
           )}
         </div>
+
+        {paged && (section.title || section.description || at > 0) && (
+          <div className={`${styles.card} ${styles.sectionCard}`}>
+            <span className={styles.sectionStep}>{t("public.sectionStep", { n: path.length })}</span>
+            {section.title && (
+              <h2 className={styles.sectionTitle} dir="auto">
+                {section.title}
+              </h2>
+            )}
+            {section.description && (
+              <p className={styles.description} dir="auto">
+                {section.description}
+              </p>
+            )}
+          </div>
+        )}
 
         {fields.map((f, index) => (
           <div
@@ -330,7 +373,7 @@ export default function PublicForm() {
             className={`${styles.card} ${styles.question} ${errors[f.id] ? styles.questionError : ""}`}
           >
             <label className={styles.questionLabel}>
-              <span className={styles.questionNumber}>{index + 1}</span>
+              <span className={styles.questionNumber}>{numberOf.get(f.id) || index + 1}</span>
               <span dir="auto">
                 {f.label}
                 {f.required && <span className={styles.star}> *</span>}
@@ -353,16 +396,30 @@ export default function PublicForm() {
         )}
 
         <div className={styles.submitRow}>
-          <button type="submit" className={styles.submitButton} disabled={submitting || !isOpen}>
-            {submitting ? <Loader size={18} color="white" /> : <IconSend size={18} className={styles.sendIcon} />}
-            {submitting ? t("public.submitting") : t("public.submit")}
-          </button>
+          {paged && path.length > 1 && (
+            <button type="button" className={styles.backButton} onClick={back}>
+              <IconArrowLeft size={18} className={styles.flip} />
+              {t("public.back")}
+            </button>
+          )}
+          {isLast ? (
+            <button type="submit" className={styles.submitButton} disabled={submitting || !isOpen}>
+              {submitting ? <Loader size={18} color="white" /> : <IconSend size={18} className={styles.sendIcon} />}
+              {submitting ? t("public.submitting") : t("public.submit")}
+            </button>
+          ) : (
+            <button type="submit" className={styles.submitButton}>
+              {t("public.next")}
+              <IconArrowRight size={18} className={styles.flip} />
+            </button>
+          )}
           <button
             type="button"
             className={styles.clearButton}
             onClick={() => {
               setAnswers({});
               setErrors({});
+              setPath([0]);
             }}
           >
             {t("public.clear")}

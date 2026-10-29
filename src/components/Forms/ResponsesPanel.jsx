@@ -41,6 +41,7 @@ import {
   displayAnswer,
   downloadText,
   responsesToCsv,
+  questionsOf,
   whatsappNumber,
 } from "./formSchema";
 
@@ -49,7 +50,8 @@ const MAX_RESPONSES = 2000;
 export default function ResponsesPanel({ form }) {
   const { t } = useTranslation("internal/Forms");
   const { user } = useAccess();
-  const fields = useMemo(() => form.fields || [], [form.fields]);
+  // questions only: section cards hold no answers
+  const fields = useMemo(() => questionsOf(form.fields || []), [form.fields]);
   const [responses, setResponses] = useState(null);
   const [error, setError] = useState(""); // a responses.<key>
   const [search, setSearch] = useState("");

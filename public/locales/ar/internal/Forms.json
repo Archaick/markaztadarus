@@ -105,7 +105,21 @@
       "noLabel": "السؤال {{n}} بلا نص.",
       "emptyOption": "السؤال {{n}} فيه خيار فارغ.",
       "duplicateOption": "السؤال {{n}} فيه الخيار نفسه مرتين."
-    }
+    },
+    "addSection": "إضافة قسم",
+    "sectionOf": "القسم {{n}} من {{total}}",
+    "sectionTitle": "عنوان القسم (اختياري)",
+    "sectionDescription": "الوصف (اختياري)",
+    "afterSection": "بعد القسم {{n}}",
+    "toNext": "المتابعة إلى القسم التالي",
+    "toSection": "الانتقال إلى القسم {{n}}",
+    "toSectionTitled": "الانتقال إلى القسم {{n}} ({{title}})",
+    "toSubmit": "إرسال النموذج",
+    "branch": "الانتقال إلى قسم حسب الإجابة",
+    "branchFor": "إلى أين بعد اختيار «{{option}}»",
+    "moveSectionUp": "نقل القسم لأعلى",
+    "moveSectionDown": "نقل القسم لأسفل",
+    "deleteSection": "حذف القسم (تبقى أسئلته)"
   },
   "types": {
     "short": "إجابة قصيرة",
@@ -209,6 +223,9 @@
       "required": "هذا السؤال إلزامي.",
       "number": "أدخل أرقامًا فقط.",
       "phone": "رقم واتساب غير صحيح."
-    }
+    },
+    "next": "التالي",
+    "back": "رجوع",
+    "sectionStep": "القسم {{n}}"
   }
 }

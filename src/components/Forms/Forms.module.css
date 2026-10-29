@@ -740,3 +740,85 @@
     display: none;
   }
 }
+
+/* ---------- sections ---------- */
+.sectionCard {
+  position: relative;
+  padding: 1.6rem 1.2rem 0.8rem;
+  margin-top: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #ddd6fe;
+  border-top: 6px solid #7c3aed;
+  background: #fff;
+}
+.sectionBadge {
+  position: absolute;
+  top: -0.95rem;
+  inset-inline-start: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px 8px 8px 0;
+  background: #7c3aed;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.sectionTitle input {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.sectionTools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid #f1f5f9;
+}
+.afterSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.2rem;
+  color: #4c1d95;
+}
+.afterSelect {
+  min-width: 240px;
+  flex: 0 1 340px;
+}
+.goToSelect {
+  flex: 0 0 210px;
+}
+.addRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.addSection {
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+  color: #5b21b6;
+}
+.addSection:hover {
+  border-color: #7c3aed;
+  background: #ede9fe;
+}
+@media (max-width: 560px) {
+  .addRow {
+    grid-template-columns: 1fr;
+  }
+  .goToSelect {
+    flex: 1 1 100%;
+  }
+  .afterSelect {
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+}
+.optionRow:has(.goToSelect) {
+  max-width: 720px;
+  flex-wrap: wrap;
+}
