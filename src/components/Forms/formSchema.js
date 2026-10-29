@@ -248,8 +248,10 @@ const csvCell = (value) => {
   return /[",;]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 };
 
-// `labels` = { submitted, removed: (id) => string } in the admin's language
-export const responsesToCsv = (allFields, responses, formatTime, labels) => {
+// The responses as a table: [header, ...rows], one column per question (and
+// the score, for a quiz). `labels` = { submitted, removed: (id) => string,
+// score?, scoreOf?: (response) => string } in the admin's language.
+export const responsesToRows = (allFields, responses, formatTime, labels) => {
   const fields = questionsOf(allFields);
   const known = new Set(fields.map((f) => f.id));
   const extra = Array.from(
@@ -260,11 +262,17 @@ export const responsesToCsv = (allFields, responses, formatTime, labels) => {
   const rows = responses.map((r) => [
     formatTime(r.submittedAt),
     ...(scored ? [labels.scoreOf(r)] : []),
-    ...fields.map((f) => r.answers?.[f.id]),
-    ...extra.map((k) => r.answers?.[k]),
+    ...fields.map((f) => displayAnswer(r.answers?.[f.id])),
+    ...extra.map((k) => displayAnswer(r.answers?.[k])),
   ]);
-  return [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\r\n");
+  return [header, ...rows];
 };
+
+// For Google Sheets and other tools; Excel gets a real .xlsx (see xlsx.js)
+export const responsesToCsv = (allFields, responses, formatTime, labels) =>
+  responsesToRows(allFields, responses, formatTime, labels)
+    .map((row) => row.map(csvCell).join(","))
+    .join("\r\n");
 
 export const downloadText = (filename, text, type = "text/csv;charset=utf-8") => {
   // BOM so Excel opens UTF-8 (Arabic, accents) correctly

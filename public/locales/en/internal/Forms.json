@@ -175,7 +175,8 @@
     "cancel": "Cancel",
     "deleteFailed": "Could not delete that response.",
     "csvSubmitted": "Submitted at",
-    "csvRemoved": "Removed question {{id}}"
+    "csvRemoved": "Removed question {{id}}",
+    "exportExcel": "Download Excel"
   },
   "share": {
     "draftTitle": "This form is still a draft",
@@ -239,14 +240,16 @@
   "print": {
     "button": "Print / PDF",
     "title": "Print this response",
-    "intro": "Tick the sections to print. Each prints on its own page under the Markaz Tadarus letterhead.",
+    "intro": "Tick the sections to print; open the arrow to choose their questions. Each section prints on its own page under the Markaz Tadarus letterhead.",
     "all": "Select all",
     "none": "Clear",
     "answered": "{{count}} of {{total}} answered",
     "print": "Print",
     "share": "Share PDF",
     "downloaded": "The PDF was downloaded.",
-    "failed": "The PDF could not be made. Use Print and choose \"Save as PDF\"."
+    "failed": "The PDF could not be made. Use Print and choose \"Save as PDF\".",
+    "questions": "Choose questions",
+    "printingN": "printing {{count}} of {{total}}"
   },
   "quiz": {
     "make": "Make this a quiz",

@@ -19,6 +19,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconDownload,
+  IconFileSpreadsheet,
   IconInbox,
   IconPrinter,
   IconSearch,
@@ -40,6 +41,7 @@ import { formatDateTime, timeAgo } from "../Internal/timeAgo";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
 import PrintResponse from "./PrintResponse";
+import { downloadBlob, rowsToXlsx } from "./xlsx";
 import {
   FORMS_COLLECTION,
   HAS_OPTIONS,
@@ -47,6 +49,7 @@ import {
   displayAnswer,
   downloadText,
   responsesToCsv,
+  responsesToRows,
   gradeResponse,
   questionsOf,
   quizOf,
@@ -158,15 +161,29 @@ export default function ResponsesPanel({ form, quizKey }) {
     }
   };
 
-  const exportCsv = () => {
-    const csv = responsesToCsv(fields, responses || [], formatDateTime, {
-      submitted: t("responses.csvSubmitted"),
-      removed: (id) => t("responses.csvRemoved", { id }),
-      ...(quiz.enabled ? { score: t("quiz.scoreColumn"), scoreOf: (r) => { const g = gradeOf(r); return `${g.score}/${g.max}`; } } : {}),
-    });
-    const date = new Date().toISOString().slice(0, 10);
-    downloadText(`${form.id}-responses-${date}.csv`, csv);
+  const exportLabels = () => ({
+    submitted: t("responses.csvSubmitted"),
+    removed: (id) => t("responses.csvRemoved", { id }),
+    ...(quiz.enabled ? { score: t("quiz.scoreColumn"), scoreOf: (r) => { const g = gradeOf(r); return `${g.score}/${g.max}`; } } : {}),
+  });
+  const exportName = (ext) => `${form.id}-responses-${new Date().toISOString().slice(0, 10)}.${ext}`;
+
+  // Excel: a real .xlsx, so the columns are right whatever the computer's region
+  const [exporting, setExporting] = useState(false);
+  const exportXlsx = async () => {
+    setExporting(true);
+    try {
+      const rows = responsesToRows(fields, responses || [], formatDateTime, exportLabels());
+      downloadBlob(exportName("xlsx"), await rowsToXlsx(rows, form.title || form.id));
+    } catch (err) {
+      console.error("Could not make the Excel file:", err);
+    } finally {
+      setExporting(false);
+    }
   };
+
+  // CSV: for Google Sheets and other tools
+  const exportCsv = () => downloadText(exportName("csv"), responsesToCsv(fields, responses || [], formatDateTime, exportLabels()));
 
   const deleteOpen = async () => {
     if (!open) return;
@@ -209,16 +226,21 @@ export default function ResponsesPanel({ form, quizKey }) {
           <span className={styles.statNumber}>{responses[0] ? timeAgo(responses[0].submittedAt) : "—"}</span>
           <span className={styles.statLabel}>{t("responses.latest")}</span>
         </div>
-        <Button
-          variant="light"
-          color="teal"
-          leftSection={<IconDownload size={16} />}
-          onClick={exportCsv}
-          disabled={responses.length === 0}
-          className={styles.exportButton}
-        >
-          {t("responses.export")}
-        </Button>
+        <Group gap="xs" className={styles.exportButton}>
+          <Button
+            variant="light"
+            color="teal"
+            leftSection={<IconFileSpreadsheet size={16} />}
+            onClick={exportXlsx}
+            loading={exporting}
+            disabled={responses.length === 0}
+          >
+            {t("responses.exportExcel")}
+          </Button>
+          <Button variant="subtle" color="gray" leftSection={<IconDownload size={16} />} onClick={exportCsv} disabled={responses.length === 0}>
+            CSV
+          </Button>
+        </Group>
       </div>
 
       {error && (

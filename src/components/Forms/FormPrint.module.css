@@ -112,6 +112,24 @@
   font-size: 0.78rem;
   color: #64748b;
 }
+.pickSection + .pickSection {
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+.pickQuestions {
+  display: grid;
+  gap: 8px;
+  padding: 10px 0 2px 30px;
+}
+[dir="rtl"] .pickQuestions {
+  padding: 10px 30px 2px 0;
+}
+.pickEmpty {
+  color: #94a3b8;
+}
+.chevronOpen svg {
+  transform: rotate(180deg);
+}
 
 /* printing: only the pages, one section per sheet */
 @media print {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Button, Checkbox, Group, Modal, Text } from "@mantine/core";
-import { IconPrinter, IconShare } from "@tabler/icons-react";
+import { ActionIcon, Button, Checkbox, Collapse, Group, Modal, Text } from "@mantine/core";
+import { IconChevronDown, IconPrinter, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { formatDateTime } from "../Internal/timeAgo";
 import { reportToPdf, sharePdf } from "../Supervisi/reportPdf";
@@ -75,14 +75,16 @@ function SectionPage({ section, answers, numberOf, footer }) {
 
 /**
  * Print one response on the Markaz Tadarus letterhead, or share it as a PDF:
- * the admin first ticks which sections to include, and each prints on its
- * own page (like the Tadarus worksheets: the ayah and its tafsir from the
+ * the admin first ticks which sections (and, inside them, which questions)
+ * to include, and each section prints on its own page (like the Tadarus worksheets: the ayah and its tafsir from the
  * section's description, then the answers, or lines to write on if empty).
  */
 export default function PrintResponse({ opened, onClose, form, response, responseNo }) {
   const { t } = useTranslation(NS);
   const sheetRef = useRef(null);
   const [picked, setPicked] = useState([]);
+  const [skipped, setSkipped] = useState([]); // question ids left out of the print
+  const [open, setOpen] = useState(null); // the section whose questions are showing
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
 
@@ -96,10 +98,18 @@ export default function PrintResponse({ opened, onClose, form, response, respons
     if (!opened) return;
     const filled = sections.filter((s) => answeredIn(s) > 0).map((s) => s.id);
     setPicked(filled.length ? filled : sections.map((s) => s.id));
+    setSkipped([]);
+    setOpen(null);
     setNote("");
   }, [opened, response?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const chosen = sections.filter((s) => picked.includes(s.id));
+  const kept = (s) => s.questions.filter((q) => !skipped.includes(q.id));
+  const chosen = sections.filter((s) => picked.includes(s.id)).map((s) => ({ ...s, questions: kept(s) }));
+  const toggleQuestion = (s, id, on) => {
+    setSkipped((list) => (on ? list.filter((x) => x !== id) : [...list, id]));
+    // ticking a question also ticks its section
+    if (on) setPicked((p) => (p.includes(s.id) ? p : [...p, s.id]));
+  };
   const footer = `${form.title} · ${t("responses.responseN", { n: responseNo })} · ${formatDateTime(response?.submittedAt)}`;
   const nameOf = (s, i) => s.title || (i === 0 ? form.title : t("builder.sectionOf", { n: i + 1, total: sections.length }));
 
@@ -137,7 +147,14 @@ export default function PrintResponse({ opened, onClose, form, response, respons
           {t("print.intro")}
         </Text>
         <Group gap="xs" mb="xs">
-          <Button size="compact-xs" variant="light" onClick={() => setPicked(sections.map((s) => s.id))}>
+          <Button
+            size="compact-xs"
+            variant="light"
+            onClick={() => {
+              setPicked(sections.map((s) => s.id));
+              setSkipped([]);
+            }}
+          >
             {t("print.all")}
           </Button>
           <Button size="compact-xs" variant="light" color="gray" onClick={() => setPicked([])}>
@@ -145,23 +162,67 @@ export default function PrintResponse({ opened, onClose, form, response, respons
           </Button>
         </Group>
         <div className={styles.pickList}>
-          {sections.map((s, i) => (
-            <Checkbox
-              key={s.id}
-              color="teal"
-              checked={picked.includes(s.id)}
-              onChange={(e) => {
-                const on = e.currentTarget.checked;
-                setPicked((p) => (on ? [...p, s.id] : p.filter((id) => id !== s.id)));
-              }}
-              label={
-                <span className={styles.pickLabel}>
-                  <b dir="auto">{nameOf(s, i)}</b>
-                  <span>{t("print.answered", { count: answeredIn(s), total: s.questions.length })}</span>
-                </span>
-              }
-            />
-          ))}
+          {sections.map((s, i) => {
+            const on = picked.includes(s.id);
+            const count = kept(s).length;
+            return (
+              <div key={s.id} className={styles.pickSection}>
+                <Group gap="xs" wrap="nowrap" align="flex-start">
+                  <Checkbox
+                    color="teal"
+                    style={{ flex: 1 }}
+                    checked={on}
+                    indeterminate={on && count < s.questions.length}
+                    onChange={(e) => {
+                      const next = e.currentTarget.checked;
+                      setPicked((p) => (next ? [...p, s.id] : p.filter((id) => id !== s.id)));
+                      // ticking a section brings all its questions back
+                      if (next) setSkipped((list) => list.filter((id) => !s.questions.some((q) => q.id === id)));
+                    }}
+                    label={
+                      <span className={styles.pickLabel}>
+                        <b dir="auto">{nameOf(s, i)}</b>
+                        <span>
+                          {t("print.answered", { count: answeredIn(s), total: s.questions.length })}
+                          {on && count < s.questions.length ? ` · ${t("print.printingN", { count, total: s.questions.length })}` : ""}
+                        </span>
+                      </span>
+                    }
+                  />
+                  {s.questions.length > 0 && (
+                    <ActionIcon
+                      variant="subtle"
+                      color="gray"
+                      aria-label={t("print.questions")}
+                      title={t("print.questions")}
+                      onClick={() => setOpen((o) => (o === s.id ? null : s.id))}
+                      className={open === s.id ? styles.chevronOpen : undefined}
+                    >
+                      <IconChevronDown size={16} />
+                    </ActionIcon>
+                  )}
+                </Group>
+                <Collapse in={open === s.id}>
+                  <div className={styles.pickQuestions}>
+                    {s.questions.map((q) => (
+                      <Checkbox
+                        key={q.id}
+                        size="xs"
+                        color="teal"
+                        checked={on && !skipped.includes(q.id)}
+                        onChange={(e) => toggleQuestion(s, q.id, e.currentTarget.checked)}
+                        label={
+                          <span dir="auto" className={isEmptyAnswer(answers[q.id]) ? styles.pickEmpty : undefined}>
+                            {numberOf.get(q.id)}. {q.label}
+                          </span>
+                        }
+                      />
+                    ))}
+                  </div>
+                </Collapse>
+              </div>
+            );
+          })}
         </div>
         {note && (
           <Text size="sm" c="dimmed" mt="sm">

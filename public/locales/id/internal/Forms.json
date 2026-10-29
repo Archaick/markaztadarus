@@ -173,7 +173,8 @@
     "cancel": "Batal",
     "deleteFailed": "Tidak dapat menghapus jawaban itu.",
     "csvSubmitted": "Waktu kirim",
-    "csvRemoved": "Pertanyaan dihapus {{id}}"
+    "csvRemoved": "Pertanyaan dihapus {{id}}",
+    "exportExcel": "Unduh Excel"
   },
   "share": {
     "draftTitle": "Formulir ini masih draf",
@@ -237,14 +238,16 @@
   "print": {
     "button": "Cetak / PDF",
     "title": "Cetak jawaban",
-    "intro": "Centang bagian yang ingin dicetak. Setiap bagian dicetak di halamannya sendiri dengan kop Markaz Tadarus.",
+    "intro": "Centang bagian yang akan dicetak; buka panah untuk memilih pertanyaannya. Setiap bagian dicetak di halaman sendiri dengan kop Markaz Tadarus.",
     "all": "Pilih semua",
     "none": "Kosongkan",
     "answered": "{{count}} dari {{total}} dijawab",
     "print": "Cetak",
     "share": "Bagikan PDF",
     "downloaded": "PDF sudah diunduh.",
-    "failed": "PDF tidak bisa dibuat. Gunakan Cetak lalu \"Simpan sebagai PDF\"."
+    "failed": "PDF tidak bisa dibuat. Gunakan Cetak lalu \"Simpan sebagai PDF\".",
+    "questions": "Pilih pertanyaan",
+    "printingN": "mencetak {{count}} dari {{total}}"
   },
   "quiz": {
     "make": "Jadikan kuis",
