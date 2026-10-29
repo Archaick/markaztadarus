@@ -822,3 +822,51 @@
   max-width: 720px;
   flex-wrap: wrap;
 }
+
+/* "Reorder sections" window */
+.reorderList {
+  display: grid;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.reorderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem;
+  border-top: 1px solid #f1f5f9;
+  background: #fff;
+  cursor: grab;
+}
+.reorderRow:first-child {
+  border-top: 0;
+}
+.reorderLocked {
+  cursor: default;
+  background: #f8fafc;
+  color: #64748b;
+}
+.reorderDragging {
+  background: #f5f3ff;
+  box-shadow: inset 3px 0 0 #7c3aed;
+}
+.reorderGrip {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+.reorderText {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+}
+.reorderText b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0f172a;
+}
+.reorderText span {
+  font-size: 0.78rem;
+  color: #64748b;
+}

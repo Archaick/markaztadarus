@@ -14,6 +14,7 @@ import {
 import {
   IconArrowDown,
   IconArrowUp,
+  IconArrowsSort,
   IconCopy,
   IconDeviceFloppy,
   IconLanguage,
@@ -30,6 +31,7 @@ import { db } from "../../../firebaseConfig";
 import { LANGUAGES } from "../Internal/language";
 import { stableKey } from "../Internal/stableKey";
 import styles from "./Forms.module.css";
+import ReorderSections from "./ReorderSections";
 import { FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, SECTION, isSection, newField, newId, newSection, sectionsOf } from "./formSchema";
 
 const editableOf = (form) => ({
@@ -71,6 +73,7 @@ export default function FormBuilder({ form, editorEmail }) {
   const baselineRef = useRef(baseline);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
+  const [reordering, setReordering] = useState(false);
   const dirty = stableKey(draft) !== baseline;
 
   // Starter option names are content, so they follow the form's language.
@@ -193,8 +196,8 @@ export default function FormBuilder({ form, editorEmail }) {
         const out = { id: f.id, type: f.type, label: f.label.trim(), required: !!f.required };
         if (f.placeholder?.trim()) out.placeholder = f.placeholder.trim();
         if (HAS_OPTIONS.has(f.type)) out.options = f.options.map((o) => o.trim());
-        // leading on by the answer: only for one-choice questions in a form with sections
-        if (f.type === "choice" && f.goTo && hasSections) {
+        // leading on by the answer (one-choice or checkboxes) in a form with sections
+        if (HAS_OPTIONS.has(f.type) && f.goTo && hasSections) {
           out.goTo = Object.fromEntries(
             f.options.map((o) => [o.trim(), targets.has(f.goTo[o]) ? f.goTo[o] : "next"])
           );
@@ -350,6 +353,9 @@ export default function FormBuilder({ form, editorEmail }) {
                 aria-label={t("builder.sectionDescription")}
               />
               <div className={styles.sectionTools}>
+                <Button size="compact-sm" variant="subtle" color="violet" leftSection={<IconArrowsSort size={15} />} onClick={() => setReordering(true)} me="auto">
+                  {t("builder.reorder")}
+                </Button>
                 <Tooltip label={t("builder.moveSectionUp")}>
                   <ActionIcon variant="subtle" color="gray" disabled={firstCard} onClick={() => moveSection(index, -1)} aria-label={t("builder.moveSectionUp")}>
                     <IconArrowUp size={16} />
@@ -418,11 +424,18 @@ export default function FormBuilder({ form, editorEmail }) {
                     }}
                     aria-label={t("builder.optionN", { n: oi + 1 })}
                   />
-                  {f.type === "choice" && f.goTo && hasSections && (
+                  {f.goTo && hasSections && (
                     <Select
                       size="xs"
                       className={styles.goToSelect}
-                      data={targetOptions(sectionAt[index])}
+                      // a ticked box opens a section; only a one-choice answer can end the form
+                      data={
+                        f.type === "checkbox"
+                          ? targetOptions(sectionAt[index])
+                              .filter((o) => o.value !== "submit")
+                              .map((o) => (o.value === "next" ? { ...o, label: t("builder.noExtraSection") } : o))
+                          : targetOptions(sectionAt[index])
+                      }
                       value={f.goTo[option] || "next"}
                       onChange={(v) => v && setField(index, { goTo: { ...f.goTo, [option]: v } })}
                       allowDeselect={false}
@@ -477,11 +490,11 @@ export default function FormBuilder({ form, editorEmail }) {
                 checked={!!f.required}
                 onChange={(e) => setField(index, { required: e.currentTarget.checked })}
               />
-              {f.type === "choice" && hasSections && (
+              {HAS_OPTIONS.has(f.type) && hasSections && (
                 <Switch
                   size="sm"
                   color="violet"
-                  label={t("builder.branch")}
+                  label={t(f.type === "checkbox" ? "builder.branchMany" : "builder.branch")}
                   checked={!!f.goTo}
                   onChange={(e) => setField(index, { goTo: e.currentTarget.checked ? Object.fromEntries((f.options || []).map((o) => [o, "next"])) : undefined })}
                 />
@@ -544,6 +557,14 @@ export default function FormBuilder({ form, editorEmail }) {
       <Text size="xs" c="dimmed" ta="center" mt="xs">
         {t("builder.deletedNote")}
       </Text>
+
+      <ReorderSections
+        opened={reordering}
+        onClose={() => setReordering(false)}
+        fields={draft.fields}
+        formTitle={draft.title}
+        onApply={(fields) => setDraft((d) => ({ ...d, fields }))}
+      />
 
       <div className={`${styles.saveBar} ${dirty ? styles.saveBarDirty : ""}`}>
         {message ? (

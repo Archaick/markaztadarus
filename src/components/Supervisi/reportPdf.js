@@ -13,15 +13,15 @@ const SHEET_PX = 820; // the sheet's own width
 const BREAK_AFTER = "tbody tr:not([class*='groupRow']), section, [class*='identityRow'], [class*='summary'], [class*='notes'] > div, [class*='signs']";
 
 /** The report element as A4 pages: [{ dataUrl, heightMm }], JPEG pictures cut between rows. */
-export async function reportPages(sheet) {
+export async function reportPages(sheet, sheetPx = SHEET_PX) {
   const { toCanvas } = await import("html-to-image");
 
   // a copy at A4 width, off screen, so a phone's narrow layout does not shape the PDF
   const holder = document.createElement("div");
-  holder.style.cssText = `position:fixed;left:-100000px;top:0;width:${SHEET_PX}px;background:#fff;`;
+  holder.style.cssText = `position:fixed;left:-100000px;top:0;width:${sheetPx}px;background:#fff;`;
   const copy = sheet.cloneNode(true);
-  copy.style.maxWidth = `${SHEET_PX}px`;
-  copy.style.width = `${SHEET_PX}px`;
+  copy.style.maxWidth = `${sheetPx}px`;
+  copy.style.width = `${sheetPx}px`;
   copy.style.margin = "0";
   copy.style.boxShadow = "none";
   copy.style.borderRadius = "0";
@@ -34,11 +34,13 @@ export async function reportPages(sheet) {
     const total = copy.scrollHeight;
     const breaks = [...copy.querySelectorAll(BREAK_AFTER)].map((el) => Math.round(el.getBoundingClientRect().bottom - top)).filter((y) => y > 0 && y < total);
     breaks.push(total);
+    // elements marked data-pdf-page always start a new page (e.g. each printed form section)
+    const forced = [...copy.querySelectorAll("[data-pdf-page]")].map((el) => Math.round(el.getBoundingClientRect().top - top)).filter((y) => y > 2);
 
     const scale = 2;
     const canvas = await toCanvas(copy, { pixelRatio: scale, backgroundColor: "#ffffff", cacheBust: true });
 
-    const pxPerMm = SHEET_PX / A4_W_MM;
+    const pxPerMm = sheetPx / A4_W_MM;
     const pageH = Math.floor((A4_H_MM - MARGIN_MM * 2) * pxPerMm);
     const pages = [];
 
@@ -47,7 +49,8 @@ export async function reportPages(sheet) {
       const limit = start + pageH;
       // the last row or section ending on this page (but not a nearly empty page)
       const fits = breaks.filter((b) => b > start + pageH * 0.4 && b <= limit);
-      const end = limit >= total ? total : fits.length ? Math.max(...fits) : limit;
+      const pageStart = forced.find((y) => y > start + 2 && y <= limit);
+      const end = pageStart || (limit >= total ? total : fits.length ? Math.max(...fits) : limit);
 
       const slice = document.createElement("canvas");
       slice.width = canvas.width;
@@ -67,8 +70,8 @@ export async function reportPages(sheet) {
 }
 
 /** The report element as a PDF Blob. */
-export async function reportToPdf(sheet) {
-  const [pages, { jsPDF }] = await Promise.all([reportPages(sheet), import("jspdf")]);
+export async function reportToPdf(sheet, sheetPx) {
+  const [pages, { jsPDF }] = await Promise.all([reportPages(sheet, sheetPx), import("jspdf")]);
   const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4", compress: true });
   pages.forEach((page, i) => {
     if (i > 0) pdf.addPage();

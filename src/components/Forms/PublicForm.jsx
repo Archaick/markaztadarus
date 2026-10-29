@@ -19,7 +19,7 @@ import {
   RESPONSES,
   answerError,
   cleanAnswers,
-  nextSectionIndex,
+  nextStep,
   questionsOf,
   sectionsOf,
 } from "./formSchema";
@@ -160,8 +160,10 @@ export default function PublicForm() {
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [cover, setCover] = useState(null);
-  // with sections: the sections visited so far, in order (Back walks it back)
-  const [path, setPath] = useState([0]);
+  // with sections: the steps taken so far, in order (Back walks it back);
+  // a step's queue holds sections still to visit (several checkbox answers)
+  const START = [{ index: 0, queue: [] }];
+  const [path, setPath] = useState(START);
   const questionRefs = useRef({});
   const language = useLanguageDirection(form?.language);
 
@@ -244,7 +246,7 @@ export default function PublicForm() {
             onClick={() => {
               setAnswers({});
               setErrors({});
-              setPath([0]);
+              setPath(START);
               setSubmitted(false);
               window.scrollTo({ top: 0 });
             }}
@@ -259,11 +261,12 @@ export default function PublicForm() {
   // One page per section; a form without sections is a single page, as before.
   const sections = sectionsOf(form.fields || [], form.firstNext);
   const paged = sections.length > 1;
-  const at = Math.min(path[path.length - 1], sections.length - 1);
+  const step = path[path.length - 1];
+  const at = Math.min(step.index, sections.length - 1);
   const section = sections[at];
   const fields = paged ? section.questions : questionsOf(form.fields || []);
-  const nextIndex = paged ? nextSectionIndex(sections, at, answers) : -1;
-  const isLast = nextIndex === -1;
+  const next = paged ? nextStep(sections, { index: at, queue: step.queue }, answers) : null;
+  const isLast = !next;
   // numbers run on across pages
   const numberOf = new Map(questionsOf(form.fields || []).map((q, i) => [q.id, i + 1]));
 
@@ -296,7 +299,7 @@ export default function PublicForm() {
     }
     // not the last page yet: on to the next section
     if (!isLast) {
-      setPath((p) => [...p, nextIndex]);
+      setPath((p) => [...p, next]);
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
@@ -305,7 +308,7 @@ export default function PublicForm() {
     setSubmitting(true);
     try {
       await addDoc(collection(db, FORMS_COLLECTION, form.id, RESPONSES), {
-        answers: cleanAnswers(paged ? path.flatMap((i) => sections[i].questions) : fields, answers),
+        answers: cleanAnswers(paged ? path.flatMap((p) => sections[p.index].questions) : fields, answers),
         submittedAt: serverTimestamp(),
       });
       setSubmitted(true);
@@ -419,7 +422,7 @@ export default function PublicForm() {
             onClick={() => {
               setAnswers({});
               setErrors({});
-              setPath([0]);
+              setPath(START);
             }}
           >
             {t("public.clear")}

@@ -16,6 +16,7 @@ import {
   IconChevronRight,
   IconDownload,
   IconInbox,
+  IconPrinter,
   IconSearch,
   IconTrash,
 } from "@tabler/icons-react";
@@ -34,6 +35,7 @@ import { auditedWrite } from "../Internal/audit";
 import { formatDateTime, timeAgo } from "../Internal/timeAgo";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
+import PrintResponse from "./PrintResponse";
 import {
   FORMS_COLLECTION,
   HAS_OPTIONS,
@@ -57,6 +59,7 @@ export default function ResponsesPanel({ form }) {
   const [search, setSearch] = useState("");
   const [openIndex, setOpenIndex] = useState(-1);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [printing, setPrinting] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(
@@ -324,6 +327,9 @@ export default function ResponsesPanel({ form }) {
                 {t("responses.delete")}
               </Button>
               <Group gap={4}>
+                <Button variant="light" color="teal" leftSection={<IconPrinter size={15} />} onClick={() => setPrinting(true)} me="xs">
+                  {t("print.button")}
+                </Button>
                 <Tooltip label={t("responses.newer")}>
                   <ActionIcon
                     variant="default"
@@ -349,6 +355,16 @@ export default function ResponsesPanel({ form }) {
           </>
         )}
       </Modal>
+
+      {open && (
+        <PrintResponse
+          opened={printing}
+          onClose={() => setPrinting(false)}
+          form={form}
+          response={open}
+          responseNo={responses.length - responses.indexOf(open)}
+        />
+      )}
 
       <Modal opened={confirmDelete} onClose={() => setConfirmDelete(false)} title={t("responses.deleteTitle")} centered size="sm">
         <Text size="sm">{t("responses.deleteText")}</Text>

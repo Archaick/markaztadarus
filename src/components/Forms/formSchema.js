@@ -54,21 +54,47 @@ export const sectionsOf = (fields = [], firstNext = "next") => {
 };
 
 /**
- * Where to go after the section at `index`, given the answers so far: the
- * index of the next section, or -1 to submit. A choice answer that leads
- * somewhere wins over the section's own rule.
+ * Where to go after a step { index, queue } of the visit: the next step, or
+ * null to submit. `queue` holds sections still to visit because a checkbox
+ * answer chose several of them.
+ *
+ * - A one-choice answer that leads somewhere wins over the section's own rule.
+ * - Checkbox answers can lead to several sections at once: all of them are
+ *   visited, one after another, in the form's order.
+ * - Sections still waiting in the queue come before the section's own rule;
+ *   once the queue is empty, the section's own rule ("After section n") decides.
  */
-export const nextSectionIndex = (sections, index, answers) => {
-  const section = sections[index];
-  let target = section.next || "next";
+export const nextStep = (sections, step, answers) => {
+  const section = sections[step.index];
+  const position = (id) => sections.findIndex((s) => s.id === id);
+  const chosen = []; // section indexes the answers lead to
+  let override = null; // a one-choice answer's "next" / "submit"
+
   section.questions.forEach((q) => {
-    const chosen = q.goTo && answers[q.id];
-    if (chosen && q.goTo[chosen]) target = q.goTo[chosen];
+    if (!q.goTo) return;
+    const answer = answers[q.id];
+    const picked = Array.isArray(answer) ? answer : answer ? [answer] : [];
+    picked.forEach((option) => {
+      const target = q.goTo[option];
+      if (!target || target === "next") return;
+      if (target === "submit") {
+        if (!Array.isArray(answer)) override = "submit";
+        return;
+      }
+      const at = position(target);
+      if (at !== -1 && !chosen.includes(at)) chosen.push(at);
+    });
   });
-  if (target === "submit") return -1;
-  if (target === "next") return index + 1 < sections.length ? index + 1 : -1;
-  const found = sections.findIndex((s) => s.id === target);
-  return found === -1 ? (index + 1 < sections.length ? index + 1 : -1) : found;
+
+  const queue = [...chosen.sort((a, b) => a - b), ...step.queue.filter((i) => !chosen.includes(i))];
+  if (override === "submit" && chosen.length === 0) return null;
+  if (queue.length) return { index: queue[0], queue: queue.slice(1) };
+
+  const target = section.next || "next";
+  if (target === "submit") return null;
+  const at = target === "next" ? step.index + 1 : position(target);
+  if (at === -1) return step.index + 1 < sections.length ? { index: step.index + 1, queue: [] } : null;
+  return at < sections.length ? { index: at, queue: [] } : null;
 };
 
 // Picker labels live under templates.<key> in the Forms translations; the

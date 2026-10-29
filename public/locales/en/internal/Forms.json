@@ -111,7 +111,15 @@
     "branchFor": "Where to go after choosing \"{{option}}\"",
     "moveSectionUp": "Move section up",
     "moveSectionDown": "Move section down",
-    "deleteSection": "Delete section (its questions stay)"
+    "deleteSection": "Delete section (its questions stay)",
+    "branchMany": "Open sections by ticked answers",
+    "noExtraSection": "No extra section",
+    "reorder": "Reorder sections",
+    "reorderTitle": "Reorder sections",
+    "reorderHint": "Drag, or use the arrows. Check the \"After section\" rules again after reordering.",
+    "untitledSection": "Untitled section",
+    "cancel": "Cancel",
+    "apply": "Apply"
   },
   "types": {
     "short": "Short answer",
@@ -219,5 +227,17 @@
     "next": "Next",
     "back": "Back",
     "sectionStep": "Section {{n}}"
+  },
+  "print": {
+    "button": "Print / PDF",
+    "title": "Print this response",
+    "intro": "Tick the sections to print. Each prints on its own page under the Markaz Tadarus letterhead.",
+    "all": "Select all",
+    "none": "Clear",
+    "answered": "{{count}} of {{total}} answered",
+    "print": "Print",
+    "share": "Share PDF",
+    "downloaded": "The PDF was downloaded.",
+    "failed": "The PDF could not be made. Use Print and choose \"Save as PDF\"."
   }
 }
