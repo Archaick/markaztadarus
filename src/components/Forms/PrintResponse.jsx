@@ -5,8 +5,7 @@ import { IconPrinter, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { formatDateTime } from "../Internal/timeAgo";
 import { reportToPdf, sharePdf } from "../Supervisi/reportPdf";
-// Despite its name this file is the navy logo.
-import logo from "../../assets/imgs/MT-logo-white.svg";
+import letterhead from "../../assets/imgs/letterhead-mt.png";
 import { FIRST_SECTION, displayAnswer, isEmptyAnswer, sectionsOf } from "./formSchema";
 import styles from "./FormPrint.module.css";
 
@@ -19,11 +18,8 @@ function SectionPage({ section, answers, numberOf, footer }) {
   const lines = (section.description || "").split(/\n/).filter((l) => l.trim());
   return (
     <section className={styles.page} data-pdf-page>
-      <header className={styles.letterhead}>
-        <span className={styles.pattern} aria-hidden="true" />
-        <img src={logo} alt="Markaz Tadarus Indonesia" className={styles.logo} />
-      </header>
-      <span className={styles.rule} aria-hidden="true" />
+      {/* the Markaz Tadarus letterhead: the Kufic band, the navy rule and the Arabic logo */}
+      <img src={letterhead} alt="مركز التدارس إندونيسيا" className={styles.letterhead} />
 
       {section.title && (
         <h1 className={styles.title} dir="auto">
