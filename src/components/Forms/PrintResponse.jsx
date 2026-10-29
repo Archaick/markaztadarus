@@ -84,7 +84,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
   const sheetRef = useRef(null);
   const [picked, setPicked] = useState([]);
   const [skipped, setSkipped] = useState([]); // question ids left out of the print
-  const [open, setOpen] = useState(null); // the section whose questions are showing
+  const [closed, setClosed] = useState([]); // sections whose question list is folded away (all show at first)
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
 
@@ -99,7 +99,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
     const filled = sections.filter((s) => answeredIn(s) > 0).map((s) => s.id);
     setPicked(filled.length ? filled : sections.map((s) => s.id));
     setSkipped([]);
-    setOpen(null);
+    setClosed([]);
     setNote("");
   }, [opened, response?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -195,14 +195,14 @@ export default function PrintResponse({ opened, onClose, form, response, respons
                       color="gray"
                       aria-label={t("print.questions")}
                       title={t("print.questions")}
-                      onClick={() => setOpen((o) => (o === s.id ? null : s.id))}
-                      className={open === s.id ? styles.chevronOpen : undefined}
+                      onClick={() => setClosed((c) => (c.includes(s.id) ? c.filter((id) => id !== s.id) : [...c, s.id]))}
+                      className={closed.includes(s.id) ? undefined : styles.chevronOpen}
                     >
                       <IconChevronDown size={16} />
                     </ActionIcon>
                   )}
                 </Group>
-                <Collapse in={open === s.id}>
+                <Collapse in={!closed.includes(s.id)}>
                   <div className={styles.pickQuestions}>
                     {s.questions.map((q) => (
                       <Checkbox
