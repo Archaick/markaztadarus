@@ -204,6 +204,12 @@ export default function CertificateVerify() {
             )}
 
             <dl className={styles.details}>
+              {cert.number && (
+                <div className={styles.wide}>
+                  <dt>{t("certificate_number")}</dt>
+                  <dd dir="auto">{cert.number}</dd>
+                </div>
+              )}
               {event && (
                 <div>
                   <dt>{t("event_date")}</dt>

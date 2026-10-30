@@ -21,5 +21,6 @@
   "retry": "Coba lagi",
   "errors": {
     "failed": "Sertifikat belum dapat diperiksa. Periksa koneksi internet Anda."
-  }
+  },
+  "certificate_number": "Nomor sertifikat"
 }

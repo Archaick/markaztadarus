@@ -30,8 +30,10 @@ import {
   IconCopy,
   IconDatabase,
   IconFileTypeDocx,
+  IconFileTypePdf,
   IconDownload,
   IconEye,
+  IconPalette,
   IconPencil,
   IconPlus,
   IconQrcode,
@@ -86,6 +88,9 @@ import {
   verifyLink,
 } from "./certSchema";
 import { certQr, downloadCsv, downloadDataUrl, downloadQrZip, qrFileName } from "./certExports";
+import Studio from "./Template/Studio";
+import { DESIGNS, sheetData } from "./Template/studioData";
+import { certificatesPdf, saveBlob } from "./Template/studioPdf";
 import styles from "./Admin.module.css";
 
 const NS = ["internal/Certificates", "internal/Internal"];
@@ -107,6 +112,8 @@ export default function Admin() {
   const [sync, setSync] = useState(null);
   const syncing = useRef(false);
   const [signers, setSigners] = useState([]);
+  const [designs, setDesigns] = useState(null);
+  const [pdfFor, setPdfFor] = useState(null); // the certificate whose PDF is being made
   const [tab, setTab] = useState("certificates");
   const [notice, setNotice] = useState(null);
 
@@ -150,10 +157,19 @@ export default function Admin() {
     const offCerts = onSnapshot(collection(db, CERTS), (s) => setCerts(s.docs.map((d) => ({ id: d.id, ...d.data() }))), fail);
     const offPubs = onSnapshot(collection(db, PUBLIC), (s) => setPubs(new Map(s.docs.map((d) => [d.id, d.data()]))), fail);
     const offMeta = onSnapshot(doc(db, META, MIGRATION_DOC), (s) => setMigrated(s.exists() && s.data().done === true), fail);
+    const offDesigns = onSnapshot(
+      collection(db, DESIGNS),
+      (s) => setDesigns(s.docs.map((d) => ({ id: d.id, ...d.data() }))),
+      (err) => {
+        console.error("Could not load certificate designs:", err);
+        setDesigns([]);
+      }
+    );
     return () => {
       offCerts();
       offPubs();
       offMeta();
+      offDesigns();
     };
   }, []);
 
@@ -270,8 +286,9 @@ export default function Admin() {
   // ---------- writes ----------
   const takenCodes = () => new Set((certs || []).map((c) => normCode(c.code)));
 
-  // people: [{ name, nameAr }] — either may be empty, not both
-  const createMany = async ({ people, program: prog, programAr, lang, eventDate, signerIds }, onProgress) => {
+  // people: [{ name, nameAr }] — either may be empty, not both. From Certificate
+  // Studio (designId) each person also brings their running seq and printed number.
+  const createMany = async ({ people, program: prog, programAr, lang, eventDate, signerIds, designId }, onProgress) => {
     const taken = takenCodes();
     const date = fromDateInput(eventDate);
     const created = [];
@@ -298,6 +315,7 @@ export default function Admin() {
           createdAt: Timestamp.now(),
           createdBy: email || "unknown",
           auditId,
+          ...(designId && { designId, kind: "studio", seq: person.seq || 0, number: person.number || "" }),
         };
         const ref = doc(collection(db, CERTS));
         batch.set(ref, data);
@@ -408,6 +426,22 @@ export default function Admin() {
     }
   };
 
+  // a Certificate Studio certificate as its printed PDF
+  const studioPdf = async (cert) => {
+    const design = designs?.find((d) => d.id === cert.designId);
+    if (!design) return notify("error", t("errors.failedTitle"), t("studio.errors.noDesign"));
+    setPdfFor(cert.id);
+    try {
+      const blob = await certificatesPdf([sheetData(design, cert, signers)]);
+      saveBlob(blob, `${[cert.name || cert.nameAr, cert.number || cert.code].join(" ").replace(/[\\/:*?"<>|]+/g, " ")}.pdf`);
+    } catch (err) {
+      console.error("Could not make the PDF:", err);
+      notify("error", t("errors.failedTitle"), t("studio.people.pdfFailed"));
+    } finally {
+      setPdfFor(null);
+    }
+  };
+
   const zip = async (list, name) => {
     if (!list.length) return;
     setZipProgress(0);
@@ -494,6 +528,9 @@ export default function Admin() {
             <Tabs.List>
               <Tabs.Tab value="certificates" leftSection={<IconCertificate size={17} />}>
                 {t("tabs.certificates")}
+              </Tabs.Tab>
+              <Tabs.Tab value="studio" leftSection={<IconPalette size={17} />}>
+                {t("tabs.studio")}
               </Tabs.Tab>
               <Tabs.Tab value="signers" leftSection={<IconSignature size={17} />}>
                 {t("tabs.signers")}
@@ -615,6 +652,8 @@ export default function Admin() {
                     wordBusy={wordBusy === cert.id}
                     onRevoke={() => (isRevoked(cert) ? setRevoked(cert, false) : setRevoking(cert))}
                     onDelete={() => setDeleting(cert)}
+                    onPdf={cert.designId ? () => studioPdf(cert) : null}
+                    pdfBusy={pdfFor === cert.id}
                   />
                 ))}
               </ul>
@@ -624,6 +663,10 @@ export default function Admin() {
                   <Pagination value={page} onChange={setPage} total={pages} size="sm" />
                 </Group>
               )}
+            </Tabs.Panel>
+
+            <Tabs.Panel value="studio" pt="md">
+              <Studio designs={designs} certs={certs} signers={signers} notify={notify} onIssue={createMany} />
             </Tabs.Panel>
 
             <Tabs.Panel value="signers" pt="md">
@@ -717,7 +760,7 @@ function Stat({ value, label }) {
   );
 }
 
-function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBusy, onRevoke, onDelete }) {
+function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBusy, onRevoke, onDelete, onPdf, pdfBusy }) {
   const { t } = useTranslation(NS);
   const revoked = isRevoked(cert);
   const event = certDate(cert.eventDate);
@@ -731,6 +774,11 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBus
           <span className={styles.name} dir="auto">
             {nameOf(cert)}
           </span>
+          {cert.designId && (
+            <Badge size="sm" color="teal" variant="light" leftSection={<IconPalette size={11} />}>
+              {t("studio.badge")}
+            </Badge>
+          )}
           {revoked && (
             <Badge size="sm" color="red" variant="light">
               {t("status.revoked")}
@@ -738,6 +786,7 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBus
           )}
         </div>
         <span className={styles.meta} dir="auto">
+          {cert.number ? `${cert.number} · ` : ""}
           {both(cert.program, cert.programAr)}
           {event ? ` · ${dateFormat.format(event)}` : ""}
         </span>
@@ -774,6 +823,13 @@ function CertRow({ cert, pub, signers, dateFormat, onQr, onEdit, onWord, wordBus
             <IconQrcode size={18} />
           </ActionIcon>
         </Tooltip>
+        {onPdf && (
+          <Tooltip label={t("studio.rowPdf")}>
+            <ActionIcon variant="subtle" color="teal" onClick={onPdf} loading={pdfBusy} disabled={revoked} aria-label={t("studio.rowPdf")}>
+              <IconFileTypePdf size={18} />
+            </ActionIcon>
+          </Tooltip>
+        )}
         <Tooltip label={cert.doc ? t("documents.replace") : t("documents.attach")}>
           <ActionIcon variant="subtle" color={cert.doc ? "yellow" : "gray"} onClick={onWord} loading={wordBusy} aria-label={t("documents.attach")}>
             <IconFileTypeDocx size={18} />

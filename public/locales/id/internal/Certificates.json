@@ -23,10 +23,11 @@
   },
   "loadFailed": "Sertifikat tidak dapat dimuat. Periksa koneksi lalu muat ulang halaman.",
   "tabs": {
-    "certificates": "Sertifikat",
+    "certificates": "Semua Sertifikat",
     "signers": "Penanda tangan & stempel",
     "backup": "Cadangan",
-    "documents": "File Word"
+    "documents": "File Word",
+    "studio": "Studio Sertifikat"
   },
   "filters": {
     "allPrograms": "Semua",
@@ -253,5 +254,84 @@
     "newHint": "File ini diberi QR sertifikat baru saat disimpan, lalu terunduh kembali.",
     "attach": "Beri QR ini pada file Word",
     "replace": "Beri QR ini pada file Word lain"
+  },
+  "studio": {
+    "badge": "Studio",
+    "rowPdf": "Unduh sertifikat (PDF)",
+    "intro": "Desain sertifikat sebuah acara sekali, lalu terbitkan untuk setiap peserta. Masing-masing mendapat nomor sendiri dan kode QR yang membuka halaman verifikasi; semuanya juga tampil di Semua Sertifikat.",
+    "newDesign": "Desain baru",
+    "emptyTitle": "Buat sertifikat pertama",
+    "emptyText": "Dimulai dari template Markaz Tadarus; ubah kalimat, logo, dan penanda tangan sesuai acara.",
+    "untitled": "Acara tanpa nama",
+    "participants_one": "{{count}} peserta",
+    "participants_other": "{{count}} peserta",
+    "back": "Semua desain",
+    "save": "Simpan desain",
+    "saved": "Desain tersimpan",
+    "unsaved": "Belum disimpan",
+    "deleteDesign": "Hapus desain",
+    "deleteText": "Hapus desain \"{{name}}\"? Tindakan ini tidak bisa dibatalkan.",
+    "previewSample": "Pratinjau dengan contoh teks. Ketuk ikon mata di samping peserta untuk melihat sertifikatnya.",
+    "previewOf": "Pratinjau: {{name}}",
+    "sections": {
+      "text": "Teks",
+      "look": "Logo & tanda tangan",
+      "people": "Peserta"
+    },
+    "fields": {
+      "name": "Nama acara",
+      "nameHint": "Tampil di halaman verifikasi dan mengelompokkan sertifikat ini di daftar.",
+      "title": "Judul",
+      "numberLabel": "Label nomor",
+      "numberPattern": "Format nomor",
+      "numberPatternHint": "{no} menjadi 001, 002, 003… Nomor pertama: {{example}}",
+      "givenTo": "Baris di atas nama",
+      "description": "Kalimat keterangan",
+      "descriptionHint": "Beri *bintang* di sekitar kata yang ingin dicetak hijau.",
+      "place": "Tempat",
+      "issueDate": "Tanggal terbit",
+      "eventDate": "Tanggal acara",
+      "eventDateHint": "Tampil di halaman verifikasi.",
+      "signers": "Penanda tangan (maks. 3)",
+      "signersHint": "Dari tab Penanda tangan & stempel. Jika kosong: penanda tangan bawaan.",
+      "showInk": "Cetak tanda tangan dan stempel",
+      "logos": "Logo mitra (maks. 4)",
+      "logosHint": "Tampil setelah logo Markaz Tadarus, sesuai urutan. PNG dengan latar transparan paling bagus.",
+      "addLogo": "Tambah logo",
+      "removeLogo": "Hapus logo",
+      "logoFailed": "Gambar itu tidak bisa dipakai.",
+      "seal": "Tampilkan segel Ka'bah"
+    },
+    "people": {
+      "saveFirst": "Simpan desain dulu; lalu tambahkan peserta di sini.",
+      "unsavedNote": "Simpan desain sebelum menerbitkan, agar sertifikat baru memakai versi terbaru.",
+      "add": "Tambah peserta",
+      "excel": "Dari Excel",
+      "paste": "Nama, satu per baris",
+      "pasteHint": "Ada nama Arab juga? Tulis setelah Tab: Nama⇥الاسم",
+      "ready_one": "{{count}} nama baru siap",
+      "ready_other": "{{count}} nama baru siap",
+      "skipped_one": "{{count}} sudah punya sertifikat di sini",
+      "skipped_other": "{{count}} sudah punya sertifikat di sini",
+      "issue_one": "Terbitkan {{count}} sertifikat",
+      "issue_other": "Terbitkan {{count}} sertifikat",
+      "issued_one": "{{count}} sertifikat diterbitkan",
+      "issued_other": "{{count}} sertifikat diterbitkan",
+      "list": "Sudah terbit",
+      "none": "Belum ada.",
+      "preview": "Pratinjau",
+      "pdf": "Unduh PDF",
+      "pdfAll": "PDF (semua)",
+      "zip": "ZIP (PDF per orang)",
+      "making": "Membuat PDF… {{percent}}%",
+      "revoked": "Dicabut",
+      "excelFailed": "File Excel itu tidak bisa dibaca.",
+      "pdfFailed": "PDF gagal dibuat. Coba lagi."
+    },
+    "errors": {
+      "noName": "Isi nama acara.",
+      "failed": "Gagal. Coba lagi.",
+      "noDesign": "Desain sertifikat ini sudah dihapus."
+    }
   }
 }

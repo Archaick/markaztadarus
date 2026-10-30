@@ -225,6 +225,10 @@
       },
       "global": {
         "global": "Mengubah Tadarus Global"
+      },
+      "design": {
+        "save": "Menyimpan desain sertifikat",
+        "delete": "Menghapus desain sertifikat"
       }
     },
     "fields": {

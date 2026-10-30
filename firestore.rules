@@ -175,6 +175,14 @@ service cloud.firestore {
       allow delete: if hasFeature("certificates") && marked("certificate_meta~" + docId);
     }
 
+    // Certificate Studio: one event's certificate design (its words, logos,
+    // signers, numbering); the certificates themselves stay in `certificates`.
+    match /certificate_designs/{designId} {
+      allow read: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates") && audited();
+      allow delete: if hasFeature("certificates") && marked("certificate_designs~" + designId);
+    }
+
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
       // Public read so the verification page can show signatures

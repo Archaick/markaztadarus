@@ -225,6 +225,10 @@
       },
       "global": {
         "global": "Edited Tadarus Global"
+      },
+      "design": {
+        "save": "Saved a certificate design",
+        "delete": "Deleted a certificate design"
       }
     },
     "fields": {

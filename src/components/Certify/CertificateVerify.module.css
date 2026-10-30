@@ -298,6 +298,11 @@
   background: #f6f8fb;
 }
 
+/* the printed certificate number takes the whole row */
+.details .wide {
+  grid-column: 1 / -1;
+}
+
 .details dt {
   font-size: 0.72rem;
   font-weight: 700;
@@ -308,6 +313,7 @@
 
 .details dd {
   margin: 0.2rem 0 0;
+  overflow-wrap: anywhere;
   font-weight: 700;
   color: #102141;
 }

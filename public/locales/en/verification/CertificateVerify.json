@@ -21,5 +21,6 @@
   "retry": "Try again",
   "errors": {
     "failed": "The certificate could not be checked yet. Please check your internet connection."
-  }
+  },
+  "certificate_number": "Certificate number"
 }

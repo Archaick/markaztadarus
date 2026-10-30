@@ -1,0 +1,246 @@
+/* The certificate, in the original design's units (630.75 x 445.5); the
+   component scales the page to the width it is given. */
+
+.frame {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #d3e6df;
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 630.75px;
+  height: 445.5px;
+  transform-origin: 0 0;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #332e1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- top right: the logos ---------- */
+.logos {
+  position: absolute;
+  top: 15px;
+  right: 22px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mtLogo {
+  display: grid;
+  justify-items: center;
+  font-family: "Montserrat", "Inter", sans-serif;
+  color: #1b3664;
+  line-height: 1.1;
+}
+.mtLogo img {
+  width: 30px;
+  height: 26px;
+  margin-bottom: 1.5px;
+}
+.mtLogo b {
+  font-size: 5.2px;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+}
+.mtLogo span {
+  font-size: 4.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.partnerLogo {
+  max-height: 44px;
+  max-width: 64px;
+  object-fit: contain;
+}
+.logoSlot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: #1b684f;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 600;
+  padding: 6px;
+  line-height: 1.2;
+}
+
+/* ---------- the words ---------- */
+.title {
+  position: absolute;
+  top: 46px;
+  left: 150px;
+  margin: 0;
+  font-size: 47px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.4px;
+  color: #1a674f;
+  text-shadow: 0 2px 2.5px rgba(10, 40, 32, 0.22);
+}
+.number {
+  position: absolute;
+  top: 104px;
+  left: 154px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d2d2d;
+}
+.givenTo {
+  position: absolute;
+  top: 149px;
+  left: 154px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d2d2d;
+}
+.name {
+  position: absolute;
+  top: 174px;
+  left: 154px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #1b684f;
+  white-space: nowrap;
+}
+.description {
+  position: absolute;
+  top: 221px;
+  left: 154px;
+  width: 412px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16.6px;
+}
+.mark {
+  color: #1b684f;
+}
+
+/* ---------- place, date and signers ---------- */
+.signing {
+  position: absolute;
+  top: 308px;
+  left: 154px;
+  width: 394px;
+  display: grid;
+  justify-items: center;
+}
+.signingWithQr {
+  left: 226px;
+  width: 322px;
+}
+.placeDate {
+  font-size: 11px;
+  font-weight: 500;
+}
+.signers {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+.signer {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 170px;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+.ink {
+  position: relative;
+  width: 100%;
+  height: 52px;
+  margin: 6px 0 2px;
+}
+.signature {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.stamp {
+  position: absolute;
+  left: 4px;
+  top: -4px;
+  height: 58px;
+  opacity: 0.85;
+}
+.signerName {
+  font-size: 11px;
+  font-weight: 600;
+  color: #236e5a;
+  padding: 0 6px 1px;
+  border-bottom: 0.6px solid #332e1a;
+}
+.signerRole {
+  margin-top: 2.5px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.signers[data-count="2"] .signerRole {
+  font-size: 8.8px;
+}
+.signers[data-count="3"] .signerName {
+  font-size: 9.5px;
+}
+.signers[data-count="3"] .signerRole {
+  font-size: 7.8px;
+}
+
+/* ---------- the QR code and the seal ---------- */
+.qr {
+  position: absolute;
+  left: 154px;
+  bottom: 18px;
+  width: 62px;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+}
+.qr img {
+  width: 54px;
+  height: 54px;
+  padding: 4px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.55);
+  box-sizing: content-box;
+}
+.qr span {
+  display: block;
+  font-size: 5px;
+  font-weight: 600;
+  color: #4b5a54;
+}
+.qr b {
+  display: block;
+  font-size: 6.2px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: #1b684f;
+}
+.seal {
+  position: absolute;
+  left: 549px;
+  top: 371px;
+  width: 63px;
+  height: 63px;
+}

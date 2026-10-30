@@ -23,10 +23,11 @@
   },
   "loadFailed": "Certificates could not be loaded. Check your connection and reload the page.",
   "tabs": {
-    "certificates": "Certificates",
+    "certificates": "All certificates",
     "signers": "Signers & stamps",
     "backup": "Backup",
-    "documents": "Word files"
+    "documents": "Word files",
+    "studio": "Certificate Studio"
   },
   "filters": {
     "allPrograms": "All",
@@ -253,5 +254,84 @@
     "newHint": "This file gets the new certificate's QR when you save, then downloads back to you.",
     "attach": "Stamp a Word file with this QR",
     "replace": "Stamp another Word file with this QR"
+  },
+  "studio": {
+    "badge": "Studio",
+    "rowPdf": "Download the certificate (PDF)",
+    "intro": "Design an event's certificate once, then issue it to every participant. Each gets their own number and a QR code that opens the verification page; all of them also appear under All certificates.",
+    "newDesign": "New design",
+    "emptyTitle": "Make your first certificate",
+    "emptyText": "Starts from the Markaz Tadarus template; change the words, logos and signers to fit the event.",
+    "untitled": "Untitled event",
+    "participants_one": "{{count}} participant",
+    "participants_other": "{{count}} participants",
+    "back": "All designs",
+    "save": "Save design",
+    "saved": "Design saved",
+    "unsaved": "Unsaved changes",
+    "deleteDesign": "Delete design",
+    "deleteText": "Delete the design \"{{name}}\"? This cannot be undone.",
+    "previewSample": "Preview with sample text. Tap the eye next to a participant to see their certificate.",
+    "previewOf": "Preview: {{name}}",
+    "sections": {
+      "text": "Text",
+      "look": "Logos & signers",
+      "people": "Participants"
+    },
+    "fields": {
+      "name": "Event name",
+      "nameHint": "Shown on the verification page and groups these certificates in the list.",
+      "title": "Title",
+      "numberLabel": "Number label",
+      "numberPattern": "Number format",
+      "numberPatternHint": "{no} becomes 001, 002, 003… The first will read {{example}}",
+      "givenTo": "Line above the name",
+      "description": "The sentence",
+      "descriptionHint": "Put *stars* around the words to print in green.",
+      "place": "Place",
+      "issueDate": "Date issued",
+      "eventDate": "Event date",
+      "eventDateHint": "Shown on the verification page.",
+      "signers": "Signers (up to 3)",
+      "signersHint": "From the Signers & stamps tab. None picked: the default signers.",
+      "showInk": "Print their signatures and stamps",
+      "logos": "Partner logos (up to 4)",
+      "logosHint": "Shown after the Markaz Tadarus logo, in this order. A PNG with a clear background looks best.",
+      "addLogo": "Add logo",
+      "removeLogo": "Remove logo",
+      "logoFailed": "That picture could not be used.",
+      "seal": "Show the Ka'bah seal"
+    },
+    "people": {
+      "saveFirst": "Save the design first; then add the participants here.",
+      "unsavedNote": "Save the design before issuing, so the new certificates use the latest version.",
+      "add": "Add participants",
+      "excel": "From Excel",
+      "paste": "Names, one per line",
+      "pasteHint": "An Arabic name too? Put it after a Tab: Name⇥الاسم",
+      "ready_one": "{{count}} new name ready",
+      "ready_other": "{{count}} new names ready",
+      "skipped_one": "{{count}} already has a certificate here",
+      "skipped_other": "{{count}} already have a certificate here",
+      "issue_one": "Issue {{count}} certificate",
+      "issue_other": "Issue {{count}} certificates",
+      "issued_one": "{{count}} certificate issued",
+      "issued_other": "{{count}} certificates issued",
+      "list": "Issued",
+      "none": "No one yet.",
+      "preview": "Preview",
+      "pdf": "Download PDF",
+      "pdfAll": "PDF (all)",
+      "zip": "ZIP (a PDF each)",
+      "making": "Making the PDF… {{percent}}%",
+      "revoked": "Revoked",
+      "excelFailed": "That Excel file could not be read.",
+      "pdfFailed": "The PDF could not be made. Try again."
+    },
+    "errors": {
+      "noName": "Give the event a name.",
+      "failed": "That did not work. Try again.",
+      "noDesign": "This certificate's design was deleted."
+    }
   }
 }

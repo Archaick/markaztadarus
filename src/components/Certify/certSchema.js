@@ -74,6 +74,9 @@ export const publicFields = (cert) => ({
   revokedReason: isRevoked(cert) ? cert.revokedReason || "" : "",
   title: cert.title || "",
   description: cert.description || "",
+  // certificates made in Certificate Studio: the printed number, and where they came from
+  number: cert.number || "",
+  kind: cert.kind || "",
 });
 
 // Whether the public copy still matches the record (scans are left alone).
@@ -90,6 +93,8 @@ export const publicUpToDate = (cert, pub) => {
     want.revokedReason === (pub.revokedReason || "") &&
     want.title === (pub.title || "") &&
     want.description === (pub.description || "") &&
+    want.number === (pub.number || "") &&
+    want.kind === (pub.kind || "") &&
     millis(want.eventDate) === millis(pub.eventDate) &&
     millis(want.issuedAt) === millis(pub.issuedAt) &&
     JSON.stringify(want.signerIds) === JSON.stringify(pub.signerIds || [])

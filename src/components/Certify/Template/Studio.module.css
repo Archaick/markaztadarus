@@ -1,0 +1,271 @@
+/* ---------- the designs ---------- */
+.listHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+.card,
+.emptyCard {
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.card:hover,
+.emptyCard:hover {
+  border-color: #6ee7b7;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+.card :global(img) {
+  pointer-events: none;
+}
+.cardText {
+  display: grid;
+  gap: 2px;
+  padding: 0 0.2rem 0.2rem;
+}
+.cardText b {
+  color: #0f172a;
+}
+.cardText span {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.emptyCard {
+  grid-template-columns: minmax(180px, 320px) 1fr;
+  align-items: center;
+  gap: 1.2rem;
+  width: 100%;
+  border-style: dashed;
+}
+.emptyPreview {
+  opacity: 0.9;
+}
+@media (max-width: 640px) {
+  .emptyCard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* the certificate, scaled to its box */
+.fit {
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+  line-height: normal;
+}
+
+/* ---------- one design ---------- */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.columns {
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+.side {
+  min-width: 0;
+}
+.previewCol {
+  position: sticky;
+  top: 1rem;
+  min-width: 0;
+}
+.previewBox {
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: #1f2430;
+}
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* on a phone the preview comes first, then the fields */
+  .previewCol {
+    position: static;
+    order: -1;
+  }
+  .previewBox {
+    padding: 0.4rem;
+  }
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.85rem;
+}
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  align-items: end;
+}
+.numberPair {
+  grid-template-columns: 1fr 2fr;
+}
+@media (max-width: 420px) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* logos */
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.logo,
+.addLogo {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f1f7f5;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+}
+.logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.logoTools {
+  position: absolute;
+  inset: auto 4px 4px;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.logo:hover .logoTools,
+.logo:focus-within .logoTools {
+  opacity: 1;
+}
+@media (hover: none) {
+  .logoTools {
+    opacity: 1;
+  }
+}
+.logoTools button {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #fff;
+  font: 700 14px/1 system-ui;
+  cursor: pointer;
+}
+.addLogo {
+  border-style: dashed;
+  color: #0f766e;
+  background: #fff;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  gap: 2px;
+  cursor: pointer;
+}
+.addLogo:hover {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+}
+
+/* participants */
+.addBox {
+  padding: 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+.making {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+.people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  max-height: 420px;
+  overflow: auto;
+}
+.people li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+.people li:hover {
+  background: #f8fafc;
+}
+.people li.personOn {
+  border-color: #99f6e4;
+  background: #f0fdfa;
+}
+.people li.personOff {
+  opacity: 0.55;
+}
+.seq {
+  flex-shrink: 0;
+  min-width: 28px;
+  height: 24px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+}
+.personText {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+}
+.personText b {
+  font-size: 0.88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.personText span {
+  font-size: 0.72rem;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
