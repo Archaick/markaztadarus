@@ -1,29 +1,63 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Alert, Badge, Button, Group, Loader, Modal, Text, TextInput } from "@mantine/core";
-import { IconBolt, IconCalendar, IconNews, IconPhoto, IconPhotoDown, IconPlus } from "@tabler/icons-react";
+import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Alert, Badge, Button, Group, Loader, Modal, SegmentedControl, Select, Text, TextInput } from "@mantine/core";
+import { IconBolt, IconCalendar, IconMapPin, IconPhoto, IconPhotoDown, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { isValidSlug, slugify } from "../Forms/formSchema";
-import { POSTS, formatPostDate, hasLargeCard, todayIso } from "../Blog/blogSchema";
+import { CATEGORIES, POSTS, formatPostDate, hasLargeCard, todayIso } from "../Blog/blogSchema";
 import styles from "./Website.module.css";
+import app from "./WebsiteApp.module.css";
 import { LEGACY_PHOTO_COUNT, LEGACY_SLUGS, importLegacyGallery } from "./importGallery";
 import { buildPostThumbs } from "./postThumbs";
+import { SITE_BASE, usePostsList } from "./WebsiteShell";
 
 const STATUS_COLORS = { draft: "gray", published: "teal" };
+const STATUSES = ["published", "draft"];
+const SORTS = ["newest", "oldest", "title", "photos"];
+const NO_POSTS = [];
 
+const statusOf = (p) => (p.status === "published" ? "published" : "draft");
+const categoryOf = (p) => (CATEGORIES.includes(p.category) ? p.category : "lainnya");
+
+/**
+ * The news, as cards with their cover: searchable, by status (also in the
+ * menu), category and province, in the order chosen. "Write news" (here or
+ * in the menu) opens the new-item window.
+ */
 export default function PostsPanel({ editorEmail }) {
   const { t, i18n } = useTranslation(["internal/Website", "blog/Blog"]);
   const { user } = useAccess();
   const navigate = useNavigate();
-  const [posts, setPosts] = useState(null);
-  const [failed, setFailed] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const statusParam = params.get("status");
+  const status = STATUSES.includes(statusParam) ? statusParam : "all";
+  const live = usePostsList();
+  const posts = Array.isArray(live) ? live : live === "error" ? NO_POSTS : null;
+  const failed = live === "error";
   const [importing, setImporting] = useState(null); // { done, total }
   const [importResult, setImportResult] = useState(null);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState(null);
+  const [province, setProvince] = useState(null);
+  const [sort, setSort] = useState("newest");
+
+  // the address keeps the status and whether the new-item window is open ("Write news" in the menu)
+  const setParam = (key, value) => {
+    const next = new URLSearchParams(location.search);
+    next.set("view", "blog");
+    next.delete("tab");
+    if (value === null) next.delete(key);
+    else next.set(key, value);
+    navigate({ search: next.toString() }, { replace: true });
+  };
+  const setStatus = (value) => setParam("status", value === "all" ? null : value);
+  const creating = params.get("new") === "1";
+  const setCreating = (open) => setParam("new", open ? "1" : null);
 
   const legacyLeft = posts ? LEGACY_SLUGS.filter((slug) => !posts.some((p) => p.id === slug)).length : 0;
 
@@ -69,34 +103,53 @@ export default function PostsPanel({ editorEmail }) {
     }
   };
 
-  useEffect(
+  // the choices, each with how many news items it has
+  const categoryOptions = useMemo(
     () =>
-      onSnapshot(
-        query(collection(db, POSTS), orderBy("date", "desc")),
-        (snap) => {
-          setPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
-          setFailed(false);
-        },
-        (err) => {
-          console.error("Could not load posts:", err);
-          setFailed(true);
-          setPosts([]);
-        }
-      ),
-    []
+      CATEGORIES.map((value) => ({
+        value,
+        label: `${t(`blog/Blog:categories.${value}`)} (${(posts || []).filter((p) => categoryOf(p) === value).length})`,
+      })),
+    [posts, t]
   );
+  const provinceOptions = useMemo(() => {
+    const counts = {};
+    (posts || []).forEach((p) => {
+      if (p.province) counts[p.province] = (counts[p.province] || 0) + 1;
+    });
+    return Object.keys(counts)
+      .sort((a, b) => a.localeCompare(b))
+      .map((value) => ({ value, label: `${value} (${counts[value]})` }));
+  }, [posts]);
+
+  const shown = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    const list = (posts || []).filter(
+      (p) =>
+        (status === "all" || statusOf(p) === status) &&
+        (!category || categoryOf(p) === category) &&
+        (!province || p.province === province) &&
+        (!term || [p.title, p.excerpt, p.province, p.id].some((v) => (v || "").toLowerCase().includes(term)))
+    );
+    const by = {
+      newest: (a, b) => (b.date || "").localeCompare(a.date || ""),
+      oldest: (a, b) => (a.date || "").localeCompare(b.date || ""),
+      title: (a, b) => (a.title || "").localeCompare(b.title || ""),
+      photos: (a, b) => (b.images || []).length - (a.images || []).length,
+    };
+    return [...list].sort(by[sort]);
+  }, [posts, status, category, province, search, sort]);
+  const filtering = !!(search || category || province || status !== "all");
+
+  const clear = () => {
+    setSearch("");
+    setCategory(null);
+    setProvince(null);
+    setStatus("all");
+  };
 
   return (
     <div className={styles.editor}>
-      <div className={styles.toolbar}>
-        <Text fw={700} className={styles.summary}>
-          <IconNews size={18} className={styles.inlineIcon} /> {t("blog/Blog:pageTitle")}
-        </Text>
-        <Button leftSection={<IconPlus size={16} />} className={styles.goldButton} onClick={() => setCreating(true)}>
-          {t("blog.newPost")}
-        </Button>
-      </div>
-
       {failed && <Alert color="red">{t("loadFailed")}</Alert>}
 
       {legacyLeft > 0 && (
@@ -148,38 +201,113 @@ export default function PostsPanel({ editorEmail }) {
         </Alert>
       )}
 
+      <div className={app.filters}>
+        <TextInput
+          className={app.grow}
+          leftSection={<IconSearch size={16} />}
+          placeholder={t("blog.filters.search")}
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
+        />
+        <SegmentedControl
+          value={status}
+          onChange={setStatus}
+          data={[
+            { value: "all", label: t("blog.filters.all") },
+            { value: "published", label: t("blog.status.published") },
+            { value: "draft", label: t("blog.status.draft") },
+          ]}
+        />
+        <Select
+          className={app.pick}
+          placeholder={t("blog.filters.allCategories")}
+          data={categoryOptions}
+          value={category}
+          onChange={setCategory}
+          clearable
+          comboboxProps={{ withinPortal: true }}
+        />
+        {provinceOptions.length > 0 && (
+          <Select
+            className={app.pick}
+            placeholder={t("blog.filters.allProvinces")}
+            data={provinceOptions}
+            value={province}
+            onChange={setProvince}
+            clearable
+            searchable
+            comboboxProps={{ withinPortal: true }}
+          />
+        )}
+        <Select
+          className={app.sort}
+          aria-label={t("blog.filters.sortLabel")}
+          data={SORTS.map((value) => ({ value, label: t(`blog.filters.sort.${value}`) }))}
+          value={sort}
+          onChange={(v) => v && setSort(v)}
+          allowDeselect={false}
+          comboboxProps={{ withinPortal: true }}
+        />
+      </div>
+
+      {posts && posts.length > 0 && (
+        <div className={app.summary}>
+          <span>{t("blog.filters.summary", { count: shown.length, total: posts.length })}</span>
+          {filtering && (
+            <button type="button" className={app.clear} onClick={clear}>
+              <IconX size={14} /> {t("blog.filters.clear")}
+            </button>
+          )}
+          <Button className={`${styles.goldButton} ${app.newOnPhone}`} size="xs" leftSection={<IconPlus size={14} />} onClick={() => setCreating(true)}>
+            {t("blog.newPost")}
+          </Button>
+        </div>
+      )}
+
       {posts === null ? (
         <Group justify="center" py="xl">
           <Loader size="sm" />
         </Group>
       ) : posts.length === 0 ? (
+        <div className={app.empty}>
+          <Text c="dimmed">{t("blog.empty")}</Text>
+          <Button className={styles.goldButton} leftSection={<IconPlus size={16} />} onClick={() => setCreating(true)}>
+            {t("blog.newPost")}
+          </Button>
+        </div>
+      ) : shown.length === 0 ? (
         <Text c="dimmed" ta="center" py="xl">
-          {t("blog.empty")}
+          {t("blog.filters.noMatch")}
         </Text>
       ) : (
-        <div className={styles.postList}>
-          {posts.map((post) => (
-            <button
-              type="button"
-              key={post.id}
-              className={styles.postRow}
-              onClick={() => navigate(`/internal/website/berita/${post.id}`)}
-            >
-              <span className={styles.postThumb}>
-                {post.coverThumb ? <img src={post.coverThumb} alt="" /> : <IconPhoto size={22} />}
+        <div className={app.cards}>
+          {shown.map((post) => (
+            <button type="button" key={post.id} className={app.card} onClick={() => navigate(`${SITE_BASE}/berita/${post.id}`)}>
+              <span className={app.cover}>
+                {post.coverThumb ? <img src={post.coverThumb} alt="" loading="lazy" /> : <IconPhoto size={30} />}
+                <Badge className={app.cardStatus} color={STATUS_COLORS[statusOf(post)]} variant="filled" size="sm">
+                  {t(`blog.status.${statusOf(post)}`)}
+                </Badge>
               </span>
-              <span className={styles.postInfo}>
-                <span className={styles.postTitle} dir="auto">
+              <span className={app.cardBody}>
+                <span className={app.cardCategory}>{t(`blog/Blog:categories.${categoryOf(post)}`)}</span>
+                <span className={app.cardTitle} dir="auto">
                   {post.title || t("blog.untitled")}
                 </span>
-                <span className={styles.postMeta}>
-                  <IconCalendar size={13} /> {formatPostDate(post.date, i18n.language)} ·{" "}
-                  {t(`blog/Blog:categories.${post.category || "lainnya"}`)} · {t("blog/Blog:photos", { count: (post.images || []).length })}
+                <span className={app.cardMeta}>
+                  <span>
+                    <IconCalendar size={13} /> {formatPostDate(post.date, i18n.language)}
+                  </span>
+                  <span>
+                    <IconPhoto size={13} /> {(post.images || []).length}
+                  </span>
+                  {post.province && (
+                    <span>
+                      <IconMapPin size={13} /> {post.province}
+                    </span>
+                  )}
                 </span>
               </span>
-              <Badge color={STATUS_COLORS[post.status] || "gray"} variant="light">
-                {t(`blog.status.${post.status === "published" ? "published" : "draft"}`)}
-              </Badge>
             </button>
           ))}
         </div>
@@ -189,7 +317,7 @@ export default function PostsPanel({ editorEmail }) {
         opened={creating}
         onClose={() => setCreating(false)}
         editorEmail={editorEmail}
-        onCreated={(id) => navigate(`/internal/website/berita/${id}`)}
+        onCreated={(id) => navigate(`${SITE_BASE}/berita/${id}`)}
       />
     </div>
   );

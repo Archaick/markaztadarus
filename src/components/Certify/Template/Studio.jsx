@@ -101,9 +101,6 @@ export default function Studio({ designs, certs, signers, notify, onIssue }) {
   return (
     <div>
       <div className={styles.listHead}>
-        <Text size="sm" c="dimmed" maw={620}>
-          {t("studio.intro")}
-        </Text>
         <Button color="teal" leftSection={<IconPlus size={17} />} onClick={() => setOpenId("new")}>
           {t("studio.newDesign")}
         </Button>

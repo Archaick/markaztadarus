@@ -17,7 +17,8 @@
   "sort": {
     "newest": "Terbaru",
     "popular": "Terpopuler",
-    "az": "A–Z"
+    "az": "A–Z",
+    "recent": "Terakhir diklik"
   },
   "empty": {
     "title": "Belum ada tautan",
@@ -89,5 +90,17 @@
     "title": "Kode QR",
     "hint": "Siap cetak, dengan logo di tengah. Kode ini tetap berlaku walau tujuannya diganti.",
     "download": "Unduh PNG"
+  },
+  "shellBrand": "Tautan",
+  "nav": {
+    "links": "Tautan pendek",
+    "all": "Semua",
+    "admin": "Editor tautan"
+  },
+  "filters": {
+    "allKinds": "Semua tujuan",
+    "sort": "Urutan",
+    "summary": "{{count}} dari {{total}} tautan",
+    "clear": "Hapus filter"
   }
 }

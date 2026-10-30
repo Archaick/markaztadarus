@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   ActionIcon,
   Alert,
   Autocomplete,
   Badge,
   Button,
-  Card,
   CopyButton,
   Group,
   Loader,
@@ -14,16 +14,14 @@ import {
   Pagination,
   Progress,
   SegmentedControl,
-  Tabs,
+  Select,
   Text,
   TextInput,
   Textarea,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import {
   IconArrowBackUp,
-  IconArrowLeft,
   IconBan,
   IconCertificate,
   IconCheck,
@@ -37,12 +35,14 @@ import {
   IconPencil,
   IconPlus,
   IconQrcode,
+  IconFilter,
   IconSearch,
   IconShieldCheck,
   IconSignature,
   IconTable,
   IconTrash,
   IconUsersPlus,
+  IconX,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -57,11 +57,9 @@ import { GoogleAuthProvider, reauthenticateWithPopup } from "firebase/auth";
 import { auth, db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
-import { AccountBar, InternalLayout } from "../Internal/InternalUI";
+import AppShell from "../Internal/AppShell";
 import { intlLocale } from "../Internal/language";
 import { timeAgo } from "../Internal/timeAgo";
-import layout from "../Internal/AccessControl.module.css";
-import portal from "../Internal/InternalPortal.module.css";
 import SignerManager from "./SignerManager";
 import DocumentsPanel from "./DocumentsPanel";
 import { SNAPSHOT, SNAPSHOT_DOC, useWordAttach } from "./useWordAttach";
@@ -94,6 +92,7 @@ import { certificatesPdf, saveBlob } from "./Template/studioPdf";
 import styles from "./Admin.module.css";
 
 const NS = ["internal/Certificates", "internal/Internal"];
+const BASE = "/cert-admin";
 const PAGE = 25;
 const CERTS_PER_BATCH = 200; // two writes each, under Firestore's 500
 
@@ -104,7 +103,7 @@ const nameOf = (cert) => both(cert?.name, cert?.nameAr);
 
 export default function Admin() {
   const { t, i18n } = useTranslation(NS);
-  const { email, user } = useAccess();
+  const { email, user, isSuperAdmin } = useAccess();
   const [certs, setCerts] = useState(null);
   const [pubs, setPubs] = useState(null);
   const [migrated, setMigrated] = useState(null);
@@ -114,12 +113,17 @@ export default function Admin() {
   const [signers, setSigners] = useState([]);
   const [designs, setDesigns] = useState(null);
   const [pdfFor, setPdfFor] = useState(null); // the certificate whose PDF is being made
-  const [tab, setTab] = useState("certificates");
+  // the view, in the address (?view=studio …), so back and bookmarks work
+  const [params] = useSearchParams();
+  const VIEWS = ["certificates", "studio", "documents", "signers", "backup"];
+  const view = VIEWS.includes(params.get("view")) ? params.get("view") : "certificates";
+  const viewLink = (v) => (v === "certificates" ? BASE : `${BASE}?view=${v}`);
   const [notice, setNotice] = useState(null);
 
   const [search, setSearch] = useState("");
   const [program, setProgram] = useState(null);
   const [status, setStatus] = useState("all");
+  const [kind, setKind] = useState("all"); // all · studio (designed in the Studio) · qr (a code only)
   const [page, setPage] = useState(1);
 
   const [editing, setEditing] = useState(null); // null | "new" | cert
@@ -261,11 +265,12 @@ export default function Admin() {
     return (certs || [])
       .filter((c) => !program || programKey(c) === program)
       .filter((c) => status === "all" || (status === "revoked") === isRevoked(c))
+      .filter((c) => kind === "all" || (kind === "studio") === !!c.designId)
       .filter((c) => !term || [c.name, c.nameAr, c.program, c.programAr, c.code].some((v) => (v || "").toLowerCase().includes(term)))
       .sort((a, b) => millis(b.createdAt) - millis(a.createdAt));
-  }, [certs, search, program, status]);
+  }, [certs, search, program, status, kind]);
 
-  useEffect(() => setPage(1), [search, program, status]);
+  useEffect(() => setPage(1), [search, program, status, kind]);
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
   const visible = filtered.slice((page - 1) * PAGE, page * PAGE);
 
@@ -469,43 +474,53 @@ export default function Admin() {
 
   const loading = certs === null && !loadFailed;
 
+  const sections = [
+    {
+      label: t("nav.certificates"),
+      items: [
+        { to: viewLink("certificates"), end: true, icon: IconCertificate, label: t("tabs.certificates"), count: certs?.length ?? null, active: view === "certificates" },
+        { to: viewLink("studio"), icon: IconPalette, label: t("tabs.studio"), count: designs?.length ?? null, active: view === "studio" },
+        { to: viewLink("documents"), icon: IconFileTypeDocx, label: t("tabs.documents"), active: view === "documents" },
+      ],
+    },
+    {
+      label: t("nav.settings"),
+      items: [
+        { to: viewLink("signers"), icon: IconSignature, label: t("tabs.signers"), count: signers.length, active: view === "signers" },
+        { to: viewLink("backup"), icon: IconDatabase, label: t("tabs.backup"), active: view === "backup" },
+      ],
+    },
+  ];
+
+  // issuing, from anywhere in the dashboard
+  const issueButtons = (
+    <div className={styles.issueButtons}>
+      <Button fullWidth size="md" radius="md" color="yellow" c="dark" leftSection={<IconUsersPlus size={18} />} onClick={() => setBulkOpen(true)}>
+        {t("actions.bulk")}
+      </Button>
+      <Button fullWidth size="sm" radius="md" variant="white" color="dark" leftSection={<IconPlus size={16} />} onClick={() => setEditing("new")}>
+        {t("actions.one")}
+      </Button>
+    </div>
+  );
+
   return (
-    <InternalLayout align="top">
-      <div className={`${layout.page} ${styles.page}`}>
-        <a href="/internal" className={layout.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
-        </a>
+    <AppShell brand={t("shellBrand")} role={isSuperAdmin ? t("internal/Internal:superAdmin") : t("shellRole")} sections={sections} action={issueButtons} collapseKey="mt.certificatesMenu">
+      <div className={styles.page}>
+        <header className={styles.pageHead}>
+          <h1 className={styles.pageTitle}>{view === "certificates" ? t("title") : t(`tabs.${view}`)}</h1>
+          <p className={styles.pageSub}>{t(`views.${view}`)}</p>
+          {/* on a phone the menu is folded away, so issuing is here too */}
+          <div className={styles.issueOnPhone}>{issueButtons}</div>
+        </header>
 
-        <Card className={layout.panel}>
-          <AccountBar />
-
-          <div className={styles.headerRow}>
-            <div className={layout.heading}>
-              <span className={layout.headingIcon} style={{ background: "linear-gradient(135deg, #d4a912 0%, #a67d00 100%)" }}>
-                <IconCertificate size={22} />
-              </span>
-              <div>
-                <Title order={2} className={layout.headingTitle}>
-                  {t("title")}
-                </Title>
-                <Text className={layout.headingText}>{t("intro")}</Text>
-              </div>
+          {view === "certificates" && (
+            <div className={styles.stats}>
+              <Stat value={certs?.length ?? 0} label={t("stats.certificates")} />
+              <Stat value={programs.length} label={t("stats.programs")} />
+              <Stat value={totalScans} label={t("stats.scans")} />
             </div>
-            <Group gap="xs">
-              <Button variant="light" color="yellow" leftSection={<IconPlus size={17} />} onClick={() => setEditing("new")}>
-                {t("actions.one")}
-              </Button>
-              <Button className={styles.primaryButton} leftSection={<IconUsersPlus size={17} />} onClick={() => setBulkOpen(true)}>
-                {t("actions.bulk")}
-              </Button>
-            </Group>
-          </div>
-
-          <div className={styles.stats}>
-            <Stat value={certs?.length ?? 0} label={t("stats.certificates")} />
-            <Stat value={programs.length} label={t("stats.programs")} />
-            <Stat value={totalScans} label={t("stats.scans")} />
-          </div>
+          )}
 
           {sync && (
             <Alert color="blue" variant="light" mt="md" icon={<IconShieldCheck size={18} />} title={t("secure.title")}>
@@ -524,57 +539,39 @@ export default function Admin() {
             </Alert>
           )}
 
-          <Tabs value={tab} onChange={setTab} mt="lg" keepMounted={false}>
-            <Tabs.List>
-              <Tabs.Tab value="certificates" leftSection={<IconCertificate size={17} />}>
-                {t("tabs.certificates")}
-              </Tabs.Tab>
-              <Tabs.Tab value="studio" leftSection={<IconPalette size={17} />}>
-                {t("tabs.studio")}
-              </Tabs.Tab>
-              <Tabs.Tab value="signers" leftSection={<IconSignature size={17} />}>
-                {t("tabs.signers")}
-                {signers.length > 0 && (
-                  <Badge size="xs" ml={6} variant="light" color="violet">
-                    {signers.length}
-                  </Badge>
-                )}
-              </Tabs.Tab>
-              <Tabs.Tab value="documents" leftSection={<IconFileTypeDocx size={17} />}>
-                {t("tabs.documents")}
-              </Tabs.Tab>
-              <Tabs.Tab value="backup" leftSection={<IconDatabase size={17} />}>
-                {t("tabs.backup")}
-              </Tabs.Tab>
-            </Tabs.List>
-
-            <Tabs.Panel value="certificates" pt="md">
-              {programs.length > 0 && (
-                <div className={styles.programs}>
-                  <button type="button" className={`${styles.programChip} ${!program ? styles.programOn : ""}`} onClick={() => setProgram(null)}>
-                    {t("filters.allPrograms")} <span>{certs?.length ?? 0}</span>
-                  </button>
-                  {programs.map(([name, count]) => (
-                    <button
-                      type="button"
-                      key={name}
-                      className={`${styles.programChip} ${program === name ? styles.programOn : ""}`}
-                      onClick={() => setProgram(program === name ? null : name)}
-                      dir="auto"
-                    >
-                      {name} <span>{count}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div className={styles.toolbar}>
+          <div className={styles.viewBody}>
+            {view === "certificates" && (
+            <>
+              {/* one bar for every filter: search, description, kind and status */}
+              <div className={styles.filterBar}>
                 <TextInput
                   leftSection={<IconSearch size={16} />}
                   placeholder={t("filters.search")}
                   value={search}
                   onChange={(e) => setSearch(e.currentTarget.value)}
                   className={styles.search}
+                />
+                <Select
+                  className={styles.programPick}
+                  leftSection={<IconFilter size={16} />}
+                  placeholder={t("filters.allPrograms")}
+                  data={programs.map(([name, count]) => ({ value: name, label: `${name} (${count})` }))}
+                  value={program}
+                  onChange={setProgram}
+                  searchable
+                  clearable
+                  nothingFoundMessage={t("filters.noMatch")}
+                  comboboxProps={{ withinPortal: true }}
+                  maxDropdownHeight={320}
+                />
+                <SegmentedControl
+                  value={kind}
+                  onChange={setKind}
+                  data={[
+                    { value: "all", label: t("filters.allKinds") },
+                    { value: "studio", label: t("studio.badge") },
+                    { value: "qr", label: t("filters.qrOnly") },
+                  ]}
                 />
                 <SegmentedControl
                   value={status}
@@ -586,6 +583,20 @@ export default function Admin() {
                   ]}
                 />
               </div>
+              {(search || program || kind !== "all" || status !== "all") && (
+                <button
+                  type="button"
+                  className={styles.clearFilters}
+                  onClick={() => {
+                    setSearch("");
+                    setProgram(null);
+                    setKind("all");
+                    setStatus("all");
+                  }}
+                >
+                  <IconX size={14} /> {t("filters.clear")}
+                </button>
+              )}
 
               <div className={styles.listHead}>
                 <Text size="sm" c="dimmed">
@@ -663,17 +674,18 @@ export default function Admin() {
                   <Pagination value={page} onChange={setPage} total={pages} size="sm" />
                 </Group>
               )}
-            </Tabs.Panel>
+            </>
+            )}
 
-            <Tabs.Panel value="studio" pt="md">
+            {view === "studio" && (
               <Studio designs={designs} certs={certs} signers={signers} notify={notify} onIssue={createMany} />
-            </Tabs.Panel>
+            )}
 
-            <Tabs.Panel value="signers" pt="md">
+            {view === "signers" && (
               <SignerManager notify={notify} onSignersChange={setSigners} />
-            </Tabs.Panel>
+            )}
 
-            <Tabs.Panel value="documents" pt="md">
+            {view === "documents" && (
               <DocumentsPanel
                 certs={certs}
                 attach={attach}
@@ -683,13 +695,18 @@ export default function Admin() {
                 nameOf={nameOf}
                 describe={(c) => both(c.program, c.programAr)}
               />
-            </Tabs.Panel>
+            )}
 
-            <Tabs.Panel value="backup" pt="md">
-              <BackupManager certs={certs || []} notify={notify} />
-            </Tabs.Panel>
-          </Tabs>
-        </Card>
+            {view === "backup" && (
+              <BackupManager
+                certs={certs || []}
+                designs={designs || []}
+                signers={signers}
+                notify={notify}
+                onSignersChange={() => fetchAllSigners().then(setSigners).catch((err) => console.error("Could not load signers:", err))}
+              />
+            )}
+          </div>
       </div>
 
       <input
@@ -747,7 +764,7 @@ export default function Admin() {
           </Button>
         </Group>
       </Modal>
-    </InternalLayout>
+    </AppShell>
   );
 }
 

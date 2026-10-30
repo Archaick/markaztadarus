@@ -30,6 +30,8 @@ export async function reportPages(sheet, sheetPx = SHEET_PX) {
 
   try {
     await document.fonts?.ready;
+    // the copy's pictures (a letterhead, a photo) load anew; wait for them, or they come out blank
+    await Promise.all([...copy.querySelectorAll("img")].map((img) => (img.complete && img.naturalWidth ? null : img.decode().catch(() => null))));
     const top = copy.getBoundingClientRect().top;
     const total = copy.scrollHeight;
     const breaks = [...copy.querySelectorAll(BREAK_AFTER)].map((el) => Math.round(el.getBoundingClientRect().bottom - top)).filter((y) => y > 0 && y < total);

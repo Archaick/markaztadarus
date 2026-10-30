@@ -30,13 +30,16 @@
     "studio": "Certificate Studio"
   },
   "filters": {
-    "allPrograms": "All",
+    "allPrograms": "All descriptions",
     "search": "Search name, description, or code…",
     "all": "All",
     "valid": "Valid",
     "revoked": "Revoked",
     "count": "{{count}} certificates",
-    "noMatch": "No certificates match."
+    "noMatch": "No certificates match.",
+    "allKinds": "All kinds",
+    "qrOnly": "QR only",
+    "clear": "Clear filters"
   },
   "empty": {
     "title": "No certificates yet",
@@ -160,7 +163,7 @@
     "exportText": "A JSON copy of {{count}} certificates to keep somewhere safe.",
     "exportButton": "Download backup",
     "importTitle": "Restore from a backup",
-    "importText": "Codes that already exist are skipped, so it is safe to run more than once.",
+    "importText": "Certificates, designs and signers that already exist are skipped, so it is safe to run more than once. Older backup files work too.",
     "importButton": "Choose backup file",
     "exportedTitle": "Backup downloaded",
     "exportedText": "{{count}} certificates saved in the file.",
@@ -168,7 +171,10 @@
     "importedText": "{{count}} certificates restored, {{skipped}} skipped because they already exist.",
     "failedTitle": "Restore failed",
     "badFile": "This file is not a certificate backup.",
-    "note": "Restored certificates keep their original codes, so printed QR codes stay valid."
+    "note": "Everything comes back with its original codes and ids: printed QR codes stay valid, and Studio certificates still find their design and signers. Scan counts are not included.",
+    "exportAll": "One JSON file with {{count}} certificates, {{designs}} Studio designs and {{signers}} signers (with their signatures and stamps).",
+    "exportedAll": "Saved: {{count}} certificates, {{designs}} designs, {{signers}} signers.",
+    "importedAll": "Restored: {{count}} certificates, {{designs}} designs, {{signers}} signers. {{skipped}} certificates skipped because they already exist."
   },
   "signers": {
     "intro": "Signatures and stamps appear on the page people see when they scan a certificate's QR code.",
@@ -338,5 +344,18 @@
       "failed": "That did not work. Try again.",
       "noDesign": "This certificate's design was deleted."
     }
-  }
+  },
+  "shellBrand": "Certificates",
+  "nav": {
+    "certificates": "Certificates",
+    "settings": "Settings"
+  },
+  "views": {
+    "certificates": "Issue certificates with QR codes anyone can check.",
+    "studio": "Design an event's certificate, then issue it to every participant.",
+    "documents": "Stamp a certificate's QR code straight onto a Word file.",
+    "signers": "The signatures and stamps shown on certificates and the verification page.",
+    "backup": "Save or restore all the certificate data."
+  },
+  "shellRole": "Admin"
 }

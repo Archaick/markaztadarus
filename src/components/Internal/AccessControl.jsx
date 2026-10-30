@@ -1,63 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
   Alert,
   Avatar,
   Badge,
   Button,
-  Card,
   Chip,
   CopyButton,
   Group,
   Loader,
   Modal,
+  SegmentedControl,
+  Select,
   Text,
   TextInput,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import {
-  IconArrowLeft,
   IconBrandWhatsapp,
   IconCheck,
   IconCopy,
-  IconHistory,
-  IconMail,
   IconEye,
+  IconLock,
+  IconMail,
+  IconSearch,
   IconTrash,
   IconUserPlus,
-  IconUsersGroup,
+  IconX,
 } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-} from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "./accessContext";
 import { auditedWrite } from "./audit";
-import {
-  ADMINS_COLLECTION,
-  FEATURES,
-  SUPER_ADMIN_EMAIL,
-  isValidEmail,
-  normalizeEmail,
-} from "./access";
-import { AccountBar, InternalLayout } from "./InternalUI";
+import { ADMINS_COLLECTION, FEATURES, SUPER_ADMIN_EMAIL, isValidEmail, normalizeEmail } from "./access";
+import AdminShell from "./AdminShell";
 import { timeAgo } from "./timeAgo";
-import portal from "./InternalPortal.module.css";
-import styles from "./AccessControl.module.css";
+import a from "./AdminApp.module.css";
 
+/**
+ * Who may open which dashboard: every admin in one grid (a column per
+ * dashboard, one click to give or take), with search and filters by
+ * dashboard and by whether they have signed in yet. Inviting opens its own
+ * window, with the message to send them. Super admin only.
+ */
 export default function AccessControl() {
   const { t } = useTranslation("internal/Internal");
   const { email: myEmail, user } = useAccess();
   const [admins, setAdmins] = useState(null);
   const [listError, setListError] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteFeatures, setInviteFeatures] = useState([]);
   const [inviting, setInviting] = useState(false);
@@ -65,6 +57,9 @@ export default function AccessControl() {
   const [lastInvite, setLastInvite] = useState(null);
   const [removeTarget, setRemoveTarget] = useState(null);
   const [busyEmail, setBusyEmail] = useState("");
+  const [search, setSearch] = useState("");
+  const [dashboard, setDashboard] = useState(null);
+  const [state, setState] = useState("all"); // all · active · pending
 
   const featureTitle = (key) => t(`features.${key}.title`);
 
@@ -126,18 +121,15 @@ export default function AccessControl() {
         setNotice({ color: "teal", key: "updated", email });
         setLastInvite({ email, features: merged });
       } else {
-        await auditedWrite(
-          user,
-          { area: "access", action: "admin.invite", target: email, label: email, details: { to: inviteFeatures } },
-          (batch, auditId) =>
-            batch.set(ref, {
-              email,
-              features: inviteFeatures,
-              auditId,
-              invitedBy: myEmail,
-              invitedAt: serverTimestamp(),
-              updatedAt: serverTimestamp(),
-            })
+        await auditedWrite(user, { area: "access", action: "admin.invite", target: email, label: email, details: { to: inviteFeatures } }, (batch, auditId) =>
+          batch.set(ref, {
+            email,
+            features: inviteFeatures,
+            auditId,
+            invitedBy: myEmail,
+            invitedAt: serverTimestamp(),
+            updatedAt: serverTimestamp(),
+          })
         );
         setNotice({ color: "teal", key: "invited", email });
         setLastInvite({ email, features: inviteFeatures });
@@ -193,36 +185,234 @@ export default function AccessControl() {
     }
   };
 
+  const list = useMemo(() => admins || [], [admins]);
+  const active = list.filter((x) => x.lastLoginAt).length;
+  const shown = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return list
+      .filter((x) => !term || [x.id, x.displayName].some((v) => (v || "").toLowerCase().includes(term)))
+      .filter((x) => !dashboard || (x.features || []).includes(dashboard))
+      .filter((x) => state === "all" || (state === "active") === !!x.lastLoginAt);
+  }, [list, search, dashboard, state]);
+  const filtering = search || dashboard || state !== "all";
+
   const shareText = lastInvite ? inviteMessage(lastInvite.email, lastInvite.features) : "";
+  const openInvite = () => {
+    setLastInvite(null);
+    setNotice(null);
+    setInviteOpen(true);
+  };
 
   return (
-    <InternalLayout align="top">
-      <div className={styles.page}>
-        <a href="/internal" className={styles.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("backToHub")}
-        </a>
+    <AdminShell adminCount={admins ? admins.length + 1 : null}>
+      <div className={a.page}>
+        <header className={a.head}>
+          <div>
+            <h1 className={a.title}>{t("features.access.title")}</h1>
+            <p className={a.sub}>{t("access.intro")}</p>
+          </div>
+          <Button size="md" radius="md" color="yellow" c="dark" leftSection={<IconUserPlus size={18} />} onClick={openInvite}>
+            {t("access.invite")}
+          </Button>
+        </header>
 
-        <Card className={styles.panel}>
-          <AccountBar />
+        <div className={a.stats}>
+          <div>
+            <b>{admins ? admins.length + 1 : "…"}</b>
+            <span>{t("access.stats.total")}</span>
+          </div>
+          <div>
+            <b>{admins ? active + 1 : "…"}</b>
+            <span>{t("access.stats.active")}</span>
+          </div>
+          <div>
+            <b>{admins ? admins.length - active : "…"}</b>
+            <span>{t("access.stats.pending")}</span>
+          </div>
+        </div>
 
-          <div className={styles.heading}>
-            <span className={styles.headingIcon}>
-              <IconUsersGroup size={22} />
-            </span>
-            <div>
-              <Title order={2} className={styles.headingTitle}>
-                {t("features.access.title")}
-              </Title>
-              <Text className={styles.headingText}>{t("access.intro")}</Text>
-            </div>
-            <Button component="a" href="/internal/history" variant="default" radius="xl" leftSection={<IconHistory size={16} />} className={styles.historyLink}>
-              {t("features.history.title")}
-            </Button>
+        {notice && !inviteOpen && (
+          <Alert color={notice.color} mb="md" withCloseButton onClose={() => setNotice(null)}>
+            {t(`access.notices.${notice.key}`, { email: notice.email })}
+          </Alert>
+        )}
+        {listError && (
+          <Alert color="red" mb="md">
+            {t("access.notices.loadFailed")}
+          </Alert>
+        )}
+
+        <div className={a.filters}>
+          <TextInput
+            className={a.grow}
+            leftSection={<IconSearch size={16} />}
+            placeholder={t("access.search")}
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+          />
+          <Select
+            className={a.pick}
+            placeholder={t("access.allDashboards")}
+            data={FEATURES.map((f) => ({ value: f.key, label: featureTitle(f.key) }))}
+            value={dashboard}
+            onChange={setDashboard}
+            clearable
+            comboboxProps={{ withinPortal: true }}
+          />
+          <SegmentedControl
+            value={state}
+            onChange={setState}
+            data={[
+              { value: "all", label: t("access.status.all") },
+              { value: "active", label: t("access.status.active") },
+              { value: "pending", label: t("access.status.pending") },
+            ]}
+          />
+          {filtering && (
+            <button
+              type="button"
+              className={a.clear}
+              onClick={() => {
+                setSearch("");
+                setDashboard(null);
+                setState("all");
+              }}
+            >
+              <IconX size={14} /> {t("access.clear")}
+            </button>
+          )}
+        </div>
+
+        {/* the grid: an admin per row, a dashboard per column */}
+        <div className={a.grid} style={{ "--features": FEATURES.length }}>
+          <div className={`${a.gridRow} ${a.gridHead}`} aria-hidden="true">
+            <span>{t("access.columns.admin")}</span>
+            {FEATURES.map((f) => {
+              const Icon = f.icon;
+              return (
+                <span key={f.key} className={a.featureHead} title={featureTitle(f.key)}>
+                  <i style={{ background: f.color }}>
+                    <Icon size={15} />
+                  </i>
+                  <small>{featureTitle(f.key)}</small>
+                </span>
+              );
+            })}
+            <span />
           </div>
 
-          {/* ---------- Invite ---------- */}
-          <form className={styles.inviteBox} onSubmit={handleInvite}>
-            <Text className={styles.sectionLabel}>{t("access.inviteTitle")}</Text>
+          {/* the super admin: every dashboard, always */}
+          {(!filtering || (!dashboard && state !== "pending" && SUPER_ADMIN_EMAIL.includes(search.trim().toLowerCase()))) && (
+            <div className={`${a.gridRow} ${a.superRow}`}>
+              <div className={a.person}>
+                <Avatar radius="xl" color="violet">
+                  S
+                </Avatar>
+                <div className={a.personText}>
+                  <bdi className={a.personMain}>{SUPER_ADMIN_EMAIL}</bdi>
+                  <span className={a.personMeta}>
+                    <Badge size="xs" color="violet" variant="light">
+                      {t("superAdmin")}
+                    </Badge>{" "}
+                    {t("access.superRow")}
+                  </span>
+                </div>
+              </div>
+              {FEATURES.map((f) => (
+                <span key={f.key} className={a.cell}>
+                  <span className={`${a.toggle} ${a.toggleLocked}`} title={t("access.always")}>
+                    <IconLock size={14} />
+                  </span>
+                </span>
+              ))}
+              <span />
+            </div>
+          )}
+
+          {admins === null && (
+            <Group justify="center" py="lg">
+              <Loader size="sm" />
+            </Group>
+          )}
+          {admins?.length === 0 && !listError && (
+            <Text c="dimmed" ta="center" py="lg" size="sm">
+              {t("access.empty")}
+            </Text>
+          )}
+          {admins?.length > 0 && shown.length === 0 && (
+            <Text c="dimmed" ta="center" py="lg" size="sm">
+              {t("access.noMatch")}
+            </Text>
+          )}
+
+          {shown.map((admin) => (
+            <div className={a.gridRow} key={admin.id}>
+              <div className={a.person}>
+                <Avatar src={admin.photoURL || null} radius="xl">
+                  {(admin.displayName || admin.id).charAt(0).toUpperCase()}
+                </Avatar>
+                <div className={a.personText}>
+                  <span className={a.personMain}>{admin.displayName || <bdi>{admin.id}</bdi>}</span>
+                  {admin.displayName && (
+                    <bdi className={a.personMail}>{admin.id}</bdi>
+                  )}
+                  <span className={a.personMeta}>
+                    {admin.lastLoginAt ? (
+                      <Badge size="xs" color="teal" variant="dot">
+                        {t("access.active", { time: timeAgo(admin.lastLoginAt) })}
+                      </Badge>
+                    ) : (
+                      <Badge size="xs" color="gray" variant="dot">
+                        {t("access.pending", { time: timeAgo(admin.invitedAt) })}
+                      </Badge>
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {FEATURES.map((f) => {
+                const on = (admin.features || []).includes(f.key);
+                const title = featureTitle(f.key);
+                return (
+                  <span key={f.key} className={a.cell} data-label={title}>
+                    <button
+                      type="button"
+                      className={`${a.toggle} ${on ? a.toggleOn : ""}`}
+                      onClick={() => toggleFeature(admin, f.key)}
+                      disabled={busyEmail === admin.id}
+                      aria-pressed={on}
+                      title={on ? t("access.take", { title }) : t("access.give", { title })}
+                    >
+                      {on && <IconCheck size={16} stroke={3} />}
+                    </button>
+                    <small className={a.cellLabel}>{title}</small>
+                  </span>
+                );
+              })}
+
+              <div className={a.rowActions}>
+                <Tooltip label={t("access.preview")}>
+                  <ActionIcon component="a" href={`/internal?previewAs=${encodeURIComponent(admin.id)}`} variant="subtle" color="violet" aria-label={t("access.preview")}>
+                    <IconEye size={18} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label={t("access.removeTip")}>
+                  <ActionIcon variant="subtle" color="red" onClick={() => setRemoveTarget(admin)} loading={busyEmail === admin.id} aria-label={t("access.removeTip")}>
+                    <IconTrash size={17} />
+                  </ActionIcon>
+                </Tooltip>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Text className={a.footnote}>{t("access.footnote")}</Text>
+      </div>
+
+      {/* inviting: the address, the dashboards, then the message to send */}
+      <Modal opened={inviteOpen} onClose={() => setInviteOpen(false)} title={t("access.inviteTitle")} centered size="lg">
+        {!lastInvite ? (
+          <form onSubmit={handleInvite}>
             <TextInput
               type="email"
               dir="ltr"
@@ -233,8 +423,9 @@ export default function AccessControl() {
               disabled={inviting}
               size="md"
               autoComplete="off"
+              data-autofocus
             />
-            <Text size="sm" c="dimmed" mt="sm" mb={6}>
+            <Text size="sm" c="dimmed" mt="md" mb={6}>
               {t("access.dashboards")}
             </Text>
             <Chip.Group multiple value={inviteFeatures} onChange={setInviteFeatures}>
@@ -246,185 +437,64 @@ export default function AccessControl() {
                 ))}
               </Group>
             </Chip.Group>
-            <Button
-              type="submit"
-              mt="md"
-              leftSection={<IconUserPlus size={17} />}
-              loading={inviting}
-              className={styles.inviteButton}
-            >
-              {t("access.invite")}
-            </Button>
+            {notice && (
+              <Alert color={notice.color} mt="md">
+                {t(`access.notices.${notice.key}`, { email: notice.email })}
+              </Alert>
+            )}
+            <Group justify="flex-end" mt="lg">
+              <Button variant="default" onClick={() => setInviteOpen(false)}>
+                {t("access.cancel")}
+              </Button>
+              <Button type="submit" color="yellow" c="dark" leftSection={<IconUserPlus size={17} />} loading={inviting}>
+                {t("access.invite")}
+              </Button>
+            </Group>
           </form>
-
-          {notice && (
-            <Alert color={notice.color} mt="md" withCloseButton onClose={() => setNotice(null)}>
-              {t(`access.notices.${notice.key}`, { email: notice.email })}
-            </Alert>
-          )}
-
-          {lastInvite && (
-            <div className={styles.shareBox}>
-              <Text size="sm" fw={600}>
-                {t("access.messageFor", { email: lastInvite.email })}
-              </Text>
-              <pre className={styles.shareText}>{shareText}</pre>
+        ) : (
+          <div>
+            {notice && (
+              <Alert color={notice.color} mb="md">
+                {t(`access.notices.${notice.key}`, { email: notice.email })}
+              </Alert>
+            )}
+            <Text size="sm" fw={600}>
+              {t("access.messageFor", { email: lastInvite.email })}
+            </Text>
+            <pre className={a.shareText}>{shareText}</pre>
+            <Group gap="xs" justify="space-between">
               <Group gap="xs">
                 <CopyButton value={shareText}>
                   {({ copied, copy }) => (
-                    <Button
-                      size="xs"
-                      variant="light"
-                      color={copied ? "teal" : "blue"}
-                      leftSection={copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
-                      onClick={copy}
-                    >
+                    <Button size="sm" variant="light" color={copied ? "teal" : "blue"} leftSection={copied ? <IconCheck size={15} /> : <IconCopy size={15} />} onClick={copy}>
                       {copied ? t("access.copied") : t("access.copyMessage")}
                     </Button>
                   )}
                 </CopyButton>
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="light"
                   color="green"
                   component="a"
                   target="_blank"
                   rel="noreferrer"
                   href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
-                  leftSection={<IconBrandWhatsapp size={14} />}
+                  leftSection={<IconBrandWhatsapp size={15} />}
                 >
                   {t("access.whatsapp")}
                 </Button>
               </Group>
-            </div>
-          )}
-
-          {/* ---------- Admins ---------- */}
-          <Text className={styles.sectionLabel} mt="xl">
-            {t("access.admins", { count: admins ? admins.length + 1 : 1 })}
-          </Text>
-
-          {listError && (
-            <Alert color="red" mb="sm">
-              {t("access.notices.loadFailed")}
-            </Alert>
-          )}
-
-          <div className={styles.list}>
-            <div className={`${styles.row} ${styles.rowSuper}`}>
-              <div className={styles.person}>
-                <Avatar radius="xl" color="violet">
-                  S
-                </Avatar>
-                <div className={styles.personText}>
-                  <span className={styles.personEmail}>
-                    <bdi>{SUPER_ADMIN_EMAIL}</bdi>
-                  </span>
-                  <span className={styles.personMeta}>{t("access.superRow")}</span>
-                </div>
-              </div>
-              <Badge color="violet" variant="light">
-                {t("superAdmin")}
-              </Badge>
-            </div>
-
-            {admins === null && (
-              <Group justify="center" py="lg">
-                <Loader size="sm" />
-              </Group>
-            )}
-
-            {admins?.length === 0 && !listError && (
-              <Text c="dimmed" ta="center" py="lg" size="sm">
-                {t("access.empty")}
-              </Text>
-            )}
-
-            {admins?.map((admin) => (
-              <div className={`${styles.row} ${styles.adminRow}`} key={admin.id}>
-                <div className={styles.adminTop}>
-                  <div className={styles.person}>
-                    <Avatar src={admin.photoURL || null} radius="xl">
-                      {(admin.displayName || admin.id).charAt(0).toUpperCase()}
-                    </Avatar>
-                    <div className={styles.personText}>
-                      {admin.displayName && <span className={styles.personName}>{admin.displayName}</span>}
-                      <bdi className={admin.displayName ? styles.personMail : styles.personEmail}>{admin.id}</bdi>
-                      <span className={styles.personMeta}>
-                        {admin.lastLoginAt ? (
-                          <Badge size="xs" color="teal" variant="dot">
-                            {t("access.active", { time: timeAgo(admin.lastLoginAt) })}
-                          </Badge>
-                        ) : (
-                          <Badge size="xs" color="gray" variant="dot">
-                            {t("access.pending", { time: timeAgo(admin.invitedAt) })}
-                          </Badge>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                  <div className={styles.rowActions}>
-                    <Button
-                      component="a"
-                      href={`/internal?previewAs=${encodeURIComponent(admin.id)}`}
-                      size="xs"
-                      radius="xl"
-                      variant="light"
-                      color="violet"
-                      leftSection={<IconEye size={15} />}
-                    >
-                      {t("access.preview")}
-                    </Button>
-                    <Tooltip label={t("access.removeTip")}>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={() => setRemoveTarget(admin)}
-                        loading={busyEmail === admin.id}
-                        aria-label={t("access.removeTip")}
-                      >
-                        <IconTrash size={17} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </div>
-                </div>
-
-                <div className={styles.featureChips}>
-                  {FEATURES.map((f) => {
-                    const on = (admin.features || []).includes(f.key);
-                    const title = featureTitle(f.key);
-                    return (
-                      <button
-                        type="button"
-                        key={f.key}
-                        className={`${styles.featureToggle} ${on ? styles.featureOn : ""}`}
-                        onClick={() => toggleFeature(admin, f.key)}
-                        disabled={busyEmail === admin.id}
-                        aria-pressed={on}
-                        title={on ? t("access.take", { title }) : t("access.give", { title })}
-                      >
-                        {on ? <IconCheck size={13} /> : null}
-                        {title}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
+              <Button variant="default" onClick={() => setInviteOpen(false)}>
+                {t("access.done")}
+              </Button>
+            </Group>
           </div>
-
-          <Text className={portal.footerText}>{t("access.footnote")}</Text>
-        </Card>
-      </div>
+        )}
+      </Modal>
 
       <Modal opened={!!removeTarget} onClose={() => setRemoveTarget(null)} title={t("access.removeTitle")} centered>
         <Text size="sm">
-          <Trans
-            t={t}
-            i18nKey="access.removeText"
-            values={{ email: removeTarget?.id }}
-            components={{ b: <strong dir="ltr" /> }}
-          />
+          <Trans t={t} i18nKey="access.removeText" values={{ email: removeTarget?.id }} components={{ b: <strong dir="ltr" /> }} />
         </Text>
         <Group justify="flex-end" mt="lg">
           <Button variant="default" onClick={() => setRemoveTarget(null)}>
@@ -435,6 +505,6 @@ export default function AccessControl() {
           </Button>
         </Group>
       </Modal>
-    </InternalLayout>
+    </AdminShell>
   );
 }

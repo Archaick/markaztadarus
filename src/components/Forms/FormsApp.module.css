@@ -1,0 +1,269 @@
+/* The Forms app's pages, inside the shared internal app shell. */
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* a form being built gets more room */
+.pageWide {
+  max-width: 1280px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.newOnPhone {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .newOnPhone {
+    display: inline-flex;
+  }
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.sub {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.crumb:hover {
+  color: var(--navy);
+}
+
+[dir="rtl"] .flip {
+  transform: scaleX(-1);
+}
+
+/* ── search and sort ── */
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.search {
+  flex: 1;
+  min-width: 220px;
+  max-width: 560px;
+}
+
+.sort {
+  width: 220px;
+}
+
+/* ── the list ── */
+
+.table {
+  container-type: inline-size;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.tableHead,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 100px 96px 120px 112px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+.tableHead {
+  height: 44px;
+  background: var(--navy-50);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.row {
+  min-height: 72px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.row + .row {
+  border-top: 1px solid var(--line);
+}
+
+.row:hover,
+.row:focus-visible {
+  background: #fbf8f0;
+  outline: none;
+}
+
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+
+.dot_open {
+  background: var(--ok);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+.dot_closed {
+  background: #ef4444;
+}
+
+.nameText {
+  display: grid;
+  min-width: 0;
+}
+
+.nameText b {
+  font-size: 1rem;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nameText span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.countCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.timeCell {
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 56px 20px;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+  color: var(--navy);
+}
+
+/* ── a form's own page ── */
+
+.sheet {
+  padding: 26px 28px 32px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.formTitle {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* ── a narrow list (a phone, or a small window): each form a small card ── */
+
+@container (max-width: 720px) {
+  .tableHead {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name name"
+      "status actions"
+      "count time";
+    row-gap: 8px;
+    padding: 14px 16px;
+  }
+
+  .nameCell {
+    grid-area: name;
+  }
+
+  .statusCell {
+    grid-area: status;
+  }
+
+  .countCell {
+    grid-area: count;
+  }
+
+  .timeCell {
+    grid-area: time;
+    text-align: end;
+  }
+
+  .actions {
+    grid-area: actions;
+  }
+}
+
+@media (max-width: 760px) {
+  .sort {
+    width: 100%;
+  }
+
+  .sheet {
+    padding: 16px 14px 22px;
+    border-radius: 16px;
+  }
+}

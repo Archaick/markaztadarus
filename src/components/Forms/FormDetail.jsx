@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Alert, Badge, Card, Group, Loader, SegmentedControl, Tabs, Text, Title } from "@mantine/core";
+import { Link, useParams } from "react-router-dom";
+import { Alert, Badge, Group, Loader, SegmentedControl, Tabs, Text } from "@mantine/core";
 import { IconArrowLeft, IconListDetails, IconMessages, IconSettings, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { doc, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
-import { AccountBar, InternalLayout } from "../Internal/InternalUI";
-import layout from "../Internal/AccessControl.module.css";
-import portal from "../Internal/InternalPortal.module.css";
+import FormsShell, { FORMS_BASE } from "./FormsShell";
 import styles from "./Forms.module.css";
+import app from "./FormsApp.module.css";
 import { FORMS_COLLECTION, KEY_DOC, PRIVATE, STATUSES, STATUS_COLORS } from "./formSchema";
 import FormBuilder from "./FormBuilder";
 import FormCoverEditor from "./FormCoverEditor";
@@ -19,6 +18,15 @@ import SharePanel from "./SharePanel";
 import QuizSettings from "./QuizSettings";
 
 export default function FormDetail() {
+  return (
+    <FormsShell>
+      <FormPage />
+    </FormsShell>
+  );
+}
+
+/** One form, with the whole width for building it: questions, responses, settings and sharing. */
+function FormPage() {
   const { t } = useTranslation("internal/Forms");
   const { formId } = useParams();
   const { email, user } = useAccess();
@@ -72,14 +80,12 @@ export default function FormDetail() {
   };
 
   return (
-    <InternalLayout align="top">
-      <div className={layout.page}>
-        <a href="/internal/forms" className={layout.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("allForms")}
-        </a>
+    <div className={`${app.page} ${app.pageWide}`}>
+        <Link to={FORMS_BASE} className={app.crumb}>
+          <IconArrowLeft size={16} className={app.flip} /> {t("allForms")}
+        </Link>
 
-        <Card className={layout.panel}>
-          <AccountBar />
+        <div className={app.sheet}>
 
           {form === undefined && (
             <Group justify="center" py="xl">
@@ -97,9 +103,9 @@ export default function FormDetail() {
             <>
               <div className={styles.detailHeader}>
                 <div className={styles.detailTitleWrap}>
-                  <Title order={2} className={layout.headingTitle}>
+                  <h1 className={app.formTitle} dir="auto">
                     {form.title || t("untitled")}
-                  </Title>
+                  </h1>
                   <Text size="sm" c="dimmed">
                     <bdi>/form/{form.id}</bdi>
                   </Text>
@@ -161,8 +167,7 @@ export default function FormDetail() {
               </Tabs>
             </>
           )}
-        </Card>
-      </div>
-    </InternalLayout>
+        </div>
+    </div>
   );
 }

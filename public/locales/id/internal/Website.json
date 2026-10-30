@@ -184,6 +184,42 @@
       "done_one": "{{count}} berita dioptimalkan.",
       "done_other": "{{count}} berita dioptimalkan.",
       "failed": "Optimasi terhenti. Coba lagi — berita yang sudah selesai dilewati."
+    },
+    "filters": {
+      "search": "Cari judul, ringkasan, provinsi…",
+      "all": "Semua",
+      "allCategories": "Semua kategori",
+      "allProvinces": "Semua provinsi",
+      "sortLabel": "Urutan",
+      "sort": {
+        "newest": "Terbaru dulu",
+        "oldest": "Terlama dulu",
+        "title": "Judul A–Z",
+        "photos": "Foto terbanyak"
+      },
+      "summary": "{{count}} dari {{total}} berita",
+      "clear": "Hapus filter",
+      "noMatch": "Tidak ada berita yang cocok dengan filter ini."
     }
-  }
+  },
+  "nav": {
+    "home": "Beranda",
+    "allNews": "Semua berita",
+    "admin": "Editor situs"
+  },
+  "views": {
+    "map": {
+      "title": "Peta",
+      "text": "Provinsi dan lokasi di peta beranda. Ketuk provinsi untuk mengubahnya; peta langsung berubah saat Anda mengetik."
+    },
+    "stats": {
+      "title": "Pencapaian",
+      "text": "Angka-angka di beranda, sesuai urutan tampil. Yang disembunyikan tetap tersimpan tetapi tidak ditampilkan."
+    },
+    "blog": {
+      "title": "Berita",
+      "text": "Berita beserta fotonya. Draf hanya terlihat oleh admin sampai diterbitkan."
+    }
+  },
+  "shellBrand": "Situs"
 }

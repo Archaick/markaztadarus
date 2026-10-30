@@ -1,7 +1,33 @@
 /* Link manager: header, totals, search, and one row per short link. */
 
 .page {
-  max-width: 980px;
+  max-width: 1100px;
+  margin: 0 auto;
+  container-type: inline-size;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.pageSub {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+/* "New link" is in the menu; on a phone the menu is folded away, so here too */
+.newOnPhone {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .newOnPhone {
+    display: inline-flex;
+  }
 }
 
 .primaryButton {
@@ -26,9 +52,10 @@
 .stat {
   display: flex;
   flex-direction: column;
-  padding: 0.7rem 0.9rem;
-  border-radius: 14px;
-  background: #f4f7fb;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
 }
 
 .stat strong {
@@ -66,11 +93,53 @@
   align-items: center;
   flex-wrap: wrap;
   margin-top: 1.2rem;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
 }
 
 .search {
-  flex: 1;
-  min-width: 220px;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.pick {
+  flex: 0 1 200px;
+  min-width: 160px;
+}
+
+.sortPick {
+  flex: 0 0 160px;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #b8960c;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clear:hover {
+  text-decoration: underline;
 }
 
 .empty {
@@ -88,7 +157,7 @@
 
 .list {
   list-style: none;
-  margin: 1rem 0 0;
+  margin: 0.8rem 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -257,8 +326,13 @@
   border: 1px solid #e6ebf2;
 }
 
-/* phones: icon and text on top, clicks and buttons on a line below */
-@media (max-width: 640px) {
+/* a narrow page: icon and text on top, clicks and buttons on a line below */
+@container (max-width: 640px) {
+  .pick,
+  .sortPick {
+    flex: 1 1 100%;
+  }
+
   .stats {
     gap: 0.4rem;
   }
@@ -296,6 +370,13 @@
     justify-content: flex-end;
   }
 
+  .editorRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* the link editor is a window, outside the page: it follows the screen */
+@media (max-width: 640px) {
   .editorRow {
     grid-template-columns: minmax(0, 1fr);
   }

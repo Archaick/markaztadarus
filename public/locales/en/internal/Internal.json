@@ -77,7 +77,7 @@
     "invite": "Invite",
     "admins": "Admins ({{count}})",
     "superRow": "Super admin · every dashboard · can invite",
-    "empty": "No admins yet. Invite the first one above.",
+    "empty": "No admins yet. Invite the first one.",
     "active": "Active · last sign-in {{time}}",
     "pending": "Pending · invited {{time}}",
     "give": "Give {{title}}",
@@ -109,7 +109,26 @@
       "body": "You have been given access to the Markaz Tadarus internal dashboard ({{dashboards}}).",
       "howTo": "Open {{link}} and choose \"Continue with Google\" with this account: {{email}}"
     },
-    "preview": "Preview"
+    "preview": "Preview",
+    "search": "Search name or email…",
+    "allDashboards": "Every dashboard",
+    "status": {
+      "all": "All",
+      "active": "Active",
+      "pending": "Pending"
+    },
+    "stats": {
+      "total": "Admins",
+      "active": "Signed in",
+      "pending": "Not signed in yet"
+    },
+    "columns": {
+      "admin": "Admin"
+    },
+    "clear": "Clear filters",
+    "noMatch": "No admin matches these filters.",
+    "always": "Always",
+    "done": "Done"
   },
   "history": {
     "intro": "Every change made in the dashboards, newest first: who did it, when, and what changed.",
@@ -288,6 +307,26 @@
       "teachers": "Teachers",
       "observing": "Observing",
       "countries": "Countries"
-    }
+    },
+    "allAreas": "Every area",
+    "clear": "Clear filters",
+    "period": {
+      "all": "All time",
+      "today": "Today",
+      "week": "7 days",
+      "month": "30 days"
+    },
+    "summary": "{{count}} actions · {{people}} people",
+    "loadedUntil": "Loaded back to {{date}}"
+  },
+  "shell": {
+    "open": "Open menu",
+    "close": "Close menu",
+    "collapse": "Collapse menu",
+    "portal": "Internal portal"
+  },
+  "adminApp": {
+    "brand": "Admin",
+    "nav": "Super admin"
   }
 }

@@ -77,7 +77,7 @@
     "invite": "Undang",
     "admins": "Admin ({{count}})",
     "superRow": "Super admin · semua dasbor · dapat mengundang",
-    "empty": "Belum ada admin. Undang admin pertama di atas.",
+    "empty": "Belum ada admin. Undang yang pertama.",
     "active": "Aktif · terakhir masuk {{time}}",
     "pending": "Menunggu · diundang {{time}}",
     "give": "Beri akses {{title}}",
@@ -109,7 +109,26 @@
       "body": "Anda telah diberi akses ke dasbor internal Markaz Tadarus ({{dashboards}}).",
       "howTo": "Buka {{link}} lalu pilih \"Lanjutkan dengan Google\" menggunakan akun ini: {{email}}"
     },
-    "preview": "Pratinjau"
+    "preview": "Pratinjau",
+    "search": "Cari nama atau email…",
+    "allDashboards": "Semua dasbor",
+    "status": {
+      "all": "Semua",
+      "active": "Aktif",
+      "pending": "Menunggu"
+    },
+    "stats": {
+      "total": "Admin",
+      "active": "Sudah masuk",
+      "pending": "Belum pernah masuk"
+    },
+    "columns": {
+      "admin": "Admin"
+    },
+    "clear": "Hapus filter",
+    "noMatch": "Tidak ada admin yang cocok dengan filter ini.",
+    "always": "Selalu",
+    "done": "Selesai"
   },
   "history": {
     "intro": "Setiap perubahan di dasbor, terbaru di atas: siapa, kapan, dan apa yang berubah.",
@@ -288,6 +307,26 @@
       "teachers": "Guru",
       "observing": "Sedang observasi",
       "countries": "Negara"
-    }
+    },
+    "allAreas": "Semua bagian",
+    "clear": "Hapus filter",
+    "period": {
+      "all": "Semua waktu",
+      "today": "Hari ini",
+      "week": "7 hari",
+      "month": "30 hari"
+    },
+    "summary": "{{count}} tindakan · {{people}} orang",
+    "loadedUntil": "Dimuat sampai {{date}}"
+  },
+  "shell": {
+    "open": "Buka menu",
+    "close": "Tutup menu",
+    "collapse": "Ciutkan menu",
+    "portal": "Portal internal"
+  },
+  "adminApp": {
+    "brand": "Admin",
+    "nav": "Super admin"
   }
 }

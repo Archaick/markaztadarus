@@ -174,7 +174,8 @@
     "deleteFailed": "Tidak dapat menghapus jawaban itu.",
     "csvSubmitted": "Waktu kirim",
     "csvRemoved": "Pertanyaan dihapus {{id}}",
-    "exportExcel": "Unduh Excel"
+    "exportExcel": "Unduh Excel",
+    "reportFailed": "Laporan gagal dibuat. Coba lagi."
   },
   "share": {
     "draftTitle": "Formulir ini masih draf",
@@ -308,5 +309,53 @@
   "settings": {
     "download": "Peserta bisa mengunduh jawabannya",
     "downloadHint": "Setelah mengirim, peserta melihat tombol unduh PDF dan PNG berisi jawabannya dengan kop Markaz Tadarus (misalnya Kartu Tadarus)."
+  },
+  "nav": {
+    "forms": "Formulir",
+    "all": "Semua formulir",
+    "admin": "Admin"
+  },
+  "list": {
+    "titles": {
+      "open": "Formulir terbuka",
+      "draft": "Draf",
+      "closed": "Formulir ditutup"
+    },
+    "search": "Cari judul atau tautan…",
+    "sort": {
+      "recent": "Terakhir diubah",
+      "responses": "Jawaban terbanyak",
+      "name": "Judul (A–Z)"
+    },
+    "columns": {
+      "form": "Formulir",
+      "status": "Status",
+      "responses": "Jawaban",
+      "updated": "Diubah"
+    },
+    "none": "Tidak ada formulir yang cocok.",
+    "duplicate": "Duplikat",
+    "duplicateTitle": "Duplikat formulir",
+    "duplicateText": "Membuat salinan \"{{title}}\": pertanyaan, bagian, pengaturan, sampul, dan kunci jawaban ikut tersalin. Jawaban tidak ikut tersalin; salinan dimulai sebagai draf.",
+    "duplicateSubmit": "Buat salinan",
+    "copySuffix": "(salinan)"
+  },
+  "stats": {
+    "perDay": "Jawaban per hari",
+    "perWeek": "Jawaban per minggu",
+    "spread": "Sebaran nilai",
+    "spreadAxis": "Nilai (%)",
+    "averageOf": "Rata-rata {{average}} dari {{max}} · tertinggi {{best}}",
+    "rightRate": "Jawaban benar per soal",
+    "rightRateNote": "Soal dengan persentase rendah mungkin perlu dijelaskan ulang.",
+    "answers": "jawaban",
+    "answered_one": "{{count}} orang menjawab",
+    "answered_other": "{{count}} orang menjawab",
+    "report": "Laporan PDF",
+    "reportTitle": "Laporan Jawaban",
+    "responses": "Jawaban",
+    "average": "Rata-rata nilai",
+    "latest": "Jawaban terakhir",
+    "generated": "Dibuat {{date}} · Markaz Tadarus Indonesia"
   }
 }

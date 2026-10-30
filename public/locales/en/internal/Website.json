@@ -186,6 +186,42 @@
       "done_one": "{{count}} news item optimised.",
       "done_other": "{{count}} news items optimised.",
       "failed": "Optimising stopped. Try again — finished items are skipped."
+    },
+    "filters": {
+      "search": "Search title, summary, province…",
+      "all": "All",
+      "allCategories": "Every category",
+      "allProvinces": "Every province",
+      "sortLabel": "Order",
+      "sort": {
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "title": "Title A–Z",
+        "photos": "Most photos"
+      },
+      "summary": "{{count}} of {{total}} news items",
+      "clear": "Clear filters",
+      "noMatch": "No news matches these filters."
     }
-  }
+  },
+  "nav": {
+    "home": "Home page",
+    "allNews": "All news",
+    "admin": "Website editor"
+  },
+  "views": {
+    "map": {
+      "title": "Map",
+      "text": "The provinces and places on the home-page map. Tap a province to change it; the map redraws as you type."
+    },
+    "stats": {
+      "title": "Achievements",
+      "text": "The figures on the home page, in the order shown. Hidden ones stay saved but are not shown."
+    },
+    "blog": {
+      "title": "News",
+      "text": "News items with their photos. Drafts are only visible to admins until they are published."
+    }
+  },
+  "shellBrand": "Website"
 }

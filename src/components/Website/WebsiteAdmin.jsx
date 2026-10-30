@@ -1,85 +1,53 @@
-import { useSearchParams } from "react-router-dom";
-import { Button, Card, Tabs, Text, Title } from "@mantine/core";
-import { IconArrowLeft, IconExternalLink, IconMap2, IconNews, IconTrophy, IconWorldWww } from "@tabler/icons-react";
+import { useCallback, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Button } from "@mantine/core";
+import { IconExternalLink } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
-import { AccountBar, InternalLayout } from "../Internal/InternalUI";
-import layout from "../Internal/AccessControl.module.css";
-import portal from "../Internal/InternalPortal.module.css";
-import formStyles from "../Forms/Forms.module.css";
 import MapEditor from "./MapEditor";
 import StatsEditor from "./StatsEditor";
 import PostsPanel from "./PostsPanel";
-import styles from "./Website.module.css";
+import WebsiteShell, { VIEWS, viewOf } from "./WebsiteShell";
+import app from "./WebsiteApp.module.css";
 
-const TABS = ["map", "stats", "blog"];
+// where "view on site" opens for each section
+const ON_SITE = { map: "/#map", stats: "/#achievements", blog: "/berita" };
 
+/**
+ * The website's editable parts, one per menu item. The editors stay mounted
+ * (only the open one is shown), so moving between them keeps unsaved edits;
+ * the menu marks the ones that have some.
+ */
 export default function WebsiteAdmin() {
   const { t } = useTranslation(["internal/Website", "internal/Internal"]);
   const { email } = useAccess();
-  const [params, setParams] = useSearchParams();
-  const tab = TABS.includes(params.get("tab")) ? params.get("tab") : "map";
+  const location = useLocation();
+  const view = viewOf(location.search);
+  const [unsaved, setUnsaved] = useState({});
+  const markMap = useCallback((dirty) => setUnsaved((u) => ({ ...u, map: dirty })), []);
+  const markStats = useCallback((dirty) => setUnsaved((u) => ({ ...u, stats: dirty })), []);
 
   return (
-    <InternalLayout align="top">
-      <div className={`${layout.page} ${styles.pageWide}`}>
-        <a href="/internal" className={layout.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
-        </a>
-
-        <Card className={layout.panel}>
-          <AccountBar />
-
-          <div className={formStyles.headerRow}>
-            <div className={layout.heading}>
-              <span className={layout.headingIcon} style={{ background: "linear-gradient(135deg, #b8960c 0%, #102141 100%)" }}>
-                <IconWorldWww size={22} />
-              </span>
-              <div>
-                <Title order={2} className={layout.headingTitle}>
-                  {t("title")}
-                </Title>
-                <Text className={layout.headingText}>{t("intro")}</Text>
-              </div>
-            </div>
-            <Button
-              variant="light"
-              color="yellow"
-              component="a"
-              href="/#map"
-              target="_blank"
-              rel="noreferrer"
-              leftSection={<IconExternalLink size={16} />}
-            >
-              {t("viewOnSite")}
-            </Button>
+    <WebsiteShell unsaved={unsaved}>
+      <div className={app.page}>
+        <header className={app.head}>
+          <div>
+            <h1 className={app.title}>{t(`views.${view}.title`)}</h1>
+            <p className={app.sub}>{t(`views.${view}.text`)}</p>
           </div>
+          <Button variant="default" radius="md" component="a" href={ON_SITE[view]} target="_blank" rel="noreferrer" leftSection={<IconExternalLink size={16} />}>
+            {t("viewOnSite")}
+          </Button>
+        </header>
 
-          {/* The editors stay mounted, so switching tabs keeps unsaved edits. */}
-          <Tabs value={tab} onChange={(value) => setParams({ tab: value }, { replace: true })} mt="lg" color="yellow">
-            <Tabs.List grow>
-              <Tabs.Tab value="map" leftSection={<IconMap2 size={16} />}>
-                {t("tabs.map")}
-              </Tabs.Tab>
-              <Tabs.Tab value="stats" leftSection={<IconTrophy size={16} />}>
-                {t("tabs.stats")}
-              </Tabs.Tab>
-              <Tabs.Tab value="blog" leftSection={<IconNews size={16} />}>
-                {t("tabs.blog")}
-              </Tabs.Tab>
-            </Tabs.List>
-            <Tabs.Panel value="map" pt="lg">
-              <MapEditor editorEmail={email} />
-            </Tabs.Panel>
-            <Tabs.Panel value="stats" pt="lg">
-              <StatsEditor editorEmail={email} />
-            </Tabs.Panel>
-            <Tabs.Panel value="blog" pt="lg">
-              <PostsPanel editorEmail={email} />
-            </Tabs.Panel>
-          </Tabs>
-        </Card>
+        {VIEWS.map((key) => (
+          <div key={key} className={app.view} hidden={key !== view}>
+            {key === "map" && <MapEditor editorEmail={email} onDirty={markMap} />}
+            {key === "stats" && <StatsEditor editorEmail={email} onDirty={markStats} />}
+            {key === "blog" && <PostsPanel editorEmail={email} />}
+          </div>
+        ))}
       </div>
-    </InternalLayout>
+    </WebsiteShell>
   );
 }

@@ -176,7 +176,8 @@
     "deleteFailed": "Could not delete that response.",
     "csvSubmitted": "Submitted at",
     "csvRemoved": "Removed question {{id}}",
-    "exportExcel": "Download Excel"
+    "exportExcel": "Download Excel",
+    "reportFailed": "The report could not be made. Try again."
   },
   "share": {
     "draftTitle": "This form is still a draft",
@@ -310,5 +311,53 @@
   "settings": {
     "download": "Respondents can download their answers",
     "downloadHint": "After sending, people get PDF and PNG download buttons with their answers on the Markaz Tadarus letterhead (a Kartu Tadarus, for example)."
+  },
+  "nav": {
+    "forms": "Forms",
+    "all": "All forms",
+    "admin": "Admin"
+  },
+  "list": {
+    "titles": {
+      "open": "Open forms",
+      "draft": "Drafts",
+      "closed": "Closed forms"
+    },
+    "search": "Search titles or links…",
+    "sort": {
+      "recent": "Recently edited",
+      "responses": "Most responses",
+      "name": "Title (A–Z)"
+    },
+    "columns": {
+      "form": "Form",
+      "status": "Status",
+      "responses": "Responses",
+      "updated": "Edited"
+    },
+    "none": "No forms match.",
+    "duplicate": "Duplicate",
+    "duplicateTitle": "Duplicate form",
+    "duplicateText": "Makes a copy of \"{{title}}\": its questions, sections, settings, cover and answer key. Responses are not copied; the copy starts as a draft.",
+    "duplicateSubmit": "Make a copy",
+    "copySuffix": "(copy)"
+  },
+  "stats": {
+    "perDay": "Responses per day",
+    "perWeek": "Responses per week",
+    "spread": "Score spread",
+    "spreadAxis": "Score (%)",
+    "averageOf": "Average {{average}} of {{max}} · best {{best}}",
+    "rightRate": "Right answers per question",
+    "rightRateNote": "Questions with a low share may need explaining again.",
+    "answers": "answers",
+    "answered_one": "{{count}} person answered",
+    "answered_other": "{{count}} people answered",
+    "report": "PDF report",
+    "reportTitle": "Responses Report",
+    "responses": "Responses",
+    "average": "Average score",
+    "latest": "Latest response",
+    "generated": "Made {{date}} · Markaz Tadarus Indonesia"
   }
 }

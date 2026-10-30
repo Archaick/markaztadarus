@@ -1,7 +1,59 @@
 /* Certificate dashboard: totals, program filter, one row per certificate. */
 
+/* the dashboard's pages, inside the shared internal app shell */
 .page {
-  max-width: 1040px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.pageHead {
+  margin-bottom: 18px;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.pageSub {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.viewBody {
+  margin-top: 1.2rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+}
+
+/* the two issue buttons at the top of the menu */
+.issueButtons {
+  display: grid;
+  gap: 8px;
+}
+
+.issueOnPhone {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .issueOnPhone {
+    display: block;
+    margin-top: 12px;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .viewBody {
+    padding: 1rem 0.9rem;
+    border-radius: 16px;
+  }
 }
 
 .primaryButton {
@@ -43,59 +95,53 @@
   color: #6b5a1e;
 }
 
-/* program filter: one chip per program with its count */
-.programs {
-  display: flex;
-  gap: 0.4rem;
-  overflow-x: auto;
-  padding-bottom: 0.3rem;
-  scrollbar-width: thin;
-}
 
-.programChip {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid #e6dcc0;
-  background: #ffffff;
-  color: #3b4a5c;
-  font: inherit;
-  font-size: 0.84rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-}
 
-.programChip span {
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #a67d00;
-}
 
-.programOn {
-  background: #102141;
-  border-color: #102141;
-  color: #ffffff;
-}
 
-.programOn span {
-  color: #f6dc8c;
-}
 
-.toolbar {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 0.8rem;
-}
 
 .search {
   flex: 1;
   min-width: 220px;
+}
+
+/* search, description, kind and status, in one bar */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.programPick {
+  flex: 1 1 260px;
+  max-width: 380px;
+}
+
+.clearFilters {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #b8960c;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearFilters:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .programPick {
+    max-width: none;
+  }
 }
 
 .listHead {

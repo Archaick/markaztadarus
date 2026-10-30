@@ -17,7 +17,8 @@
   "sort": {
     "newest": "Newest",
     "popular": "Most clicked",
-    "az": "A–Z"
+    "az": "A–Z",
+    "recent": "Last clicked"
   },
   "empty": {
     "title": "No links yet",
@@ -89,5 +90,17 @@
     "title": "QR code",
     "hint": "Print-ready, with the logo in the middle. It keeps working even if the destination changes.",
     "download": "Download PNG"
+  },
+  "shellBrand": "Links",
+  "nav": {
+    "links": "Short links",
+    "all": "All",
+    "admin": "Link editor"
+  },
+  "filters": {
+    "allKinds": "Every destination",
+    "sort": "Order",
+    "summary": "{{count}} of {{total}} links",
+    "clear": "Clear filters"
   }
 }

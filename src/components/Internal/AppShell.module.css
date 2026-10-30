@@ -1,0 +1,385 @@
+/* The frame of the bigger internal tools, after Tadarus Build:
+   MTI navy #003366 and gold #CC9933. */
+.app {
+  --navy: #003366;
+  --navy-600: #002a54;
+  --navy-700: #002244;
+  --navy-100: #e6ebf0;
+  --navy-50: #f5f7f9;
+  --gold: #cc9933;
+  --gold-300: #ead4a9;
+  --gold-100: #faf5eb;
+  --ink: #0f1f33;
+  --muted: #5d6b7d;
+  --line: #e3e8ee;
+  --ok: #10b981;
+  --side: 300px;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--side) minmax(0, 1fr);
+  background: #f6f8fb;
+  color: var(--ink);
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
+}
+.app.collapsed {
+  --side: 88px;
+}
+
+/* ── sidebar ── */
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 18px;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #0a2f5c 0%, var(--navy) 55%, var(--navy-700) 100%);
+  color: #fff;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: #fff;
+  color: var(--navy);
+  text-decoration: none;
+  box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
+}
+.brand img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.brandText {
+  min-width: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.brandText b,
+.topBrand b {
+  color: var(--gold);
+  font-weight: 700;
+}
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+}
+.accountTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.avatar {
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18);
+}
+.accountText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.accountName {
+  font-weight: 700;
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+.roleBadge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.accountEmail {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.6);
+  overflow-wrap: anywhere;
+}
+.signOut {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.signOut:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.navLabel {
+  padding: 0 12px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.02rem;
+  white-space: nowrap;
+}
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.navActive {
+  border-color: var(--gold);
+  background: rgba(204, 153, 51, 0.14);
+  color: var(--gold-300);
+}
+.sidebarFoot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.flags {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.flags button {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+.flags svg {
+  width: 30px;
+  height: 20px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.flags .flagOn {
+  background: #fff;
+}
+.collapse {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.collapsed .brandText,
+.collapsed .accountText,
+.collapsed .accountEmail,
+.collapsed .signOut span,
+.collapsed .navItem span,
+.collapsed .navLabel,
+.collapsed .collapse span {
+  display: none;
+}
+.collapsed .brand {
+  justify-content: center;
+  padding: 10px;
+}
+.collapsed .account {
+  padding: 10px;
+  align-items: center;
+}
+.collapsed .navItem {
+  justify-content: center;
+  padding: 12px;
+}
+.collapsed .flags {
+  flex-direction: column;
+  align-items: center;
+}
+.collapsed .flags button {
+  width: 44px;
+  height: 36px;
+}
+
+.topbar,
+.closeDrawer,
+.scrim {
+  display: none;
+}
+
+.main {
+  min-width: 0;
+  padding: 36px 40px 56px;
+}
+
+/* a "New …" button at the top of the menu */
+.action {
+  display: grid;
+}
+.collapsed .action :global(.mantine-Button-label) {
+  display: none;
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.navGroup + .navGroup {
+  margin-top: 10px;
+}
+.navText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* how many, beside a menu item */
+.count {
+  min-width: 26px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+.navActive .count {
+  background: var(--gold);
+  color: var(--navy-700);
+}
+.collapsed .count {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .app,
+  .app.collapsed {
+    grid-template-columns: 1fr;
+  }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--navy);
+    color: #fff;
+  }
+  .topBrand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .topBrand img {
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .menuButton,
+  .closeDrawer {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+  }
+  .closeDrawer {
+    align-self: flex-end;
+  }
+  .sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 50;
+    width: min(320px, 86vw);
+    transform: translateX(-105%);
+    transition: transform 0.25s ease;
+  }
+  [dir="rtl"] .sidebar {
+    transform: translateX(105%);
+  }
+  .sidebarOpen,
+  [dir="rtl"] .sidebarOpen {
+    transform: none;
+  }
+  .collapse {
+    display: none;
+  }
+  .collapsed .brandText,
+  .collapsed .accountText,
+  .collapsed .accountEmail,
+  .collapsed .signOut span,
+  .collapsed .navItem span,
+  .collapsed .navLabel {
+    display: revert;
+  }
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 18, 36, 0.45);
+  }
+  .main {
+    padding: 22px 16px 40px;
+  }
+}
+
+[dir="rtl"] .flip {
+  transform: scaleX(-1);
+}

@@ -124,7 +124,7 @@ const countOf = (row) => programCount({ programs: row.programs === "" ? 0 : row.
  * and change it in the panel beside it. The map redraws as you type, so the
  * result is visible before it is saved.
  */
-export default function MapEditor({ editorEmail }) {
+export default function MapEditor({ editorEmail, onDirty }) {
   const { t } = useTranslation("internal/Website");
   const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail);
   const rows = site.draft || NO_ROWS;
@@ -140,6 +140,10 @@ export default function MapEditor({ editorEmail }) {
   const totals = useMemo(() => provinceTotals(preview), [preview]);
   const row = rows.find((r) => r.name === selected) || null;
 
+  useEffect(() => {
+    onDirty?.(site.dirty);
+  }, [site.dirty, onDirty]);
+
   const summary = useMemo(
     () => ({ provinces: rows.length, locations: rows.reduce((sum, r) => sum + countOf(r), 0) }),
     [rows]
@@ -148,8 +152,9 @@ export default function MapEditor({ editorEmail }) {
   const select = (name, placeIndex = null) => {
     setSelected(name);
     setFocusPlace(placeIndex);
-    // on phones the panel sits under the map: bring it into view
-    if (window.matchMedia("(max-width: 900px)").matches) {
+    // when the panel sits under the map (a narrow page): bring it into view
+    const panel = panelRef.current;
+    if (panel && panel.previousElementSibling && panel.offsetTop > panel.previousElementSibling.offsetTop + 20) {
       requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
     }
   };

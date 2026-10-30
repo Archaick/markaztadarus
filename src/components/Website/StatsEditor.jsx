@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   ActionIcon,
@@ -69,12 +69,16 @@ const toStored = (items) =>
     return out;
   });
 
-export default function StatsEditor({ editorEmail }) {
+export default function StatsEditor({ editorEmail, onDirty }) {
   const { t } = useTranslation("internal/Website");
   const site = useSiteDraft(SITE_DOCS.stats, toDraft, editorEmail);
   const items = site.draft || [];
   const [open, setOpen] = useState([]);
   const [message, setMessage] = useState(null);
+
+  useEffect(() => {
+    onDirty?.(site.dirty);
+  }, [site.dirty, onDirty]);
 
   const iconOptions = Object.keys(STAT_ICONS).map((value) => ({ value, label: t(`icons.${value}`) }));
 

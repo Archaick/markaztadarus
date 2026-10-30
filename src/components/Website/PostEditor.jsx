@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   ActionIcon,
   Alert,
   Button,
-  Card,
   Group,
   Loader,
   Modal,
@@ -13,7 +12,6 @@ import {
   Text,
   TextInput,
   Textarea,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import {
@@ -40,15 +38,14 @@ import { db } from "../../../firebaseConfig";
 import topoData from "../../data/indonesia-provinces.topo.json";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
-import { AccountBar, InternalLayout } from "../Internal/InternalUI";
 import { stableKey } from "../Internal/stableKey";
-import layout from "../Internal/AccessControl.module.css";
-import portal from "../Internal/InternalPortal.module.css";
 import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, hasLargeCard, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
 import { buildPostThumbs } from "./postThumbs";
 import SaveBar from "./SaveBar";
 import PostPreview from "./PostPreview";
 import styles from "./Website.module.css";
+import app from "./WebsiteApp.module.css";
+import WebsiteShell, { SITE_BASE } from "./WebsiteShell";
 
 const PROVINCES = topoData.objects["indonesia-38-prov-topo"].geometries
   .map((g) => g.properties.PROVINSI)
@@ -317,7 +314,7 @@ export default function PostEditor() {
         batch.delete(postRef);
         markDelete(`posts~${postId}`, post?.auditId);
       });
-      navigate("/internal/website?tab=blog", { replace: true });
+      navigate(`${SITE_BASE}?view=blog`, { replace: true });
     } catch (err) {
       console.error("Could not delete post:", err);
       setMessage({ color: "red", text: t("blog.editor.deleteFailed") });
@@ -329,15 +326,13 @@ export default function PostEditor() {
   const set = (field) => (value) => setDraft((d) => ({ ...d, [field]: value }));
 
   return (
-    <InternalLayout align="top">
-      <div className={layout.page}>
-        <a href="/internal/website?tab=blog" className={layout.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("blog.editor.back")}
-        </a>
+    <WebsiteShell>
+      <div className={app.page}>
+        <Link to={`${SITE_BASE}?view=blog`} className={app.crumb}>
+          <IconArrowLeft size={16} className={app.flip} /> {t("blog.editor.back")}
+        </Link>
 
-        <Card className={layout.panel}>
-          <AccountBar />
-
+        <div className={app.sheet}>
           {post === undefined || (post && draft === null) ? (
             <Group justify="center" py="xl">
               <Loader size="sm" />
@@ -349,9 +344,9 @@ export default function PostEditor() {
           ) : (
             <div className={styles.editor}>
               <div className={styles.postHeader}>
-                <Title order={2} className={layout.headingTitle} dir="auto">
+                <h1 className={app.postTitle} dir="auto">
                   {post.title || t("blog.untitled")}
-                </Title>
+                </h1>
                 <div className={styles.statusBox}>
                   <SegmentedControl
                     value={post.status === "published" ? "published" : "draft"}
@@ -559,7 +554,7 @@ export default function PostEditor() {
               />
             </div>
           )}
-        </Card>
+        </div>
       </div>
 
       {post && draft && (
@@ -583,6 +578,6 @@ export default function PostEditor() {
           </Button>
         </Group>
       </Modal>
-    </InternalLayout>
+    </WebsiteShell>
   );
 }

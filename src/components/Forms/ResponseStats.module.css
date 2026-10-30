@@ -1,0 +1,358 @@
+/* The responses' charts (drawn by hand), on the page and in the PDF report. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+  margin: 18px 0 6px;
+}
+
+.card {
+  min-width: 0;
+  padding: 18px 20px;
+  border: 1px solid #e3e8ee;
+  border-radius: 16px;
+  background: #fff;
+  break-inside: avoid;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #0f1f33;
+  white-space: pre-line;
+}
+
+.note {
+  margin: 2px 0 12px;
+  font-size: 0.8rem;
+  color: #5d6b7d;
+}
+
+.axisNote {
+  margin: 6px 0 0;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* ── columns ── */
+
+.columns {
+  margin-top: 12px;
+}
+
+.columnsPlot {
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #e3e8ee;
+  background: repeating-linear-gradient(0deg, transparent 0 37px, #f1f4f8 37px 38px);
+}
+
+.column {
+  position: relative;
+  flex: 1;
+  min-width: 2px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.columnBar {
+  width: 100%;
+  max-width: 34px;
+  min-height: 2px;
+  border-radius: 5px 5px 2px 2px;
+  transition: height 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.columnValue {
+  margin-bottom: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1a4970;
+}
+
+.columnsAxis {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.columnsAxis span {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.62rem;
+  color: #94a3b8;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── donut ── */
+
+.donutWrap {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.donutBox {
+  position: relative;
+  flex: 0 0 120px;
+  width: 120px;
+  height: 120px;
+}
+
+.donut {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.donutCentre {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  line-height: 1.05;
+}
+
+.donutCentre b {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f1f33;
+}
+
+.donutCentre span {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5d6b7d;
+}
+
+.legend {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 7px;
+}
+
+.legend li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.swatch {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 4px;
+  border-radius: 3px;
+}
+
+.legendText {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.legend b {
+  font-variant-numeric: tabular-nums;
+  color: #0f1f33;
+}
+
+/* the right answer, in a quiz */
+.legendRight .legendText,
+.legendRight .barText span {
+  color: #047857;
+  font-weight: 700;
+}
+
+.legendRight .legendText::after,
+.legendRight .barText span::after {
+  content: " ✓";
+}
+
+/* ── bars ── */
+
+.bars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.barText {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: #334155;
+}
+
+.barText span {
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.barText b {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: #0f1f33;
+}
+
+.barTrack {
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: #eef2f7;
+  overflow: hidden;
+}
+
+.barTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #1a4970;
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ── the PDF report (A4 width, 794px) ── */
+
+.sheet {
+  width: 794px;
+  padding: 0 46px 40px;
+  background: #fff;
+  color: #0f1f33;
+  font-family: "Outfit", "Inter", "Cairo", sans-serif;
+}
+
+.reportHead {
+  position: relative;
+  margin: 0 -46px 24px;
+  direction: ltr;
+}
+
+.reportHead img {
+  display: block;
+  width: 100%;
+}
+
+.reportHead span {
+  position: absolute;
+  right: 46px;
+  bottom: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+  font-style: italic;
+  color: #1b3664;
+}
+
+.reportTitle {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a4970;
+}
+
+.reportTitle small {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5d6b7d;
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.figures div {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f5f7f9;
+  border: 1px solid #e3e8ee;
+}
+
+.figures b {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a4970;
+}
+
+.figures b small {
+  font-size: 13px;
+  color: #5d6b7d;
+}
+
+.figures span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #5d6b7d;
+}
+
+.figureDate {
+  font-size: 14px !important;
+  padding-top: 6px;
+}
+
+.report {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report .card {
+  padding: 14px 16px;
+}
+
+.report .donutBox {
+  flex-basis: 104px;
+  width: 104px;
+  height: 104px;
+}
+
+.report .donutCentre b {
+  font-size: 19px;
+}
+
+.generated {
+  margin: 18px 0 0;
+  font-size: 10px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+@media (max-width: 560px) {
+  .donutWrap {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .donutBox {
+    align-self: center;
+  }
+}

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   ActionIcon,
   Alert,
@@ -19,6 +20,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconDownload,
+  IconChartBar,
   IconFileSpreadsheet,
   IconInbox,
   IconPrinter,
@@ -41,6 +43,9 @@ import { formatDateTime, timeAgo } from "../Internal/timeAgo";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
 import PrintResponse from "./PrintResponse";
+import ResponseStats, { StatsReport, useResponseStats } from "./ResponseStats";
+import { hostClass } from "./ResponseSheet";
+import { reportToPdf } from "../Supervisi/reportPdf";
 import { plainText } from "./richText";
 import { downloadBlob, rowsToXlsx } from "./xlsx";
 import {
@@ -107,27 +112,25 @@ export default function ResponsesPanel({ form, quizKey }) {
     [fields]
   );
 
-  const summaries = useMemo(
-    () =>
-      fields
-        .filter((f) => HAS_OPTIONS.has(f.type))
-        .map((f) => {
-          const counts = Object.fromEntries((f.options || []).map((o) => [o, 0]));
-          let answered = 0;
-          (responses || []).forEach((r) => {
-            const value = r.answers?.[f.id];
-            const picked = Array.isArray(value) ? value : value ? [value] : [];
-            if (picked.length) answered += 1;
-            picked.forEach((p) => {
-              counts[p] = (counts[p] || 0) + 1;
-            });
-          });
-          return { field: f, counts, answered };
-        }),
-    [fields, responses]
-  );
-
   const open = openIndex >= 0 ? filtered[openIndex] : null;
+
+  // the charts, and the same on the letterhead as a PDF report
+  const stats = useResponseStats(form, fields, responses, quizKey);
+  const reportRef = useRef(null);
+  const [reporting, setReporting] = useState(false);
+  const exportReport = async () => {
+    setReporting(true);
+    try {
+      await document.fonts?.ready;
+      const blob = await reportToPdf(reportRef.current, 794);
+      downloadBlob(`${form.id}-laporan-${new Date().toISOString().slice(0, 10)}.pdf`, blob);
+    } catch (err) {
+      console.error("Could not make the report:", err);
+      setError("reportFailed");
+    } finally {
+      setReporting(false);
+    }
+  };
 
   // a quiz: every response's score (hand grades win over the key), and the average
   const quiz = quizOf(form);
@@ -230,6 +233,16 @@ export default function ResponsesPanel({ form, quizKey }) {
         <Group gap="xs" className={styles.exportButton}>
           <Button
             variant="light"
+            color="yellow"
+            leftSection={<IconChartBar size={16} />}
+            onClick={exportReport}
+            loading={reporting}
+            disabled={responses.length === 0}
+          >
+            {t("stats.report")}
+          </Button>
+          <Button
+            variant="light"
             color="teal"
             leftSection={<IconFileSpreadsheet size={16} />}
             onClick={exportXlsx}
@@ -277,31 +290,16 @@ export default function ResponsesPanel({ form, quizKey }) {
         </div>
       )}
 
-      {summaries.length > 0 && responses.length > 0 && (
-        <div className={styles.summaryGrid}>
-          {summaries.map(({ field, counts, answered }) => (
-            <div className={styles.summaryCard} key={field.id}>
-              <p className={styles.summaryQuestion}>{plainText(field.label)}</p>
-              {Object.entries(counts).map(([option, count]) => {
-                const pct = answered ? Math.round((count / answered) * 100) : 0;
-                return (
-                  <div className={styles.barRow} key={option}>
-                    <div className={styles.barLabel}>
-                      <span>{option}</span>
-                      <span className={styles.barCount}>
-                        {count} · {pct}%
-                      </span>
-                    </div>
-                    <div className={styles.barTrack}>
-                      <div className={styles.barFill} style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      )}
+      <ResponseStats stats={stats} />
+
+      {/* the report's pages, off screen until pictured */}
+      {responses.length > 0 &&
+        createPortal(
+          <div className={hostClass}>
+            <StatsReport form={form} stats={stats} sheetRef={reportRef} />
+          </div>,
+          document.body
+        )}
 
       {responses.length === 0 ? (
         <div className={styles.empty}>

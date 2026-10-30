@@ -30,13 +30,16 @@
     "studio": "Studio Sertifikat"
   },
   "filters": {
-    "allPrograms": "Semua",
+    "allPrograms": "Semua deskripsi",
     "search": "Cari nama, deskripsi, atau kode…",
     "all": "Semua",
     "valid": "Berlaku",
     "revoked": "Dicabut",
     "count": "{{count}} sertifikat",
-    "noMatch": "Tidak ada sertifikat yang cocok."
+    "noMatch": "Tidak ada sertifikat yang cocok.",
+    "allKinds": "Semua jenis",
+    "qrOnly": "QR saja",
+    "clear": "Hapus filter"
   },
   "empty": {
     "title": "Belum ada sertifikat",
@@ -160,7 +163,7 @@
     "exportText": "Salinan JSON dari {{count}} sertifikat untuk disimpan di tempat aman.",
     "exportButton": "Unduh cadangan",
     "importTitle": "Pulihkan dari cadangan",
-    "importText": "Kode yang sudah ada dilewati, jadi aman dijalankan berulang kali.",
+    "importText": "Sertifikat, desain, dan penanda tangan yang sudah ada dilewati, jadi aman dijalankan lebih dari sekali. File cadangan lama juga bisa.",
     "importButton": "Pilih file cadangan",
     "exportedTitle": "Cadangan diunduh",
     "exportedText": "{{count}} sertifikat tersimpan dalam file.",
@@ -168,7 +171,10 @@
     "importedText": "{{count}} sertifikat dipulihkan, {{skipped}} dilewati karena sudah ada.",
     "failedTitle": "Pemulihan gagal",
     "badFile": "File ini bukan cadangan sertifikat.",
-    "note": "Sertifikat yang dipulihkan memakai kode aslinya, jadi kode QR yang sudah dicetak tetap berlaku."
+    "note": "Semua kembali dengan kode dan ID aslinya: kode QR yang sudah dicetak tetap berlaku, dan sertifikat Studio tetap terhubung ke desain dan penanda tangannya. Jumlah pindaian tidak termasuk.",
+    "exportAll": "Satu file JSON berisi {{count}} sertifikat, {{designs}} desain Studio, dan {{signers}} penanda tangan (dengan tanda tangan dan stempelnya).",
+    "exportedAll": "Tersimpan: {{count}} sertifikat, {{designs}} desain, {{signers}} penanda tangan.",
+    "importedAll": "Dipulihkan: {{count}} sertifikat, {{designs}} desain, {{signers}} penanda tangan. {{skipped}} sertifikat dilewati karena sudah ada."
   },
   "signers": {
     "intro": "Tanda tangan dan stempel tampil di halaman yang dilihat orang setelah memindai kode QR sertifikat.",
@@ -338,5 +344,18 @@
       "failed": "Gagal. Coba lagi.",
       "noDesign": "Desain sertifikat ini sudah dihapus."
     }
-  }
+  },
+  "shellBrand": "Sertifikat",
+  "nav": {
+    "certificates": "Sertifikat",
+    "settings": "Pengaturan"
+  },
+  "views": {
+    "certificates": "Terbitkan sertifikat dengan kode QR yang bisa diperiksa siapa saja.",
+    "studio": "Desain sertifikat sebuah acara, lalu terbitkan untuk setiap peserta.",
+    "documents": "Tempel kode QR sertifikat langsung ke file Word.",
+    "signers": "Tanda tangan dan stempel yang tampil di sertifikat dan halaman verifikasi.",
+    "backup": "Simpan atau pulihkan semua data sertifikat."
+  },
+  "shellRole": "Admin"
 }
