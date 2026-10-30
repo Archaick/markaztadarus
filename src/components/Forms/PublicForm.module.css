@@ -29,25 +29,36 @@
   pointer-events: none;
 }
 
-/* With a cover the photo gets the whole header and the form starts below it. */
-.heroCover {
-  height: clamp(260px, 30vw, 420px);
+/* With a cover the photo gets the whole header, in its own shape (never
+   taller than 420px), and the form starts below it. */
+.coverHeader {
+  position: relative;
+}
+.coverImage {
+  width: 100%;
+  aspect-ratio: 4 / 1; /* until the picture has loaded */
+  max-height: 420px;
+  min-height: 150px;
   background-color: #0b6e4f;
   background-size: cover;
   background-repeat: no-repeat;
   box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+}
+/* the logo and the language switch, over the top of the picture */
+.coverBar {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: 1.4rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.28) 0%, transparent 100%);
 }
 
 .main.mainBelowCover {
   margin-top: 1.25rem;
 }
 
-/* soft fade at the top so the logo badge always reads well */
-.heroCover::after {
-  opacity: 1;
-  background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.25) 0%, transparent 45%);
-  background-size: auto;
-}
 
 .logoLink {
   position: relative;
@@ -343,9 +354,16 @@
     height: 140px;
   }
 
-  .heroCover {
-    height: 58vw;
-    min-height: 200px;
+  /* on a phone the logo row gets its own strip, and the whole picture shows below it */
+  .coverBar {
+    position: static;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.75rem;
+    background: linear-gradient(135deg, #0f5132 0%, #0b6e4f 45%, #0f2558 100%);
+  }
+  .coverImage {
+    min-height: 0;
   }
 
   .logo {

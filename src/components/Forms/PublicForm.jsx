@@ -31,20 +31,51 @@ import {
 
 const NS = "internal/Forms";
 
+// The cover's own width : height, once the picture has loaded.
+function useRatio(src) {
+  const [ratio, setRatio] = useState(null);
+  useEffect(() => {
+    if (!src) return undefined;
+    let alive = true;
+    const img = new Image();
+    img.onload = () => alive && img.naturalHeight && setRatio(img.naturalWidth / img.naturalHeight);
+    img.src = src;
+    return () => {
+      alive = false;
+    };
+  }, [src]);
+  return ratio;
+}
+
 // `hasCover` comes with the form, so the layout is right before the photo loads.
 function Shell({ children, language, hasCover, cover, coverPosition }) {
+  const ratio = useRatio(cover);
+  const brand = (
+    <>
+      <a href="/" className={styles.logoLink}>
+        <img src={logo} alt="Markaz Tadarus Indonesia" className={styles.logo} />
+      </a>
+      {/* Visitors switch for this visit only; the form's own language comes first. */}
+      <LanguageSwitcher language={language} remember={false} className={styles.langCorner} />
+    </>
+  );
   return (
     <div className={styles.page}>
-      <header
-        className={`${styles.hero} ${hasCover ? styles.heroCover : ""}`}
-        style={cover ? { backgroundImage: `url(${cover})`, backgroundPosition: `center ${coverPosition || "center"}` } : undefined}
-      >
-        <a href="/" className={styles.logoLink}>
-          <img src={logo} alt="Markaz Tadarus Indonesia" className={styles.logo} />
-        </a>
-        {/* Visitors switch for this visit only; the form's own language comes first. */}
-        <LanguageSwitcher language={language} remember={false} className={styles.langCorner} />
-      </header>
+      {hasCover ? (
+        // the cover keeps its own shape, so a wide banner shows whole on any screen
+        <header className={styles.coverHeader}>
+          <div className={styles.coverBar}>{brand}</div>
+          <div
+            className={styles.coverImage}
+            style={{
+              ...(cover && { backgroundImage: `url(${cover})`, backgroundPosition: `center ${coverPosition || "center"}` }),
+              ...(ratio && { aspectRatio: String(ratio) }),
+            }}
+          />
+        </header>
+      ) : (
+        <header className={styles.hero}>{brand}</header>
+      )}
       <main className={`${styles.main} ${hasCover ? styles.mainBelowCover : ""}`}>{children}</main>
       <footer className={styles.footer}>Markaz Tadarus Indonesia</footer>
     </div>
