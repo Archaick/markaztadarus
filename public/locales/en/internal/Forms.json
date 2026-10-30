@@ -232,9 +232,13 @@
     "quiz": {
       "points": "{{count}} point(s)",
       "score": "Your score",
-      "pending": "{{count}} question(s) will still be reviewed",
+      "pending": "{{count}} still being reviewed",
       "correct": "Correct answer",
-      "later": "Your answers are recorded. Your score will be shared after review."
+      "later": "Your answers are recorded. Your score will be shared after review.",
+      "review": "See my answers",
+      "hide": "Hide my answers",
+      "right": "{{count}} correct",
+      "wrong": "{{count}} wrong"
     }
   },
   "print": {

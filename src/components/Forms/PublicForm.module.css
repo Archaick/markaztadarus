@@ -429,9 +429,17 @@
 }
 
 /* ---------- a quiz ---------- */
+/* the question text keeps the line breaks typed in the builder */
+.multiline {
+  white-space: pre-line;
+}
+
 .pointsTag {
   margin-inline-start: auto;
   flex-shrink: 0;
+  align-self: flex-start; /* a small pill, however long the question */
+  margin-top: 0.1rem;
+  line-height: 1.5;
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
   background: #f1f5f9;
@@ -446,6 +454,101 @@
 .quizLater {
   margin: 0.4rem 0 0;
   color: #475569;
+}
+.quizHero {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0 0.25rem;
+  text-align: center;
+}
+.quizRing {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(var(--tone) var(--percent), #e2e8f0 0);
+  animation: quizPop 0.5s ease-out;
+}
+.quizRing > div {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-content: center;
+  line-height: 1.1;
+}
+.quizRing b {
+  font-size: 2.3rem;
+  color: #0f172a;
+}
+.quizRing span {
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+@keyframes quizPop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+.quizHeroTitle {
+  margin: 0;
+  font-weight: 700;
+  color: #334155;
+}
+.quizChips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.quizChips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.chipRight {
+  background: #d1fae5;
+  color: #047857;
+}
+.chipWrong {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.chipWait {
+  background: #fef3c7;
+  color: #b45309;
+}
+.quizReview {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid #a7f3d0;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #047857;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.quizReview:hover {
+  background: #d1fae5;
+}
+.quizReview svg {
+  transition: transform 0.2s ease;
+}
+.quizReviewOpen {
+  transform: rotate(180deg);
 }
 .quizScore {
   display: flex;
@@ -468,8 +571,9 @@
 }
 .quizList {
   list-style: none;
-  margin: 0.8rem 0 0;
-  padding: 0;
+  margin: 1rem 0 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid #e2e8f0;
   display: grid;
   gap: 0.6rem;
 }

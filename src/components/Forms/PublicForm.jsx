@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Checkbox, Loader, Radio, TextInput, Textarea } from "@mantine/core";
-import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconCircleX, IconClock, IconEye, IconLock, IconSend } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconChevronDown, IconCircleX, IconClock, IconEye, IconLock, IconSend } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -151,9 +151,14 @@ function FieldInput({ field, value, onChange, error }) {
   }
 }
 
-/** A quiz's result right after sending: the score, and (as the form allows) what was missed and the right answers. */
+/**
+ * A quiz's result right after sending: first just the score, in a ring, with
+ * how many were right and wrong; the question-by-question list (what was
+ * missed, and the right answers, as the form allows) opens with a button.
+ */
 function QuizResult({ form, result }) {
   const { t } = useTranslation(NS);
+  const [showList, setShowList] = useState(false);
   const quiz = quizOf(form);
   if (result.later) {
     return (
@@ -164,18 +169,45 @@ function QuizResult({ form, result }) {
     );
   }
   const questions = questionsOf(form.fields || []).filter((q) => result.per[q.id]);
+  const marks = questions.map((q) => result.per[q.id]);
+  const right = marks.filter((r) => r.correct === true).length;
+  const wrong = marks.filter((r) => r.correct === false).length;
+  const percent = result.max > 0 ? Math.round((result.score / result.max) * 100) : 0;
+  const tone = percent >= 80 ? "#10b981" : percent >= 60 ? "#f59e0b" : "#ef4444";
   return (
     <div className={`${styles.card} ${styles.quizCard}`}>
-      {quiz.showPoints && (
-        <div className={styles.quizScore}>
-          <span>{t("public.quiz.score")}</span>
-          <b>
-            {result.score} / {result.max}
-          </b>
-          {result.pending > 0 && <small>{t("public.quiz.pending", { count: result.pending })}</small>}
+      <div className={styles.quizHero}>
+        {quiz.showPoints && (
+          <div className={styles.quizRing} style={{ "--percent": `${percent}%`, "--tone": tone }}>
+            <div>
+              <b>{result.score}</b>
+              <span>/ {result.max}</span>
+            </div>
+          </div>
+        )}
+        <p className={styles.quizHeroTitle}>{t("public.quiz.score")}</p>
+        <div className={styles.quizChips}>
+          <span className={styles.chipRight}>
+            <IconCircleCheck size={15} /> {t("public.quiz.right", { count: right })}
+          </span>
+          <span className={styles.chipWrong}>
+            <IconCircleX size={15} /> {t("public.quiz.wrong", { count: wrong })}
+          </span>
+          {result.pending > 0 && (
+            <span className={styles.chipWait}>
+              <IconClock size={15} /> {t("public.quiz.pending", { count: result.pending })}
+            </span>
+          )}
         </div>
-      )}
-      {quiz.showMissed && (
+        {quiz.showMissed && (
+          <button type="button" className={styles.quizReview} onClick={() => setShowList((v) => !v)} aria-expanded={showList}>
+            {showList ? t("public.quiz.hide") : t("public.quiz.review")}
+            <IconChevronDown size={16} className={showList ? styles.quizReviewOpen : undefined} />
+          </button>
+        )}
+      </div>
+
+      {quiz.showMissed && showList && (
         <ul className={styles.quizList}>
           {questions.map((q) => {
             const r = result.per[q.id];
@@ -183,7 +215,9 @@ function QuizResult({ form, result }) {
               <li key={q.id} className={r.correct ? styles.quizRight : r.correct === false ? styles.quizWrong : styles.quizWait}>
                 {r.correct ? <IconCircleCheck size={18} /> : r.correct === false ? <IconCircleX size={18} /> : <IconClock size={18} />}
                 <div>
-                  <span dir="auto">{q.label}</span>
+                  <span dir="auto" className={styles.multiline}>
+                    {q.label}
+                  </span>
                   {quiz.showPoints && (
                     <small>
                       {r.earned === null ? "—" : r.earned} / {r.points}
@@ -440,7 +474,7 @@ export default function PublicForm() {
           >
             <label className={styles.questionLabel}>
               <span className={styles.questionNumber}>{numberOf.get(f.id) || index + 1}</span>
-              <span dir="auto">
+              <span dir="auto" className={styles.multiline}>
                 {f.label}
                 {f.required && <span className={styles.star}> *</span>}
               </span>

@@ -230,9 +230,13 @@
     "quiz": {
       "points": "{{count}} poin",
       "score": "Nilai Anda",
-      "pending": "{{count}} pertanyaan masih akan diperiksa",
+      "pending": "{{count}} masih diperiksa",
       "correct": "Jawaban benar",
-      "later": "Jawaban Anda tercatat. Nilai akan dibagikan setelah diperiksa."
+      "later": "Jawaban Anda tercatat. Nilai akan dibagikan setelah diperiksa.",
+      "review": "Lihat hasil jawaban",
+      "hide": "Sembunyikan hasil jawaban",
+      "right": "{{count}} benar",
+      "wrong": "{{count}} salah"
     }
   },
   "print": {

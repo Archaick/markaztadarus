@@ -60,6 +60,7 @@
   break-inside: avoid;
 }
 .label {
+  white-space: pre-line;
   margin: 0 0 8px;
   font-size: 14.5px;
   font-weight: 800;
