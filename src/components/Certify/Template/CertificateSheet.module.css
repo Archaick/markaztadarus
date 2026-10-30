@@ -216,13 +216,11 @@
   gap: 3px;
   text-align: center;
 }
+/* the picture brings its own white margin */
 .qr img {
-  width: 54px;
-  height: 54px;
-  padding: 4px;
+  width: 60px;
+  height: 60px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.55);
-  box-sizing: content-box;
 }
 .qr span {
   display: block;
@@ -235,6 +233,39 @@
   font-size: 6.2px;
   font-weight: 700;
   letter-spacing: 0.6px;
+  color: #1b684f;
+}
+/* an empty QR place, in the editor's preview */
+.qrSlot {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #1b684f;
+  border-radius: 5px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #1b684f;
+  background: rgba(255, 255, 255, 0.45);
+}
+/* the QR code standing in for a signature */
+.qrSign {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  gap: 1px;
+}
+.qrSign img,
+.qrSign .qrSlot {
+  width: 47px;
+  height: 47px;
+  padding: 0;
+  border-radius: 4px;
+}
+.qrSign b {
+  font-size: 5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   color: #1b684f;
 }
 .seal {

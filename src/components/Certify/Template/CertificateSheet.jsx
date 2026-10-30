@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { qrWithLogo } from "../../Internal/qrWithLogo";
 import { verifyLink } from "../certSchema";
 import { KUFIC_PATH, PAGE_H, PAGE_W } from "./kufic";
 import mtMark from "../../../assets/certificate/mt-mark.svg";
@@ -32,6 +32,7 @@ export const DEFAULT_CERTIFICATE = {
   logos: [], // partner logos (image URLs), shown after the Markaz Tadarus logo
   seal: true,
   code: "", // the verification code: with one, the QR code appears
+  qrPlace: "corner", // "corner" (bottom left, with the signatures) or "signature" (in place of the first signer's signature)
 };
 
 // "*green*" parts of the sentence
@@ -70,9 +71,8 @@ function FitLine({ className, max, min, width, children }) {
   );
 }
 
-/** The QR code (a PNG data URL) that opens the certificate's verification page. */
-export const qrFor = (code) =>
-  QRCode.toDataURL(verifyLink(code), { margin: 0, width: 360, errorCorrectionLevel: "M", color: { dark: "#123f33", light: "#ffffff00" } });
+/** The QR code (a PNG data URL) that opens the certificate's verification page: the same navy code with the MTI logo as everywhere else. */
+export const qrFor = (code) => qrWithLogo(verifyLink(code));
 
 function useQr(code) {
   const [src, setSrc] = useState("");
@@ -101,6 +101,10 @@ export default function CertificateSheet({ data, width = 1123, placeholders = fa
   const signers = (c.signers || []).filter((s) => s && (s.name || s.role || s.signature)).slice(0, 3);
   const logos = (c.logos || []).filter(Boolean).slice(0, 4);
   const scale = width / PAGE_W;
+  // the QR code stands in for the first signer's signature, or sits in the corner
+  const qrInSign = c.qrPlace === "signature" && signers.length > 0;
+  const qrShown = qr || placeholders;
+  const qrBox = qr ? <img src={qr} alt="" /> : <div className={styles.qrSlot}>QR</div>;
 
   return (
     <div ref={sheetRef} className={styles.frame} style={{ width, height: PAGE_H * scale }}>
@@ -190,17 +194,24 @@ export default function CertificateSheet({ data, width = 1123, placeholders = fa
         </p>
 
         {/* place and date, then the signers */}
-        <div className={`${styles.signing} ${qr ? styles.signingWithQr : ""}`}>
+        <div className={`${styles.signing} ${qrShown && !qrInSign ? styles.signingWithQr : ""}`}>
           <div className={styles.placeDate} dir="auto">
             {[c.place, c.issueDate || (placeholders ? "[tanggal diterbitkan]" : "")].filter(Boolean).join(", ")}
           </div>
           <div className={styles.signers} data-count={signers.length}>
             {signers.map((s, i) => (
               <div key={i} className={styles.signer}>
-                <div className={styles.ink}>
-                  {s.stamp && <img src={s.stamp} alt="" className={styles.stamp} />}
-                  {s.signature && <img src={s.signature} alt="" className={styles.signature} />}
-                </div>
+                {qrInSign && i === 0 ? (
+                  <div className={`${styles.ink} ${styles.qrSign}`}>
+                    {qrShown && qrBox}
+                    {c.code && <b>{c.code}</b>}
+                  </div>
+                ) : (
+                  <div className={styles.ink}>
+                    {s.stamp && <img src={s.stamp} alt="" className={styles.stamp} />}
+                    {s.signature && <img src={s.signature} alt="" className={styles.signature} />}
+                  </div>
+                )}
                 <div className={styles.signerName} dir="auto">
                   {s.name}
                 </div>
@@ -212,12 +223,12 @@ export default function CertificateSheet({ data, width = 1123, placeholders = fa
           </div>
         </div>
 
-        {qr && (
+        {qrShown && !qrInSign && (
           <div className={styles.qr}>
-            <img src={qr} alt="" />
+            {qrBox}
             <div>
               <span>Verifikasi keaslian</span>
-              <b>{c.code}</b>
+              <b>{c.code || (placeholders ? "[KODE]" : "")}</b>
             </div>
           </div>
         )}

@@ -405,6 +405,24 @@ function LookFields({ form, set, signerOptions }) {
       <Switch label={t("studio.fields.showInk")} checked={form.showInk !== false} onChange={(e) => set("showInk")(e.currentTarget.checked)} color="teal" />
 
       <div>
+        <Text size="sm" fw={500} mb={6}>
+          {t("studio.fields.qrPlace")}
+        </Text>
+        <SegmentedControl
+          fullWidth
+          value={form.qrPlace === "signature" ? "signature" : "corner"}
+          onChange={set("qrPlace")}
+          data={[
+            { value: "corner", label: t("studio.fields.qrCorner") },
+            { value: "signature", label: t("studio.fields.qrSignature") },
+          ]}
+        />
+        <Text size="xs" c="dimmed" mt={4}>
+          {form.qrPlace === "signature" ? t("studio.fields.qrSignatureHint") : t("studio.fields.qrCornerHint")}
+        </Text>
+      </div>
+
+      <div>
         <Text size="sm" fw={500}>
           {t("studio.fields.logos")}
         </Text>

@@ -42,6 +42,7 @@ export const newDesign = () => {
     showInk: true,
     logos: [],
     seal: true,
+    qrPlace: "corner",
   };
 };
 
@@ -65,6 +66,7 @@ export const cleanDesign = (d) => ({
   showInk: d.showInk !== false,
   logos: (d.logos || []).slice(0, MAX_LOGOS),
   seal: d.seal !== false,
+  qrPlace: d.qrPlace === "signature" ? "signature" : "corner",
 });
 
 /** "{no}/MTI/SERT/X/2026" for participant 7 → "007/MTI/SERT/X/2026". */
@@ -102,6 +104,7 @@ export const sheetData = (design, cert, signers) => {
     })),
     logos: design.logos || [],
     seal: design.seal !== false,
+    qrPlace: design.qrPlace === "signature" ? "signature" : "corner",
     code: cert ? normCode(cert.code) : "",
   };
 };

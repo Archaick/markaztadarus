@@ -300,7 +300,12 @@
       "addLogo": "Add logo",
       "removeLogo": "Remove logo",
       "logoFailed": "That picture could not be used.",
-      "seal": "Show the Ka'bah seal"
+      "seal": "Show the Ka'bah seal",
+      "qrPlace": "QR code position",
+      "qrCorner": "In the corner",
+      "qrSignature": "In place of the signature",
+      "qrCornerHint": "The QR sits at the bottom left; signatures and stamps still print.",
+      "qrSignatureHint": "The QR sits above the first signer's name, as a digital signature."
     },
     "people": {
       "saveFirst": "Save the design first; then add the participants here.",

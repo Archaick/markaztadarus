@@ -300,7 +300,12 @@
       "addLogo": "Tambah logo",
       "removeLogo": "Hapus logo",
       "logoFailed": "Gambar itu tidak bisa dipakai.",
-      "seal": "Tampilkan segel Ka'bah"
+      "seal": "Tampilkan segel Ka'bah",
+      "qrPlace": "Letak kode QR",
+      "qrCorner": "Di pojok",
+      "qrSignature": "Menggantikan tanda tangan",
+      "qrCornerHint": "QR di pojok kiri bawah; tanda tangan dan stempel tetap dicetak.",
+      "qrSignatureHint": "QR berada di atas nama penanda tangan pertama, sebagai tanda tangan digital."
     },
     "people": {
       "saveFirst": "Simpan desain dulu; lalu tambahkan peserta di sini.",
