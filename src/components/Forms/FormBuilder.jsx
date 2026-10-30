@@ -10,7 +10,6 @@ import {
   TagsInput,
   Text,
   TextInput,
-  Textarea,
   Tooltip,
 } from "@mantine/core";
 import {
@@ -35,6 +34,7 @@ import { LANGUAGES } from "../Internal/language";
 import { stableKey } from "../Internal/stableKey";
 import styles from "./Forms.module.css";
 import ReorderSections from "./ReorderSections";
+import { RichTextarea } from "./richText";
 import { AUTO_GRADED, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, quizOf, sectionsOf } from "./formSchema";
 
 const editableOf = (form, key) => ({
@@ -329,13 +329,13 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
           placeholder={t("builder.formTitle")}
           aria-label={t("builder.formTitle")}
         />
-        <Textarea
+        <RichTextarea
           variant="unstyled"
           autosize
           minRows={1}
           dir={contentDir}
           value={draft.description}
-          onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+          onValue={(description) => setDraft((d) => ({ ...d, description }))}
           placeholder={t("builder.description")}
           aria-label={t("builder.description")}
         />
@@ -379,13 +379,13 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
                 placeholder={t("builder.sectionTitle")}
                 aria-label={t("builder.sectionTitle")}
               />
-              <Textarea
+              <RichTextarea
                 variant="unstyled"
                 autosize
                 minRows={1}
                 dir={contentDir}
                 value={f.description}
-                onChange={(e) => setField(index, { description: e.target.value })}
+                onValue={(description) => setField(index, { description })}
                 placeholder={t("builder.sectionDescription")}
                 aria-label={t("builder.sectionDescription")}
               />
@@ -418,14 +418,13 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
         return (
         <div className={styles.questionCard} key={f.id}>
           <div className={styles.questionTop}>
-            <span className={styles.questionNumber}>{number}</span>
-            <Textarea
-              className={styles.questionLabel}
+            <RichTextarea
+              wrapperClassName={styles.questionLabel}
               autosize
               minRows={1}
               dir={contentDir}
               value={f.label}
-              onChange={(e) => setField(index, { label: e.target.value })}
+              onValue={(label) => setField(index, { label })}
               placeholder={t("builder.question")}
               aria-label={t("builder.questionN", { n: number })}
             />

@@ -320,7 +320,6 @@
 
 .options {
   margin: 0.6rem 0 0;
-  margin-inline-start: 2.1rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -356,7 +355,6 @@
 }
 
 .hintInput {
-  margin-inline-start: 2.1rem;
   max-width: 460px;
 }
 
@@ -705,12 +703,7 @@
   }
 
   .questionLabel {
-    flex-basis: calc(100% - 40px);
-  }
-
-  .options,
-  .hintInput {
-    margin-inline-start: 0;
+    flex-basis: 100%;
   }
 
   .statusBox {
@@ -915,6 +908,9 @@
   border-radius: 14px;
   border: 1px solid #e2e8f0;
   background: #fff;
+}
+.settingsCard + .settingsCard {
+  margin-top: 0.85rem;
 }
 .settingsTitle {
   display: inline-flex;

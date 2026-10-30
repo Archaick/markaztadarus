@@ -25,13 +25,29 @@
 }
 
 /* letterhead: the official image (Kufic band, navy rule, Arabic logo), always left to right as designed */
-.letterhead {
-  display: block;
+.head {
+  position: relative;
   width: calc(100% + 52px);
-  max-width: none;
-  height: auto;
   /* bleeds off the top and the left edge, like the printed template */
   margin: -36px 0 30px -52px;
+  direction: ltr;
+}
+.letterhead {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+}
+/* the tagline, at the end of the navy rule, under the logo */
+.tagline {
+  position: absolute;
+  right: 52px;
+  bottom: 2px;
+  font-size: 9.5px;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: #1b3664;
 }
 
 .title {
@@ -42,17 +58,8 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
-.arabic {
-  margin: 4px 0 8px;
-  text-align: center;
-  font-family: "Amiri", "Traditional Arabic", serif;
-  font-size: 24px;
-  line-height: 1.9;
-}
 .text {
   margin: 0 0 10px;
-  text-align: center;
-  white-space: pre-line;
 }
 
 .question {
@@ -60,7 +67,6 @@
   break-inside: avoid;
 }
 .label {
-  white-space: pre-line;
   margin: 0 0 8px;
   font-size: 14.5px;
   font-weight: 800;
@@ -140,12 +146,12 @@
   .printing .host {
     position: static;
   }
+  /* the page itself is the A4 sheet (printSheet sets @page margin 0, so no browser header or address) */
   .printing .sheet {
-    width: auto;
+    width: 210mm;
   }
   .printing .page {
-    min-height: 0;
-    padding: 0 0 40px;
+    min-height: 296mm;
     break-after: page;
   }
   .printing .page:last-child {
@@ -153,13 +159,5 @@
   }
   .printing .page + .page {
     border-top: 0;
-  }
-  .printing .letterhead {
-    width: 100%;
-    margin: 0 0 24px;
-  }
-  .printing .footer {
-    position: static;
-    margin-top: 30px;
   }
 }

@@ -11,6 +11,8 @@ import { useLanguageDirection } from "../Internal/language";
 // Despite its name this file is the navy logo; it sits on a white badge.
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./PublicForm.module.css";
+import OwnCopy from "./OwnCopy";
+import { RichText } from "./richText";
 import {
   COVER_DOC,
   FORMS_COLLECTION,
@@ -216,7 +218,7 @@ function QuizResult({ form, result }) {
                 {r.correct ? <IconCircleCheck size={18} /> : r.correct === false ? <IconCircleX size={18} /> : <IconClock size={18} />}
                 <div>
                   <span dir="auto" className={styles.multiline}>
-                    {q.label}
+                    <RichText text={q.label} as="inline" />
                   </span>
                   {quiz.showPoints && (
                     <small>
@@ -250,6 +252,7 @@ export default function PublicForm() {
   const [submitError, setSubmitError] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState(null); // a quiz's result after sending
+  const [sent, setSent] = useState(null); // { answers, sectionIds, at }: for the person's own copy
   const [cover, setCover] = useState(null);
   // with sections: the steps taken so far, in order (Back walks it back);
   // a step's queue holds sections still to visit (several checkbox answers)
@@ -330,6 +333,7 @@ export default function PublicForm() {
   if (submitted) {
     return (
       <Shell {...shellProps}>
+        {form.allowDownload && sent && <OwnCopy form={form} answers={sent.answers} sectionIds={sent.sectionIds} sentAt={sent.at} />}
         {result && <QuizResult form={form} result={result} />}
         <StateCard icon={IconCircleCheck} tone="toneGreen" title={t("public.thanksTitle")} text={t("public.thanksText")}>
           <button
@@ -340,6 +344,7 @@ export default function PublicForm() {
               setErrors({});
               setPath(START);
               setResult(null);
+              setSent(null);
               setSubmitted(false);
               window.scrollTo({ top: 0 });
             }}
@@ -360,8 +365,6 @@ export default function PublicForm() {
   const fields = paged ? section.questions : questionsOf(form.fields || []);
   const next = paged ? nextStep(sections, { index: at, queue: step.queue }, answers) : null;
   const isLast = !next;
-  // numbers run on across pages
-  const numberOf = new Map(questionsOf(form.fields || []).map((q, i) => [q.id, i + 1]));
 
   const setAnswer = (id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -408,6 +411,7 @@ export default function PublicForm() {
       // a quiz: graded here when results are released right away, else announced for later
       const quiz = quizOf(form);
       if (quiz.enabled) setResult(quiz.release === "immediate" && form.quizKey ? gradeResponse(form.fields, form.quizKey, sent) : { later: true });
+      setSent({ answers: sent, sectionIds: paged ? path.map((p) => sections[p.index].id) : null, at: new Date() });
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
@@ -436,11 +440,7 @@ export default function PublicForm() {
           <h1 className={styles.title} dir="auto">
             {form.title}
           </h1>
-          {form.description && (
-            <p className={styles.description} dir="auto">
-              {form.description}
-            </p>
-          )}
+          {form.description && <RichText text={form.description} className={styles.description} />}
           {hasRequired && at === 0 && (
             <p className={styles.requiredNote}>
               <span className={styles.star}>*</span> {t("public.requiredNote")}
@@ -456,15 +456,11 @@ export default function PublicForm() {
                 {section.title}
               </h2>
             )}
-            {section.description && (
-              <p className={styles.description} dir="auto">
-                {section.description}
-              </p>
-            )}
+            {section.description && <RichText text={section.description} className={styles.description} />}
           </div>
         )}
 
-        {fields.map((f, index) => (
+        {fields.map((f) => (
           <div
             key={f.id}
             ref={(el) => {
@@ -473,9 +469,8 @@ export default function PublicForm() {
             className={`${styles.card} ${styles.question} ${errors[f.id] ? styles.questionError : ""}`}
           >
             <label className={styles.questionLabel}>
-              <span className={styles.questionNumber}>{numberOf.get(f.id) || index + 1}</span>
               <span dir="auto" className={styles.multiline}>
-                {f.label}
+                <RichText text={f.label} as="inline" />
                 {f.required && <span className={styles.star}> *</span>}
               </span>
               {quizOf(form).enabled && quizOf(form).showPoints && Number(f.points) > 0 && (

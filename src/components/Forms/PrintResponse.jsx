@@ -5,73 +5,12 @@ import { IconChevronDown, IconPrinter, IconShare } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { formatDateTime } from "../Internal/timeAgo";
 import { reportToPdf, sharePdf } from "../Supervisi/reportPdf";
-import letterhead from "../../assets/imgs/letterhead-mt.png";
-import { FIRST_SECTION, displayAnswer, isEmptyAnswer, sectionsOf } from "./formSchema";
+import { isEmptyAnswer, sectionsOf } from "./formSchema";
+import { ResponseSheet, SHEET_PX, printSheet } from "./ResponseSheet";
+import { plainText } from "./richText";
 import styles from "./FormPrint.module.css";
 
 const NS = "internal/Forms";
-const SHEET_PX = 794; // A4 at 96 dpi
-const ARABIC = /[؀-ۿ]/;
-
-/** A section printed on its own page under the letterhead: title, description, then each question and its answer. */
-function SectionPage({ section, answers, numberOf, footer }) {
-  const lines = (section.description || "").split(/\n/).filter((l) => l.trim());
-  return (
-    <section className={styles.page} data-pdf-page>
-      {/* the Markaz Tadarus letterhead: the Kufic band, the navy rule and the Arabic logo */}
-      <img src={letterhead} alt="مركز التدارس إندونيسيا" className={styles.letterhead} />
-
-      {section.title && (
-        <h1 className={styles.title} dir="auto">
-          {section.title}
-        </h1>
-      )}
-      {lines.map((line, i) =>
-        ARABIC.test(line) ? (
-          <p key={i} className={styles.arabic} dir="rtl">
-            {line}
-          </p>
-        ) : (
-          <p key={i} className={styles.text} dir="auto">
-            {line}
-          </p>
-        )
-      )}
-
-      {section.questions.map((q) => {
-        const value = answers[q.id];
-        return (
-          <div key={q.id} className={styles.question}>
-            <h2 className={styles.label} dir="auto">
-              {numberOf.get(q.id)}. {q.label}
-            </h2>
-            {isEmptyAnswer(value) ? (
-              // empty: lines to write on by hand
-              <div className={styles.blank} aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-            ) : Array.isArray(value) ? (
-              <ul className={styles.list}>
-                {value.map((v) => (
-                  <li key={v} dir="auto">
-                    {v}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className={styles.answer} dir="auto">
-                {displayAnswer(value)}
-              </p>
-            )}
-          </div>
-        );
-      })}
-      <footer className={styles.footer}>{footer}</footer>
-    </section>
-  );
-}
 
 /**
  * Print one response on the Markaz Tadarus letterhead, or share it as a PDF:
@@ -89,7 +28,6 @@ export default function PrintResponse({ opened, onClose, form, response, respons
   const [note, setNote] = useState("");
 
   const sections = useMemo(() => sectionsOf(form.fields || [], form.firstNext), [form.fields, form.firstNext]);
-  const numberOf = useMemo(() => new Map(sections.flatMap((s) => s.questions).map((q, i) => [q.id, i + 1])), [sections]);
   const answers = response?.answers || {};
   const answeredIn = (s) => s.questions.filter((q) => !isEmptyAnswer(answers[q.id])).length;
 
@@ -113,15 +51,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
   const footer = `${form.title} · ${t("responses.responseN", { n: responseNo })} · ${formatDateTime(response?.submittedAt)}`;
   const nameOf = (s, i) => s.title || (i === 0 ? form.title : t("builder.sectionOf", { n: i + 1, total: sections.length }));
 
-  const print = () => {
-    document.body.classList.add(styles.printing);
-    const done = () => {
-      document.body.classList.remove(styles.printing);
-      window.removeEventListener("afterprint", done);
-    };
-    window.addEventListener("afterprint", done);
-    setTimeout(() => window.print(), 50);
-  };
+  const print = () => printSheet(`${form.title} - ${t("responses.responseN", { n: responseNo })}`);
 
   const share = async () => {
     if (!sheetRef.current || !chosen.length) return;
@@ -213,7 +143,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
                         onChange={(e) => toggleQuestion(s, q.id, e.currentTarget.checked)}
                         label={
                           <span dir="auto" className={isEmptyAnswer(answers[q.id]) ? styles.pickEmpty : undefined}>
-                            {numberOf.get(q.id)}. {q.label}
+                            {plainText(q.label)}
                           </span>
                         }
                       />
@@ -243,12 +173,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
       {opened &&
         createPortal(
           <div className={styles.host}>
-            <div ref={sheetRef} className={styles.sheet} dir={form.language === "ar" ? "rtl" : "ltr"}>
-              {chosen.map((s) => (
-                // section 1 has no title of its own: it prints under the form's title
-                <SectionPage key={s.id} section={s.id === FIRST_SECTION ? { ...s, title: s.title || form.title } : s} answers={answers} numberOf={numberOf} footer={footer} />
-              ))}
-            </div>
+            <ResponseSheet sheetRef={sheetRef} sections={chosen} answers={answers} footer={footer} formTitle={form.title} rtl={form.language === "ar"} />
           </div>,
           document.body
         )}

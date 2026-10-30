@@ -237,6 +237,14 @@
       "hide": "Sembunyikan hasil jawaban",
       "right": "{{count}} benar",
       "wrong": "{{count}} salah"
+    },
+    "download": {
+      "title": "Unduh salinan jawaban Anda",
+      "hint": "Simpan sebagai PDF, atau PNG untuk dibagikan (misalnya ke status WhatsApp).",
+      "pdf": "Unduh PDF",
+      "png": "Unduh PNG",
+      "making": "Menyiapkan…",
+      "failed": "File gagal dibuat. Coba lagi."
     }
   },
   "print": {
@@ -288,5 +296,17 @@
     "key": "Kunci",
     "give": "Beri poin",
     "saveGrades": "Simpan nilai"
+  },
+  "format": {
+    "bold": "Tebal",
+    "italic": "Miring",
+    "large": "Teks besar",
+    "normal": "Teks normal",
+    "small": "Teks kecil",
+    "preview": "Pratinjau"
+  },
+  "settings": {
+    "download": "Peserta bisa mengunduh jawabannya",
+    "downloadHint": "Setelah mengirim, peserta melihat tombol unduh PDF dan PNG berisi jawabannya dengan kop Markaz Tadarus (misalnya Kartu Tadarus)."
   }
 }

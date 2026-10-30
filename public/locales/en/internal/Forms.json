@@ -239,6 +239,14 @@
       "hide": "Hide my answers",
       "right": "{{count}} correct",
       "wrong": "{{count}} wrong"
+    },
+    "download": {
+      "title": "Download a copy of your answers",
+      "hint": "Save it as a PDF, or as PNG to share (on a WhatsApp status, for example).",
+      "pdf": "Download PDF",
+      "png": "Download PNG",
+      "making": "Preparing…",
+      "failed": "The file could not be made. Try again."
     }
   },
   "print": {
@@ -290,5 +298,17 @@
     "key": "Key",
     "give": "Give points",
     "saveGrades": "Save grades"
+  },
+  "format": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "large": "Large text",
+    "normal": "Normal text",
+    "small": "Small text",
+    "preview": "Preview"
+  },
+  "settings": {
+    "download": "Respondents can download their answers",
+    "downloadHint": "After sending, people get PDF and PNG download buttons with their answers on the Markaz Tadarus letterhead (a Kartu Tadarus, for example)."
   }
 }

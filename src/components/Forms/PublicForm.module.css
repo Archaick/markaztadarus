@@ -604,3 +604,66 @@
   font-size: 0.85rem;
   color: #047857;
 }
+
+/* ---------- the person's own copy, after sending ---------- */
+.ownCopy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-color: #a7f3d0;
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 70%);
+}
+.ownCopyTitle {
+  margin: 0;
+  font-weight: 700;
+  color: #065f46;
+}
+.ownCopyText {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+.ownCopyButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.ownCopyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #10b981;
+  border-radius: 999px;
+  background: #fff;
+  color: #047857;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ownCopyButton:first-child {
+  background: #10b981;
+  color: #fff;
+}
+.ownCopyButton:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+.ownCopyButton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.ownCopyNote {
+  width: 100%;
+  margin: 0;
+  font-size: 0.82rem;
+  color: #b91c1c;
+}
+@media (max-width: 520px) {
+  .ownCopyButtons,
+  .ownCopyButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,4 +1,5 @@
 import { compressImage } from "../Internal/images";
+import { plainText } from "./richText";
 
 export const FORMS_COLLECTION = "forms";
 export const RESPONSES = "responses";
@@ -258,7 +259,7 @@ export const responsesToRows = (allFields, responses, formatTime, labels) => {
     new Set(responses.flatMap((r) => Object.keys(r.answers || {}).filter((k) => !known.has(k))))
   );
   const scored = !!labels.scoreOf;
-  const header = [labels.submitted, ...(scored ? [labels.score] : []), ...fields.map((f) => f.label || "—"), ...extra.map(labels.removed)];
+  const header = [labels.submitted, ...(scored ? [labels.score] : []), ...fields.map((f) => plainText(f.label) || "—"), ...extra.map(labels.removed)];
   const rows = responses.map((r) => [
     formatTime(r.submittedAt),
     ...(scored ? [labels.scoreOf(r)] : []),

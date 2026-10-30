@@ -41,6 +41,7 @@ import { formatDateTime, timeAgo } from "../Internal/timeAgo";
 import portal from "../Internal/InternalPortal.module.css";
 import styles from "./Forms.module.css";
 import PrintResponse from "./PrintResponse";
+import { plainText } from "./richText";
 import { downloadBlob, rowsToXlsx } from "./xlsx";
 import {
   FORMS_COLLECTION,
@@ -280,7 +281,7 @@ export default function ResponsesPanel({ form, quizKey }) {
         <div className={styles.summaryGrid}>
           {summaries.map(({ field, counts, answered }) => (
             <div className={styles.summaryCard} key={field.id}>
-              <p className={styles.summaryQuestion}>{field.label}</p>
+              <p className={styles.summaryQuestion}>{plainText(field.label)}</p>
               {Object.entries(counts).map(([option, count]) => {
                 const pct = answered ? Math.round((count / answered) * 100) : 0;
                 return (
@@ -392,7 +393,7 @@ export default function ResponsesPanel({ form, quizKey }) {
                   <div className={styles.answerItem} key={f.id}>
                     <p className={styles.answerQuestion}>
                       {mark && (mark.correct ? <IconCircleCheck size={16} color="#10b981" /> : mark.correct === false ? <IconCircleX size={16} color="#ef4444" /> : <IconClock size={16} color="#f59e0b" />)}{" "}
-                      {i + 1}. {f.label}
+                      {i + 1}. {plainText(f.label)}
                     </p>
                     {mark && (
                       <div className={styles.gradeRow}>

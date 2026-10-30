@@ -1,0 +1,125 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap");
+
+/* ---------- formatted text ---------- */
+.rich {
+  display: grid;
+  gap: 0.15rem;
+}
+.line {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.center .line {
+  text-align: center;
+}
+.gap {
+  height: 0.55rem;
+}
+/* an ayah: its own line, right to left, in a Qur'an font */
+.arabic {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 1.55em;
+  line-height: 2;
+  color: #0f172a;
+  text-align: start;
+}
+.center .arabic {
+  text-align: center;
+}
+.arabicInline {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 1.3em;
+}
+/* "Terjemahan:", "Tafsir al-Mukhtashar:" */
+.label {
+  margin-top: 0.15rem;
+  font-weight: 700;
+  color: #0f766e;
+  font-size: 0.92em;
+}
+.large {
+  font-size: 1.3em;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.small {
+  font-size: 0.82em;
+  opacity: 0.85;
+}
+.arabic.large {
+  font-size: 1.9em;
+}
+
+/* ---------- the editor ---------- */
+.editor {
+  position: relative;
+  min-width: 0;
+}
+/* floats over the top edge of the box, so showing it never moves the text */
+.toolbar {
+  position: absolute;
+  bottom: 100%;
+  inset-inline-end: 0;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 4px;
+  padding: 2px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+.tool {
+  width: 28px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+  font: inherit;
+}
+.tool:hover {
+  background: #f1f5f9;
+  color: #0f766e;
+}
+.sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: #e2e8f0;
+}
+.sizeLarge {
+  font-size: 16px;
+  font-weight: 800;
+}
+.sizeNormal {
+  font-size: 13px;
+  font-weight: 700;
+}
+.sizeSmall {
+  font-size: 10px;
+  font-weight: 700;
+}
+.preview {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  background: #f8fafc;
+  font-size: 0.9rem;
+}
+.preview > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}

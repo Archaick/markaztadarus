@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Group, NumberInput, Radio, Switch, Text } from "@mantine/core";
-import { IconDeviceFloppy, IconSchool } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconDownload, IconSchool } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { deleteField, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -21,14 +21,18 @@ export default function QuizSettings({ form, quizKey, editorEmail }) {
   const { t } = useTranslation(NS);
   const { user } = useAccess();
   const [quiz, setQuiz] = useState(() => quizOf(form));
+  const [allowDownload, setAllowDownload] = useState(!!form.allowDownload);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState(null);
   const saved = stableKey(quizOf(form));
-  const dirty = stableKey(quiz) !== saved;
+  const dirty = stableKey(quiz) !== saved || allowDownload !== !!form.allowDownload;
 
   useEffect(() => {
     setQuiz(quizOf(form));
   }, [saved]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setAllowDownload(!!form.allowDownload);
+  }, [form.allowDownload]);
 
   const set = (patch) => setQuiz((q) => ({ ...q, ...patch }));
 
@@ -39,11 +43,12 @@ export default function QuizSettings({ form, quizKey, editorEmail }) {
       const shareKey = quiz.enabled && quiz.release === "immediate";
       await auditedWrite(
         user,
-        { area: "forms", action: "form.quiz", target: form.id, label: form.title, details: { quiz: quiz.enabled, release: quiz.release } },
+        { area: "forms", action: "form.quiz", target: form.id, label: form.title, details: { quiz: quiz.enabled, release: quiz.release, download: allowDownload } },
         (batch, auditId) =>
           batch.update(doc(db, FORMS_COLLECTION, form.id), {
             quiz: { ...quiz, defaultPoints: Math.max(0, Math.min(1000, Number(quiz.defaultPoints) || 0)) },
             quizKey: shareKey ? quizKey || {} : deleteField(),
+            allowDownload,
             auditId,
             updatedBy: editorEmail,
             updatedAt: serverTimestamp(),
@@ -116,6 +121,20 @@ export default function QuizSettings({ form, quizKey, editorEmail }) {
             </Group>
           </div>
         )}
+      </div>
+
+      <div className={styles.settingsCard}>
+        <Group justify="space-between" wrap="nowrap" align="flex-start">
+          <div>
+            <Text fw={700} className={styles.settingsTitle}>
+              <IconDownload size={18} /> {t("settings.download")}
+            </Text>
+            <Text size="sm" c="dimmed">
+              {t("settings.downloadHint")}
+            </Text>
+          </div>
+          <Switch color="teal" size="md" checked={allowDownload} onChange={(e) => setAllowDownload(e.currentTarget.checked)} aria-label={t("settings.download")} />
+        </Group>
       </div>
 
       {message && (
