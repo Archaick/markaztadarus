@@ -185,8 +185,10 @@ service cloud.firestore {
 
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
-      // Public read so the verification page can show signatures
-      allow read: if true;
+      // The verification page opens a certificate's own signers by id, or
+      // asks for the default ones; nobody else may list every signature.
+      allow get: if true;
+      allow list: if hasFeature("certificates") || resource.data.isDefault == true;
       allow create, update: if hasFeature("certificates") && audited();
       allow delete: if hasFeature("certificates") && marked("certificate_signers~" + signerId);
     }
@@ -208,8 +210,10 @@ service cloud.firestore {
           && request.resource.data.lastClickedAt == request.time;
       }
 
-      // Public read so short-link resolver can fetch destination
-      allow read: if true;
+      // The short-link page looks up one path at a time; only the dashboard
+      // lists them all (with their internal notes).
+      allow get: if true;
+      allow list: if hasFeature("redirects") || request.query.limit <= 1;
       allow create: if hasFeature("redirects") && validLink() && audited();
       allow update: if (hasFeature("redirects") && validLink() && audited()) || isClickCount();
       allow delete: if hasFeature("redirects") && marked("redirect_manager_links~" + redirectId);
@@ -342,8 +346,9 @@ service cloud.firestore {
 
     match /forms/{formId} {
       // Anyone with the link can load an open or closed form; drafts stay
-      // with the admins.
-      allow read: if hasFeature("forms") || resource.data.status in ["open", "closed"];
+      // with the admins, and only admins may list the forms.
+      allow get: if hasFeature("forms") || resource.data.status in ["open", "closed"];
+      allow list: if hasFeature("forms");
       allow create, update: if hasFeature("forms")
         && request.resource.data.status in ["draft", "open", "closed"]
         && request.resource.data.fields is list

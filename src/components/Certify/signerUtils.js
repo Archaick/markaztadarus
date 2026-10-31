@@ -1,5 +1,5 @@
 // src/.../signerUtils.js - shared helpers for certificate signers
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 
 export const SIGNERS_COLLECTION = "certificate_signers";
@@ -60,6 +60,21 @@ export const processImageFile = (file, { removeWhite = true, threshold = 225 } =
 export const fetchAllSigners = async () => {
     const snapshot = await getDocs(query(collection(db, SIGNERS_COLLECTION), orderBy("order", "asc")));
     return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+};
+
+/**
+ * Only the signers one certificate shows, for the public verification page:
+ * its own (by id) or else the default ones. Visitors may not list every
+ * signer (see firestore.rules), so their signatures cannot be collected.
+ */
+export const fetchSignersFor = async (certificate) => {
+    const ids = Array.isArray(certificate?.signerIds) ? certificate.signerIds.filter((id) => typeof id === "string" && id) : [];
+    if (ids.length) {
+        const snaps = await Promise.all(ids.map((id) => getDoc(doc(db, SIGNERS_COLLECTION, id)).catch(() => null)));
+        return snaps.filter((s) => s?.exists()).map((s) => ({ id: s.id, ...s.data() }));
+    }
+    const snapshot = await getDocs(query(collection(db, SIGNERS_COLLECTION), where("isDefault", "==", true)));
+    return snapshot.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
 };
 
 /**

@@ -17,7 +17,7 @@ import { IconAlertTriangle, IconBan, IconCheck, IconHome2, IconRefresh } from "@
 import { db } from "../../../firebaseConfig";
 import stampImg from "../../assets/imgs/stamp.png";
 import SignatureBlock from "./SignatureBlock";
-import { fetchAllSigners, resolveCertificateSigners } from "./signerUtils";
+import { fetchSignersFor, resolveCertificateSigners } from "./signerUtils";
 import { CERTS, PUBLIC, certDate, certLang, displayName, displayProgram, normCode, publicFields } from "./certSchema";
 import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./CertificateVerify.module.css";
@@ -58,7 +58,7 @@ export default function CertificateVerify() {
     const show = async (cert, countScan) => {
       let signers = [];
       try {
-        signers = resolveCertificateSigners(cert, await fetchAllSigners());
+        signers = resolveCertificateSigners(cert, await fetchSignersFor(cert));
       } catch (err) {
         // signatures are a bonus: the certificate is valid without them
         console.error("Could not load signers:", err);
