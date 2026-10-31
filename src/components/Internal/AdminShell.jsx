@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { IconHistory, IconTrash, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import AppShell from "./AppShell";
 import { TRASH_COLLECTION } from "./audit";
+import { purgeExpired } from "./trash";
 
 // the recycle bin's entries, live (null while loading, "error" if refused)
 const TrashList = createContext(null);
@@ -31,6 +32,14 @@ export default function AdminShell({ adminCount = null, children }) {
       ),
     []
   );
+
+  // entries past their 30 days go now (once per visit)
+  const purged = useRef(false);
+  useEffect(() => {
+    if (!Array.isArray(trash) || purged.current) return;
+    purged.current = true;
+    purgeExpired(trash).catch((err) => console.error("Could not empty expired bin entries:", err));
+  }, [trash]);
 
   const waiting = Array.isArray(trash) ? trash.filter((g) => !g.restoredAt).length : null;
   const sections = [

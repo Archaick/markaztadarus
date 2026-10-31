@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs, limit, query, serverTimestamp, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { AUDIT_CHUNK, TRASH_COLLECTION, TRASH_ITEMS, auditedWrite, kindOf } from "./audit";
 import { normalizeEmail } from "./access";
@@ -95,6 +95,26 @@ export async function restoreGroup(user, group, items, onProgress) {
     done += part.length;
     onProgress?.(done / items.length);
   }
+}
+
+/**
+ * Removes the entries whose 30 days are up, copies and all (no history
+ * entry: nothing anyone did, just time). Run when the super admin opens the
+ * Admin app; returns how many went.
+ */
+export async function purgeExpired(groups) {
+  const now = Date.now();
+  const expired = groups.filter((g) => g.expiresAt?.toMillis?.() < now);
+  for (const group of expired) {
+    const items = await loadItems(group.id);
+    for (let i = 0; i < items.length; i += 450) {
+      const batch = writeBatch(db);
+      items.slice(i, i + 450).forEach((item) => batch.delete(item.ref));
+      await batch.commit();
+    }
+    await deleteDoc(doc(db, TRASH_COLLECTION, group.id));
+  }
+  return expired.length;
 }
 
 /** Removes a bin entry for good, before its 30 days are up. */

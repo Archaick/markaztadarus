@@ -14,9 +14,10 @@ import { normalizeEmail } from "./access";
 //
 // Nothing is deleted outright either: an exact copy of every deleted document
 // goes to the recycle bin (internal_trash) first, where the super admin can
-// restore it for TRASH_DAYS days; after that the database removes it by
-// itself (a TTL policy on `expiresAt`, see firestore.indexes.json). The rules
-// refuse a delete whose copy is missing or differs.
+// restore it for TRASH_DAYS days; after that it is removed the next time the
+// super admin opens the Admin app (see purgeExpired in trash.js; the
+// database's own TTL needs a paid plan). The rules refuse a delete whose
+// copy is missing or differs.
 export const AUDIT_COLLECTION = "internal_audit";
 export const MARKS_COLLECTION = "internal_audit_marks";
 export const TRASH_COLLECTION = "internal_trash";

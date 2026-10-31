@@ -380,7 +380,7 @@
     "failed": "Gagal. Periksa koneksi Anda dan coba lagi.",
     "restored": "Dipulihkan: {{label}}",
     "purged": "Dihapus permanen: {{label}}",
-    "footnote": "Hanya Anda yang melihat halaman ini. Entri dihapus otomatis oleh database {{days}} hari setelah dihapus.",
+    "footnote": "Hanya Anda yang melihat halaman ini. Entri dihapus permanen {{days}} hari setelah dihapus, saat Anda membuka aplikasi Admin berikutnya.",
     "kinds": {
       "redirect_manager_links": "{{count}} tautan pendek",
       "forms": "{{count}} formulir",

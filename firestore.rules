@@ -86,7 +86,7 @@ service cloud.firestore {
         && getAfter(item).data.data == resource.data;
     }
 
-    // Kept for 30 days (the database removes it after; see firestore.indexes.json).
+    // Kept for 30 days (then removed when the super admin opens the Admin app).
     function binExpiry(value) {
       return value is timestamp
         && value > request.time + duration.value(29, "d")

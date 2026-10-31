@@ -381,7 +381,7 @@
     "failed": "That did not work. Check your connection and try again.",
     "restored": "Restored: {{label}}",
     "purged": "Deleted for good: {{label}}",
-    "footnote": "Only you see this page. Entries are removed by the database itself {{days}} days after the delete.",
+    "footnote": "Only you see this page. Entries are removed for good {{days}} days after the delete, the next time you open the Admin app.",
     "kinds": {
       "redirect_manager_links_one": "{{count}} short link",
       "redirect_manager_links_other": "{{count}} short links",
