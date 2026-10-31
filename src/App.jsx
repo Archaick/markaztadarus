@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@mantine/core/styles.css";
+// the home page's program carousel (and the program pages) need these from the first load
+import "@mantine/carousel/styles.css";
 import { MantineProvider } from "@mantine/core";
 
 // In the first download: the home page, short links (every QR scan lands
