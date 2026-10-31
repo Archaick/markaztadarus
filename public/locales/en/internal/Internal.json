@@ -248,6 +248,10 @@
       "design": {
         "save": "Saved a certificate design",
         "delete": "Deleted a certificate design"
+      },
+      "trash": {
+        "restore": "Restored from Recently deleted",
+        "purge": "Deleted for good from Recently deleted"
       }
     },
     "fields": {
@@ -317,7 +321,13 @@
       "month": "30 days"
     },
     "summary": "{{count}} actions · {{people}} people",
-    "loadedUntil": "Loaded back to {{date}}"
+    "loadedUntil": "Loaded back to {{date}}",
+    "kinds": {
+      "all": "Every kind of change",
+      "created": "Created",
+      "edited": "Edited",
+      "deleted": "Deleted"
+    }
   },
   "shell": {
     "open": "Open menu",
@@ -328,5 +338,85 @@
   "adminApp": {
     "brand": "Admin",
     "nav": "Super admin"
+  },
+  "trash": {
+    "title": "Recently deleted",
+    "intro": "Everything deleted in the dashboards, kept for {{days}} days. Restore puts it back exactly as it was — same links and QR codes.",
+    "stats": {
+      "waiting": "Waiting",
+      "restored": "Restored",
+      "soon": "Gone within 7 days"
+    },
+    "loadFailed": "Could not load the recycle bin. Check the Firestore rules are deployed.",
+    "search": "Search name, link, admin…",
+    "state": {
+      "waiting": "Waiting",
+      "restored": "Restored",
+      "all": "All"
+    },
+    "sort": {
+      "label": "Order",
+      "newest": "Newest first",
+      "expiring": "Expiring first"
+    },
+    "noMatch": "Nothing matches these filters.",
+    "empty": "Nothing has been deleted. Deleted items will wait here.",
+    "by": "by {{name}} · {{time}}",
+    "restoredBy": "Restored {{time}}",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "restore": "Restore",
+    "purge": "Delete for good",
+    "purgeConfirm": "Delete for good",
+    "restoreTitle": "Restore this?",
+    "purgeTitle": "Delete this for good?",
+    "restoreText": "Everything below goes back exactly where it was, with the same links and codes. The restore is written to the history.",
+    "purgeText": "It is removed now instead of in 30 days. This cannot be undone.",
+    "conflictTitle": "Something new is in its place",
+    "conflict": {
+      "exists": "a document already exists here",
+      "taken": "another link now uses this path"
+    },
+    "nothingLeft": "This entry holds nothing to restore.",
+    "failed": "That did not work. Check your connection and try again.",
+    "restored": "Restored: {{label}}",
+    "purged": "Deleted for good: {{label}}",
+    "footnote": "Only you see this page. Entries are removed by the database itself {{days}} days after the delete.",
+    "kinds": {
+      "redirect_manager_links_one": "{{count}} short link",
+      "redirect_manager_links_other": "{{count}} short links",
+      "forms_one": "{{count}} form",
+      "forms_other": "{{count}} forms",
+      "responses_one": "{{count}} response",
+      "responses_other": "{{count}} responses",
+      "media_one": "{{count}} cover",
+      "media_other": "{{count}} covers",
+      "private_one": "answer key",
+      "private_other": "answer keys",
+      "posts_one": "{{count}} news item",
+      "posts_other": "{{count}} news items",
+      "images_one": "{{count}} photo",
+      "images_other": "{{count}} photos",
+      "certificates_one": "{{count}} certificate",
+      "certificates_other": "{{count}} certificates",
+      "snapshot_one": "{{count}} Word page",
+      "snapshot_other": "{{count}} Word pages",
+      "certificate_designs_one": "{{count}} Studio design",
+      "certificate_designs_other": "{{count}} Studio designs",
+      "certificate_signers_one": "{{count}} signer",
+      "certificate_signers_other": "{{count}} signers",
+      "supervisi_schools_one": "{{count}} school",
+      "supervisi_schools_other": "{{count}} schools",
+      "supervisi_teachers_one": "{{count}} teacher",
+      "supervisi_teachers_other": "{{count}} teachers",
+      "supervisi_sessions_one": "{{count}} supervision",
+      "supervisi_sessions_other": "{{count}} supervisions",
+      "signatures_one": "signatures",
+      "signatures_other": "signatures",
+      "supervisi_instruments_one": "{{count}} instrument",
+      "supervisi_instruments_other": "{{count}} instruments",
+      "internal_admins_one": "{{count}} admin",
+      "internal_admins_other": "{{count}} admins"
+    }
   }
 }

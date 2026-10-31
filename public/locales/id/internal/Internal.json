@@ -248,6 +248,10 @@
       "design": {
         "save": "Menyimpan desain sertifikat",
         "delete": "Menghapus desain sertifikat"
+      },
+      "trash": {
+        "restore": "Dipulihkan dari Baru dihapus",
+        "purge": "Dihapus permanen dari Baru dihapus"
       }
     },
     "fields": {
@@ -317,7 +321,13 @@
       "month": "30 hari"
     },
     "summary": "{{count}} tindakan · {{people}} orang",
-    "loadedUntil": "Dimuat sampai {{date}}"
+    "loadedUntil": "Dimuat sampai {{date}}",
+    "kinds": {
+      "all": "Semua jenis perubahan",
+      "created": "Dibuat",
+      "edited": "Diubah",
+      "deleted": "Dihapus"
+    }
   },
   "shell": {
     "open": "Buka menu",
@@ -328,5 +338,67 @@
   "adminApp": {
     "brand": "Admin",
     "nav": "Super admin"
+  },
+  "trash": {
+    "title": "Baru dihapus",
+    "intro": "Semua yang dihapus di dasbor, disimpan {{days}} hari. Pulihkan mengembalikannya persis seperti semula — tautan dan kode QR yang sama.",
+    "stats": {
+      "waiting": "Menunggu",
+      "restored": "Dipulihkan",
+      "soon": "Hilang dalam 7 hari"
+    },
+    "loadFailed": "Tidak dapat memuat tempat sampah. Pastikan aturan Firestore sudah di-deploy.",
+    "search": "Cari nama, tautan, admin…",
+    "state": {
+      "waiting": "Menunggu",
+      "restored": "Dipulihkan",
+      "all": "Semua"
+    },
+    "sort": {
+      "label": "Urutan",
+      "newest": "Terbaru dulu",
+      "expiring": "Segera hilang dulu"
+    },
+    "noMatch": "Tidak ada yang cocok dengan filter ini.",
+    "empty": "Belum ada yang dihapus. Yang dihapus akan menunggu di sini.",
+    "by": "oleh {{name}} · {{time}}",
+    "restoredBy": "Dipulihkan {{time}}",
+    "daysLeft": "{{count}} hari lagi",
+    "restore": "Pulihkan",
+    "purge": "Hapus permanen",
+    "purgeConfirm": "Hapus permanen",
+    "restoreTitle": "Pulihkan ini?",
+    "purgeTitle": "Hapus ini secara permanen?",
+    "restoreText": "Semua di bawah ini kembali ke tempatnya semula, dengan tautan dan kode yang sama. Pemulihan dicatat di riwayat.",
+    "purgeText": "Dihapus sekarang, bukan dalam 30 hari. Tindakan ini tidak bisa dibatalkan.",
+    "conflictTitle": "Sudah ada yang baru di tempatnya",
+    "conflict": {
+      "exists": "sudah ada dokumen di sini",
+      "taken": "tautan lain kini memakai alamat ini"
+    },
+    "nothingLeft": "Entri ini tidak berisi apa pun untuk dipulihkan.",
+    "failed": "Gagal. Periksa koneksi Anda dan coba lagi.",
+    "restored": "Dipulihkan: {{label}}",
+    "purged": "Dihapus permanen: {{label}}",
+    "footnote": "Hanya Anda yang melihat halaman ini. Entri dihapus otomatis oleh database {{days}} hari setelah dihapus.",
+    "kinds": {
+      "redirect_manager_links": "{{count}} tautan pendek",
+      "forms": "{{count}} formulir",
+      "responses": "{{count}} jawaban",
+      "media": "{{count}} sampul",
+      "private": "kunci jawaban",
+      "posts": "{{count}} berita",
+      "images": "{{count}} foto",
+      "certificates": "{{count}} sertifikat",
+      "snapshot": "{{count}} halaman Word",
+      "certificate_designs": "{{count}} desain Studio",
+      "certificate_signers": "{{count}} penanda tangan",
+      "supervisi_schools": "{{count}} sekolah",
+      "supervisi_teachers": "{{count}} guru",
+      "supervisi_sessions": "{{count}} supervisi",
+      "signatures": "tanda tangan",
+      "supervisi_instruments": "{{count}} instrumen",
+      "internal_admins": "{{count}} admin"
+    }
   }
 }

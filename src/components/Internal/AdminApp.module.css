@@ -521,3 +521,82 @@
     font-size: 1.35rem;
   }
 }
+
+/* ── the recycle bin ── */
+
+.binRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.binRow + .binRow {
+  border-top: 1px solid var(--line);
+}
+
+.binRestored {
+  background: var(--navy-50);
+}
+
+.binRestored .entryAction,
+.binRestored .binLabel {
+  opacity: 0.6;
+}
+
+.binLabel {
+  font-size: 0.88rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.binMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.binSide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.binButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.binEmpty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 48px 0;
+  color: var(--muted);
+  text-align: center;
+}
+
+@container (max-width: 640px) {
+  .binRow {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  /* the history's narrow layout names these areas; a bin row has none */
+  .binRow .entryIcon,
+  .binRow .entryText {
+    grid-area: auto;
+  }
+
+  .binSide {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

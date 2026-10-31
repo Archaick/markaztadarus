@@ -54,6 +54,9 @@ const PROVINCES = topoData.objects["indonesia-38-prov-topo"].geometries
 const TEXT_FIELDS = ["title", "excerpt", "body", "category", "province", "date"];
 const textOf = (post) => Object.fromEntries(TEXT_FIELDS.map((f) => [f, post[f] || ""]));
 
+// Photos (with their small copies) removed per request when a whole post goes.
+const PHOTOS_PER_DELETE = 5;
+
 const problemIn = (draft) => {
   if (!draft.title.trim()) return "noTitle";
   if (!/^\d{4}-\d{2}-\d{2}$/.test(draft.date)) return "noDate";
@@ -159,11 +162,16 @@ export default function PostEditor() {
   const touch = { updatedBy: email, updatedAt: serverTimestamp() };
 
   // Changes the post (and its photos) in one batch with a history entry.
-  const writePost = (action, patch, details, more) =>
-    auditedWrite(user, { area: "site", action, target: postId, label: post?.title || postId, details }, (batch, auditId, markDelete) => {
-      if (patch) batch.update(postRef, { ...patch, ...touch, auditId });
-      more?.(batch, auditId, markDelete);
-    });
+  const writePost = (action, patch, details, more, options) =>
+    auditedWrite(
+      user,
+      { area: "site", action, target: postId, label: post?.title || postId, details },
+      (batch, auditId, markDelete) => {
+        if (patch) batch.update(postRef, { ...patch, ...touch, auditId });
+        more?.(batch, auditId, markDelete);
+      },
+      options
+    );
 
   const saveText = async (extra = {}) => {
     setMessage(null);
@@ -302,18 +310,37 @@ export default function PostEditor() {
     try {
       const snap = await getDocs(collection(db, POSTS, postId, IMAGES));
       const small = await getDocs(collection(db, POSTS, postId, THUMBS));
+      const thumbOf = Object.fromEntries(small.docs.map((d) => [d.id, d]));
+      // Photos go a few at a time (the rules compare each with its copy in the
+      // recycle bin, and one request may only read so much), then the post;
+      // all of it is one entry in the bin.
+      const trash = { group: `post-${postId}-${Date.now().toString(36)}`, more: false };
+      const photos = snap.docs;
+      for (let i = 0; i < photos.length; i += PHOTOS_PER_DELETE) {
+        const part = photos.slice(i, i + PHOTOS_PER_DELETE);
+        await writePost("post.photo_delete", null, { photos: part.length }, (batch, _auditId, markDelete) =>
+          part.forEach((d) => {
+            batch.delete(d.ref);
+            markDelete(`posts~${postId}~images~${d.id}`, d.data().auditId);
+            const thumb = thumbOf[d.id];
+            if (thumb) {
+              batch.delete(thumb.ref);
+              markDelete(`posts~${postId}~thumbs~${d.id}`, thumb.data().auditId);
+            }
+          }),
+          { trash }
+        );
+        trash.more = true;
+      }
+      const looseThumbs = small.docs.filter((d) => !photos.some((p) => p.id === d.id));
       await writePost("post.delete", null, { status: post?.status || "draft", photos: snap.size }, (batch, _auditId, markDelete) => {
-        snap.docs.forEach((d) => {
-          batch.delete(d.ref);
-          markDelete(`posts~${postId}~images~${d.id}`, d.data().auditId);
-        });
-        small.docs.forEach((d) => {
+        looseThumbs.forEach((d) => {
           batch.delete(d.ref);
           markDelete(`posts~${postId}~thumbs~${d.id}`, d.data().auditId);
         });
         batch.delete(postRef);
         markDelete(`posts~${postId}`, post?.auditId);
-      });
+      }, { trash });
       navigate(`${SITE_BASE}?view=blog`, { replace: true });
     } catch (err) {
       console.error("Could not delete post:", err);

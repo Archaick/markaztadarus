@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Badge, Button, Loader, SegmentedControl, Select, TextInput } from "@mantine/core";
-import { IconChevronDown, IconRefresh, IconSearch, IconShieldLock, IconUsersGroup, IconX } from "@tabler/icons-react";
+import { IconChevronDown, IconRefresh, IconSearch, IconShieldLock, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
-import { FEATURES, featureByKey } from "./access";
 import { AUDIT_COLLECTION } from "./audit";
 import AdminShell from "./AdminShell";
+import { AREAS, actionKind, areaOf } from "./areas";
 import { intlLocale } from "./language";
 import { timeAgo } from "./timeAgo";
 import a from "./AdminApp.module.css";
@@ -15,10 +15,6 @@ import styles from "./History.module.css";
 const PAGE = 100;
 const MAX_AUTO_PAGES = 20; // reaching back for a period stops here; "load older" carries on
 const DAY = 24 * 60 * 60 * 1000;
-
-const ACCESS = { key: "access", icon: IconUsersGroup, color: "linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%)" };
-const AREAS = [...FEATURES, ACCESS];
-const areaOf = (key) => featureByKey(key) || ACCESS;
 
 // Details that are shown on their own line rather than as a "key: value" row.
 const HIDDEN_DETAILS = new Set(["from", "to", "changed", "names", "codes", "order", "provinces", "paths"]);
@@ -52,6 +48,7 @@ export default function History() {
   const [actor, setActor] = useState(null);
   const [search, setSearch] = useState("");
   const [period, setPeriod] = useState("all");
+  const [kind, setKind] = useState(null); // created · edited · deleted
   const [open, setOpen] = useState(() => new Set());
   const autoPages = useRef(0);
 
@@ -129,6 +126,7 @@ export default function History() {
     return (entries || []).filter((e) => {
       if (area && e.area !== area) return false;
       if (actor && e.actor !== actor) return false;
+      if (kind && actionKind(e.action) !== kind) return false;
       if (since) {
         const at = toDate(e.at);
         if (at && at < since) return false;
@@ -140,9 +138,9 @@ export default function History() {
         )
       );
     });
-  }, [entries, area, actor, search, since]);
+  }, [entries, area, actor, kind, search, since]);
   const people = useMemo(() => new Set(shown.map((e) => e.actor)).size, [shown]);
-  const filtering = !!(search || area || actor || period !== "all");
+  const filtering = !!(search || area || actor || kind || period !== "all");
 
   // newest first, under a heading per day
   const days = useMemo(() => {
@@ -189,6 +187,7 @@ export default function History() {
     setSearch("");
     setArea(null);
     setActor(null);
+    setKind(null);
     setPeriod("all");
   };
 
@@ -298,6 +297,15 @@ export default function History() {
             onChange={setActor}
             clearable
             searchable
+            comboboxProps={{ withinPortal: true }}
+          />
+          <Select
+            className={a.pick}
+            placeholder={t("history.kinds.all")}
+            data={["created", "edited", "deleted"].map((value) => ({ value, label: t(`history.kinds.${value}`) }))}
+            value={kind}
+            onChange={setKind}
+            clearable
             comboboxProps={{ withinPortal: true }}
           />
           <SegmentedControl

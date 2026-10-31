@@ -21,15 +21,43 @@ export async function saveSchool(user, school, data) {
   return ref.id;
 }
 
+// Teachers (with their photos) removed per request when a whole school goes:
+// the rules compare each with its copy in the recycle bin, and one request
+// may only read so much.
+const TEACHERS_PER_DELETE = 25;
+
 export async function deleteSchool(user, school, teachers) {
-  await auditedWrite(user, entry("sup.school.delete", school.name, { teachers: teachers.length }), (batch, _a, markDelete) => {
-    teachers.forEach((t) => {
-      batch.delete(doc(db, TEACHERS, t.id));
-      markDelete(`supervisi_teachers~${t.id}`, t.auditId);
-    });
-    batch.delete(doc(db, SCHOOLS, school.id));
-    markDelete(`supervisi_schools~${school.id}`, school.auditId);
-  });
+  // the school and all its teachers are one entry in the recycle bin
+  const trash = { group: `school-${school.id}-${Date.now().toString(36)}`, more: false };
+  const extra = teachers.slice(0, Math.max(0, teachers.length - TEACHERS_PER_DELETE));
+  for (let i = 0; i < extra.length; i += TEACHERS_PER_DELETE) {
+    const part = extra.slice(i, i + TEACHERS_PER_DELETE);
+    await auditedWrite(
+      user,
+      entry("sup.teacher.delete", school.name, { teachers: part.length }),
+      (batch, _a, markDelete) =>
+        part.forEach((t) => {
+          batch.delete(doc(db, TEACHERS, t.id));
+          markDelete(`supervisi_teachers~${t.id}`, t.auditId);
+        }),
+      { trash }
+    );
+    trash.more = true;
+  }
+  const last = teachers.slice(extra.length);
+  await auditedWrite(
+    user,
+    entry("sup.school.delete", school.name, { teachers: teachers.length }),
+    (batch, _a, markDelete) => {
+      last.forEach((t) => {
+        batch.delete(doc(db, TEACHERS, t.id));
+        markDelete(`supervisi_teachers~${t.id}`, t.auditId);
+      });
+      batch.delete(doc(db, SCHOOLS, school.id));
+      markDelete(`supervisi_schools~${school.id}`, school.auditId);
+    },
+    { trash }
+  );
 }
 
 export async function saveTeacher(user, teacher, data) {

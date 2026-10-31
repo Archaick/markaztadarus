@@ -67,12 +67,76 @@ service cloud.firestore {
 
     // A delete needs a mark for the version being deleted, made in this same
     // request by this same account (deleting a document that is not there
-    // changes nothing). Mirrored in deleteMarkId().
+    // changes nothing), and an exact copy of it in the recycle bin.
+    // Mirrored in deleteMarkId().
     function marked(key) {
-      let path = /databases/$(database)/documents/internal_audit_marks/$(key + "~" + resource.data.get("auditId", "v0"));
+      let markId = key + "~" + resource.data.get("auditId", "v0");
+      let path = /databases/$(database)/documents/internal_audit_marks/$(markId);
       return resource == null || (existsAfter(path)
         && getAfter(path).data.at == request.time
-        && getAfter(path).data.actor == adminEmail());
+        && getAfter(path).data.actor == adminEmail()
+        && binned(getAfter(path).data.get("trash", ""), markId));
+    }
+
+    // The deleted document's copy is in the bin, unchanged.
+    function binned(group, markId) {
+      let item = /databases/$(database)/documents/internal_trash/$(group)/trash_items/$(markId);
+      return group is string && group.size() > 0
+        && existsAfter(item)
+        && getAfter(item).data.data == resource.data;
+    }
+
+    // Kept for 30 days (the database removes it after; see firestore.indexes.json).
+    function binExpiry(value) {
+      return value is timestamp
+        && value > request.time + duration.value(29, "d")
+        && value < request.time + duration.value(31, "d");
+    }
+
+    // ---------- Recycle bin ----------
+    // One entry per delete (a form with its responses is one), holding a copy
+    // of each deleted document. Only the super admin sees it, restores from
+    // it or empties it.
+
+    function entryMadeNow(id) {
+      return id is string
+        && existsAfter(auditPath(id))
+        && getAfter(auditPath(id)).data.at == request.time
+        && getAfter(auditPath(id)).data.actor == adminEmail();
+    }
+
+    match /internal_trash/{groupId} {
+      allow read: if isSuperAdmin();
+      allow create: if isAdminAccount()
+        && request.resource.data.keys().hasOnly(["area", "action", "label", "target", "audit", "actor", "actorName", "at", "expiresAt", "count", "kinds"])
+        && request.resource.data.actor == adminEmail()
+        && request.resource.data.at == request.time
+        && binExpiry(request.resource.data.expiresAt)
+        && request.resource.data.kinds is map
+        && entryMadeNow(request.resource.data.audit);
+      // the same admin adding the next part of one delete, or the super admin marking it restored
+      allow update: if (isAdminAccount()
+          && resource.data.actor == adminEmail()
+          && resource.data.get("restoredAt", null) == null
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["area", "action", "label", "target", "audit", "count", "kinds"])
+          && entryMadeNow(request.resource.data.audit))
+        || (isSuperAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["restoredAt", "restoredBy"])
+          && request.resource.data.restoredAt == request.time
+          && request.resource.data.restoredBy == adminEmail());
+      allow delete: if isSuperAdmin();
+
+      match /trash_items/{itemId} {
+        allow read: if isSuperAdmin();
+        allow create: if isAdminAccount()
+          && request.resource.data.keys().hasOnly(["path", "data", "actor", "at", "expiresAt"])
+          && request.resource.data.actor == adminEmail()
+          && request.resource.data.at == request.time
+          && request.resource.data.path is string
+          && request.resource.data.data is map
+          && binExpiry(request.resource.data.expiresAt);
+        allow delete: if isSuperAdmin();
+      }
     }
 
     match /internal_audit/{entryId} {
@@ -91,7 +155,7 @@ service cloud.firestore {
     match /internal_audit_marks/{markId} {
       allow read: if isSuperAdmin();
       allow create: if isAdminAccount()
-        && request.resource.data.keys().hasOnly(["at", "actor", "audit"])
+        && request.resource.data.keys().hasOnly(["at", "actor", "audit", "trash"])
         && request.resource.data.at == request.time
         && request.resource.data.actor == adminEmail()
         && exists(auditPath(request.resource.data.audit)) == false
@@ -390,6 +454,10 @@ service cloud.firestore {
           && request.resource.data.answers is map
           && request.resource.data.answers.size() <= 100
           && request.resource.data.submittedAt == request.time;
+        // ...and an admin may put one back from the recycle bin as it was
+        allow create: if hasFeature("forms")
+          && request.resource.data.answers is map
+          && audited();
         allow read: if hasFeature("forms");
         // a quiz's points given by hand; nothing else of an answer changes
         allow update: if hasFeature("forms")

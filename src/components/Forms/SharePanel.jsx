@@ -53,6 +53,8 @@ export default function SharePanel({ form, onOpen }) {
     try {
       // Responses live in a subcollection, which Firestore does not remove
       // with the parent, so clear them first in batches.
+      // All of it is one entry in the recycle bin, restored together.
+      const trash = { group: `form-${form.id}-${Date.now().toString(36)}`, more: false };
       let removed = 0;
       for (;;) {
         const snap = await getDocs(query(collection(db, FORMS_COLLECTION, form.id, RESPONSES), limit(AUDIT_CHUNK)));
@@ -64,8 +66,10 @@ export default function SharePanel({ form, onOpen }) {
             snap.docs.forEach((d) => {
               batch.delete(d.ref);
               markDelete(`forms~${form.id}~responses~${d.id}`, d.data().auditId);
-            })
+            }),
+          { trash }
         );
+        trash.more = true;
         removed += snap.size;
       }
       const cover = await getDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
@@ -84,7 +88,8 @@ export default function SharePanel({ form, onOpen }) {
           }
           batch.delete(doc(db, FORMS_COLLECTION, form.id));
           markDelete(`forms~${form.id}`, form.auditId);
-        }
+        },
+        { trash }
       );
       navigate("/internal/forms", { replace: true });
     } catch (err) {

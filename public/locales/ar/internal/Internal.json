@@ -248,6 +248,10 @@
       "design": {
         "save": "حفظ تصميم شهادة",
         "delete": "حذف تصميم شهادة"
+      },
+      "trash": {
+        "restore": "استُعيد من المحذوفات",
+        "purge": "حُذف نهائيًا من المحذوفات"
       }
     },
     "fields": {
@@ -317,7 +321,13 @@
       "month": "٣٠ يومًا"
     },
     "summary": "{{count}} إجراء · {{people}} أشخاص",
-    "loadedUntil": "محمّل حتى {{date}}"
+    "loadedUntil": "محمّل حتى {{date}}",
+    "kinds": {
+      "all": "كل أنواع التغيير",
+      "created": "إنشاء",
+      "edited": "تعديل",
+      "deleted": "حذف"
+    }
   },
   "shell": {
     "open": "افتح القائمة",
@@ -328,5 +338,67 @@
   "adminApp": {
     "brand": "الإدارة",
     "nav": "المشرف العام"
+  },
+  "trash": {
+    "title": "المحذوفات",
+    "intro": "كل ما حُذف في اللوحات، محفوظ لمدة {{days}} يومًا. الاستعادة تعيده كما كان تمامًا — بنفس الروابط ورموز QR.",
+    "stats": {
+      "waiting": "بانتظار القرار",
+      "restored": "مستعاد",
+      "soon": "يزول خلال 7 أيام"
+    },
+    "loadFailed": "تعذر تحميل المحذوفات. تأكد من نشر قواعد Firestore.",
+    "search": "ابحث بالاسم أو الرابط أو المشرف…",
+    "state": {
+      "waiting": "بانتظار القرار",
+      "restored": "مستعاد",
+      "all": "الكل"
+    },
+    "sort": {
+      "label": "الترتيب",
+      "newest": "الأحدث أولًا",
+      "expiring": "الأقرب للزوال أولًا"
+    },
+    "noMatch": "لا شيء يطابق هذه التصفية.",
+    "empty": "لم يُحذف شيء بعد. ما يُحذف سينتظر هنا.",
+    "by": "بواسطة {{name}} · {{time}}",
+    "restoredBy": "استُعيد {{time}}",
+    "daysLeft": "الأيام المتبقية: {{count}}",
+    "restore": "استعادة",
+    "purge": "حذف نهائي",
+    "purgeConfirm": "حذف نهائي",
+    "restoreTitle": "استعادة هذا؟",
+    "purgeTitle": "حذف هذا نهائيًا؟",
+    "restoreText": "كل ما يلي يعود إلى مكانه كما كان، بنفس الروابط والرموز. تُسجَّل الاستعادة في السجل.",
+    "purgeText": "يُزال الآن بدل انتظار 30 يومًا. لا يمكن التراجع عن ذلك.",
+    "conflictTitle": "يوجد شيء جديد في مكانه",
+    "conflict": {
+      "exists": "يوجد مستند هنا بالفعل",
+      "taken": "رابط آخر يستخدم هذا المسار الآن"
+    },
+    "nothingLeft": "هذا الإدخال لا يحتوي شيئًا للاستعادة.",
+    "failed": "لم ينجح ذلك. تحقق من الاتصال وحاول مجددًا.",
+    "restored": "استُعيد: {{label}}",
+    "purged": "حُذف نهائيًا: {{label}}",
+    "footnote": "هذه الصفحة لك وحدك. تُزيل قاعدة البيانات الإدخالات تلقائيًا بعد {{days}} يومًا من الحذف.",
+    "kinds": {
+      "redirect_manager_links": "روابط مختصرة: {{count}}",
+      "forms": "نماذج: {{count}}",
+      "responses": "إجابات: {{count}}",
+      "media": "أغلفة: {{count}}",
+      "private": "مفتاح الإجابات",
+      "posts": "أخبار: {{count}}",
+      "images": "صور: {{count}}",
+      "certificates": "شهادات: {{count}}",
+      "snapshot": "صفحات Word: {{count}}",
+      "certificate_designs": "تصاميم الاستوديو: {{count}}",
+      "certificate_signers": "موقّعون: {{count}}",
+      "supervisi_schools": "مدارس: {{count}}",
+      "supervisi_teachers": "معلمون: {{count}}",
+      "supervisi_sessions": "جلسات إشراف: {{count}}",
+      "signatures": "التواقيع",
+      "supervisi_instruments": "أدوات: {{count}}",
+      "internal_admins": "مشرفون: {{count}}"
+    }
   }
 }

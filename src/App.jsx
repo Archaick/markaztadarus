@@ -38,6 +38,7 @@ const GlobalPage = lazy(() => import("./components/Global/GlobalPage"));
 const InternalHub = lazy(() => import("./components/Internal/InternalHub"));
 const AccessControl = lazy(() => import("./components/Internal/AccessControl"));
 const History = lazy(() => import("./components/Internal/History"));
+const RecentlyDeleted = lazy(() => import("./components/Internal/RecentlyDeleted"));
 const SupervisiApp = lazy(() => import("./components/Supervisi/SupervisiApp"));
 const RedirectAdmin = lazy(() => import("./components/RedirectManager/RedirectAdmin"));
 const FormsAdmin = lazy(() => import("./components/Forms/FormsAdmin"));
@@ -86,6 +87,10 @@ const App = () => {
               <Route
                 path="/internal/history"
                 element={<RequireFeature feature="super"><History /></RequireFeature>}
+              />
+              <Route
+                path="/internal/trash"
+                element={<RequireFeature feature="super"><RecentlyDeleted /></RequireFeature>}
               />
               <Route
                 path="/cert-admin"
