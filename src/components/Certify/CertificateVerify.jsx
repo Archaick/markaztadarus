@@ -20,6 +20,8 @@ import SignatureBlock from "./SignatureBlock";
 import { fetchSignersFor, resolveCertificateSigners } from "./signerUtils";
 import { CERTS, PUBLIC, certDate, certLang, displayName, displayProgram, normCode, publicFields } from "./certSchema";
 import LoaderGlobe from "../Common/LoaderGlobe";
+import VerifiedSheet from "./VerifiedSheet";
+import { DESIGNS_PUBLIC, sheetData } from "./Template/studioData";
 import styles from "./CertificateVerify.module.css";
 
 const LANGS = [
@@ -57,17 +59,33 @@ export default function CertificateVerify() {
 
     const show = async (cert, countScan) => {
       let signers = [];
+      let sheet = null;
       try {
         signers = resolveCertificateSigners(cert, await fetchSignersFor(cert));
       } catch (err) {
         // signatures are a bonus: the certificate is valid without them
         console.error("Could not load signers:", err);
       }
+      // made in Certificate Studio: draw the very certificate that was printed
+      if (cert.designId) {
+        try {
+          const design = await getDoc(doc(db, DESIGNS_PUBLIC, cert.designId));
+          if (design.exists()) {
+            const d = design.data();
+            const own = await fetchSignersFor({ signerIds: d.signerIds || [] });
+            // the verified copy is the complete one: real signatures and stamps,
+            // the QR in its corner (a design's print choices stay for print)
+            sheet = sheetData({ ...d, showInk: true, qrPlace: "corner" }, cert, own);
+          }
+        } catch (err) {
+          console.error("Could not load the certificate design:", err);
+        }
+      }
       await settle();
       if (!alive) return;
       // open in the certificate's own language; the visitor can still switch
       if (cert.lang) i18n.changeLanguage(certLang(cert));
-      setState({ phase: "found", cert, signers });
+      setState({ phase: "found", cert, signers, sheet });
       if (countScan) {
         updateDoc(doc(db, PUBLIC, code), { scans: increment(1), lastScannedAt: serverTimestamp() }).catch(() => {});
       }
@@ -189,22 +207,28 @@ export default function CertificateVerify() {
               </div>
             )}
 
-            <p className={styles.label}>{t("issued_to")}</p>
-            <h1 className={styles.name} dir="auto">
-              {displayName(cert, lang)}
-            </h1>
-            <p className={styles.label}>{t("program")}</p>
-            <p className={styles.program} dir="auto">
-              {displayProgram(cert, lang)}
-            </p>
-            {cert.description && (
-              <p className={styles.muted} dir="auto">
-                {cert.description}
-              </p>
+            {state.sheet ? (
+              <VerifiedSheet sheet={state.sheet} fileName={`sertifikat-${cert.code}`} revoked={revoked} />
+            ) : (
+              <>
+                <p className={styles.label}>{t("issued_to")}</p>
+                <h1 className={styles.name} dir="auto">
+                  {displayName(cert, lang)}
+                </h1>
+                <p className={styles.label}>{t("program")}</p>
+                <p className={styles.program} dir="auto">
+                  {displayProgram(cert, lang)}
+                </p>
+                {cert.description && (
+                  <p className={styles.muted} dir="auto">
+                    {cert.description}
+                  </p>
+                )}
+              </>
             )}
 
             <dl className={styles.details}>
-              {cert.number && (
+              {cert.number && !state.sheet && (
                 <div className={styles.wide}>
                   <dt>{t("certificate_number")}</dt>
                   <dd dir="auto">{cert.number}</dd>
@@ -230,7 +254,7 @@ export default function CertificateVerify() {
               </div>
             </dl>
 
-            {state.signers.length > 0 ? (
+            {state.sheet ? null : state.signers.length > 0 ? (
               <div className={styles.signatures}>
                 <p className={styles.signaturesTitle}>{t("signatures_title")}</p>
                 <div className={styles.signaturesGrid} style={{ "--sig-cols": Math.min(state.signers.length, 3) }}>

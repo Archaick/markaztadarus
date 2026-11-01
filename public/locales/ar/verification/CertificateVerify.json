@@ -22,5 +22,7 @@
   "errors": {
     "failed": "تعذّر التحقق من الشهادة حاليًا. تحقق من اتصالك بالإنترنت."
   },
-  "certificate_number": "رقم الشهادة"
+  "certificate_number": "رقم الشهادة",
+  "pdf_download": "تنزيل PDF",
+  "pdf_preparing": "جارٍ تجهيز الملف…"
 }

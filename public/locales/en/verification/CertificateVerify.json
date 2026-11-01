@@ -22,5 +22,7 @@
   "errors": {
     "failed": "The certificate could not be checked yet. Please check your internet connection."
   },
-  "certificate_number": "Certificate number"
+  "certificate_number": "Certificate number",
+  "pdf_download": "Download PDF",
+  "pdf_preparing": "Preparing the PDF…"
 }

@@ -22,5 +22,7 @@
   "errors": {
     "failed": "Sertifikat belum dapat diperiksa. Periksa koneksi internet Anda."
   },
-  "certificate_number": "Nomor sertifikat"
+  "certificate_number": "Nomor sertifikat",
+  "pdf_download": "Unduh PDF",
+  "pdf_preparing": "Menyiapkan PDF…"
 }

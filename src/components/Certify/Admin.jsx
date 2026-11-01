@@ -87,7 +87,8 @@ import {
 } from "./certSchema";
 import { certQr, downloadCsv, downloadDataUrl, downloadQrZip, qrFileName } from "./certExports";
 import Studio from "./Template/Studio";
-import { DESIGNS, sheetData } from "./Template/studioData";
+import { DESIGNS, DESIGNS_PUBLIC, publicDesign, sheetData } from "./Template/studioData";
+import { stableKey } from "../Internal/stableKey";
 import { certificatesPdf, saveBlob } from "./Template/studioPdf";
 import styles from "./Admin.module.css";
 
@@ -112,6 +113,8 @@ export default function Admin() {
   const syncing = useRef(false);
   const [signers, setSigners] = useState([]);
   const [designs, setDesigns] = useState(null);
+  const [designPubs, setDesignPubs] = useState(null); // id → the public copy a scan reads
+  const syncingDesigns = useRef(false);
   const [pdfFor, setPdfFor] = useState(null); // the certificate whose PDF is being made
   // the view, in the address (?view=studio …), so back and bookmarks work
   const [params] = useSearchParams();
@@ -169,11 +172,17 @@ export default function Admin() {
         setDesigns([]);
       }
     );
+    const offDesignPubs = onSnapshot(
+      collection(db, DESIGNS_PUBLIC),
+      (s) => setDesignPubs(new Map(s.docs.map((d) => [d.id, d.data()]))),
+      (err) => console.error("Could not load the public design copies:", err)
+    );
     return () => {
       offCerts();
       offPubs();
       offMeta();
       offDesigns();
+      offDesignPubs();
     };
   }, []);
 
@@ -183,6 +192,38 @@ export default function Admin() {
       .then(setSigners)
       .catch((err) => console.error("Could not load signers:", err));
   }, []);
+
+  // ---------- the designs a scan shows ----------
+  // Each Studio design has a public copy (just what the printed page needs),
+  // so the verification page can draw the real certificate. Designs saved
+  // before it existed, or changed elsewhere, are copied here.
+  useEffect(() => {
+    if (!designs || !designPubs || syncingDesigns.current) return;
+    const stale = designs.filter((d) => {
+      const pub = designPubs.get(d.id);
+      if (!pub) return true;
+      return stableKey({ ...pub, auditId: null }) !== stableKey({ ...publicDesign(d), auditId: null });
+    });
+    if (!stale.length) return;
+    syncingDesigns.current = true;
+    (async () => {
+      try {
+        // a design's logos can be large: one at a time
+        for (const d of stale) {
+          await auditedWrite(user, { area: "certificates", action: "cert.sync", target: d.id, label: d.name, details: { design: d.name } }, (batch, auditId) =>
+            batch.set(doc(db, DESIGNS_PUBLIC, d.id), { ...publicDesign(d), auditId })
+          );
+        }
+      } catch (err) {
+        console.error("Could not copy the designs for the verification page:", err);
+      } finally {
+        setTimeout(() => {
+          syncingDesigns.current = false;
+        }, 1500);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [designs, designPubs]);
 
   // ---------- keep the verification copies in step ----------
   // Copies every certificate (including older ones and backups) into the

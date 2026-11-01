@@ -13,6 +13,9 @@ import { DEFAULT_CERTIFICATE } from "./CertificateSheet";
  */
 
 export const DESIGNS = "certificate_designs";
+// What anyone scanning a Studio certificate may see of its design (opened by
+// id only, never listed): just what the printed page needs.
+export const DESIGNS_PUBLIC = "certificate_design_public";
 export const STUDIO = "studio";
 export const MAX_LOGOS = 4;
 export const MAX_SIGNERS = 3;
@@ -65,6 +68,21 @@ export const cleanDesign = (d) => ({
   signerIds: (d.signerIds || []).slice(0, MAX_SIGNERS),
   showInk: d.showInk !== false,
   logos: (d.logos || []).slice(0, MAX_LOGOS),
+  seal: d.seal !== false,
+  qrPlace: d.qrPlace === "signature" ? "signature" : "corner",
+});
+
+/** The public copy of a design: the fields the printed certificate is drawn from. */
+export const publicDesign = (d) => ({
+  title: d.title || "",
+  numberLabel: d.numberLabel || "",
+  givenTo: d.givenTo || "",
+  description: d.description || "",
+  place: d.place || "",
+  issueDate: d.issueDate || "",
+  signerIds: d.signerIds || [],
+  showInk: d.showInk !== false,
+  logos: d.logos || [],
   seal: d.seal !== false,
   qrPlace: d.qrPlace === "signature" ? "signature" : "corner",
 });

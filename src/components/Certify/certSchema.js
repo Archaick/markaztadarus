@@ -77,6 +77,8 @@ export const publicFields = (cert) => ({
   // certificates made in Certificate Studio: the printed number, and where they came from
   number: cert.number || "",
   kind: cert.kind || "",
+  // the Studio design it was made from: the verification page draws that certificate
+  designId: cert.designId || "",
 });
 
 // Whether the public copy still matches the record (scans are left alone).
@@ -95,6 +97,7 @@ export const publicUpToDate = (cert, pub) => {
     want.description === (pub.description || "") &&
     want.number === (pub.number || "") &&
     want.kind === (pub.kind || "") &&
+    want.designId === (pub.designId || "") &&
     millis(want.eventDate) === millis(pub.eventDate) &&
     millis(want.issuedAt) === millis(pub.issuedAt) &&
     JSON.stringify(want.signerIds) === JSON.stringify(pub.signerIds || [])

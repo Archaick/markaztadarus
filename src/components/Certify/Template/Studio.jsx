@@ -32,7 +32,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { Timestamp, collection, doc } from "firebase/firestore";
+import { Timestamp, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../../../../firebaseConfig";
 import { useAccess } from "../../Internal/accessContext";
 import { auditedWrite } from "../../Internal/audit";
@@ -41,7 +41,7 @@ import { CERTS, PUBLIC, fromDateInput, isRevoked, normCode, publicFields, safeFi
 import { processImageFile } from "../signerUtils";
 import CertificateSheet from "./CertificateSheet";
 import { certificatesPdf, certificatesZip, saveBlob } from "./studioPdf";
-import { DESIGNS, MAX_LOGOS, MAX_SIGNERS, certsOf, cleanDesign, newDesign, numberFor, sheetData } from "./studioData";
+import { DESIGNS, DESIGNS_PUBLIC, MAX_LOGOS, MAX_SIGNERS, certsOf, cleanDesign, newDesign, numberFor, publicDesign, sheetData } from "./studioData";
 import styles from "./Studio.module.css";
 
 const NS = ["internal/Certificates", "internal/Internal"];
@@ -210,6 +210,8 @@ function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCrea
             },
             { merge: true }
           );
+          // what a scan of one of its certificates shows
+          batch.set(doc(db, DESIGNS_PUBLIC, ref.id), { ...publicDesign(data), auditId });
           update(batch, auditId, stale.slice(0, CERTS_PER_BATCH));
         }
       );
@@ -231,9 +233,14 @@ function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCrea
 
   const remove = async () => {
     try {
+      const shown = await getDoc(doc(db, DESIGNS_PUBLIC, design.id));
       await auditedWrite(user, { area: "certificates", action: "design.delete", target: design.id, label: design.name }, (batch, _auditId, markDelete) => {
         batch.delete(doc(db, DESIGNS, design.id));
         markDelete(`${DESIGNS}~${design.id}`, design.auditId);
+        if (shown.exists()) {
+          batch.delete(shown.ref);
+          markDelete(`${DESIGNS_PUBLIC}~${design.id}`, shown.data().auditId);
+        }
       });
       onClose();
     } catch (err) {

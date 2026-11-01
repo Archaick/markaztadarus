@@ -247,6 +247,15 @@ service cloud.firestore {
       allow delete: if hasFeature("certificates") && marked("certificate_designs~" + designId);
     }
 
+    // What a scan of a Studio certificate shows of its design (the printed
+    // page's wording, logos and signers): opened by id, never listed.
+    match /certificate_design_public/{designId} {
+      allow get: if true;
+      allow list: if hasFeature("certificates");
+      allow create, update: if hasFeature("certificates") && audited();
+      allow delete: if hasFeature("certificates") && marked("certificate_design_public~" + designId);
+    }
+
     // Signers (signature + stamp) shown on verified certificates
     match /certificate_signers/{signerId} {
       // The verification page opens a certificate's own signers by id, or
