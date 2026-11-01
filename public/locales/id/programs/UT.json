@@ -1,0 +1,85 @@
+{
+  "title": "Umrah Tadabburiyah",
+  "lead": "Umrah sambil belajar mentadabburi al-Qur'an di tempat turunnya — Madinah dan Mekah — lengkap dengan i'tikaf di Masjid Nabawi dan Masjidil Haram.",
+  "seo": "Umrah Tadabburiyah: umrah sekaligus belajar tadabbur al-Qur'an di Mekah dan Madinah, bersama Markaz Tadarus Indonesia.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang Umrah Tadabburiyah.",
+  "facts": {
+    "audience": {
+      "label": "Untuk",
+      "value": "Masyarakat umum"
+    },
+    "place": {
+      "label": "Tempat",
+      "value": "Madinah & Mekah"
+    },
+    "guidance": {
+      "label": "Bimbingan",
+      "value": "Sebelum & sesudah umrah"
+    },
+    "documents": {
+      "label": "Dokumen",
+      "value": "Paspor & KTP"
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "journey": "Perjalanan",
+    "facilities": "Fasilitas",
+    "media": "Video"
+  },
+  "goals": {
+    "aims": {
+      "title": "Tujuan program",
+      "items": [
+        "Mempelajari keagungan al-Qur'an.",
+        "Mempelajari kunci-kunci mentadabburi al-Qur'an.",
+        "Melaksanakan ibadah umrah.",
+        "Beri'tikaf di Masjidil Haram dan Masjid Nabawi."
+      ]
+    },
+    "strengths": {
+      "title": "Keunggulan program",
+      "items": [
+        "Mempelajari al-Qur'an dari tafsir hingga ke amalnya.",
+        "Bimbingan tata cara umrah semi mandiri.",
+        "Bimbingan intensif tadabbur sebelum dan sesudah program.",
+        "Pulang dengan lebih mencintai al-Qur'an."
+      ]
+    }
+  },
+  "journey": {
+    "before": {
+      "title": "Sebelum berangkat",
+      "items": [
+        "Kisah umrah Nabi dan para sahabat.",
+        "Keutamaan Mekah dan Madinah.",
+        "Kunci-kunci tadabbur al-Qur'an."
+      ]
+    },
+    "madinah": {
+      "title": "Madinah",
+      "items": [
+        "Tadabbur al-Qur'an.",
+        "I'tikaf di Masjid Nabawi.",
+        "Berjalan kaki ke Masjid Quba.",
+        "Kunjungan ke tempat bersejarah."
+      ]
+    },
+    "makkah": {
+      "title": "Mekah",
+      "items": [
+        "Umrah.",
+        "Tadabbur al-Qur'an.",
+        "I'tikaf di Masjidil Haram.",
+        "Nasihat Qur'aniyah.",
+        "Kunjungan ke museum."
+      ]
+    },
+    "after": {
+      "title": "Setelah pulang",
+      "items": [
+        "Bimbingan tadarus al-Qur'an berkala, online dan offline."
+      ]
+    }
+  }
+}

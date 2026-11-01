@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Group, Burger, Drawer, ActionIcon, Menu, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX, IconLanguage, IconChevronDown } from "@tabler/icons-react";
+import { IconX, IconLanguage, IconChevronDown, IconArrowUpRight } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
@@ -19,7 +19,7 @@ export default function NavbarHome() {
     { id: "about", key: "menu.about" },
     { id: "programs", key: "menu.programs" },
     { id: "news", key: "menu.news", href: "/berita" },
-    { id: "global", key: "menu.global", href: "/global" },
+    { id: "global", key: "menu.global", href: "/global", beacon: true },
     { id: "internal", key: "menu.internal", href: "/internal" },
   ];
   // Section links jump within the home page, or back to it from other pages.
@@ -100,7 +100,9 @@ export default function NavbarHome() {
                 aria-disabled={isHidayahLink && isClosed ? "true" : undefined}
                 onClick={isHidayahLink && isClosed ? (e) => e.preventDefault() : undefined}
               >
+                {item.beacon && <span className={styles.beacon} aria-hidden="true" />}
                 {t(item.key)}
+                {item.beacon && <IconArrowUpRight size={15} className={styles.beaconArrow} aria-hidden="true" />}
                 {item.id === "hidayah" && (
                   <div className={styles.countdownBadge}>
                     <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>
@@ -202,7 +204,9 @@ export default function NavbarHome() {
                   className={linkClass}
                   aria-disabled={isHidayahLink && isClosed ? "true" : undefined}
                 >
+                  {item.beacon && <span className={styles.beacon} aria-hidden="true" />}
                   {t(item.key)}
+                  {item.beacon && <IconArrowUpRight size={15} className={styles.beaconArrow} aria-hidden="true" />}
                   {item.id === "hidayah" && (
                     <div className={styles.countdownBadgeMobile}>
                       <span className={styles.countdownLabel}>{t("countdown.prefix")}</span>

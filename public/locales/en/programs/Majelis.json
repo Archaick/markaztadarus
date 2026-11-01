@@ -1,0 +1,83 @@
+{
+  "title": "Majelis Tadarus 5T",
+  "lead": "Learning Tadarus of the Qur'an with the 5T method, for students and the wider public — in small, warm circles, week after week.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Majelis Tadarus 5T.",
+  "facts": {
+    "duration": {
+      "label": "Duration",
+      "value": "30–60 minutes per meeting"
+    },
+    "group": {
+      "label": "Circle",
+      "value": "5–10 people"
+    },
+    "intensity": {
+      "label": "Pace",
+      "value": "At least 1 verse a week"
+    },
+    "participants": {
+      "label": "For",
+      "value": "Students & the public"
+    }
+  },
+  "goals": {
+    "general": {
+      "title": "General goals",
+      "items": [
+        "Living the sunnah of reciting and studying the Qur'an together.",
+        "Living the values of the Qur'an every day."
+      ]
+    },
+    "specific": {
+      "title": "Specific goal",
+      "items": [
+        "Being able to reflect on and enjoy the Qur'an on one's own."
+      ]
+    }
+  },
+  "curriculum": {
+    "text": "It starts with the short, familiar surahs and moves step by step to the following juz and selected verses.",
+    "items": [
+      "Ad-Duha to an-Nas",
+      "Al-Layl to an-Naba",
+      "Al-Mulk to al-Mursalat",
+      "Al-Mujadilah to at-Tahrim",
+      "Qaf to al-Hadid",
+      "Selected verses or surahs"
+    ]
+  },
+  "details": {
+    "method": {
+      "title": "How we learn",
+      "items": [
+        "Questions and answers between teacher and participants.",
+        "Interactive discussion among participants."
+      ]
+    },
+    "requirements": {
+      "title": "Requirements",
+      "items": [
+        "Men and women.",
+        "Committed to learning."
+      ]
+    }
+  },
+  "modules": {
+    "tadarus": {
+      "tag": "For teachers & participants",
+      "title": "Kitab Tadarus Mubtadi",
+      "text": "The circle's main reference, following the 5T method: Tamhid, Tafsir, Tadabbur through Tazkiyah."
+    },
+    "children": {
+      "tag": "For children",
+      "title": "Qur'anic Education for Children",
+      "text": "Shapes a Qur'anic character through the surahs from ad-Duha to an-Nas, with practice tasks."
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "curriculum": "Curriculum",
+    "details": "How it runs",
+    "books": "Books"
+  }
+}

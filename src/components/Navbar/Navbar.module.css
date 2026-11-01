@@ -138,3 +138,55 @@
   align-items: center;
   padding: 1rem;
 }
+/* Tadarus Global: a gently pulsing gold dot and a small arrow, to draw the eye */
+.beacon {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 7px;
+  border-radius: 50%;
+  background: #d4b04a;
+  vertical-align: middle;
+}
+
+.beacon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #d4b04a;
+  animation: beaconPulse 2s ease-out infinite;
+}
+
+.beaconArrow {
+  margin-inline-start: 3px;
+  vertical-align: -2px;
+  color: #ab8b2b;
+  transition: transform 0.2s ease;
+}
+
+a:hover > .beaconArrow {
+  transform: translate(2px, -2px);
+}
+
+[dir="rtl"] .beaconArrow {
+  transform: scaleX(-1);
+}
+
+@keyframes beaconPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beacon::after {
+    animation: none;
+  }
+}

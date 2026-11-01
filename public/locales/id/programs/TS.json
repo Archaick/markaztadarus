@@ -1,0 +1,190 @@
+{
+  "title": "Tadarus Santri",
+  "lead": "Program belajar singkat di Mekah untuk pelajar: memperdalam pemahaman, penghayatan dan pengamalan al-Qur'an serta bahasa Arab — sekaligus umrah dan mengenal tempat-tempat bersejarah.",
+  "seo": "Tadarus Santri: program belajar al-Qur'an dan bahasa Arab di Mekah untuk pelajar SMP dan SMA, sekaligus umrah.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang program Tadarus Santri.",
+  "facts": {
+    "audience": {
+      "label": "Untuk",
+      "value": "Pelajar SMP kelas 8 – SMA"
+    },
+    "price": {
+      "label": "Biaya",
+      "value": "Rp 42.500.000"
+    },
+    "study": {
+      "label": "Belajar",
+      "value": "5 jam sehari"
+    },
+    "place": {
+      "label": "Tempat",
+      "value": "Mekah, berkunjung ke Madinah"
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "activities": "Kegiatan",
+    "schedule": "Jadwal harian",
+    "facilities": "Fasilitas",
+    "requirements": "Syarat",
+    "media": "Video & brosur"
+  },
+  "goals": {
+    "aims": {
+      "title": "Tujuan program",
+      "items": [
+        "Memahami tujuan utama mempelajari al-Qur'an.",
+        "Memahami arti kata \"Tadarus\" secara utuh.",
+        "Memahami Tadarus Nabi dan para sahabat.",
+        "Mampu menerapkan metode 5T dalam bertadarus.",
+        "Mengamalkan sunnah bertadarus al-Qur'an.",
+        "Menyatukan hati dengan al-Qur'an.",
+        "Mengamalkan nilai al-Qur'an dalam keseharian.",
+        "Mampu menghayati dan menikmati al-Qur'an secara mandiri."
+      ]
+    },
+    "strengths": {
+      "title": "Keunggulan program",
+      "items": [
+        "Berlangsung di kota suci Mekah.",
+        "Napak tilas jejak Nabi di sekitar Masjidil Haram.",
+        "Melaksanakan ibadah umrah.",
+        "Nasihat Qur'aniyah dari salah satu syekh di Mekah."
+      ]
+    }
+  },
+  "activities": {
+    "quran": {
+      "title": "Kelas al-Qur'an",
+      "items": [
+        "Mentadarusi al-Qur'an dengan metode 5T."
+      ]
+    },
+    "arabic": {
+      "title": "Kelas bahasa Arab",
+      "items": [
+        "Belajar bahasa Arab intensif di kelas."
+      ]
+    },
+    "deepening": {
+      "title": "Pendalaman al-Qur'an",
+      "items": [
+        "Membahas ayat yang berkaitan dengan tempat kita berada.",
+        "Tahfiz dan khatmul Qur'an.",
+        "Mempresentasikan ayat.",
+        "Membuat kartu Tadarus.",
+        "Menonton film sejarah Islam.",
+        "Games Tadarus.",
+        "\"Ayat yang menyentuh hatiku\".",
+        "Pemetaan ayat."
+      ]
+    },
+    "outdoor": {
+      "title": "Kegiatan luar kelas",
+      "items": [
+        "Thawaf sunnah dan qiyamul lail.",
+        "Mengenal jejak Nabi di sekitar Masjidil Haram.",
+        "Menginap di vila di Mekah.",
+        "Futsal atau olahraga lain.",
+        "Kunjungan ke padang pasir atau museum.",
+        "Kunjungan ke kota Madinah.",
+        "Kunjungan ke lembaga pendidikan di Mekah atau Madinah."
+      ]
+    }
+  },
+  "schedule": {
+    "columns": [
+      "Jam",
+      "Kegiatan",
+      "Tempat"
+    ],
+    "rows": [
+      [
+        "05.00",
+        "Shalat Subuh",
+        "Masjidil Haram"
+      ],
+      [
+        "09.00",
+        "Tadarus Dhuha",
+        "Ruang kelas hotel"
+      ],
+      [
+        "11.30",
+        "Shalat Zuhur, makan siang dan istirahat",
+        "Masjid sekitar hotel"
+      ],
+      [
+        "15.00",
+        "Shalat Ashar",
+        "Masjid hotel"
+      ],
+      [
+        "16.00",
+        "Pendalaman al-Qur'an",
+        "Ruang kelas hotel"
+      ],
+      [
+        "17.00",
+        "Shalat Maghrib",
+        "Masjidil Haram"
+      ],
+      [
+        "18.30",
+        "I'tikaf dan tilawah al-Qur'an",
+        "Masjidil Haram"
+      ],
+      [
+        "19.30",
+        "Shalat Isya",
+        "Masjidil Haram"
+      ],
+      [
+        "20.00",
+        "Makan malam",
+        "Restoran hotel"
+      ],
+      [
+        "21.30",
+        "Istirahat",
+        "Kamar hotel"
+      ]
+    ]
+  },
+  "requirements": {
+    "who": {
+      "title": "Syarat peserta",
+      "items": [
+        "Siswa-siswi SMP kelas 8 dan 9.",
+        "Siswa-siswi SMA kelas 10 sampai 12.",
+        "Sehat jasmani dan rohani.",
+        "Izin orang tua atau wali."
+      ]
+    },
+    "documents": {
+      "title": "Dokumen",
+      "items": [
+        "Rekomendasi lembaga.",
+        "Paspor.",
+        "Kartu Keluarga / KTP.",
+        "CV."
+      ]
+    },
+    "travel": {
+      "title": "Persiapan perjalanan",
+      "items": [
+        "Paspor pribadi.",
+        "Vaksin meningitis.",
+        "Kain ihram.",
+        "Koper pribadi."
+      ]
+    },
+    "registration": {
+      "title": "Pendaftaran & pembayaran",
+      "items": [
+        "Daftar paling lambat 60 hari sebelum keberangkatan dengan data peserta lengkap.",
+        "Bayar 2 tahap: 50% paling lambat 90 hari sebelum keberangkatan, sisanya paling lambat 30 hari sebelum keberangkatan."
+      ]
+    }
+  }
+}

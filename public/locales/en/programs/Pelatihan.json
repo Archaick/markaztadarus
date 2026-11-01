@@ -1,0 +1,93 @@
+{
+  "title": "Pelatihan Tadarus 5T",
+  "lead": "Training for preachers and Qur'an teachers who are being prepared as trainers or teachers of Tadarus with the 5T method.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Pelatihan Tadarus 5T (training).",
+  "facts": {
+    "duration": {
+      "label": "Duration",
+      "value": "2 days · 6 hours a day"
+    },
+    "size": {
+      "label": "Participants",
+      "value": "20–30 people"
+    },
+    "group": {
+      "label": "Circles",
+      "value": "Up to 5 people"
+    },
+    "audience": {
+      "label": "For",
+      "value": "Heads of institutions, preachers, Qur'an teachers & practitioners"
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "topics": "Material",
+    "details": "How it runs",
+    "certificate": "Certificate"
+  },
+  "goals": {
+    "general": {
+      "title": "General goals",
+      "items": [
+        "Understanding how the Prophet and his companions studied the Qur'an together.",
+        "Being able to apply the 5T method in a Tadarus circle."
+      ]
+    },
+    "specific": {
+      "title": "Specific goals",
+      "items": [
+        "Preparing Tadarus 5T trainers.",
+        "Preparing Tadarus 5T teachers."
+      ]
+    }
+  },
+  "topics": [
+    "The greatness of the Qur'an",
+    "The basis of the 5T method in the Qur'an and hadith",
+    "The Tadarus of the Prophet and his companions",
+    "Skills for applying the 5T method",
+    "Tadarus references",
+    "Mapping the verses"
+  ],
+  "details": {
+    "method": {
+      "title": "How we train",
+      "items": [
+        "Questions and answers between trainer and participants.",
+        "Interactive discussion in each circle.",
+        "Tadarus practice in each circle.",
+        "Online Tadarus of surah al-Fatihah.",
+        "Tadarus over WhatsApp of surah ad-Duha."
+      ]
+    },
+    "requirements": {
+      "title": "Requirements",
+      "items": [
+        "Men and women.",
+        "A bachelor's degree.",
+        "Experience teaching the Qur'an.",
+        "Arabic (preferred).",
+        "Juz 30 memorised well (preferred)."
+      ]
+    },
+    "funding": {
+      "title": "Costs",
+      "items": [
+        "Transport, accommodation and learning materials are covered by the host.",
+        "Markaz Tadarus Indonesia sends 2–3 delegates.",
+        "Markaz Tadarus Indonesia welcomes infaq and sadaqah to support spreading Tadarus 5T."
+      ]
+    },
+    "coaching": {
+      "title": "Follow-up",
+      "items": [
+        "After the training, coaching continues online, arranged with the host as needed."
+      ]
+    }
+  },
+  "certificate": {
+    "title": "E-certificate of participation",
+    "text": "Every trainee receives an e-certificate (PDF) in the official Markaz Tadarus Indonesia design, like this one."
+  }
+}

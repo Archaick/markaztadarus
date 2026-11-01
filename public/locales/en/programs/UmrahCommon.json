@@ -1,0 +1,26 @@
+{
+  "umrah": "Umrah",
+  "priceLabel": "Programme fee",
+  "included": "Includes everything below",
+  "facility": {
+    "briefing": "Preparation before departure",
+    "ticket": "Return flights",
+    "visa": "Visa and buses in Saudi Arabia",
+    "leader": "Tour leader",
+    "transport": "Transport Jeddah–Makkah–Madinah",
+    "room": "Accommodation in Makkah & Madinah",
+    "food": "3 meals a day",
+    "foodTraining": "3 meals a day during the programme",
+    "visits": "Visits",
+    "visitsHistoric": "Visits to historic places in Makkah and Madinah",
+    "module": "Learning materials",
+    "bookPack": "Course book pack",
+    "alumni": "Tadarus classes for alumni",
+    "language": "Informal language practice on Fridays and Saturdays",
+    "hours": "5 hours of study a day, morning and afternoon",
+    "certificate": "Certificate",
+    "certificateTraining": "Training certificate",
+    "friends": "Making friends with students in Makkah",
+    "academy": "Course with the an-Naba' al-'Azhim Academy in Makkah"
+  }
+}

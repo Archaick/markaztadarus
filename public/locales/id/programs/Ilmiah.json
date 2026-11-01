@@ -1,0 +1,83 @@
+{
+  "eyebrow": "Karya Ilmiah",
+  "title": "Buku-buku Tadarus",
+  "lead": "Karya Markaz Tadarus Indonesia untuk mengajarkan Tadarus al-Qur'an Metode 5T — bagi orang dewasa di majelis, dan bagi anak-anak di sekolah maupun di rumah.",
+  "pick": "Pilih buku",
+  "editions": {
+    "id": "Edisi Indonesia",
+    "ar": "Edisi Arab"
+  },
+  "ask": "Tanya via WhatsApp",
+  "preview": "Lihat contoh halaman",
+  "order": "Pesan buku",
+  "close": "Tutup",
+  "tadarus": {
+    "tag": "Dewasa & umum",
+    "title": "Buku Tadarus al-Qur'an",
+    "text": "Rujukan bagi guru dan peserta majelis Tadarus, juga untuk bacaan mandiri. Mencakup surat-surat mufashshal — Qaf sampai an-Nas — dalam 4 buku.",
+    "stepsTitle": "Setiap surat disajikan dengan Metode 5T",
+    "steps": {
+      "tamhid": "Pertanyaan pembuka seputar surat",
+      "tilawah": "Teks ayat",
+      "tafsir": "Makna ayat secara singkat",
+      "tadabbur": "Pelajaran dari ayat",
+      "tazkiyah": "Pengamalan ayat, di hati maupun perbuatan"
+    },
+    "seriesTitle": "4 buku dalam satu seri",
+    "series": [
+      {
+        "name": "Juz 30",
+        "text": "An-Naba sampai an-Nas, ditambah al-Fatihah di depan — materi pertama."
+      },
+      {
+        "name": "Juz 29",
+        "text": "Al-Mulk sampai al-Mursalat."
+      },
+      {
+        "name": "Juz 28",
+        "text": "Al-Mujadilah sampai at-Tahrim."
+      },
+      {
+        "name": "Juz 27",
+        "text": "Adz-Dzariyat sampai al-Hadid, ditambah surat Qaf."
+      }
+    ],
+    "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nSaya ingin bertanya tentang Buku Tadarus al-Qur'an."
+  },
+  "children": {
+    "tag": "Usia 6–10 tahun",
+    "title": "Pendidikan Qur'ani Anak",
+    "text": "Buku panduan pendidikan al-Qur'an yang membentuk kepribadian Qur'ani anak melalui surat adh-Dhuha sampai an-Nas.",
+    "features": [
+      {
+        "title": "Target kompetensi",
+        "text": "Menanamkan keimanan melalui pembelajaran ayat dan surat."
+      },
+      {
+        "title": "Keistimewaan",
+        "text": "Latihan tugas yang menguatkan pengamalan nilai Qur'ani."
+      },
+      {
+        "title": "Untuk",
+        "text": "TK/SD, TPA, lembaga tahfiz, dan keluarga di rumah."
+      }
+    ],
+    "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nSaya ingin bertanya tentang buku Pendidikan Qur'ani Anak."
+  },
+  "form": {
+    "sets": "Paket set (1 set = 6 buku)",
+    "setPrice": "Rp {{price}} per set",
+    "single": "atau pesan buku satuan",
+    "book": "Buku {{n}}",
+    "name": "Nama pemesan",
+    "phone": "Nomor WhatsApp",
+    "phoneHint": "misal: 08123456789",
+    "org": "Organisasi / sekolah",
+    "address": "Alamat penerima & pengiriman",
+    "addressHint": "Jalan, kota, provinsi, kode pos",
+    "totalSets": "Paket set",
+    "totalSingle": "Buku satuan",
+    "total": "Total",
+    "send": "Kirim pesanan via WhatsApp"
+  }
+}

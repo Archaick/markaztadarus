@@ -1,0 +1,93 @@
+{
+  "title": "Pelatihan Tadarus 5T",
+  "lead": "Pelatihan bagi para dai dan guru al-Qur'an yang dikader menjadi trainer atau pengajar Tadarus Metode 5T.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang Pelatihan Tadarus 5T.",
+  "facts": {
+    "duration": {
+      "label": "Durasi",
+      "value": "2 hari · 6 jam per hari"
+    },
+    "size": {
+      "label": "Peserta",
+      "value": "20–30 orang"
+    },
+    "group": {
+      "label": "Halaqah",
+      "value": "Maksimal 5 orang"
+    },
+    "audience": {
+      "label": "Untuk",
+      "value": "Pimpinan lembaga, dai, guru & praktisi al-Qur'an"
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "topics": "Materi",
+    "details": "Pelaksanaan",
+    "certificate": "Sertifikat"
+  },
+  "goals": {
+    "general": {
+      "title": "Tujuan Umum",
+      "items": [
+        "Memahami Tadarus Nabi dan para sahabat.",
+        "Mampu menerapkan metode 5T dalam majelis Tadarus."
+      ]
+    },
+    "specific": {
+      "title": "Tujuan Khusus",
+      "items": [
+        "Mencetak trainer Tadarus 5T.",
+        "Mencetak pengajar Tadarus 5T."
+      ]
+    }
+  },
+  "topics": [
+    "Keagungan al-Qur'an",
+    "Landasan metode 5T dari al-Qur'an dan hadis",
+    "Tadarus Nabi dan para sahabat",
+    "Keahlian menerapkan metode 5T",
+    "Mengenal referensi Tadarus",
+    "Pemetaan ayat"
+  ],
+  "details": {
+    "method": {
+      "title": "Pola Pelatihan",
+      "items": [
+        "Tanya jawab antara pemateri dan peserta.",
+        "Diskusi interaktif per halaqah.",
+        "Praktik Tadarus per halaqah.",
+        "Tadarus online surat al-Fatihah.",
+        "Tadarus via WhatsApp surat ad-Dhuha."
+      ]
+    },
+    "requirements": {
+      "title": "Syarat Peserta",
+      "items": [
+        "Ikhwan dan akhwat.",
+        "Pendidikan terakhir S1.",
+        "Berpengalaman mengajar al-Qur'an.",
+        "Mampu berbahasa Arab (diutamakan).",
+        "Hafal Juz 30 dengan mutqin (diutamakan)."
+      ]
+    },
+    "funding": {
+      "title": "Pembiayaan",
+      "items": [
+        "Transportasi, akomodasi dan modul pembelajaran ditanggung pihak penyelenggara.",
+        "Markaz Tadarus Indonesia mengirimkan 2–3 orang utusan.",
+        "Markaz Tadarus Indonesia menerima infaq dan shadaqah untuk mendukung dakwah Tadarus 5T."
+      ]
+    },
+    "coaching": {
+      "title": "Pembinaan",
+      "items": [
+        "Setelah pelatihan, pembinaan berlanjut secara online dengan teknis yang disepakati bersama penyelenggara sesuai kebutuhan."
+      ]
+    }
+  },
+  "certificate": {
+    "title": "E-sertifikat keikutsertaan",
+    "text": "Setiap peserta pelatihan mendapatkan e-sertifikat (PDF) dengan desain resmi Markaz Tadarus Indonesia, seperti contoh ini."
+  }
+}

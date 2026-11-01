@@ -1,0 +1,78 @@
+{
+  "seo": "Program umrah Markaz Tadarus Indonesia: umrah sambil belajar dan mentadabburi al-Qur'an di Mekah dan Madinah — untuk masyarakat umum, pelajar, serta dai dan asatidz.",
+  "eyebrow": "Umrah bersama Markaz Tadarus",
+  "title": "Tadarus di Tanah Suci",
+  "tagline": "Menyatukan hati dengan al-Qur'an",
+  "lead": "Umrah sambil belajar dan mentadabburi al-Qur'an di tempat turunnya — Mekah dan Madinah. Tiga program, untuk tiga kalangan.",
+  "see": "Lihat program",
+  "ask": "Tanya via WhatsApp",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang program umrah Markaz Tadarus Indonesia.",
+  "highlights": [
+    "Mekah & Madinah",
+    "Tadabbur di tempat turunnya wahyu",
+    "Bersama Akademi an-Naba' al-'Azhim"
+  ],
+  "programs": {
+    "title": "Pilih program Anda",
+    "lead": "Semuanya menyatukan ibadah umrah dengan belajar al-Qur'an — bedanya pada siapa yang ikut dan apa yang dipelajari.",
+    "ask": "Tanya biaya",
+    "open": "Lihat detail",
+    "ut": {
+      "tag": "Masyarakat umum",
+      "text": "Umrah sambil belajar tadabbur al-Qur'an, lengkap dengan i'tikaf di Masjid Nabawi dan Masjidil Haram.",
+      "meta": [
+        "Madinah & Mekah",
+        "Bimbingan sebelum & sesudah"
+      ]
+    },
+    "ts": {
+      "tag": "Pelajar SMP–SMA",
+      "text": "Belajar al-Qur'an dan bahasa Arab di Mekah, sekaligus umrah dan mengenal jejak Nabi.",
+      "meta": [
+        "5 jam belajar sehari",
+        "Sertifikat"
+      ]
+    },
+    "dq": {
+      "tag": "Dai & asatidz",
+      "text": "Pelatihan keahlian tadabbur dan majelis Tadarus bersama Akademi an-Naba' al-'Azhim di Mekah.",
+      "meta": [
+        "12 hari, 7 di Mekah",
+        "Sertifikat terakreditasi"
+      ]
+    }
+  },
+  "leaders": {
+    "title": "Mengapa belajar di Mekah?",
+    "lead": "Kata para pembina dan pengurus Markaz Tadarus Indonesia",
+    "rahmat": {
+      "role": "Pembina Markaz Tadarus Indonesia",
+      "text": "Markaz Tadarus Indonesia berupaya menyebarkan nilai-nilai al-Qur'an seluas-luasnya di seluruh Indonesia. Tujuan tertinggi dari semua ini: agar setiap Muslim dapat menghayati al-Qur'an untuk dirinya sendiri, setiap saat."
+    },
+    "adnan": {
+      "role": "Pembina Markaz Tadarus Indonesia",
+      "text": "Al-Qur'an adalah pedoman hidup yang mengandung nilai moral, sosial dan etika. Markaz Tadarus Indonesia membangun umat agar hidup bersama al-Qur'an: mengerti, menghayati dan mengamalkannya dalam keseharian."
+    },
+    "agus": {
+      "role": "Ketua Markaz Tadarus Indonesia",
+      "text": "Mekah al-Mukarramah adalah pusat Islam sejak turunnya wahyu hingga kini. Karena itu program ini istimewa: kita mendalami al-Qur'an dan bahasa Arab di tempat paling mulia, sambil melakukan amalan yang agung."
+    }
+  },
+  "gallery": {
+    "title": "Galeri program",
+    "lead": "Program yang terlaksana tahun 1446 H / 2024 M"
+  },
+  "partners": {
+    "title": "Bekerja sama dengan",
+    "naba": {
+      "name": "Yayasan an-Naba' al-'Azhim",
+      "place": "Mekah",
+      "text": "Mitra kami di Mekah: daurah Duta Qur'an dan sertifikatnya, serta kunjungan ke tempat bersejarah."
+    },
+    "hijaz": {
+      "name": "Markaz al-Hijaz",
+      "place": "al-Qur'an dan bahasa Arab",
+      "text": "Lembaga al-Qur'an dan bahasa Arab yang bersama kami menyelenggarakan program umrah dan pembelajarannya."
+    }
+  }
+}

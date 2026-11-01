@@ -1,0 +1,78 @@
+{
+  "seo": "Umrah programmes by Markaz Tadarus Indonesia: Umrah while learning and reflecting on the Qur'an in Makkah and Madinah — for everyone, for students, and for preachers and teachers.",
+  "eyebrow": "Umrah with Markaz Tadarus",
+  "title": "Tadarus in the Holy Land",
+  "tagline": "Uniting hearts with the Qur'an",
+  "lead": "Umrah while learning and reflecting on the Qur'an where it was revealed — Makkah and Madinah. Three programmes, for three groups of people.",
+  "see": "See the programmes",
+  "ask": "Ask on WhatsApp",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Umrah programmes of Markaz Tadarus Indonesia.",
+  "highlights": [
+    "Makkah & Madinah",
+    "Tadabbur where the Qur'an was revealed",
+    "With the an-Naba' al-'Azhim Academy"
+  ],
+  "programs": {
+    "title": "Choose your programme",
+    "lead": "Each one brings Umrah and learning the Qur'an together — they differ in who joins and what is studied.",
+    "ask": "Ask about the fee",
+    "open": "See details",
+    "ut": {
+      "tag": "Everyone",
+      "text": "Umrah while learning tadabbur of the Qur'an, with i'tikaf in the Prophet's Mosque and the Grand Mosque.",
+      "meta": [
+        "Madinah & Makkah",
+        "Guidance before & after"
+      ]
+    },
+    "ts": {
+      "tag": "Students, grades 8–12",
+      "text": "Qur'an and Arabic lessons in Makkah, with Umrah and the Prophet's footsteps.",
+      "meta": [
+        "5 hours of study a day",
+        "Certificate"
+      ]
+    },
+    "dq": {
+      "tag": "Preachers & teachers",
+      "text": "Training in the skills of tadabbur and Tadarus circles with the an-Naba' al-'Azhim Academy in Makkah.",
+      "meta": [
+        "12 days, 7 in Makkah",
+        "Accredited certificate"
+      ]
+    }
+  },
+  "leaders": {
+    "title": "Why study in Makkah?",
+    "lead": "In the words of the leaders of Markaz Tadarus Indonesia",
+    "rahmat": {
+      "role": "Patron of Markaz Tadarus Indonesia",
+      "text": "Markaz Tadarus Indonesia works to spread the values of the Qur'an as widely as possible across Indonesia. The highest aim of it all: that every Muslim can feel the Qur'an for themselves, at every moment."
+    },
+    "adnan": {
+      "role": "Patron of Markaz Tadarus Indonesia",
+      "text": "The Qur'an is a guide for life, full of moral, social and ethical values. Markaz Tadarus Indonesia helps people live with the Qur'an: understanding it, feeling it and living it every day."
+    },
+    "agus": {
+      "role": "Chairman of Markaz Tadarus Indonesia",
+      "text": "Makkah has been the heart of Islam since the revelation began. That is what makes this programme special: we study the Qur'an and Arabic in the noblest place, while doing the greatest of deeds."
+    }
+  },
+  "gallery": {
+    "title": "Programme gallery",
+    "lead": "Programmes held in 1446 AH / 2024"
+  },
+  "partners": {
+    "title": "In partnership with",
+    "naba": {
+      "name": "an-Naba' al-'Azhim Foundation",
+      "place": "Makkah",
+      "text": "Our partner in Makkah: the Duta Qur'an courses and their certificate, and visits to historic places."
+    },
+    "hijaz": {
+      "name": "Markaz al-Hijaz",
+      "place": "Qur'an and Arabic",
+      "text": "An institute for the Qur'an and Arabic that runs the Umrah programmes and their lessons with us."
+    }
+  }
+}

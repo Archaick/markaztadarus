@@ -1,0 +1,83 @@
+{
+  "title": "Majelis Tadarus 5T",
+  "lead": "Pembelajaran Tadarus al-Qur'an metode 5T untuk para santri atau masyarakat umum — dalam halaqah kecil yang hangat, pekan demi pekan.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang Majelis Tadarus 5T.",
+  "facts": {
+    "duration": {
+      "label": "Durasi",
+      "value": "30–60 menit per pertemuan"
+    },
+    "group": {
+      "label": "Halaqah",
+      "value": "5–10 orang"
+    },
+    "intensity": {
+      "label": "Intensitas",
+      "value": "Minimal 1 ayat per pekan"
+    },
+    "participants": {
+      "label": "Peserta",
+      "value": "Pelajar & masyarakat umum"
+    }
+  },
+  "goals": {
+    "general": {
+      "title": "Tujuan Umum",
+      "items": [
+        "Mengamalkan sunnah bertadarus al-Qur'an.",
+        "Mengamalkan nilai al-Qur'an dalam keseharian."
+      ]
+    },
+    "specific": {
+      "title": "Tujuan Khusus",
+      "items": [
+        "Mampu menghayati dan menikmati al-Qur'an secara mandiri."
+      ]
+    }
+  },
+  "curriculum": {
+    "text": "Dimulai dari surat-surat pendek yang akrab, lalu bertahap menuju juz-juz berikutnya dan ayat-ayat pilihan.",
+    "items": [
+      "Ad-Dhuha s/d an-Nas",
+      "Al-Lail s/d an-Naba",
+      "Al-Mulk s/d al-Mursalat",
+      "Al-Mujadilah s/d at-Tahrim",
+      "Qaf s/d al-Hadid",
+      "Ayat-ayat atau surat-surat pilihan"
+    ]
+  },
+  "details": {
+    "method": {
+      "title": "Pola Pembelajaran",
+      "items": [
+        "Tanya jawab antara pemateri dan peserta.",
+        "Diskusi interaktif sesama peserta."
+      ]
+    },
+    "requirements": {
+      "title": "Syarat Peserta",
+      "items": [
+        "Ikhwan dan akhwat.",
+        "Berkomitmen dalam belajar."
+      ]
+    }
+  },
+  "modules": {
+    "tadarus": {
+      "tag": "Pegangan guru & peserta",
+      "title": "Kitab Tadarus Mubtadi",
+      "text": "Rujukan utama majelis, disusun mengikuti Metode 5T: Tamhid, Tafsir, Tadabbur hingga Tazkiyah."
+    },
+    "children": {
+      "tag": "Untuk anak",
+      "title": "Kitab Pendidikan Qur'ani Anak",
+      "text": "Membentuk kepribadian Qur'ani anak melalui surat adh-Dhuha sampai an-Nas, dengan latihan pengamalan."
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "curriculum": "Kurikulum",
+    "details": "Pelaksanaan",
+    "books": "Modul"
+  }
+}

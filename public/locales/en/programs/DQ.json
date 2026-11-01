@@ -1,0 +1,132 @@
+{
+  "title": "Duta Qur'an",
+  "lead": "A special training in Makkah for selected Qur'an specialists and preachers — the skills of tadabbur, linking the Qur'an's values to everyday life, and running a Tadarus circle.",
+  "seo": "Duta Qur'an (Qur'an Ambassadors): tadabbur training in Makkah for preachers and teachers with the an-Naba' al-'Azhim Academy, with Umrah.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Duta Qur'an programme.",
+  "facts": {
+    "audience": {
+      "label": "For",
+      "value": "Selected preachers & teachers"
+    },
+    "price": {
+      "label": "Fee",
+      "value": "Rp 24,500,000"
+    },
+    "length": {
+      "label": "Length",
+      "value": "12 days, 7 in Makkah"
+    },
+    "partner": {
+      "label": "With",
+      "value": "an-Naba' al-'Azhim Academy"
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "schedule": "Itinerary",
+    "facilities": "Facilities",
+    "requirements": "Requirements",
+    "media": "Video & brochure"
+  },
+  "goals": {
+    "aims": {
+      "title": "Goal",
+      "items": [
+        "Preparing ambassadors for Markaz Tadarus Indonesia and the an-Naba' al-'Azhim Academy who can reflect on the Qur'an and live its values every day."
+      ]
+    },
+    "strengths": {
+      "title": "What makes it special",
+      "items": [
+        "It takes place in the holy city of Makkah.",
+        "Visits to historic places in Makkah with the an-Naba' Academy.",
+        "A certificate accredited by the an-Naba' Academy.",
+        "A training book pack."
+      ]
+    }
+  },
+  "schedule": {
+    "columns": [
+      "Day",
+      "Programme"
+    ],
+    "rows": [
+      [
+        "1",
+        "Arrival in Makkah, to the hotel"
+      ],
+      [
+        "2",
+        "Performing Umrah"
+      ],
+      [
+        "3",
+        "Course \"The 5T Tadarus Circle\": theory and practice"
+      ],
+      [
+        "4",
+        "Courses \"Guidance of the Qur'an\" and \"Applying the verses to reality\""
+      ],
+      [
+        "5",
+        "Course \"Skills of Tadabbur\""
+      ],
+      [
+        "6",
+        "Course \"Skills of Tadabbur\" (continued)"
+      ],
+      [
+        "7",
+        "Course \"The children's Tadabbur book\""
+      ],
+      [
+        "8",
+        "Free time and closing"
+      ],
+      [
+        "9",
+        "To Madinah"
+      ],
+      [
+        "10",
+        "In Madinah"
+      ],
+      [
+        "11",
+        "Visits"
+      ],
+      [
+        "12",
+        "Return to Indonesia"
+      ]
+    ]
+  },
+  "requirements": {
+    "who": {
+      "title": "Who can join",
+      "items": [
+        "Men or women.",
+        "At least a bachelor's degree in Islamic studies.",
+        "Influential in da'wah, especially in the Qur'an and its sciences.",
+        "Has a da'wah institution to run the programme in.",
+        "Aged 25–60.",
+        "Fluent and active in Arabic.",
+        "Skilled and regular in reciting the Qur'an.",
+        "Able to translate Arabic texts into Indonesian.",
+        "Sound Islamic belief and thought (not deviant or liberal).",
+        "No police record and of good character.",
+        "Recommended by the institution they serve.",
+        "Committed to attending 100% of the training, theory and practice."
+      ]
+    },
+    "documents": {
+      "title": "Documents",
+      "items": [
+        "A recommendation from the institution.",
+        "Passport.",
+        "ID card.",
+        "CV."
+      ]
+    }
+  }
+}

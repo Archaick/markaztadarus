@@ -1,0 +1,85 @@
+{
+  "title": "Umrah Tadabburiyah",
+  "lead": "Umrah while learning to reflect on the Qur'an where it was revealed — Madinah and Makkah — with i'tikaf in the Prophet's Mosque and the Grand Mosque.",
+  "seo": "Umrah Tadabburiyah: Umrah together with learning tadabbur of the Qur'an in Makkah and Madinah, with Markaz Tadarus Indonesia.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about Umrah Tadabburiyah.",
+  "facts": {
+    "audience": {
+      "label": "For",
+      "value": "Everyone"
+    },
+    "place": {
+      "label": "Where",
+      "value": "Madinah & Makkah"
+    },
+    "guidance": {
+      "label": "Guidance",
+      "value": "Before & after the Umrah"
+    },
+    "documents": {
+      "label": "Documents",
+      "value": "Passport & ID card"
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "journey": "The journey",
+    "facilities": "Facilities",
+    "media": "Video"
+  },
+  "goals": {
+    "aims": {
+      "title": "Goals",
+      "items": [
+        "Learning the greatness of the Qur'an.",
+        "Learning the keys to reflecting on the Qur'an.",
+        "Performing Umrah.",
+        "I'tikaf in the Grand Mosque and the Prophet's Mosque."
+      ]
+    },
+    "strengths": {
+      "title": "What makes it special",
+      "items": [
+        "Learning the Qur'an from its meaning through to living it.",
+        "Guidance to perform Umrah semi-independently.",
+        "Intensive tadabbur guidance before and after the programme.",
+        "Coming home loving the Qur'an more."
+      ]
+    }
+  },
+  "journey": {
+    "before": {
+      "title": "Before departure",
+      "items": [
+        "The Umrah of the Prophet and his companions.",
+        "The virtues of Makkah and Madinah.",
+        "The keys to tadabbur of the Qur'an."
+      ]
+    },
+    "madinah": {
+      "title": "Madinah",
+      "items": [
+        "Tadabbur of the Qur'an.",
+        "I'tikaf in the Prophet's Mosque.",
+        "Walking to Quba Mosque.",
+        "Visits to historic places."
+      ]
+    },
+    "makkah": {
+      "title": "Makkah",
+      "items": [
+        "Umrah.",
+        "Tadabbur of the Qur'an.",
+        "I'tikaf in the Grand Mosque.",
+        "Qur'anic advice.",
+        "A museum visit."
+      ]
+    },
+    "after": {
+      "title": "Back home",
+      "items": [
+        "Regular Tadarus guidance, online and in person."
+      ]
+    }
+  }
+}

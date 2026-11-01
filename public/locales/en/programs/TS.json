@@ -1,0 +1,190 @@
+{
+  "title": "Tadarus Santri",
+  "lead": "A short study programme in Makkah for school students: understanding, feeling and living the Qur'an and learning Arabic — together with Umrah and visits to historic places.",
+  "seo": "Tadarus Santri: a Qur'an and Arabic study programme in Makkah for secondary-school students, with Umrah.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Tadarus Santri programme.",
+  "facts": {
+    "audience": {
+      "label": "For",
+      "value": "Students, grade 8 to 12"
+    },
+    "price": {
+      "label": "Fee",
+      "value": "Rp 42,500,000"
+    },
+    "study": {
+      "label": "Study",
+      "value": "5 hours a day"
+    },
+    "place": {
+      "label": "Where",
+      "value": "Makkah, with a visit to Madinah"
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "activities": "Activities",
+    "schedule": "Daily schedule",
+    "facilities": "Facilities",
+    "requirements": "Requirements",
+    "media": "Video & brochure"
+  },
+  "goals": {
+    "aims": {
+      "title": "Goals",
+      "items": [
+        "Understanding the main purpose of studying the Qur'an.",
+        "Understanding the full meaning of the word \"Tadarus\".",
+        "Understanding how the Prophet and his companions studied the Qur'an together.",
+        "Applying the 5T method in Tadarus.",
+        "Living the sunnah of Tadarus.",
+        "Uniting hearts with the Qur'an.",
+        "Living the values of the Qur'an every day.",
+        "Reflecting on and enjoying the Qur'an on one's own."
+      ]
+    },
+    "strengths": {
+      "title": "What makes it special",
+      "items": [
+        "It takes place in the holy city of Makkah.",
+        "Following the Prophet's footsteps around the Grand Mosque.",
+        "Performing Umrah.",
+        "Qur'anic advice from one of the scholars of Makkah."
+      ]
+    }
+  },
+  "activities": {
+    "quran": {
+      "title": "Qur'an class",
+      "items": [
+        "Tadarus of the Qur'an with the 5T method."
+      ]
+    },
+    "arabic": {
+      "title": "Arabic class",
+      "items": [
+        "Intensive Arabic lessons in class."
+      ]
+    },
+    "deepening": {
+      "title": "Going deeper into the Qur'an",
+      "items": [
+        "Studying verses connected to the places we visit.",
+        "Memorisation and completing the Qur'an.",
+        "Presenting verses.",
+        "Making Tadarus cards.",
+        "Watching films on Islamic history.",
+        "Tadarus games.",
+        "\"The verse that touched my heart\".",
+        "Mapping the verses."
+      ]
+    },
+    "outdoor": {
+      "title": "Outside the classroom",
+      "items": [
+        "Voluntary tawaf and night prayer.",
+        "The Prophet's footsteps around the Grand Mosque.",
+        "A night at a villa in Makkah.",
+        "Football or other sports.",
+        "A visit to the desert or a museum.",
+        "A visit to Madinah.",
+        "Visits to schools in Makkah or Madinah."
+      ]
+    }
+  },
+  "schedule": {
+    "columns": [
+      "Time",
+      "Activity",
+      "Place"
+    ],
+    "rows": [
+      [
+        "05:00",
+        "Fajr prayer",
+        "Grand Mosque"
+      ],
+      [
+        "09:00",
+        "Morning Tadarus",
+        "Hotel classroom"
+      ],
+      [
+        "11:30",
+        "Dhuhr prayer, lunch and rest",
+        "Mosque near the hotel"
+      ],
+      [
+        "15:00",
+        "Asr prayer",
+        "Hotel mosque"
+      ],
+      [
+        "16:00",
+        "Going deeper into the Qur'an",
+        "Hotel classroom"
+      ],
+      [
+        "17:00",
+        "Maghrib prayer",
+        "Grand Mosque"
+      ],
+      [
+        "18:30",
+        "I'tikaf and recitation",
+        "Grand Mosque"
+      ],
+      [
+        "19:30",
+        "Isha prayer",
+        "Grand Mosque"
+      ],
+      [
+        "20:00",
+        "Dinner",
+        "Hotel restaurant"
+      ],
+      [
+        "21:30",
+        "Rest",
+        "Hotel room"
+      ]
+    ]
+  },
+  "requirements": {
+    "who": {
+      "title": "Who can join",
+      "items": [
+        "Junior high students, grades 8 and 9.",
+        "Senior high students, grades 10 to 12.",
+        "Healthy in body and mind.",
+        "Permission from a parent or guardian."
+      ]
+    },
+    "documents": {
+      "title": "Documents",
+      "items": [
+        "A recommendation from the school.",
+        "Passport.",
+        "Family card / ID card.",
+        "CV."
+      ]
+    },
+    "travel": {
+      "title": "Getting ready to travel",
+      "items": [
+        "Own passport.",
+        "Meningitis vaccination.",
+        "Ihram clothing.",
+        "Own suitcase."
+      ]
+    },
+    "registration": {
+      "title": "Registration & payment",
+      "items": [
+        "Register at least 60 days before departure with complete participant details.",
+        "Pay in 2 stages: 50% at least 90 days before departure, the rest at least 30 days before departure."
+      ]
+    }
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "title": "Duta Qur'an",
+  "lead": "Pelatihan khusus di Mekah bagi kader pilihan — ahli Qur'an dan dai — seputar keahlian tadabbur, mengaitkan nilai al-Qur'an dengan realita kehidupan, dan menjalankan majelis Tadarus.",
+  "seo": "Duta Qur'an: pelatihan tadabbur al-Qur'an di Mekah untuk dai dan asatidz bersama Akademi an-Naba' al-'Azhim, sekaligus umrah.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang program Duta Qur'an.",
+  "facts": {
+    "audience": {
+      "label": "Untuk",
+      "value": "Dai & asatidz terpilih"
+    },
+    "price": {
+      "label": "Biaya",
+      "value": "Rp 24.500.000"
+    },
+    "length": {
+      "label": "Lama",
+      "value": "12 hari, 7 hari di Mekah"
+    },
+    "partner": {
+      "label": "Bersama",
+      "value": "Akademi an-Naba' al-'Azhim"
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "schedule": "Jadwal",
+    "facilities": "Fasilitas",
+    "requirements": "Syarat",
+    "media": "Video & brosur"
+  },
+  "goals": {
+    "aims": {
+      "title": "Tujuan program",
+      "items": [
+        "Mencetak duta Markaz Tadarus Indonesia dan Akademi an-Naba' al-'Azhim yang mampu mentadabburi al-Qur'an dan menerapkan nilai-nilainya dalam keseharian."
+      ]
+    },
+    "strengths": {
+      "title": "Keunggulan program",
+      "items": [
+        "Berlangsung di kota suci Mekah.",
+        "Kunjungan tempat bersejarah di Mekah bersama Akademi an-Naba'.",
+        "Sertifikat terakreditasi Akademi an-Naba'.",
+        "Buku paket pelatihan."
+      ]
+    }
+  },
+  "schedule": {
+    "columns": [
+      "Hari",
+      "Kegiatan"
+    ],
+    "rows": [
+      [
+        "1",
+        "Tiba di Mekah, menuju hotel"
+      ],
+      [
+        "2",
+        "Melaksanakan umrah"
+      ],
+      [
+        "3",
+        "Daurah \"Majelis Tadarus Metode 5T\": teori dan praktik"
+      ],
+      [
+        "4",
+        "Daurah \"Hidayatul Qur'an\" dan \"Tanzil al-Ayat lil Waqi'\""
+      ],
+      [
+        "5",
+        "Daurah \"Keahlian Tadabbur\""
+      ],
+      [
+        "6",
+        "Daurah \"Keahlian Tadabbur\" (lanjutan)"
+      ],
+      [
+        "7",
+        "Daurah \"Kitab Tadabbur Anak\""
+      ],
+      [
+        "8",
+        "Acara bebas dan penutupan"
+      ],
+      [
+        "9",
+        "Menuju Madinah"
+      ],
+      [
+        "10",
+        "Di Madinah"
+      ],
+      [
+        "11",
+        "Kunjungan-kunjungan"
+      ],
+      [
+        "12",
+        "Kembali ke Indonesia"
+      ]
+    ]
+  },
+  "requirements": {
+    "who": {
+      "title": "Syarat peserta",
+      "items": [
+        "Ikhwan atau akhwat.",
+        "Minimal S1 dalam ilmu syar'i.",
+        "Berpengaruh dalam dakwah, terutama di bidang al-Qur'an dan ilmu-ilmunya.",
+        "Memiliki lembaga dakwah untuk menerapkan program.",
+        "Berusia 25–60 tahun.",
+        "Fasih dan aktif berbahasa Arab.",
+        "Mahir dan rutin tilawah al-Qur'an.",
+        "Mampu menerjemahkan teks Arab ke bahasa Indonesia.",
+        "Berakidah dan berpemikiran Islam yang lurus (tidak menyimpang atau liberal).",
+        "Tidak pernah tersangkut kasus kepolisian dan berbudi pekerti baik.",
+        "Mendapat rekomendasi dari lembaga tempat berkhidmah.",
+        "Berkomitmen mengikuti 100% pelatihan, teori maupun praktik."
+      ]
+    },
+    "documents": {
+      "title": "Dokumen",
+      "items": [
+        "Rekomendasi lembaga.",
+        "Paspor.",
+        "KTP.",
+        "CV."
+      ]
+    }
+  }
+}

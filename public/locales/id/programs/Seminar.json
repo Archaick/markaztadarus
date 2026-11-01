@@ -1,0 +1,95 @@
+{
+  "title": "Seminar Tadarus 5T",
+  "lead": "Kuliah umum yang memperkenalkan Tadarus al-Qur'an Metode 5T, disampaikan secara interaktif — langsung dipraktikkan bersama dalam halaqah.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nAfwan, saya ingin bertanya tentang Seminar Tadarus 5T.",
+  "facts": {
+    "duration": {
+      "label": "Durasi",
+      "value": "± 2–3 jam"
+    },
+    "size": {
+      "label": "Peserta",
+      "value": "Online 50 · Offline 100 orang"
+    },
+    "group": {
+      "label": "Halaqah",
+      "value": "Maksimal 10 orang"
+    },
+    "audience": {
+      "label": "Untuk",
+      "value": "Pimpinan lembaga, dai, guru & praktisi al-Qur'an"
+    }
+  },
+  "tabs": {
+    "goals": "Tujuan",
+    "topics": "Materi",
+    "agenda": "Susunan Acara",
+    "details": "Pelaksanaan",
+    "certificate": "Sertifikat"
+  },
+  "goals": {
+    "general": {
+      "title": "Tujuan Umum",
+      "items": [
+        "Memahami tujuan utama mempelajari al-Qur'an.",
+        "Memahami arti kata \"Tadarus\" secara utuh.",
+        "Memahami definisi 5T serta perbedaan Tafsir dan Tadabbur.",
+        "Mengetahui kunci-kunci tadabbur untuk memetik pelajaran dari ayat.",
+        "Memahami cara mengamalkan ayat dalam keseharian."
+      ]
+    },
+    "specific": {
+      "title": "Tujuan Khusus",
+      "items": [
+        "Menyeleksi peserta yang akan mengikuti program ToT (Training of Trainers)."
+      ]
+    }
+  },
+  "topics": {
+    "text": "Tema utama: Seminar Tadarus 5T, dengan sub tema:",
+    "items": [
+      "Tadarus 5T",
+      "Kunci-kunci tadabbur",
+      "Praktik singkat",
+      "Pengenalan Program Duta Qur'an di Mekah"
+    ]
+  },
+  "agenda": [
+    "Sambutan-sambutan",
+    "Pengenalan program Duta Qur'an",
+    "Materi 1: Tadarus Metode 5T",
+    "Istirahat",
+    "Kesimpulan dari peserta",
+    "Materi 2: Kunci Tadabbur dan praktik Tadarus 5T",
+    "Kesan dan pesan dari peserta",
+    "Penutup"
+  ],
+  "details": {
+    "method": {
+      "title": "Pola Pembelajaran",
+      "items": [
+        "Tanya jawab antara pemateri dan peserta.",
+        "Diskusi interaktif per halaqah.",
+        "Presentasi perwakilan setiap halaqah."
+      ]
+    },
+    "requirements": {
+      "title": "Syarat Peserta",
+      "items": [
+        "Ikhwan dan akhwat.",
+        "Berusia minimal 20 tahun."
+      ]
+    },
+    "funding": {
+      "title": "Pembiayaan",
+      "items": [
+        "Transportasi, akomodasi dan modul pembelajaran ditanggung pihak penyelenggara.",
+        "Markaz Tadarus Indonesia menerima infaq dan shadaqah untuk mendukung dakwah Tadarus 5T."
+      ]
+    }
+  },
+  "certificate": {
+    "title": "E-sertifikat keikutsertaan",
+    "text": "Setiap peserta mendapatkan e-sertifikat (PDF) dengan desain resmi Markaz Tadarus Indonesia, seperti contoh ini."
+  }
+}

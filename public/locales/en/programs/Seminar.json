@@ -1,0 +1,95 @@
+{
+  "title": "Seminar Tadarus 5T",
+  "lead": "A public lecture introducing Tadarus of the Qur'an with the 5T method, delivered interactively — and practised together in circles.",
+  "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Seminar Tadarus 5T.",
+  "facts": {
+    "duration": {
+      "label": "Duration",
+      "value": "About 2–3 hours"
+    },
+    "size": {
+      "label": "Participants",
+      "value": "50 online · 100 in person"
+    },
+    "group": {
+      "label": "Circles",
+      "value": "Up to 10 people"
+    },
+    "audience": {
+      "label": "For",
+      "value": "Heads of institutions, preachers, Qur'an teachers & practitioners"
+    }
+  },
+  "tabs": {
+    "goals": "Goals",
+    "topics": "Topics",
+    "agenda": "Programme",
+    "details": "How it runs",
+    "certificate": "Certificate"
+  },
+  "goals": {
+    "general": {
+      "title": "General goals",
+      "items": [
+        "Understanding the main purpose of studying the Qur'an.",
+        "Understanding the full meaning of the word \"Tadarus\".",
+        "Understanding the 5T method and the difference between Tafsir and Tadabbur.",
+        "Knowing the keys of tadabbur to draw lessons from a verse.",
+        "Understanding how to live a verse every day."
+      ]
+    },
+    "specific": {
+      "title": "Specific goal",
+      "items": [
+        "Selecting participants for the ToT (Training of Trainers) programme."
+      ]
+    }
+  },
+  "topics": {
+    "text": "Main theme: Seminar Tadarus 5T, with these sub-themes:",
+    "items": [
+      "Tadarus 5T",
+      "The keys of tadabbur",
+      "A short practice",
+      "Introducing the Qur'an Ambassador programme in Makkah"
+    ]
+  },
+  "agenda": [
+    "Opening words",
+    "Introducing the Qur'an Ambassador programme",
+    "Session 1: Tadarus with the 5T method",
+    "Break",
+    "Participants' conclusions",
+    "Session 2: The keys of tadabbur and 5T practice",
+    "Participants' impressions",
+    "Closing"
+  ],
+  "details": {
+    "method": {
+      "title": "How we learn",
+      "items": [
+        "Questions and answers between speaker and participants.",
+        "Interactive discussion in each circle.",
+        "A presentation by each circle."
+      ]
+    },
+    "requirements": {
+      "title": "Requirements",
+      "items": [
+        "Men and women.",
+        "At least 20 years old."
+      ]
+    },
+    "funding": {
+      "title": "Costs",
+      "items": [
+        "Transport, accommodation and learning materials are covered by the host.",
+        "Markaz Tadarus Indonesia welcomes infaq and sadaqah to support spreading Tadarus 5T."
+      ]
+    }
+  },
+  "certificate": {
+    "title": "E-certificate of participation",
+    "text": "Every participant receives an e-certificate (PDF) in the official Markaz Tadarus Indonesia design, like this one."
+  }
+}

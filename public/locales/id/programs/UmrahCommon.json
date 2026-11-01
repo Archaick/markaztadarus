@@ -1,0 +1,26 @@
+{
+  "umrah": "Umrah",
+  "priceLabel": "Biaya program",
+  "included": "Sudah termasuk semua fasilitas di bawah ini",
+  "facility": {
+    "briefing": "Pembekalan sebelum keberangkatan",
+    "ticket": "Tiket pesawat pulang-pergi",
+    "visa": "Visa dan bus selama di Saudi",
+    "leader": "Tour leader",
+    "transport": "Transportasi Jeddah–Mekah–Madinah",
+    "room": "Tempat tinggal di Mekah & Madinah",
+    "food": "Makan 3x sehari",
+    "foodTraining": "Makan 3x sehari selama kegiatan",
+    "visits": "Kunjungan-kunjungan",
+    "visitsHistoric": "Kunjungan ke tempat bersejarah di Mekah dan Madinah",
+    "module": "Modul pembelajaran",
+    "bookPack": "Buku paket daurah",
+    "alumni": "Kelas Tadarus untuk alumni",
+    "language": "Pendalaman bahasa non-klasikal setiap Jumat dan Sabtu",
+    "hours": "Belajar 5 jam sehari, pagi dan sore",
+    "certificate": "Sertifikat",
+    "certificateTraining": "Sertifikat pelatihan",
+    "friends": "Berteman dengan santri Mekah",
+    "academy": "Daurah bersama Akademi an-Naba' al-'Azhim di Mekah"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "eyebrow": "Our Books",
+  "title": "Tadarus books",
+  "lead": "Written by Markaz Tadarus Indonesia to teach Tadarus of the Qur'an with the 5T method — for adults in study circles, and for children at school and at home.",
+  "pick": "Choose a book",
+  "editions": {
+    "id": "Indonesian edition",
+    "ar": "Arabic edition"
+  },
+  "ask": "Ask on WhatsApp",
+  "preview": "See sample pages",
+  "order": "Order the book",
+  "close": "Close",
+  "tadarus": {
+    "tag": "Adults & everyone",
+    "title": "The Tadarus al-Qur'an Book",
+    "text": "A reference for teachers and participants of Tadarus circles, and for reading on your own. It covers the mufassal surahs — Qaf to an-Nas — in 4 books.",
+    "stepsTitle": "Every surah is presented with the 5T method",
+    "steps": {
+      "tamhid": "Opening questions about the surah",
+      "tilawah": "The text of the verses",
+      "tafsir": "A short explanation of their meaning",
+      "tadabbur": "Lessons from the verses",
+      "tazkiyah": "Living the verses, in the heart and in deeds"
+    },
+    "seriesTitle": "4 books in one series",
+    "series": [
+      {
+        "name": "Juz 30",
+        "text": "An-Naba to an-Nas, with al-Fatihah at the front — the first book."
+      },
+      {
+        "name": "Juz 29",
+        "text": "Al-Mulk to al-Mursalat."
+      },
+      {
+        "name": "Juz 28",
+        "text": "Al-Mujadilah to at-Tahrim."
+      },
+      {
+        "name": "Juz 27",
+        "text": "Adh-Dhariyat to al-Hadid, with surah Qaf."
+      }
+    ],
+    "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Tadarus al-Qur'an book."
+  },
+  "children": {
+    "tag": "Ages 6–10",
+    "title": "Qur'anic Education for Children",
+    "text": "A guide to Qur'anic education that shapes a child's Qur'anic character through the surahs from ad-Duha to an-Nas.",
+    "features": [
+      {
+        "title": "Aim",
+        "text": "Planting faith by learning verses and surahs."
+      },
+      {
+        "title": "What makes it special",
+        "text": "Practice tasks that strengthen living by Qur'anic values."
+      },
+      {
+        "title": "For",
+        "text": "Kindergartens and primary schools, Qur'an classes, tahfiz schools and families at home."
+      }
+    ],
+    "whatsapp": "Assalamu'alaikum warahmatullah wabarakatuh.\n\nI would like to ask about the Qur'anic Education for Children book."
+  },
+  "form": {
+    "sets": "Sets (1 set = 6 books)",
+    "setPrice": "Rp {{price}} per set",
+    "single": "or order single books",
+    "book": "Book {{n}}",
+    "name": "Your name",
+    "phone": "WhatsApp number",
+    "phoneHint": "e.g. 08123456789",
+    "org": "Organisation / school",
+    "address": "Delivery name & address",
+    "addressHint": "Street, city, province, postcode",
+    "totalSets": "Sets",
+    "totalSingle": "Single books",
+    "total": "Total",
+    "send": "Send the order on WhatsApp"
+  }
+}
