@@ -5,13 +5,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* the certificate's own paper colour, so it has no margins around it */
-  background: radial-gradient(circle at 50% 35%, #e3f0eb 0%, #cfe3dc 60%, #bdd7ce 100%);
+  /* a deeper shade of the certificate's paper, so the sheet stands out on it */
+  background: radial-gradient(circle at 50% 30%, #b9cfc6 0%, #a3bdb2 55%, #8daa9e 100%);
   font-family: "Outfit", "Inter", "Cairo", sans-serif;
 }
 
 .revoked {
-  background: #e9ecef;
+  background: #ced4da;
 }
 
 /* the proof, in a slim bar that stays on top */
@@ -118,9 +118,16 @@
 
 /* as large as fits the screen below the bar (A4 landscape is 1.414 wide) */
 .sheet {
-  width: min(100%, calc((100svh - 64px) * 1.4143));
-  margin: 0 auto;
-  box-shadow: 0 30px 60px -30px rgba(16, 52, 42, 0.55);
+  width: min(calc(100% - 48px), calc((100svh - 112px) * 1.4143));
+  margin: 24px auto 0;
+  border-radius: 4px;
+  overflow: hidden;
+  /* lifted off the page: a tight contact shadow and a soft long one */
+  box-shadow:
+    0 0 0 1px rgba(16, 52, 42, 0.08),
+    0 2px 6px rgba(16, 52, 42, 0.18),
+    0 22px 48px -10px rgba(16, 52, 42, 0.45),
+    0 50px 90px -30px rgba(16, 52, 42, 0.4);
 }
 
 .revoked .sheet {
@@ -137,27 +144,24 @@
   color: #1f5446;
 }
 
-/* below the fold: only what the certificate does not print */
+/* under the certificate: where the data comes from */
 .below {
   width: min(760px, 100%);
-  padding: 22px 16px 36px;
-}
-
-.below dl {
-  margin: 0;
+  padding: 4px 16px 28px;
 }
 
 .footer {
   margin: 14px 0 0;
   font-size: 0.82rem;
   text-align: center;
-  color: #4b6b61;
+  color: #2f5247;
 }
 
 /* a phone turned sideways: the full width, even if it means a short scroll */
 @media (max-height: 500px) and (orientation: landscape) {
   .sheet {
-    width: 100%;
+    width: calc(100% - 24px);
+    margin-top: 12px;
   }
 
   .bar {
@@ -165,10 +169,11 @@
   }
 }
 
-/* a phone held upright: the certificate edge to edge, and a hint to turn it */
+/* a phone held upright: the certificate nearly edge to edge, and a hint to turn it */
 @media (max-width: 700px) and (orientation: portrait) {
   .sheet {
-    width: 100%;
+    width: calc(100% - 16px);
+    margin-top: 12px;
   }
 
   .rotate {

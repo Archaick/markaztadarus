@@ -8,9 +8,9 @@ import styles from "./VerifiedSheet.module.css";
  * A Studio certificate's verification page: the certificate itself fills the
  * screen (as large as fits, on its own paper colour), under a slim bar that
  * says it is genuine (or revoked), with its code, a PDF of it and the
- * language. Below it, only what the page does not print: the dates.
+ * language. Below it, one line on where the data comes from.
  */
-export default function VerifiedSheet({ sheet, cert, revoked, details, langs, footer }) {
+export default function VerifiedSheet({ sheet, cert, revoked, langs, footer }) {
   const { t } = useTranslation("verification/CertificateVerify");
   const box = useRef(null);
   const [width, setWidth] = useState(0);
@@ -77,7 +77,6 @@ export default function VerifiedSheet({ sheet, cert, revoked, details, langs, fo
       </p>
 
       <div className={styles.below}>
-        {details}
         <p className={styles.footer}>{footer}</p>
       </div>
     </div>

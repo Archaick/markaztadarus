@@ -166,28 +166,6 @@ export default function CertificateVerify() {
           revoked={revoked}
           langs={langs}
           footer={revoked ? t("footer_revoked") : t("footer_text")}
-          details={
-            <dl className={styles.details}>
-              {event && (
-                <div>
-                  <dt>{t("event_date")}</dt>
-                  <dd>{dateFormat.format(event)}</dd>
-                </div>
-              )}
-              {issued && (
-                <div>
-                  <dt>{t("issued_on")}</dt>
-                  <dd>{dateFormat.format(issued)}</dd>
-                </div>
-              )}
-              <div>
-                <dt>{t("document_code")}</dt>
-                <dd>
-                  <bdi className={styles.code}>{cert.code}</bdi>
-                </dd>
-              </div>
-            </dl>
-          }
         />
       </main>
     );
