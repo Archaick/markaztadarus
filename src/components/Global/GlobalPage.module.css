@@ -520,3 +520,20 @@
   color: rgba(255, 255, 255, 0.75);
   font-size: 0.78rem;
 }
+
+/* the province tapped on the globe, under Indonesia's figures */
+.provinceLine {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(242, 201, 76, 0.12);
+  border: 1px solid rgba(242, 201, 76, 0.35);
+}
+.provinceLine span {
+  color: #f2c94c;
+  font-weight: 700;
+  white-space: nowrap;
+}

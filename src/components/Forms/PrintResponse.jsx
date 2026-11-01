@@ -51,7 +51,7 @@ export default function PrintResponse({ opened, onClose, form, response, respons
   const footer = `${form.title} · ${t("responses.responseN", { n: responseNo })} · ${formatDateTime(response?.submittedAt)}`;
   const nameOf = (s, i) => s.title || (i === 0 ? form.title : t("builder.sectionOf", { n: i + 1, total: sections.length }));
 
-  const print = () => printSheet(`${form.title} - ${t("responses.responseN", { n: responseNo })}`);
+  const print = () => printSheet(`${form.title} - ${t("responses.responseN", { n: responseNo })}`, sheetRef.current);
 
   const share = async () => {
     if (!sheetRef.current || !chosen.length) return;

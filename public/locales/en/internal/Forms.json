@@ -177,7 +177,9 @@
     "csvSubmitted": "Submitted at",
     "csvRemoved": "Removed question {{id}}",
     "exportExcel": "Download Excel",
-    "reportFailed": "The report could not be made. Try again."
+    "reportFailed": "The report could not be made. Try again.",
+    "viewSummary": "Summary",
+    "viewList": "Responses ({{count}})"
   },
   "share": {
     "draftTitle": "This form is still a draft",

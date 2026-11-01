@@ -175,7 +175,9 @@
     "csvSubmitted": "Waktu kirim",
     "csvRemoved": "Pertanyaan dihapus {{id}}",
     "exportExcel": "Unduh Excel",
-    "reportFailed": "Laporan gagal dibuat. Coba lagi."
+    "reportFailed": "Laporan gagal dibuat. Coba lagi.",
+    "viewSummary": "Ringkasan",
+    "viewList": "Jawaban ({{count}})"
   },
   "share": {
     "draftTitle": "Formulir ini masih draf",

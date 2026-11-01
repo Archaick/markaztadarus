@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   increment,
   limit,
@@ -14,7 +15,16 @@ import {
 } from "firebase/firestore";
 import { IconArrowRight, IconHome2, IconLinkOff, IconLock, IconRefresh } from "@tabler/icons-react";
 import { db } from "../../../firebaseConfig";
-import { REDIRECT_COLLECTION, destinationKind, legacyDestination, linkState, normalizePath } from "./redirectSchema";
+import {
+  PATH_PATTERN,
+  REDIRECT_COLLECTION,
+  REDIRECT_PUBLIC,
+  destinationKind,
+  legacyDestination,
+  linkState,
+  normalizePath,
+  publicId,
+} from "./redirectSchema";
 import LoaderGlobe from "../Common/LoaderGlobe";
 import styles from "./Redirects.module.css";
 
@@ -52,13 +62,10 @@ export default function Redirects() {
     (async () => {
       try {
         const source = normalizePath(shortCode);
-        const snap = await getDocs(
-          query(collection(db, REDIRECT_COLLECTION), where("source", "==", source), limit(1))
-        );
+        const link = PATH_PATTERN.test(source) ? await findLink(source) : null;
         if (!alive) return;
 
-        if (!snap.empty) {
-          const link = { id: snap.docs[0].id, ...snap.docs[0].data() };
+        if (link) {
           const status = linkState(link);
           if (status !== "active" || !link.destination) {
             setState({ phase: "closed", title: link.title, status });
@@ -181,6 +188,20 @@ export default function Redirects() {
       </section>
     </main>
   );
+}
+
+// The link's public copy; links not copied yet (until the dashboard has
+// been opened once) are still looked up the old way.
+async function findLink(source) {
+  const copy = await getDoc(doc(db, REDIRECT_PUBLIC, publicId(source)));
+  if (copy.exists()) return { ...copy.data(), id: copy.data().linkId };
+  try {
+    const snap = await getDocs(query(collection(db, REDIRECT_COLLECTION), where("source", "==", source), limit(1)));
+    return snap.empty ? null : { id: snap.docs[0].id, ...snap.docs[0].data() };
+  } catch {
+    // closed to the public once every link has its copy: the path is unknown
+    return null;
+  }
 }
 
 function Notice({ icon, title, text, extra, home, action }) {

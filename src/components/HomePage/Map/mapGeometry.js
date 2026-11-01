@@ -1,8 +1,12 @@
 import { geoMercator, geoPath } from "d3-geo";
-import { feature } from "topojson-client";
+import { feature, merge } from "topojson-client";
 import topoData from "../../../data/indonesia-provinces.topo.json";
 
-export const ALL_PROVINCES = feature(topoData, topoData.objects["indonesia-38-prov-topo"]).features;
+const PROVINCE_SHAPES = topoData.objects["indonesia-38-prov-topo"];
+export const ALL_PROVINCES = feature(topoData, PROVINCE_SHAPES).features;
+// Indonesia's coast and borders, from the provinces themselves, so the
+// country and its provinces always line up
+export const INDONESIA_OUTLINE = merge(topoData, PROVINCE_SHAPES.geometries);
 export const PROVINCE_COLLECTION = { type: "FeatureCollection", features: ALL_PROVINCES };
 export const WIDTH = 800;
 

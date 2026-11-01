@@ -199,6 +199,16 @@
     "removeWhiteHint": "Kertas hasil pindaian menjadi transparan, sehingga tinta tampil bersih.",
     "default": "Penanda tangan bawaan",
     "defaultHint": "Tampil otomatis di sertifikat yang tidak memilih penanda tangan tertentu (termasuk yang lama).",
+    "textMain": "Ditulis dalam bahasa Indonesia. Dipakai untuk bahasa yang dibiarkan kosong.",
+    "textOptional": "Opsional. Tampil saat sertifikat dilihat dalam bahasa ini; kolom kosong memakai versi Indonesia.",
+    "defaultLangs": "Bawaan untuk sertifikat berbahasa",
+    "defaultLangsHint": "Sertifikat dalam bahasa yang dicentang menampilkan penanda tangan ini bila tidak memilih sendiri.",
+    "defaultLangsNone": "Pilih minimal satu bahasa, atau matikan \"Penanda tangan bawaan\".",
+    "lang": {
+      "id": "Indonesia",
+      "en": "Inggris",
+      "ar": "Arab"
+    },
     "active": "Aktif",
     "activeHint": "Penanda tangan nonaktif disembunyikan dari semua sertifikat.",
     "addButton": "Tambah penanda tangan",

@@ -44,7 +44,7 @@
     },
     "site": {
       "title": "Situs Web",
-      "description": "Peta beranda, pencapaian, dan (segera) berita."
+      "description": "Pencapaian beranda dan berita."
     },
     "history": {
       "title": "Riwayat Aktivitas",
@@ -56,7 +56,7 @@
     },
     "global": {
       "title": "Tadarus Global",
-      "description": "Globe Tadarus di seluruh dunia: negara, program, dan kota."
+      "description": "Globe Tadarus di seluruh dunia: negara, provinsi Indonesia, program, dan kota."
     }
   },
   "hub": {
@@ -243,7 +243,8 @@
         "settings": "Mengubah bawaan supervisi"
       },
       "global": {
-        "global": "Mengubah Tadarus Global"
+        "global": "Mengubah Tadarus Global",
+        "map": "Mengubah provinsi Indonesia (peta beranda)"
       },
       "design": {
         "save": "Menyimpan desain sertifikat",
@@ -252,6 +253,9 @@
       "trash": {
         "restore": "Dipulihkan dari Baru dihapus",
         "purge": "Dihapus permanen dari Baru dihapus"
+      },
+      "backup": {
+        "download": "Mengunduh cadangan"
       }
     },
     "fields": {
@@ -400,5 +404,18 @@
       "supervisi_instruments": "{{count}} instrumen",
       "internal_admins": "{{count}} admin"
     }
+  },
+  "backup": {
+    "title": "Cadangan",
+    "intro": "Satu file berisi semua data di dasbor — sertifikat, formulir beserta jawabannya, berita dan fotonya, supervisi, tautan pendek, admin, dan riwayat. Paket gratis tidak menyimpan cadangan sendiri, jadi unduh kira-kira sebulan sekali.",
+    "button": "Unduh cadangan",
+    "working": "Membaca database… {{count}} data",
+    "never": "Belum pernah",
+    "last": "Cadangan terakhir",
+    "first": "Belum ada cadangan. Unduh yang pertama sekarang.",
+    "overdue": "Cadangan terakhir sudah lebih dari sebulan — saatnya membuat yang baru.",
+    "done": "{{count}} data tersimpan ({{size}}). Periksa folder unduhan Anda.",
+    "failed": "Cadangan gagal dibuat. Periksa koneksi lalu coba lagi.",
+    "keepSafe": "Simpan file ini di tempat pribadi, misalnya Google Drive Anda sendiri. Isinya lengkap, termasuk nama peserta, jawaban, dan tanda tangan — jangan dibagikan kepada siapa pun."
   }
 }

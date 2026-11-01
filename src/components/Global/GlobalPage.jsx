@@ -6,7 +6,7 @@ import WorldGlobe from "./WorldGlobe";
 import { ORIGIN, countryName, useGlobalContent } from "./globalData";
 import Flag from "./Flag";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
-import { mtiProvinces, provinceTotals } from "../../data/mtiProvinceData";
+import { getDisplayName, mtiProvinces, programCount, provinceTotals } from "../../data/mtiProvinceData";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./GlobalPage.module.css";
 
@@ -44,6 +44,7 @@ export default function GlobalPage() {
   const programs = content?.countries || {};
   const [selected, setSelected] = useState(null);
   const [litCity, setLitCity] = useState(null);
+  const [province, setProvince] = useState(null);
   const globe = useRef(null);
   const panel = useRef(null);
   const makkah = useMakkahTime(lang);
@@ -77,10 +78,18 @@ export default function GlobalPage() {
   const pick = (code) => {
     setSelected(code);
     setLitCity(null);
+    setProvince(null);
+  };
+  // up close, a tap on one of Indonesia's provinces
+  const pickProvince = (name) => {
+    setSelected("ID");
+    setLitCity(null);
+    setProvince(name);
   };
   const backToWorld = () => {
     setSelected(null);
     setLitCity(null);
+    setProvince(null);
     globe.current?.home();
   };
 
@@ -121,6 +130,8 @@ export default function GlobalPage() {
           provinces={provinces}
           selected={selected}
           onSelect={pick}
+          selectedProvince={province}
+          onProvince={pickProvince}
           highlightCity={litCity}
           labels={{ makkah: t("holy.makkah"), madinah: t("holy.madinah"), quds: t("holy.quds") }}
         />
@@ -230,6 +241,12 @@ export default function GlobalPage() {
                     </div>
                   )}
                 </div>
+                {sel.code === "ID" && province && (
+                  <p className={styles.provinceLine}>
+                    <b>{getDisplayName(province, provinces)}</b>
+                    <span>{provinces[province] ? `${programCount(provinces[province])} ${t("programs")}` : t("noPrograms")}</span>
+                  </p>
+                )}
                 {sel.data?.note?.[lang] || sel.data?.note?.id ? <p className={styles.note}>{sel.data.note[lang] || sel.data.note.id}</p> : null}
                 {(sel.data?.cities || []).length > 0 && (
                   <div className={styles.cities}>

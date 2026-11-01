@@ -146,6 +146,10 @@
   .printing .host {
     position: static;
   }
+  /* only the pages asked for: the response, not the statistics report kept beside it */
+  .printing .host:not(.printTarget) {
+    display: none !important;
+  }
   /* the page itself is the A4 sheet (printSheet sets @page margin 0, so no browser header or address) */
   .printing .sheet {
     width: 210mm;

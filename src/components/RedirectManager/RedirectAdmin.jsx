@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   ActionIcon,
@@ -50,13 +50,16 @@ import { timeAgo } from "../Internal/timeAgo";
 import {
   LEGACY_LINKS,
   REDIRECT_COLLECTION,
+  REDIRECT_PUBLIC,
   SITE_HOST,
   destinationKind,
   expiryDate,
   linkState,
+  publicId,
   shortLink,
 } from "../Redirects/redirectSchema";
 import LinkEditor from "./LinkEditor";
+import { syncPublicLinks } from "./syncPublic";
 import { qrWithLogo } from "../Internal/qrWithLogo";
 import styles from "./RedirectAdmin.module.css";
 
@@ -143,6 +146,37 @@ export default function RedirectAdmin() {
     []
   );
 
+  // The short-link page's copies, kept in step with the links whenever they change.
+  const [copies, setCopies] = useState(null);
+  const syncing = useRef(false);
+  const rounds = useRef(0);
+  const [round, setRound] = useState(0);
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, REDIRECT_PUBLIC),
+        (snap) => setCopies(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))),
+        (err) => console.error("Could not load the public links:", err)
+      ),
+    []
+  );
+  useEffect(() => {
+    // a few rounds at most: something that will not settle is left alone
+    if (!links || loadFailed || !copies || syncing.current || rounds.current >= 5) return;
+    syncing.current = true;
+    syncPublicLinks(links, copies)
+      .then((wrote) => {
+        syncing.current = false;
+        if (wrote) {
+          rounds.current += 1;
+          setRound((n) => n + 1); // check again, with what was just written
+        } else {
+          rounds.current = 0;
+        }
+      })
+      .catch((err) => console.error("Could not update the public links:", err));
+  }, [links, copies, loadFailed, round]);
+
   useEffect(() => setShown(PAGE), [search, sort, kind, status]);
 
   const visible = useMemo(() => {
@@ -228,6 +262,7 @@ export default function RedirectAdmin() {
         },
         (batch, _auditId, markDelete) => {
           batch.delete(doc(db, REDIRECT_COLLECTION, link.id));
+          batch.delete(doc(db, REDIRECT_PUBLIC, publicId(link.source)));
           markDelete(`redirect_manager_links~${link.id}`, link.auditId);
         }
       );

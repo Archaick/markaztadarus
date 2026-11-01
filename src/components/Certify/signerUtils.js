@@ -1,8 +1,29 @@
 // src/.../signerUtils.js - shared helpers for certificate signers
 import { collection, doc, getDoc, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
+import { certLang } from "./certSchema";
 
 export const SIGNERS_COLLECTION = "certificate_signers";
+
+// A default signer can be the default for some certificate languages only
+// (`defaultLangs`); one saved before that (no list) is the default for all.
+export const SIGNER_LANGS = ["id", "en", "ar"];
+export const defaultLangsOf = (signer) => {
+    if (!signer?.isDefault) return [];
+    const langs = Array.isArray(signer.defaultLangs) ? signer.defaultLangs.filter((l) => SIGNER_LANGS.includes(l)) : [];
+    return langs.length ? langs : SIGNER_LANGS;
+};
+
+// A signer's name, position and organization are written in Indonesian;
+// the English and Arabic versions (nameEn, positionAr, …) are optional and
+// fall back to it.
+export const SIGNER_TEXT = ["name", "position", "organization"];
+const LANG_SUFFIX = { en: "En", ar: "Ar" };
+export const signerTextKey = (field, lang) => field + (LANG_SUFFIX[lang] || "");
+export const signerInLang = (signer, lang) =>
+    LANG_SUFFIX[lang]
+        ? { ...signer, ...Object.fromEntries(SIGNER_TEXT.map((f) => [f, signer[signerTextKey(f, lang)] || signer[f] || ""])) }
+        : signer;
 
 // Images are stored inline in Firestore (1MB doc limit), so keep them small
 const MAX_IMAGE_SIDE = 480;
@@ -79,7 +100,7 @@ export const fetchSignersFor = async (certificate) => {
 
 /**
  * Signers shown on a certificate: its own selection if it has one,
- * otherwise every active signer marked as default.
+ * otherwise every active signer that is a default for its language.
  */
 export const resolveCertificateSigners = (certificate, allSigners) => {
     const active = allSigners.filter((s) => s.active !== false);
@@ -88,5 +109,6 @@ export const resolveCertificateSigners = (certificate, allSigners) => {
             .map((id) => active.find((s) => s.id === id))
             .filter(Boolean);
     }
-    return active.filter((s) => s.isDefault);
+    const lang = certLang(certificate);
+    return active.filter((s) => defaultLangsOf(s).includes(lang));
 };

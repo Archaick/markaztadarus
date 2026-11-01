@@ -7,7 +7,7 @@ import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { db } from "../../../firebaseConfig";
 import { CERTS, certDate, cleanText, normCode } from "./certSchema";
-import { SIGNERS_COLLECTION } from "./signerUtils";
+import { SIGNERS_COLLECTION, SIGNER_TEXT, signerTextKey } from "./signerUtils";
 import { DESIGNS, cleanDesign } from "./Template/studioData";
 import styles from "./Admin.module.css";
 
@@ -40,11 +40,15 @@ const certOut = (c) => ({
   ...(c.doc && { doc: { ...c.doc, attachedAt: iso(c.doc.attachedAt) } }),
 });
 
+// the English and Arabic versions of a signer's name, position and organization
+const TRANSLATED = ["en", "ar"].flatMap((l) => SIGNER_TEXT.map((f) => signerTextKey(f, l)));
+
 const signerOut = (s) => ({
   id: s.id,
   name: s.name || "",
   position: s.position || "",
   organization: s.organization || "",
+  ...Object.fromEntries(TRANSLATED.map((k) => [k, s[k] || ""])),
   signatureImg: s.signatureImg || "",
   stampImg: s.stampImg || "",
   isDefault: !!s.isDefault,
@@ -89,6 +93,7 @@ const signerIn = (s, auditId) => ({
   name: cleanText(s.name),
   position: cleanText(s.position),
   organization: cleanText(s.organization),
+  ...Object.fromEntries(TRANSLATED.map((k) => [k, cleanText(s[k])])),
   signatureImg: image(s.signatureImg),
   stampImg: image(s.stampImg),
   isDefault: !!s.isDefault,

@@ -133,6 +133,37 @@
   pointer-events: none;
 }
 
+.levels {
+  margin-bottom: 18px;
+}
+.insideLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #d4a912;
+  background: #fff8e1;
+  color: #4a3510;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.insideLink:hover {
+  background: #fff1c2;
+}
+.insideLink span {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+}
+.insideLink small {
+  color: #7a6332;
+  font-size: 0.78rem;
+}
+
 @media (max-width: 960px) {
   .layout {
     grid-template-columns: 1fr;

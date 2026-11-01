@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@mantine/core";
-import { IconCircleCheck, IconMap2, IconNews, IconPencil, IconPlus, IconTrophy } from "@tabler/icons-react";
+import { IconCircleCheck, IconNews, IconPencil, IconPlus, IconTrophy } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -10,14 +10,15 @@ import { useAccess } from "../Internal/accessContext";
 import { POSTS } from "../Blog/blogSchema";
 
 export const SITE_BASE = "/internal/website";
-export const VIEWS = ["map", "stats", "blog"];
+// the home-page map is edited in Tadarus Global (/internal/global), not here
+export const VIEWS = ["stats", "blog"];
 const NS = ["internal/Website", "internal/Internal"];
 
-/** The view in the address (`?view=`, or the older `?tab=`), map by default. */
+/** The view in the address (`?view=`, or the older `?tab=`), achievements by default. */
 export const viewOf = (search) => {
   const params = new URLSearchParams(search);
   const view = params.get("view") || params.get("tab");
-  return VIEWS.includes(view) ? view : "map";
+  return VIEWS.includes(view) ? view : "stats";
 };
 
 // every news item, live, for the pages inside the frame (null while loading, "error" if refused)
@@ -26,7 +27,7 @@ export const usePostsList = () => useContext(PostsList);
 
 /**
  * The Website app's frame: the shared internal app shell, with "Write news"
- * at the top of the menu, the home page's sections (map, achievements) and
+ * at the top of the menu, the home page's achievements and
  * the news by status with how many there are. `unsaved` marks the sections
  * with edits not yet saved.
  */
@@ -62,7 +63,6 @@ export default function WebsiteShell({ unsaved = {}, children }) {
     {
       label: t("nav.home"),
       items: [
-        { to: `${SITE_BASE}?view=map`, icon: IconMap2, label: t("tabs.map"), count: dot("map"), active: view === "map" },
         { to: `${SITE_BASE}?view=stats`, icon: IconTrophy, label: t("tabs.stats"), count: dot("stats"), active: view === "stats" },
       ],
     },

@@ -458,6 +458,7 @@
   background-image: radial-gradient(circle at 1px 1px, rgba(16, 33, 65, 0.06) 1px, transparent 0);
   background-size: 16px 16px;
   overflow: hidden;
+  height: clamp(300px, 52vh, 480px);
 }
 
 .mapHint {

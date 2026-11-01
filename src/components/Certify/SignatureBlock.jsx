@@ -13,9 +13,9 @@ const SignatureBlock = ({ signer }) => (
             )}
         </div>
         <div className={styles.line} />
-        <div className={styles.name}>{signer.name}</div>
-        <div className={styles.position}>{signer.position}</div>
-        {signer.organization && <div className={styles.org}>{signer.organization}</div>}
+        <div className={styles.name} dir="auto">{signer.name}</div>
+        <div className={styles.position} dir="auto">{signer.position}</div>
+        {signer.organization && <div className={styles.org} dir="auto">{signer.organization}</div>}
     </div>
 );
 

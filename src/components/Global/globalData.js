@@ -6,6 +6,8 @@ import countries110 from "world-atlas/countries-110m.json";
 import { numericToAlpha2 } from "i18n-iso-countries";
 import { db } from "../../../firebaseConfig";
 import { SITE_COLLECTION } from "../HomePage/siteContent";
+import { INDONESIA_OUTLINE } from "../HomePage/Map/mapGeometry";
+import neighbours from "../../data/neighbours-50m.json";
 
 // Tadarus Global: every country of the world on one globe, with the ones that
 // have Tadarus programs lit up and joined to Makkah. The countries and their
@@ -29,15 +31,21 @@ const palestine = {
   properties: { name: "Palestine" },
   geometry: merge(countries110, geometries.filter((g) => PALESTINE_PARTS.includes(g.id))),
 };
+// Indonesia is drawn from its provinces, so the two always match
+const INDONESIA = "360";
 const shapes = [
   ...feature(countries110, { type: "GeometryCollection", geometries: geometries.filter((g) => !PALESTINE_PARTS.includes(g.id)) }).features,
   palestine,
-];
+].map((f) => (f.id === INDONESIA ? { ...f, geometry: INDONESIA_OUTLINE } : f));
+
+// Indonesia's neighbours in finer detail, drawn when the globe is close, so
+// their coasts and borders meet the provinces'
+const DETAIL = new Map(neighbours.features.map((f) => [f.id, f]));
 
 /** Where Tadarus began: Makkah, in Saudi Arabia. */
 export const ORIGIN = "SA";
 
-/** Every country: its ISO alpha-2 code, shape, centre and how big it is (radians). */
+/** Every country: its ISO alpha-2 code, shape (and a finer `detail` near Indonesia), centre and how big it is (radians). */
 export const COUNTRIES = shapes
   .map((f) => {
     const code = (f.id && numericToAlpha2(f.id)) || UNNUMBERED[f.properties.name] || null;
@@ -45,7 +53,7 @@ export const COUNTRIES = shapes
     let radius = 0;
     const walk = (c) => (typeof c[0] === "number" ? (radius = Math.max(radius, geoDistance(centre, c))) : c.forEach(walk));
     walk(f.geometry.coordinates);
-    return { code, name: f.properties.name, feature: f, centre, radius };
+    return { code, name: f.properties.name, feature: f, detail: DETAIL.get(f.id) || null, centre, radius };
   })
   .filter((c) => c.code);
 

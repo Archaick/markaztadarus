@@ -28,5 +28,14 @@
   "showOnGlobe": "Show on the globe",
   "preview": "Live preview",
   "saved": "Saved. The public page is updated.",
-  "saveFailed": "Could not save. Try again."
+  "saveFailed": "Could not save. Try again.",
+  "levels": {
+    "world": "Countries",
+    "inside": "Inside {{country}}",
+    "insidePick": "Inside a country"
+  },
+  "manageInside": "Manage what is inside {{country}}",
+  "insideSummaryIndonesia": "{{provinces}} provinces · {{count}} program locations",
+  "insideSummary": "{{count}} cities",
+  "insideIndonesia": "Indonesia's provinces, programs and partner places: the map on the home page. Tap a province on the map to change it."
 }

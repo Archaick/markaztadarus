@@ -1,19 +1,27 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { animate, useInView, useMotionValue, useMotionValueEvent, useReducedMotion } from "framer-motion";
 import CountUp from "react-countup";
 import { Modal } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { IconHandFinger, IconPointer, IconX } from "@tabler/icons-react";
+import {
+  IconArrowsMaximize,
+  IconFocusCentered,
+  IconHandFinger,
+  IconMinus,
+  IconPlus,
+  IconPointer,
+  IconWorld,
+  IconX,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Map.module.css";
-import MapCanvas from "./MapCanvas";
-import GlobeIntro from "./GlobeIntro";
 import { ProvinceChips, ProvinceDetail } from "./ProvinceDetail";
-import { ALL_PROVINCES, WIDTH, fitProjection } from "./mapGeometry";
-import { useBoxSize } from "./useBoxSize";
+import { ALL_PROVINCES } from "./mapGeometry";
 import { mtiProvinces, provinceList, provinceTotals } from "../../../data/mtiProvinceData";
 import { SITE_DOCS, useSiteContent } from "../siteContent";
 import { hasCoords } from "../../../data/coords";
+
+const MapGlobe = lazy(() => import("./MapGlobe"));
 
 // the whole story: Haramain close-up, out to the Earth, down to Indonesia
 const FLY_IN_S = 5;
@@ -22,7 +30,6 @@ const FLY_OUT_S = 1.4;
 const Map = () => {
   const { t, i18n } = useTranslation("homepage/Map");
   const isPhone = useMediaQuery("(max-width: 640px)");
-  const isWide = useMediaQuery("(min-width: 901px)");
   const canHover = useMediaQuery("(hover: hover)");
   const reduceMotion = useReducedMotion();
 
@@ -74,20 +81,16 @@ const Map = () => {
     if (flight.get() < 1) animate(flight, 1, { duration: 0.5 * (1 - flight.get()), ease: "linear" });
   };
 
-  // On wide screens the map fills whatever height the section leaves it;
-  // on phones it zooms in on the active provinces at their natural shape.
-  const box = useBoxSize();
+  // The globe opens on Indonesia's provinces (on phones, closer in on the
+  // active ones); the visitor can zoom out to the whole world.
   const fit = useMemo(() => {
     const active = ALL_PROVINCES.filter((f) => provinces[f.properties.PROVINSI]);
-    if (!isWide)
-      return isPhone && active.length ? fitProjection(active, 40) : fitProjection(ALL_PROVINCES, 16);
-    if (!box.width || !box.height) return null;
-    const h = Math.max(260, Math.round((WIDTH * box.height) / box.width));
-    return fitProjection(ALL_PROVINCES, 16, h);
-  }, [isWide, isPhone, provinces, box.width, box.height]);
+    return isPhone && active.length ? active : ALL_PROVINCES;
+  }, [isPhone, provinces]);
+  const globeRef = useRef(null);
 
-  // Close enough to flat that the interactive map can take over.
-  const showGlobe = !reduceMotion && progress < 0.985;
+  // The story has landed: the map is the visitor's to move.
+  const landed = reduceMotion || progress >= 1;
 
   // `place` is the location whose dot was clicked, to open it in the side card.
   const [place, setPlace] = useState(null);
@@ -135,35 +138,21 @@ const Map = () => {
 
       <div className={styles.board}>
         <div className={styles.mapPanel}>
-          <div
-            className={styles.mapArea}
-            ref={(node) => {
-              areaRef.current = node;
-              if (isWide) box.ref(node);
-            }}
-          >
-            {fit &&
-              (showGlobe ? (
-                <GlobeIntro
-                  target={fit.projection}
-                  height={fit.height}
-                  provinces={provinces}
-                  progress={progress}
-                  onSkip={skipFlight}
-                />
-              ) : (
-                <div className={`${styles.mapFill} ${reduceMotion ? "" : styles.mapArrive}`}>
-                  <MapCanvas
-                    {...shared}
-                    projection={fit.projection}
-                    height={fit.height}
-                    onSelect={select}
-                    onHover={canHover ? setHovered : undefined}
-                    pinScale={isPhone ? 1.8 : 1}
-                    onExpand={() => setExpanded(true)}
-                  />
-                </div>
-              ))}
+          <div className={styles.mapArea} ref={areaRef}>
+            <Suspense fallback={null}>
+              <MapGlobe
+                ref={globeRef}
+                page
+                fit={fit}
+                story={reduceMotion ? undefined : progress}
+                onSkip={skipFlight}
+                provinces={provinces}
+                selectedProvince={selected}
+                onProvince={select}
+                onProvinceHover={canHover ? setHovered : undefined}
+              />
+            </Suspense>
+            {landed && <MapControls globe={globeRef} onExpand={() => setExpanded(true)} />}
           </div>
 
           <div className={styles.mapFooter}>
@@ -200,6 +189,32 @@ const Map = () => {
   );
 };
 
+// Zoom, back to Indonesia, out to the whole world, and full screen.
+function MapControls({ globe, onExpand }) {
+  const { t } = useTranslation("homepage/Map");
+  return (
+    <div className={styles.controls} dir="ltr">
+      <button type="button" onClick={() => globe.current?.zoomBy(1.6)} aria-label={t("zoom_in")} title={t("zoom_in")}>
+        <IconPlus size={18} />
+      </button>
+      <button type="button" onClick={() => globe.current?.zoomBy(1 / 1.6)} aria-label={t("zoom_out")} title={t("zoom_out")}>
+        <IconMinus size={18} />
+      </button>
+      <button type="button" onClick={() => globe.current?.home()} aria-label={t("reset")} title={t("reset")}>
+        <IconFocusCentered size={18} />
+      </button>
+      <button type="button" onClick={() => globe.current?.world()} aria-label={t("world")} title={t("world")}>
+        <IconWorld size={18} />
+      </button>
+      {onExpand && (
+        <button type="button" onClick={onExpand} aria-label={t("expand")} title={t("expand")} className={styles.expandButton}>
+          <IconArrowsMaximize size={18} />
+        </button>
+      )}
+    </div>
+  );
+}
+
 function Legend({ withPlaces = false }) {
   const { t } = useTranslation("homepage/Map");
   return (
@@ -221,22 +236,13 @@ function Legend({ withPlaces = false }) {
 
 // Full-screen map: every gesture moves the map, and picking a province from
 // the chips flies to it.
-function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSelect, shown, place, rtl }) {
+function ExpandedMap({ opened, onClose, list, provinces, selected, onSelect, shown, place, rtl }) {
   const { t } = useTranslation("homepage/Map");
-  const isPhone = useMediaQuery("(max-width: 640px)");
-  const { ref, width, height } = useBoxSize();
-  const canvasRef = useRef(null);
-
-  // Fit Indonesia to whatever shape the screen gives the map.
-  const fit = useMemo(() => {
-    if (!width || !height) return null;
-    const h = Math.max(240, Math.round((WIDTH * height) / width));
-    return fitProjection(ALL_PROVINCES, 24, h);
-  }, [width, height]);
+  const globeRef = useRef(null);
 
   const pick = (name) => {
     onSelect(name);
-    canvasRef.current?.focus(name, isPhone ? 3.5 : 3);
+    globeRef.current?.focusProvince(name);
   };
 
   return (
@@ -259,21 +265,17 @@ function ExpandedMap({ opened, onClose, list, provinces, totals, selected, onSel
         </header>
 
         <div className={styles.expandedMain}>
-          <div className={styles.expandedMap} ref={ref}>
-            {fit && (
-              <MapCanvas
-                ref={canvasRef}
-                list={list}
+          <div className={styles.expandedMap}>
+            <Suspense fallback={null}>
+              <MapGlobe
+                ref={globeRef}
+                fit={ALL_PROVINCES}
                 provinces={provinces}
-                totals={totals}
-                selected={selected}
-                projection={fit.projection}
-                height={fit.height}
-                onSelect={onSelect}
-                pinScale={isPhone ? 1.6 : 1}
-                free
+                selectedProvince={selected}
+                onProvince={onSelect}
               />
-            )}
+            </Suspense>
+            <MapControls globe={globeRef} />
           </div>
 
           <div className={styles.expandedSide}>

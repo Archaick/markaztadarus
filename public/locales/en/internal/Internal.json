@@ -44,7 +44,7 @@
     },
     "site": {
       "title": "Website",
-      "description": "Home page map, achievements and (soon) news."
+      "description": "Home page achievements and news."
     },
     "history": {
       "title": "Activity History",
@@ -56,7 +56,7 @@
     },
     "global": {
       "title": "Tadarus Global",
-      "description": "The Tadarus world globe: countries, programs and cities."
+      "description": "The Tadarus world globe: countries, Indonesia's provinces, programs and cities."
     }
   },
   "hub": {
@@ -243,7 +243,8 @@
         "settings": "Edited the supervision defaults"
       },
       "global": {
-        "global": "Edited Tadarus Global"
+        "global": "Edited Tadarus Global",
+        "map": "Edited Indonesia's provinces (home-page map)"
       },
       "design": {
         "save": "Saved a certificate design",
@@ -252,6 +253,9 @@
       "trash": {
         "restore": "Restored from Recently deleted",
         "purge": "Deleted for good from Recently deleted"
+      },
+      "backup": {
+        "download": "Downloaded a backup"
       }
     },
     "fields": {
@@ -418,5 +422,18 @@
       "internal_admins_one": "{{count}} admin",
       "internal_admins_other": "{{count}} admins"
     }
+  },
+  "backup": {
+    "title": "Backup",
+    "intro": "One file with every record in the dashboards — certificates, forms and their answers, news with photos, supervision, short links, admins and history. The free plan keeps no backups of its own, so download one about once a month.",
+    "button": "Download backup",
+    "working": "Reading the database… {{count}} records",
+    "never": "Never",
+    "last": "Last backup",
+    "first": "No backup has been made yet. Download the first one now.",
+    "overdue": "The last backup is over a month old — time for a new one.",
+    "done": "Saved {{count}} records ({{size}}). Check your downloads folder.",
+    "failed": "The backup could not be made. Check your connection and try again.",
+    "keepSafe": "Keep the file somewhere private, such as your own Google Drive. It holds everything, including participants' names, answers and signatures — share it with no one."
   }
 }

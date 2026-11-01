@@ -28,11 +28,11 @@ import {
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import topoData from "../../data/indonesia-provinces.topo.json";
-import { mtiProvinces, programCount, provinceList, provinceTotals } from "../../data/mtiProvinceData";
+import { mtiProvinces, programCount } from "../../data/mtiProvinceData";
 import { formatCoords, inIndonesia, parseCoords } from "../../data/coords";
 import { SITE_DOCS } from "../HomePage/siteContent";
-import MapCanvas from "../HomePage/Map/MapCanvas";
-import { ALL_PROVINCES, fitProjection } from "../HomePage/Map/mapGeometry";
+import MapGlobe from "../HomePage/Map/MapGlobe";
+import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
 import { useSiteDraft } from "./useSiteDraft";
 import SaveBar from "./SaveBar";
 import styles from "./Website.module.css";
@@ -55,7 +55,6 @@ const ISLANDS = [
 ];
 
 // The whole country, framed once for the preview.
-const FIT = fitProjection(ALL_PROVINCES, 16);
 
 const emptyLocation = () => ({ city: "", institution: "", coords: "" });
 const NO_ROWS = [];
@@ -120,13 +119,13 @@ const toStored = (rows) =>
 const countOf = (row) => programCount({ programs: row.programs === "" ? 0 : row.programs, locations: row.locations });
 
 /**
- * The home-page map, editable: tap a province on the map (or pick it below)
+ * The home-page map (Indonesia's provinces), editable inside Tadarus Global: tap a province on the map (or pick it below)
  * and change it in the panel beside it. The map redraws as you type, so the
  * result is visible before it is saved.
  */
 export default function MapEditor({ editorEmail, onDirty }) {
   const { t } = useTranslation("internal/Website");
-  const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail);
+  const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail, "global");
   const rows = site.draft || NO_ROWS;
   const [selected, setSelected] = useState(null);
   const [focusPlace, setFocusPlace] = useState(null); // location index tapped on the map
@@ -136,8 +135,6 @@ export default function MapEditor({ editorEmail, onDirty }) {
 
   // What the home page would show with these edits.
   const preview = useMemo(() => toStored(rows), [rows]);
-  const list = useMemo(() => provinceList(preview), [preview]);
-  const totals = useMemo(() => provinceTotals(preview), [preview]);
   const row = rows.find((r) => r.name === selected) || null;
 
   useEffect(() => {
@@ -237,15 +234,7 @@ export default function MapEditor({ editorEmail, onDirty }) {
       <div className={styles.mapLayout}>
         <div className={styles.mapSide}>
           <div className={styles.mapBox}>
-            <MapCanvas
-              list={list}
-              provinces={preview}
-              totals={totals}
-              projection={FIT.projection}
-              height={FIT.height}
-              selected={selected}
-              onSelect={select}
-            />
+            <MapGlobe page fit={ALL_PROVINCES} provinces={preview} selectedProvince={selected} onProvince={select} />
           </div>
           <p className={styles.mapHint}>
             <IconClick size={14} /> {t("map.tapHint")}

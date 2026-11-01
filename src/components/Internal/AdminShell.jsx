@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { IconHistory, IconTrash, IconUsersGroup } from "@tabler/icons-react";
+import { IconDatabaseExport, IconHistory, IconTrash, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -49,6 +49,7 @@ export default function AdminShell({ adminCount = null, children }) {
         { to: "/internal/access", icon: IconUsersGroup, label: t("features.access.title"), count: adminCount },
         { to: "/internal/history", icon: IconHistory, label: t("features.history.title") },
         { to: "/internal/trash", icon: IconTrash, label: t("trash.title"), count: waiting || null },
+        { to: "/internal/backup", icon: IconDatabaseExport, label: t("backup.title") },
       ],
     },
   ];

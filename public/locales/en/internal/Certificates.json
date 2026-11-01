@@ -199,6 +199,16 @@
     "removeWhiteHint": "Makes scanned paper transparent so the ink sits cleanly on the page.",
     "default": "Default signer",
     "defaultHint": "Shown automatically on certificates that don't pick specific signers (including older ones).",
+    "textMain": "Written in Indonesian. Used for any language left empty.",
+    "textOptional": "Optional. Shown when the certificate is viewed in this language; empty boxes use the Indonesian.",
+    "defaultLangs": "Default for certificates in",
+    "defaultLangsHint": "Certificates in the languages ticked here show this signer when they don’t pick their own.",
+    "defaultLangsNone": "Pick at least one language, or switch \"Default signer\" off.",
+    "lang": {
+      "id": "Indonesian",
+      "en": "English",
+      "ar": "Arabic"
+    },
     "active": "Active",
     "activeHint": "Inactive signers are hidden from every certificate.",
     "addButton": "Add signer",

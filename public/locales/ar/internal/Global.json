@@ -28,5 +28,14 @@
   "showOnGlobe": "اعرضها على الكرة",
   "preview": "معاينة مباشرة",
   "saved": "تم الحفظ. الصفحة العامة محدّثة.",
-  "saveFailed": "تعذّر الحفظ. حاول مرة أخرى."
+  "saveFailed": "تعذّر الحفظ. حاول مرة أخرى.",
+  "levels": {
+    "world": "الدول",
+    "inside": "داخل {{country}}",
+    "insidePick": "داخل دولة"
+  },
+  "manageInside": "إدارة ما في {{country}}",
+  "insideSummaryIndonesia": "{{provinces}} محافظة · {{count}} موقع برنامج",
+  "insideSummary": "{{count}} مدينة",
+  "insideIndonesia": "محافظات إندونيسيا وبرامجها والمؤسسات الشريكة: خريطة الصفحة الرئيسية. اضغط على محافظة في الخريطة لتعديلها."
 }

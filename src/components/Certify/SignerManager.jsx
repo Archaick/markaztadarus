@@ -13,6 +13,8 @@ import {
     Tooltip,
     Loader,
     Center,
+    Chip,
+    SegmentedControl,
 } from "@mantine/core";
 import {
     IconUpload,
@@ -33,19 +35,33 @@ import { useTranslation } from "react-i18next";
 import { db, auth } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
-import { SIGNERS_COLLECTION, processImageFile, fetchAllSigners } from "./signerUtils";
+import {
+    SIGNERS_COLLECTION,
+    SIGNER_LANGS,
+    SIGNER_TEXT,
+    signerTextKey,
+    signerInLang,
+    defaultLangsOf,
+    processImageFile,
+    fetchAllSigners,
+} from "./signerUtils";
 import SignatureBlock from "./SignatureBlock";
 import styles from "./SignerManager.module.css";
 
+// every text field in each language: name, nameEn, nameAr, position, …
+const TEXT_KEYS = SIGNER_LANGS.flatMap((l) => SIGNER_TEXT.map((f) => signerTextKey(f, l)));
+// the languages besides Indonesian a signer has its own name or position in
+const translatedLangs = (s) => ["en", "ar"].filter((l) => s[signerTextKey("name", l)] || s[signerTextKey("position", l)]);
+
 const EMPTY_FORM = {
-    name: "",
-    position: "",
-    organization: "",
+    ...Object.fromEntries(TEXT_KEYS.map((k) => [k, ""])),
     signatureImg: "",
     stampImg: "",
     isDefault: true,
+    defaultLangs: SIGNER_LANGS,
     active: true,
 };
+const LANG_LABELS = { id: "ID", en: "EN", ar: "AR" };
 
 const NS = ["internal/Certificates", "internal/Internal"];
 const MAX_LEN = 120;
@@ -121,6 +137,8 @@ const SignerManager = ({ notify, onSignersChange }) => {
     const [editingId, setEditingId] = useState(null);
     const [removeWhite, setRemoveWhite] = useState(true);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [textLang, setTextLang] = useState("id");
+    const key = (field) => signerTextKey(field, textLang);
 
     const load = async () => {
         setLoading(true);
@@ -143,17 +161,17 @@ const SignerManager = ({ notify, onSignersChange }) => {
     const resetForm = () => {
         setForm(EMPTY_FORM);
         setEditingId(null);
+        setTextLang("id");
     };
 
     const startEdit = (signer) => {
         setEditingId(signer.id);
         setForm({
-            name: signer.name || "",
-            position: signer.position || "",
-            organization: signer.organization || "",
+            ...Object.fromEntries(TEXT_KEYS.map((k) => [k, signer[k] || ""])),
             signatureImg: signer.signatureImg || "",
             stampImg: signer.stampImg || "",
             isDefault: !!signer.isDefault,
+            defaultLangs: signer.isDefault ? defaultLangsOf(signer) : SIGNER_LANGS,
             active: signer.active !== false,
         });
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -161,16 +179,17 @@ const SignerManager = ({ notify, onSignersChange }) => {
 
     const handleSave = async () => {
         const data = {
-            name: clean(form.name),
-            position: clean(form.position),
-            organization: clean(form.organization),
+            ...Object.fromEntries(TEXT_KEYS.map((k) => [k, clean(form[k])])),
             signatureImg: form.signatureImg,
             stampImg: form.stampImg,
-            isDefault: form.isDefault,
+            // a default with no language picked is no default at all
+            isDefault: form.isDefault && form.defaultLangs.length > 0,
+            defaultLangs: form.isDefault ? SIGNER_LANGS.filter((l) => form.defaultLangs.includes(l)) : [],
             active: form.active,
         };
 
         if (!data.name || !data.position) {
+            setTextLang("id");
             notify("warning", t("signers.missingTitle"), t("signers.missingDetails"));
             return;
         }
@@ -183,7 +202,7 @@ const SignerManager = ({ notify, onSignersChange }) => {
         try {
             if (editingId) {
                 const before = signers.find((s) => s.id === editingId) || {};
-                const changed = Object.keys(data).filter((k) => (before[k] ?? "") !== data[k]);
+                const changed = Object.keys(data).filter((k) => JSON.stringify(before[k] ?? "") !== JSON.stringify(data[k]));
                 await auditedWrite(user, signerEntry("signer.update", { ...data, id: editingId }, { changed }), (batch, auditId) =>
                     batch.update(doc(db, SIGNERS_COLLECTION, editingId), { ...data, auditId, updatedAt: new Date() })
                 );
@@ -213,11 +232,13 @@ const SignerManager = ({ notify, onSignersChange }) => {
 
     const toggleField = async (signer, field) => {
         const value = field === "active" ? signer.active === false : !signer.isDefault;
+        // the star makes a signer the default for every language (the form picks fewer)
+        const patch = field === "isDefault" ? { isDefault: value, defaultLangs: value ? SIGNER_LANGS : [] } : { [field]: value };
         try {
             const auditId = await auditedWrite(user, signerEntry("signer.update", signer, { changed: [field], [field]: value }), (batch, id) =>
-                batch.update(doc(db, SIGNERS_COLLECTION, signer.id), { [field]: value, auditId: id })
+                batch.update(doc(db, SIGNERS_COLLECTION, signer.id), { ...patch, auditId: id })
             );
-            const next = signers.map((s) => (s.id === signer.id ? { ...s, [field]: value, auditId } : s));
+            const next = signers.map((s) => (s.id === signer.id ? { ...s, ...patch, auditId } : s));
             setSigners(next);
             onSignersChange?.(next);
         } catch (err) {
@@ -266,10 +287,11 @@ const SignerManager = ({ notify, onSignersChange }) => {
         }
     };
 
+    const shown = signerInLang(form, textLang);
     const preview = {
-        name: form.name || t("signers.fullName"),
-        position: form.position || t("signers.position"),
-        organization: form.organization,
+        name: shown.name || t("signers.fullName"),
+        position: shown.position || t("signers.position"),
+        organization: shown.organization,
         signatureImg: form.signatureImg,
         stampImg: form.stampImg,
     };
@@ -290,28 +312,46 @@ const SignerManager = ({ notify, onSignersChange }) => {
 
                 <div className={styles.formGrid}>
                     <div className={styles.fields}>
+                        <div>
+                            <SegmentedControl
+                                fullWidth
+                                value={textLang}
+                                onChange={setTextLang}
+                                data={SIGNER_LANGS.map((l) => ({
+                                    value: l,
+                                    label: `${t(`signers.lang.${l}`)}${translatedLangs(form).includes(l) ? " ✓" : ""}`,
+                                }))}
+                            />
+                            <Text size="xs" c="dimmed" mt={4}>
+                                {textLang === "id" ? t("signers.textMain") : t("signers.textOptional")}
+                            </Text>
+                        </div>
+                        {/* in English and Arabic the empty boxes show the Indonesian they fall back to */}
                         <TextInput
                             label={t("signers.fullName")}
-                            placeholder={t("signers.fullNamePlaceholder")}
-                            value={form.name}
-                            onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            placeholder={textLang === "id" ? t("signers.fullNamePlaceholder") : form.name}
+                            value={form[key("name")]}
+                            onChange={(e) => setForm({ ...form, [key("name")]: e.target.value })}
                             maxLength={MAX_LEN}
-                            required
+                            required={textLang === "id"}
+                            dir={textLang === "ar" ? "rtl" : "auto"}
                         />
                         <TextInput
                             label={t("signers.position")}
-                            placeholder={t("signers.positionPlaceholder")}
-                            value={form.position}
-                            onChange={(e) => setForm({ ...form, position: e.target.value })}
+                            placeholder={textLang === "id" ? t("signers.positionPlaceholder") : form.position}
+                            value={form[key("position")]}
+                            onChange={(e) => setForm({ ...form, [key("position")]: e.target.value })}
                             maxLength={MAX_LEN}
-                            required
+                            required={textLang === "id"}
+                            dir={textLang === "ar" ? "rtl" : "auto"}
                         />
                         <TextInput
                             label={t("signers.organization")}
-                            placeholder="Markaz Tadarus Indonesia"
-                            value={form.organization}
-                            onChange={(e) => setForm({ ...form, organization: e.target.value })}
+                            placeholder={textLang === "id" ? "Markaz Tadarus Indonesia" : form.organization}
+                            value={form[key("organization")]}
+                            onChange={(e) => setForm({ ...form, [key("organization")]: e.target.value })}
                             maxLength={MAX_LEN}
+                            dir={textLang === "ar" ? "rtl" : "auto"}
                         />
 
                         <div className={styles.slots}>
@@ -345,6 +385,24 @@ const SignerManager = ({ notify, onSignersChange }) => {
                             checked={form.isDefault}
                             onChange={(e) => setForm({ ...form, isDefault: e.currentTarget.checked })}
                         />
+                        {form.isDefault && (
+                            <div className={styles.langPick}>
+                                <Text size="sm" fw={600}>{t("signers.defaultLangs")}</Text>
+                                <Text size="xs" c="dimmed" mb={6}>{t("signers.defaultLangsHint")}</Text>
+                                <Chip.Group multiple value={form.defaultLangs} onChange={(v) => setForm({ ...form, defaultLangs: v })}>
+                                    <Group gap="xs">
+                                        {SIGNER_LANGS.map((l) => (
+                                            <Chip key={l} value={l} color="yellow" variant="light">
+                                                {t(`signers.lang.${l}`)}
+                                            </Chip>
+                                        ))}
+                                    </Group>
+                                </Chip.Group>
+                                {form.defaultLangs.length === 0 && (
+                                    <Text size="xs" c="orange" mt={6}>{t("signers.defaultLangsNone")}</Text>
+                                )}
+                            </div>
+                        )}
                         <Switch
                             label={t("signers.active")}
                             description={t("signers.activeHint")}
@@ -403,12 +461,24 @@ const SignerManager = ({ notify, onSignersChange }) => {
                                     {s.stampImg && <img src={s.stampImg} alt={t("signers.stamp")} />}
                                 </div>
                                 <div className={styles.rowInfo}>
-                                    <Text fw={700} size="sm">{s.name}</Text>
+                                    <Text fw={700} size="sm">
+                                        {s.name}
+                                        {s.nameAr && <span dir="rtl" className={styles.altName}>{s.nameAr}</span>}
+                                    </Text>
                                     <Text size="xs" c="dimmed">
                                         {s.position}{s.organization ? ` · ${s.organization}` : ""}
                                     </Text>
                                     <Group gap={4} mt={4}>
-                                        {s.isDefault && <Badge size="xs" color="yellow">{t("signers.defaultBadge")}</Badge>}
+                                        {s.isDefault && (
+                                            <Badge size="xs" color="yellow">
+                                                {t("signers.defaultBadge")} · {defaultLangsOf(s).map((l) => LANG_LABELS[l]).join(" ")}
+                                            </Badge>
+                                        )}
+                                        {translatedLangs(s).length > 0 && (
+                                            <Badge size="xs" color="gray" variant="light">
+                                                {["ID", ...translatedLangs(s).map((l) => LANG_LABELS[l])].join(" ")}
+                                            </Badge>
+                                        )}
                                         {s.active === false && <Badge size="xs" color="gray">{t("signers.hiddenBadge")}</Badge>}
                                     </Group>
                                 </div>

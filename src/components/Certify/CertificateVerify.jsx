@@ -17,7 +17,7 @@ import { IconAlertTriangle, IconBan, IconCheck, IconHome2, IconRefresh } from "@
 import { db } from "../../../firebaseConfig";
 import stampImg from "../../assets/imgs/stamp.png";
 import SignatureBlock from "./SignatureBlock";
-import { fetchSignersFor, resolveCertificateSigners } from "./signerUtils";
+import { fetchSignersFor, resolveCertificateSigners, signerInLang } from "./signerUtils";
 import { CERTS, PUBLIC, certDate, certLang, displayName, displayProgram, normCode, publicFields } from "./certSchema";
 import LoaderGlobe from "../Common/LoaderGlobe";
 import VerifiedSheet from "./VerifiedSheet";
@@ -272,7 +272,7 @@ export default function CertificateVerify() {
                 <p className={styles.signaturesTitle}>{t("signatures_title")}</p>
                 <div className={styles.signaturesGrid} style={{ "--sig-cols": Math.min(state.signers.length, 3) }}>
                   {state.signers.map((s) => (
-                    <SignatureBlock key={s.id} signer={s} />
+                    <SignatureBlock key={s.id} signer={signerInLang(s, lang)} />
                   ))}
                 </div>
               </div>

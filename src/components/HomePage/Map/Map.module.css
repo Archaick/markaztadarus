@@ -351,7 +351,7 @@
   width: 12px;
   height: 12px;
   border-radius: 3px;
-  background: #d7e3ef;
+  background: #bccfe4;
   border: 1px solid #c3d3e3;
   margin-inline-start: 0.5rem;
 }
@@ -814,6 +814,7 @@
 
   .mapArea {
     flex: none;
+    height: clamp(300px, 56svh, 520px);
   }
 
   .mapFill,

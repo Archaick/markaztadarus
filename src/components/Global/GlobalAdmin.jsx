@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
-import { ActionIcon, Alert, Button, Card, Loader, NumberInput, Select, Text, TextInput, Textarea, Title, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconExternalLink, IconMapPinPlus, IconTrash, IconWorld } from "@tabler/icons-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { ActionIcon, Alert, Button, Card, Loader, NumberInput, SegmentedControl, Select, Text, TextInput, Textarea, Title, Tooltip } from "@mantine/core";
+import { IconArrowLeft, IconChevronRight, IconExternalLink, IconMapPinPlus, IconTrash, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { AccountBar, InternalLayout } from "../Internal/InternalUI";
@@ -9,6 +10,7 @@ import portal from "../Internal/InternalPortal.module.css";
 import formStyles from "../Forms/Forms.module.css";
 import websiteStyles from "../Website/Website.module.css";
 import SaveBar from "../Website/SaveBar";
+import MapEditor from "../Website/MapEditor";
 import { useSiteDraft } from "../Website/useSiteDraft";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
 import { mtiProvinces, provinceTotals } from "../../data/mtiProvinceData";
@@ -25,9 +27,13 @@ const toDraft = (stored) => JSON.parse(JSON.stringify({ countries: stored?.count
 const round = (n) => Math.round(n * 10000) / 10000;
 
 /**
- * /internal/global: which countries have Tadarus programs, their figures, a
- * note in three languages and their cities (placed by tapping the globe). The
- * globe beside the form is the public page's own, so every edit shows at once.
+ * /internal/global, on two levels. "Countries": which countries have Tadarus
+ * programs, their figures and a note in three languages. "Inside a country":
+ * what is in the picked one, i.e. Indonesia's provinces and partner places (the
+ * home-page map; its only editor) or another
+ * country's cities, placed by tapping the globe. `?country=ID&level=inside`
+ * opens straight on a country. The globe is the public page's own, so every
+ * edit shows at once.
  */
 export default function GlobalAdmin() {
   const { t, i18n } = useTranslation([NS, "internal/Internal"]);
@@ -37,15 +43,34 @@ export default function GlobalAdmin() {
   const siteMap = useSiteContent(SITE_DOCS.map);
   const provinces = siteMap?.provinces && Object.keys(siteMap.provinces).length ? siteMap.provinces : mtiProvinces;
   const indonesia = useMemo(() => provinceTotals(provinces), [provinces]);
-  const [selected, setSelected] = useState("ID");
+  const [params, setParams] = useSearchParams();
+  const [selected, setSelected] = useState(() => params.get("country") || "ID");
+  const [level, setLevel] = useState(() => (params.get("level") === "inside" ? "inside" : "world"));
   const [placing, setPlacing] = useState(false);
   const [message, setMessage] = useState(null);
   const [search, setSearch] = useState("");
+  // Indonesia's editor stays mounted once opened, so moving between levels keeps its unsaved edits
+  const [mapOpened, setMapOpened] = useState(false);
+  const [mapDirty, setMapDirty] = useState(false);
   const globe = useRef(null);
 
   const countries = site.draft?.countries || {};
   const codes = Object.keys(countries).sort((a, b) => countryName(a, lang).localeCompare(countryName(b, lang)));
   const current = selected ? countries[selected] : null;
+  const inside = level === "inside" && !!current;
+  const insideIndonesia = inside && selected === "ID";
+
+  useEffect(() => {
+    if (insideIndonesia) setMapOpened(true);
+  }, [insideIndonesia]);
+
+  // keep the address in step, so a reload (or a shared link) opens the same place
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (selected) next.set("country", selected);
+    if (inside) next.set("level", "inside");
+    if (next.toString() !== params.toString()) setParams(next, { replace: true });
+  }, [selected, inside, params, setParams]);
 
   const options = useMemo(
     () =>
@@ -70,6 +95,11 @@ export default function GlobalAdmin() {
     });
     setSelected(null);
     setPlacing(false);
+    setLevel("world");
+  };
+  const goLevel = (next) => {
+    setLevel(next);
+    setPlacing(false);
   };
 
   // a tap on the globe: place a city while placing, else pick the country
@@ -79,7 +109,7 @@ export default function GlobalAdmin() {
     patch(selected, { cities: [...(current.cities || []), { name: "", lon: round(lon), lat: round(lat) }] });
   };
   const onSelect = (code) => {
-    if (placing) return;
+    if (placing || inside) return;
     setSelected(code);
   };
 
@@ -88,6 +118,53 @@ export default function GlobalAdmin() {
     const ok = await site.save(site.draft);
     setMessage(ok ? { color: "green", text: t("saved") } : { color: "red", text: t("saveFailed") });
   };
+
+  const dot = (dirty) => (dirty ? " ●" : "");
+  const levels = (
+    <SegmentedControl
+      fullWidth
+      radius="md"
+      className={styles.levels}
+      value={inside ? "inside" : "world"}
+      onChange={goLevel}
+      data={[
+        { value: "world", label: `${t("levels.world")}${dot(site.dirty)}` },
+        {
+          value: "inside",
+          disabled: !current,
+          label: current ? `${t("levels.inside", { country: countryName(selected, lang) })}${dot(selected === "ID" && mapDirty)}` : t("levels.insidePick"),
+        },
+      ]}
+    />
+  );
+
+  const preview = (
+    <div className={`${styles.preview} ${placing ? styles.placing : ""}`}>
+      <WorldGlobe
+        ref={globe}
+        programs={countries}
+        provinces={provinces}
+        selected={selected}
+        onSelect={onSelect}
+        onPoint={onPoint}
+        autoSpin={false}
+        labels={{ makkah: "Makkah", madinah: "Madinah", quds: "Al-Quds" }}
+      />
+      <span className={styles.previewTag}>{t("preview")}</span>
+    </div>
+  );
+
+  const countryHead = (
+    <div className={styles.cardHead}>
+      <Flag code={selected} size={30} />
+      <h3>{countryName(selected, lang)}</h3>
+      <Tooltip label={t("remove")}>
+        <ActionIcon variant="subtle" color="red" onClick={() => remove(selected)} aria-label={t("remove")}>
+          <IconTrash size={18} />
+        </ActionIcon>
+      </Tooltip>
+    </div>
+  );
 
   return (
     <InternalLayout align="top">
@@ -119,91 +196,112 @@ export default function GlobalAdmin() {
             <Loader />
           ) : (
             <>
-              {site.loadFailed && <Alert color="red" mb="md">{t("loadFailed")}</Alert>}
-              {site.fromBuiltIn && <Alert color="blue" mb="md">{t("builtIn")}</Alert>}
+              {/* about the countries list, so not shown inside Indonesia (its editor says its own) */}
+              {site.loadFailed && !insideIndonesia && <Alert color="red" mb="md">{t("loadFailed")}</Alert>}
+              {site.fromBuiltIn && !insideIndonesia && <Alert color="blue" mb="md">{t("builtIn")}</Alert>}
 
-              <div className={styles.layout}>
-                <div className={styles.editor}>
-                  <Select
-                    label={t("add")}
-                    placeholder={t("addPlaceholder")}
-                    data={options.filter((o) => !countries[o.value])}
-                    searchable
-                    clearable
-                    value={null}
-                    searchValue={search}
-                    onSearchChange={setSearch}
-                    onChange={(code) => {
-                      add(code);
-                      setSearch("");
-                    }}
-                    nothingFoundMessage={t("noMatch")}
-                    renderOption={({ option }) => (
-                      <span className={styles.option}>
-                        <Flag code={option.value} size={16} /> {option.label}
-                      </span>
-                    )}
-                  />
+              {levels}
 
-                  <div className={styles.chips}>
-                    {codes.map((code) => (
-                      <button key={code} type="button" className={code === selected ? styles.chipOn : styles.chip} onClick={() => setSelected(code)}>
-                        <Flag code={code} size={14} /> {countryName(code, lang)}
-                      </button>
-                    ))}
-                  </div>
+              {/* ---------- Countries: the world level ---------- */}
+              {!inside && (
+                <div className={styles.layout}>
+                  <div className={styles.editor}>
+                    <Select
+                      label={t("add")}
+                      placeholder={t("addPlaceholder")}
+                      data={options.filter((o) => !countries[o.value])}
+                      searchable
+                      clearable
+                      value={null}
+                      searchValue={search}
+                      onSearchChange={setSearch}
+                      onChange={(code) => {
+                        add(code);
+                        setSearch("");
+                      }}
+                      nothingFoundMessage={t("noMatch")}
+                      renderOption={({ option }) => (
+                        <span className={styles.option}>
+                          <Flag code={option.value} size={16} /> {option.label}
+                        </span>
+                      )}
+                    />
 
-                  {selected && !current && (
-                    <div className={styles.offer}>
-                      <Flag code={selected} size={30} />
-                      <div>
-                        <b>{countryName(selected, lang)}</b>
-                        <p>{t("notYet")}</p>
-                        <Button size="xs" color="#0a1d4a" onClick={() => add(selected)}>
-                          {t("addThis")}
-                        </Button>
-                      </div>
+                    <div className={styles.chips}>
+                      {codes.map((code) => (
+                        <button key={code} type="button" className={code === selected ? styles.chipOn : styles.chip} onClick={() => setSelected(code)}>
+                          <Flag code={code} size={14} /> {countryName(code, lang)}
+                        </button>
+                      ))}
                     </div>
-                  )}
 
-                  {current && (
-                    <div className={styles.card}>
-                      <div className={styles.cardHead}>
+                    {selected && !current && (
+                      <div className={styles.offer}>
                         <Flag code={selected} size={30} />
-                        <h3>{countryName(selected, lang)}</h3>
-                        <Tooltip label={t("remove")}>
-                          <ActionIcon variant="subtle" color="red" onClick={() => remove(selected)} aria-label={t("remove")}>
-                            <IconTrash size={18} />
-                          </ActionIcon>
-                        </Tooltip>
+                        <div>
+                          <b>{countryName(selected, lang)}</b>
+                          <p>{t("notYet")}</p>
+                          <Button size="xs" color="#0a1d4a" onClick={() => add(selected)}>
+                            {t("addThis")}
+                          </Button>
+                        </div>
                       </div>
+                    )}
 
-                      <NumberInput
-                        label={t("programs")}
-                        description={selected === "ID" ? t("programsIndonesia", { count: indonesia.locations }) : t("programsHint")}
-                        min={0}
-                        max={100000}
-                        value={current.programs || 0}
-                        onChange={(v) => patch(selected, { programs: Number(v) || 0 })}
-                      />
+                    {current && (
+                      <div className={styles.card}>
+                        {countryHead}
 
-                      <Text size="sm" fw={600} mt="md" mb={4}>
-                        {t("note")}
-                      </Text>
-                      <div className={styles.notes}>
-                        {LANGS.map((l) => (
-                          <Textarea
-                            key={l}
-                            autosize
-                            minRows={2}
-                            label={t(`lang.${l}`)}
-                            dir={l === "ar" ? "rtl" : "ltr"}
-                            value={current.note?.[l] || ""}
-                            onChange={(e) => patch(selected, { note: { ...(current.note || {}), [l]: e.currentTarget.value.slice(0, 600) } })}
-                          />
-                        ))}
+                        <NumberInput
+                          label={t("programs")}
+                          description={selected === "ID" ? t("programsIndonesia", { count: indonesia.locations }) : t("programsHint")}
+                          min={0}
+                          max={100000}
+                          value={current.programs || 0}
+                          onChange={(v) => patch(selected, { programs: Number(v) || 0 })}
+                        />
+
+                        <Text size="sm" fw={600} mt="md" mb={4}>
+                          {t("note")}
+                        </Text>
+                        <div className={styles.notes}>
+                          {LANGS.map((l) => (
+                            <Textarea
+                              key={l}
+                              autosize
+                              minRows={2}
+                              label={t(`lang.${l}`)}
+                              dir={l === "ar" ? "rtl" : "ltr"}
+                              value={current.note?.[l] || ""}
+                              onChange={(e) => patch(selected, { note: { ...(current.note || {}), [l]: e.currentTarget.value.slice(0, 600) } })}
+                            />
+                          ))}
+                        </div>
+
+                        <button type="button" className={styles.insideLink} onClick={() => goLevel("inside")}>
+                          <span>
+                            <b>{t("manageInside", { country: countryName(selected, lang) })}</b>
+                            <small>
+                              {selected === "ID"
+                                ? t("insideSummaryIndonesia", { provinces: indonesia.provinces, count: indonesia.locations })
+                                : t("insideSummary", { count: (current.cities || []).length })}
+                            </small>
+                          </span>
+                          <IconChevronRight size={18} className={portal.flipRtl} />
+                        </button>
                       </div>
+                    )}
+                  </div>
+                  {preview}
+                </div>
+              )}
 
+              {/* ---------- Inside another country: its cities ---------- */}
+              {inside && !insideIndonesia && (
+                <div className={styles.layout}>
+                  <div className={styles.editor}>
+                    <div className={styles.card}>
+                      {countryHead}
                       <div className={styles.citiesHead}>
                         <Text size="sm" fw={600}>
                           {t("cities")}
@@ -249,33 +347,35 @@ export default function GlobalAdmin() {
                         </ul>
                       )}
                     </div>
-                  )}
+                  </div>
+                  {preview}
                 </div>
+              )}
 
-                <div className={`${styles.preview} ${placing ? styles.placing : ""}`}>
-                  <WorldGlobe
-                    ref={globe}
-                    programs={countries}
-                    provinces={provinces}
-                    selected={selected}
-                    onSelect={onSelect}
-                    onPoint={onPoint}
-                    autoSpin={false}
-                    labels={{ makkah: "Makkah", madinah: "Madinah", quds: "Al-Quds" }}
-                  />
-                  <span className={styles.previewTag}>{t("preview")}</span>
+              {/* ---------- Inside Indonesia: the provinces (the home-page map) ---------- */}
+              {insideIndonesia && (
+                <Text size="sm" c="dimmed" mb="sm">
+                  {t("insideIndonesia")}
+                </Text>
+              )}
+              {mapOpened && (
+                <div hidden={!insideIndonesia}>
+                  <MapEditor editorEmail={email} onDirty={setMapDirty} />
                 </div>
-              </div>
+              )}
 
-              <SaveBar
-                dirty={site.dirty}
-                canSave={site.dirty || site.fromBuiltIn}
-                saving={site.saving}
-                message={message}
-                onDismiss={() => setMessage(null)}
-                onDiscard={site.discard}
-                onSave={save}
-              />
+              {/* Indonesia's editor has its own; this one saves the countries and their cities */}
+              {!insideIndonesia && (
+                <SaveBar
+                  dirty={site.dirty}
+                  canSave={site.dirty || site.fromBuiltIn}
+                  saving={site.saving}
+                  message={message}
+                  onDismiss={() => setMessage(null)}
+                  onDiscard={site.discard}
+                  onSave={save}
+                />
+              )}
             </>
           )}
         </Card>

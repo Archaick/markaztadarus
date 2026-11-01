@@ -76,10 +76,13 @@ export function ResponseSheet({ sections, answers, footer, formTitle, rtl, sheet
 }
 
 /**
- * Prints only the sheet: full A4 pages without the browser's own header and
- * footer (the page title and the address), named `title` when saved as PDF.
+ * Prints only `sheet` (other off-screen pages, like the statistics report,
+ * stay out): full A4 pages without the browser's own header and footer (the
+ * page title and the address), named `title` when saved as PDF.
  */
-export function printSheet(title) {
+export function printSheet(title, sheet) {
+  const host = sheet?.closest(`.${styles.host}`);
+  host?.classList.add(styles.printTarget);
   const page = document.createElement("style");
   page.textContent = "@page { size: A4; margin: 0; }";
   document.head.appendChild(page);
@@ -88,6 +91,7 @@ export function printSheet(title) {
   document.body.classList.add(styles.printing);
   const done = () => {
     document.body.classList.remove(styles.printing);
+    host?.classList.remove(styles.printTarget);
     page.remove();
     document.title = before;
     window.removeEventListener("afterprint", done);

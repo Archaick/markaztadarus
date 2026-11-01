@@ -185,7 +185,9 @@
     "csvSubmitted": "وقت الإرسال",
     "csvRemoved": "سؤال محذوف {{id}}",
     "exportExcel": "تنزيل Excel",
-    "reportFailed": "تعذّر إنشاء التقرير. حاول مرة أخرى."
+    "reportFailed": "تعذّر إنشاء التقرير. حاول مرة أخرى.",
+    "viewSummary": "الملخص",
+    "viewList": "الإجابات ({{count}})"
   },
   "share": {
     "draftTitle": "هذا النموذج ما زال مسودة",

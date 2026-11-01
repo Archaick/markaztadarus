@@ -9,11 +9,14 @@ import { auditedWrite } from "../Internal/audit";
 import {
   PATH_PATTERN,
   REDIRECT_COLLECTION,
+  REDIRECT_PUBLIC,
   SITE_HOST,
   expiryDate,
   isReserved,
   normalizePath,
   normalizeUrl,
+  publicId,
+  publicLink,
 } from "../Redirects/redirectSchema";
 import styles from "./RedirectAdmin.module.css";
 
@@ -113,10 +116,11 @@ export default function LinkEditor({ opened, onClose, link, links, email, onSave
     setSaving(true);
     try {
       await auditedWrite(user, entry, (batch, auditId) => {
+        const ref = link ? doc(db, REDIRECT_COLLECTION, link.id) : doc(collection(db, REDIRECT_COLLECTION));
         if (link) {
-          batch.update(doc(db, REDIRECT_COLLECTION, link.id), { ...data, auditId });
+          batch.update(ref, { ...data, auditId });
         } else {
-          batch.set(doc(collection(db, REDIRECT_COLLECTION)), {
+          batch.set(ref, {
             ...data,
             auditId,
             clicks: 0,
@@ -124,6 +128,9 @@ export default function LinkEditor({ opened, onClose, link, links, email, onSave
             createdBy: email || "unknown",
           });
         }
+        // what the short-link page reads, under the (new) path
+        batch.set(doc(db, REDIRECT_PUBLIC, publicId(source)), publicLink(ref.id, data));
+        if (link && link.source !== source) batch.delete(doc(db, REDIRECT_PUBLIC, publicId(link.source)));
       });
       onSaved(link ? "saved" : "created", source);
       onClose();

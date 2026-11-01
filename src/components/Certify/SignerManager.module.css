@@ -176,3 +176,14 @@
         justify-content: flex-end;
     }
 }
+
+/* which certificate languages a default signer is the default for */
+.langPick {
+    margin: -0.25rem 0 0.25rem 3.25rem;
+}
+
+.altName {
+    margin-inline-start: 0.5rem;
+    font-weight: 600;
+    color: #475569;
+}

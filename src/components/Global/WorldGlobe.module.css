@@ -66,17 +66,103 @@
   animation: ring 2s ease-in-out infinite;
 }
 
-.province {
-  fill: #33609f;
-  stroke: rgba(255, 255, 255, 0.4);
-  stroke-width: 0.4;
-  pointer-events: none;
+/* on a page: one finger scrolls up and down, so the globe never traps the page */
+.page {
+  touch-action: pan-y;
 }
-.provinceOn {
-  fill: #f2c94c;
-  stroke: #fff6d6;
+
+.sphere {
+  stroke: none;
+}
+.graticule {
+  fill: none;
+  stroke: rgba(160, 200, 255, 0.08);
+  stroke-width: 0.6;
+}
+
+/* Indonesia's provinces; their fill (gold by programs) is set inline */
+.province,
+.provinceSelected {
+  stroke: rgba(255, 255, 255, 0.45);
   stroke-width: 0.5;
+  stroke-linejoin: round;
   pointer-events: none;
+  transition: fill 0.2s ease;
+}
+.provinceSelected {
+  stroke: #fff6d6;
+  stroke-width: 1.8;
+}
+
+/* a pin with each province's program count */
+.pin {
+  fill: #102141;
+  stroke: #f1c94b;
+  stroke-width: 2;
+  transition: fill 0.2s ease;
+}
+.pinSelected {
+  fill: #a67d00;
+  stroke: #ffffff;
+}
+.pinText {
+  fill: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+.pinPulse {
+  fill: rgba(241, 201, 75, 0.45);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2.4s ease-out infinite;
+}
+/* partner places with coordinates */
+.place {
+  fill: #ffffff;
+  stroke: #102141;
+  stroke-width: 1.5;
+}
+.placeSelected {
+  fill: #f1c94b;
+}
+
+/* the light theme (the home page and the Website dashboard) */
+.day .sphere {
+  stroke: #c3d3e3;
+  stroke-width: 0.8;
+  filter: drop-shadow(0 10px 14px rgba(16, 33, 65, 0.16));
+}
+.day .graticule {
+  stroke: rgba(37, 71, 94, 0.09);
+}
+.day .country {
+  fill: #dbe5f0;
+  stroke: #ffffff;
+}
+.day .hover {
+  fill: #cddaea;
+}
+.day .program {
+  fill: #d4a912;
+  stroke: #ffffff;
+}
+.day .origin,
+.day .origin.program {
+  fill: #1f8f6a;
+  stroke: #ffffff;
+}
+.day .province,
+.day .provinceSelected {
+  stroke: #ffffff;
+}
+.day .provinceSelected {
+  stroke: #102141;
+  stroke-width: 1.6;
+}
+.day .selectedRing {
+  fill: none;
+  stroke: #102141;
 }
 
 .night {
@@ -170,6 +256,7 @@
   .program,
   .selectedRing,
   .cityPulse,
+  .pinPulse,
   .sunGlow,
   .sunRays {
     animation: none;

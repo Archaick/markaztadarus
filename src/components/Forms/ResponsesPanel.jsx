@@ -8,6 +8,7 @@ import {
   Loader,
   Modal,
   NumberInput,
+  SegmentedControl,
   Text,
   TextInput,
   Tooltip,
@@ -75,6 +76,8 @@ export default function ResponsesPanel({ form, quizKey }) {
   const [openIndex, setOpenIndex] = useState(-1);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [printing, setPrinting] = useState(false);
+  // the charts or the people who answered: tabs at the top, so neither waits below the other
+  const [view, setView] = useState("summary");
   const [deleting, setDeleting] = useState(false);
 
   useEffect(
@@ -277,10 +280,6 @@ export default function ResponsesPanel({ form, quizKey }) {
             </b>
             <span>{t("quiz.average")}</span>
           </div>
-          <div>
-            <b>{responses.length}</b>
-            <span>{t("quiz.graded")}</span>
-          </div>
           {quizStats.toReview > 0 && (
             <div className={styles.quizStatsWarn}>
               <b>{quizStats.toReview}</b>
@@ -290,7 +289,21 @@ export default function ResponsesPanel({ form, quizKey }) {
         </div>
       )}
 
-      <ResponseStats stats={stats} />
+      {responses.length > 0 && (
+        <SegmentedControl
+          fullWidth
+          radius="md"
+          mt="md"
+          value={view}
+          onChange={setView}
+          data={[
+            { value: "summary", label: t("responses.viewSummary") },
+            { value: "list", label: t("responses.viewList", { count: responses.length }) },
+          ]}
+        />
+      )}
+
+      {view === "summary" && <ResponseStats stats={stats} />}
 
       {/* the report's pages, off screen until pictured */}
       {responses.length > 0 &&
@@ -309,7 +322,7 @@ export default function ResponsesPanel({ form, quizKey }) {
             {form.status === "open" ? t("responses.emptyOpen") : t("responses.emptyClosed")}
           </Text>
         </div>
-      ) : (
+      ) : view === "list" ? (
         <>
           <TextInput
             mt="lg"
@@ -350,7 +363,7 @@ export default function ResponsesPanel({ form, quizKey }) {
             )}
           </div>
         </>
-      )}
+      ) : null}
 
       <Modal
         opened={!!open}

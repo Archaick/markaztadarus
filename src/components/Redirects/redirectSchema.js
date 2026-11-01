@@ -2,6 +2,24 @@ import { redirects as legacyRedirects } from "./config";
 
 export const REDIRECT_COLLECTION = "redirect_manager_links";
 
+// What the short-link page reads: one document per path holding only what a
+// visitor sees (destination, title, whether it is open), so the links' notes
+// and editors stay in the dashboard. Kept in step by the dashboard.
+export const REDIRECT_PUBLIC = "redirect_public";
+// Written once every link has its copy; from then on only the copies are public.
+export const REDIRECTS_SECURED = "_secured";
+
+export const publicId = (source) => source.replace(/^\//, "");
+
+// A link's public copy; the rules check it matches the link exactly.
+export const publicLink = (linkId, link) => ({
+  linkId,
+  destination: link.destination,
+  title: link.title ?? "",
+  active: link.active ?? true,
+  expiresAt: link.expiresAt ?? null,
+});
+
 // One segment of lowercase letters, numbers and hyphens: markaztadarus.com/<path>
 export const PATH_PATTERN = /^\/[a-z0-9-]+$/;
 

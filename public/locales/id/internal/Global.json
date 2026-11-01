@@ -28,5 +28,14 @@
   "showOnGlobe": "Tampilkan di globe",
   "preview": "Pratinjau langsung",
   "saved": "Tersimpan. Halaman publik sudah diperbarui.",
-  "saveFailed": "Gagal menyimpan. Coba lagi."
+  "saveFailed": "Gagal menyimpan. Coba lagi.",
+  "levels": {
+    "world": "Negara",
+    "inside": "Di dalam {{country}}",
+    "insidePick": "Di dalam negara"
+  },
+  "manageInside": "Kelola isi {{country}}",
+  "insideSummaryIndonesia": "{{provinces}} provinsi · {{count}} lokasi program",
+  "insideSummary": "{{count}} kota",
+  "insideIndonesia": "Provinsi, program, dan lembaga mitra di Indonesia: peta di halaman beranda. Ketuk provinsi di peta untuk mengubahnya."
 }

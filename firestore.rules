@@ -283,13 +283,52 @@ service cloud.firestore {
           && request.resource.data.lastClickedAt == request.time;
       }
 
-      // The short-link page looks up one path at a time; only the dashboard
-      // lists them all (with their internal notes).
-      allow get: if true;
-      allow list: if hasFeature("redirects") || request.query.limit <= 1;
+      // Only the dashboard reads them (with their notes and editors); the
+      // short-link page reads redirect_public. Until every link has its copy
+      // there, the page may still look one up by path.
+      allow get: if hasFeature("redirects") || !redirectsSecured();
+      allow list: if hasFeature("redirects") || (request.query.limit <= 1 && !redirectsSecured());
       allow create: if hasFeature("redirects") && validLink() && audited();
       allow update: if (hasFeature("redirects") && validLink() && audited()) || isClickCount();
       allow delete: if hasFeature("redirects") && marked("redirect_manager_links~" + redirectId);
+    }
+
+    // Written by the dashboard once every link has its copy in redirect_public.
+    function redirectsSecured() {
+      return exists(/databases/$(database)/documents/redirect_public/_secured);
+    }
+
+    function linkAfter(linkId) {
+      return getAfter(/databases/$(database)/documents/redirect_manager_links/$(linkId)).data;
+    }
+
+    // What the short-link page needs of a link, one document per path (no
+    // leading slash): opened by path, never listed. A copy must match its
+    // link exactly as the link is after the same request.
+    match /redirect_public/{slug} {
+      function matchesLink() {
+        let data = request.resource.data;
+        let link = linkAfter(data.linkId);
+        return data.keys().hasOnly(["linkId", "destination", "title", "active", "expiresAt"])
+          && data.linkId is string
+          && link.source == "/" + slug
+          && data.destination == link.destination
+          && data.title == link.get("title", "")
+          && data.active == link.get("active", true)
+          && data.expiresAt == link.get("expiresAt", null);
+      }
+
+      allow get: if true;
+      allow list: if hasFeature("redirects");
+      allow create, update: if hasFeature("redirects")
+        && ((slug == "_secured" && request.resource.data.keys().hasOnly(["at"]) && request.resource.data.at == request.time)
+          || (slug != "_secured" && matchesLink()));
+      // a copy goes once its link is gone or has moved to another path
+      allow delete: if hasFeature("redirects")
+        && slug != "_secured"
+        && (resource == null
+          || !existsAfter(/databases/$(database)/documents/redirect_manager_links/$(resource.data.linkId))
+          || linkAfter(resource.data.linkId).source != "/" + slug);
     }
 
     // ---------- Website content (home page map and achievements) ----------
@@ -299,17 +338,18 @@ service cloud.firestore {
       allow read: if true;
       allow write: if (
           (hasFeature("site")
-            && ((docId == "map"
-                && request.resource.data.provinces is map
-                && request.resource.data.provinces.size() <= 40)
-              || (docId == "stats"
-                && request.resource.data.items is list
-                && request.resource.data.items.size() <= 30)))
-          // Tadarus Global: the countries with programs, from its own dashboard
+            && docId == "stats"
+            && request.resource.data.items is list
+            && request.resource.data.items.size() <= 30)
+          // Tadarus Global: the countries with programs and, inside Indonesia,
+          // the provinces of the home-page map; only from its own dashboard
           || (hasFeature("global")
-            && docId == "global"
-            && request.resource.data.countries is map
-            && request.resource.data.countries.size() <= 80)
+            && ((docId == "global"
+                && request.resource.data.countries is map
+                && request.resource.data.countries.size() <= 80)
+              || (docId == "map"
+                && request.resource.data.provinces is map
+                && request.resource.data.provinces.size() <= 40)))
         )
         && audited();
       allow delete: if false;

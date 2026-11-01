@@ -2,6 +2,7 @@ import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimest
 import { db } from "../../../firebaseConfig";
 import { AUDIT_CHUNK, TRASH_COLLECTION, TRASH_ITEMS, auditedWrite, kindOf } from "./audit";
 import { normalizeEmail } from "./access";
+import { PATH_PATTERN, REDIRECT_COLLECTION, REDIRECT_PUBLIC, publicId, publicLink } from "../Redirects/redirectSchema";
 
 // Restoring and emptying the recycle bin (see audit.js), for the super admin.
 
@@ -83,6 +84,11 @@ export async function restoreGroup(user, group, items, onProgress) {
         part.forEach((item) => {
           batch.set(doc(db, item.path), { ...item.data, auditId });
           batch.delete(item.ref);
+          // a short link opens again at once: its page's copy comes back with it
+          if (kindOf(item.path) === REDIRECT_COLLECTION && PATH_PATTERN.test(item.data?.source || "") && item.data.destination) {
+            const linkId = item.path.split("/").pop();
+            batch.set(doc(db, REDIRECT_PUBLIC, publicId(item.data.source)), publicLink(linkId, item.data));
+          }
         });
         if (last) {
           batch.update(doc(db, TRASH_COLLECTION, group.id), {

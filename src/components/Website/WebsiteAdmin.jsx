@@ -4,14 +4,13 @@ import { Button } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
-import MapEditor from "./MapEditor";
 import StatsEditor from "./StatsEditor";
 import PostsPanel from "./PostsPanel";
 import WebsiteShell, { VIEWS, viewOf } from "./WebsiteShell";
 import app from "./WebsiteApp.module.css";
 
 // where "view on site" opens for each section
-const ON_SITE = { map: "/#map", stats: "/#achievements", blog: "/berita" };
+const ON_SITE = { stats: "/#achievements", blog: "/berita" };
 
 /**
  * The website's editable parts, one per menu item. The editors stay mounted
@@ -24,7 +23,6 @@ export default function WebsiteAdmin() {
   const location = useLocation();
   const view = viewOf(location.search);
   const [unsaved, setUnsaved] = useState({});
-  const markMap = useCallback((dirty) => setUnsaved((u) => ({ ...u, map: dirty })), []);
   const markStats = useCallback((dirty) => setUnsaved((u) => ({ ...u, stats: dirty })), []);
 
   return (
@@ -42,7 +40,6 @@ export default function WebsiteAdmin() {
 
         {VIEWS.map((key) => (
           <div key={key} className={app.view} hidden={key !== view}>
-            {key === "map" && <MapEditor editorEmail={email} onDirty={markMap} />}
             {key === "stats" && <StatsEditor editorEmail={email} onDirty={markStats} />}
             {key === "blog" && <PostsPanel editorEmail={email} />}
           </div>
