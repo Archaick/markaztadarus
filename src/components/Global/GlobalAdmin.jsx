@@ -17,13 +17,38 @@ import { mtiProvinces, provinceTotals } from "../../data/mtiProvinceData";
 import WorldGlobe from "./WorldGlobe";
 import { COUNTRIES, DEFAULT_GLOBAL, GLOBAL_DOC, countryName } from "./globalData";
 import Flag from "./Flag";
+import SessionFields from "./SessionFields";
+import { badTime, badUrl, newId, publicSession, usePrivateLinks } from "./liveSessions";
 import styles from "./GlobalAdmin.module.css";
 
 const NS = "internal/Global";
 const LANGS = ["id", "en", "ar"];
 const MAX_CITIES = 30;
 
-const toDraft = (stored) => JSON.parse(JSON.stringify({ countries: stored?.countries || DEFAULT_GLOBAL.countries }));
+// cities saved before they had ids get a steady one from where they are
+const toDraft = (stored) => {
+  const countries = JSON.parse(JSON.stringify(stored?.countries || DEFAULT_GLOBAL.countries));
+  Object.entries(countries).forEach(([code, c]) => {
+    c.cities = (c.cities || []).map((city, i) => ({ ...city, id: city.id || `c-${code.toLowerCase()}-${i}` }));
+  });
+  return { countries };
+};
+// what is saved: each city's session made public, its Zoom link only when it may show
+const toStored = (draft, zoomOf) => ({
+  countries: Object.fromEntries(
+    Object.entries(draft?.countries || {}).map(([code, c]) => [
+      code,
+      {
+        ...c,
+        cities: (c.cities || []).map(({ session, ...city }) => {
+          const open = publicSession(session, zoomOf(city.id));
+          return open ? { ...city, session: open } : city;
+        }),
+      },
+    ])
+  ),
+});
+const cityIds = (draft) => Object.values(draft?.countries || {}).flatMap((c) => (c.cities || []).map((city) => city.id));
 const round = (n) => Math.round(n * 10000) / 10000;
 
 /**
@@ -40,6 +65,8 @@ export default function GlobalAdmin() {
   const lang = (i18n.language || "id").slice(0, 2);
   const { email } = useAccess();
   const site = useSiteDraft(GLOBAL_DOC, toDraft, email, "global");
+  const links = usePrivateLinks("c");
+  const dirty = site.dirty || links.dirty;
   const siteMap = useSiteContent(SITE_DOCS.map);
   const provinces = siteMap?.provinces && Object.keys(siteMap.provinces).length ? siteMap.provinces : mtiProvinces;
   const indonesia = useMemo(() => provinceTotals(provinces), [provinces]);
@@ -106,7 +133,7 @@ export default function GlobalAdmin() {
   const onPoint = ([lon, lat]) => {
     if (!placing || !selected || !current) return;
     if ((current.cities || []).length >= MAX_CITIES) return;
-    patch(selected, { cities: [...(current.cities || []), { name: "", lon: round(lon), lat: round(lat) }] });
+    patch(selected, { cities: [...(current.cities || []), { id: newId("c"), name: "", lon: round(lon), lat: round(lat) }] });
   };
   const onSelect = (code) => {
     if (placing || inside) return;
@@ -115,7 +142,15 @@ export default function GlobalAdmin() {
 
   const save = async () => {
     setMessage(null);
-    const ok = await site.save(site.draft);
+    const bad = Object.entries(countries).find(([, c]) => (c.cities || []).some((city) => city.session && (badUrl(city.session.activity) || badUrl(links.value(city.id)) || badTime(city.session))));
+    if (bad) {
+      setSelected(bad[0]);
+      setLevel("inside");
+      setMessage({ color: "red", text: t("session.problem", { country: countryName(bad[0], lang) }) });
+      return;
+    }
+    const ok = await site.save(toStored(site.draft, links.value), (batch, auditId) => links.write(batch, auditId, cityIds(site.draft)));
+    if (ok) links.done();
     setMessage(ok ? { color: "green", text: t("saved") } : { color: "red", text: t("saveFailed") });
   };
 
@@ -128,7 +163,7 @@ export default function GlobalAdmin() {
       value={inside ? "inside" : "world"}
       onChange={goLevel}
       data={[
-        { value: "world", label: `${t("levels.world")}${dot(site.dirty)}` },
+        { value: "world", label: `${t("levels.world")}${dot(dirty)}` },
         {
           value: "inside",
           disabled: !current,
@@ -328,20 +363,29 @@ export default function GlobalAdmin() {
                       ) : (
                         <ul className={styles.cities}>
                           {current.cities.map((city, i) => (
-                            <li key={i}>
-                              <TextInput
-                                size="xs"
-                                placeholder={t("cityName")}
-                                value={city.name}
-                                dir="auto"
-                                onChange={(e) => patch(selected, { cities: current.cities.map((c, j) => (j === i ? { ...c, name: e.currentTarget.value.slice(0, 80) } : c)) })}
+                            <li key={city.id || i}>
+                              <div className={styles.cityRow}>
+                                <TextInput
+                                  size="xs"
+                                  placeholder={t("cityName")}
+                                  value={city.name}
+                                  dir="auto"
+                                  onChange={(e) => patch(selected, { cities: current.cities.map((c, j) => (j === i ? { ...c, name: e.currentTarget.value.slice(0, 80) } : c)) })}
+                                />
+                                <button type="button" className={styles.coords} onClick={() => globe.current?.flyToPoint([city.lon, city.lat], 5)} title={t("showOnGlobe")}>
+                                  {city.lat.toFixed(2)}, {city.lon.toFixed(2)}
+                                </button>
+                                <ActionIcon variant="subtle" color="red" size="sm" onClick={() => patch(selected, { cities: current.cities.filter((_, j) => j !== i) })} aria-label={t("remove")}>
+                                  <IconTrash size={15} />
+                                </ActionIcon>
+                              </div>
+                              <SessionFields
+                                indonesia={false}
+                                session={city.session || null}
+                                onChange={(session) => patch(selected, { cities: current.cities.map((c, j) => (j === i ? { ...c, session } : c)) })}
+                                zoom={links.value(city.id)}
+                                onZoom={(url) => links.set(city.id, url)}
                               />
-                              <button type="button" className={styles.coords} onClick={() => globe.current?.flyToPoint([city.lon, city.lat], 5)} title={t("showOnGlobe")}>
-                                {city.lat.toFixed(2)}, {city.lon.toFixed(2)}
-                              </button>
-                              <ActionIcon variant="subtle" color="red" size="sm" onClick={() => patch(selected, { cities: current.cities.filter((_, j) => j !== i) })} aria-label={t("remove")}>
-                                <IconTrash size={15} />
-                              </ActionIcon>
                             </li>
                           ))}
                         </ul>
@@ -367,12 +411,15 @@ export default function GlobalAdmin() {
               {/* Indonesia's editor has its own; this one saves the countries and their cities */}
               {!insideIndonesia && (
                 <SaveBar
-                  dirty={site.dirty}
-                  canSave={site.dirty || site.fromBuiltIn}
+                  dirty={dirty}
+                  canSave={dirty || site.fromBuiltIn}
                   saving={site.saving}
                   message={message}
                   onDismiss={() => setMessage(null)}
-                  onDiscard={site.discard}
+                  onDiscard={() => {
+                    site.discard();
+                    links.discard();
+                  }}
                   onSave={save}
                 />
               )}

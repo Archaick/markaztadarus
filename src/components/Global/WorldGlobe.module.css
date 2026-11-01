@@ -252,11 +252,56 @@
   }
 }
 
+/* Tadarus Live */
+.liveRing {
+  fill: rgba(239, 68, 68, 0.28);
+  stroke: #ef4444;
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1.6s ease-out infinite;
+}
+.liveCore {
+  fill: #ef4444;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.livePill {
+  fill: #dc2626;
+  stroke: #fff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+.livePillDot {
+  fill: #fff;
+  animation: liveBlink 1.2s ease-in-out infinite;
+}
+.livePillText {
+  fill: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+}
+.onlineDot {
+  fill: #7c6cf0;
+  stroke: #fff;
+  stroke-width: 1.8;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+}
+@keyframes liveBlink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .program,
   .selectedRing,
   .cityPulse,
   .pinPulse,
+  .liveRing,
+  .livePillDot,
   .sunGlow,
   .sunRays {
     animation: none;

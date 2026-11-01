@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import WorldGlobe from "./WorldGlobe";
 import { ORIGIN, countryName, useGlobalContent } from "./globalData";
 import Flag from "./Flag";
+import LivePanel from "./LivePanel";
+import { useLiveSessions } from "./liveSessions";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
 import { getDisplayName, mtiProvinces, programCount, provinceTotals } from "../../data/mtiProvinceData";
 import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
@@ -48,6 +50,7 @@ export default function GlobalPage() {
   const globe = useRef(null);
   const panel = useRef(null);
   const makkah = useMakkahTime(lang);
+  const sessions = useLiveSessions(provinces, programs);
 
   useEffect(() => {
     document.title = `${t("title")} · Markaz Tadarus`;
@@ -85,6 +88,14 @@ export default function GlobalPage() {
     setSelected("ID");
     setLitCity(null);
     setProvince(name);
+  };
+  // a tap on an online Tadarus in the panel: its country, then the place itself
+  const pickSession = (p) => {
+    setSelected(p.code);
+    setLitCity(null);
+    setProvince(p.province || null);
+    const at = p.at;
+    if (at) setTimeout(() => globe.current?.flyToPoint(at, 7), 60);
   };
   const backToWorld = () => {
     setSelected(null);
@@ -174,6 +185,7 @@ export default function GlobalPage() {
                 <span>{t("programs")}</span>
               </div>
             </div>
+            <LivePanel live={sessions.live} next={sessions.next} onPick={pickSession} />
             <button type="button" className={styles.originCard} onClick={() => pick(ORIGIN)}>
               <Flag code={ORIGIN} size={22} />
               <span>
@@ -248,6 +260,12 @@ export default function GlobalPage() {
                   </p>
                 )}
                 {sel.data?.note?.[lang] || sel.data?.note?.id ? <p className={styles.note}>{sel.data.note[lang] || sel.data.note.id}</p> : null}
+                <LivePanel
+                  live={sessions.live.filter((p) => p.code === sel.code)}
+                  next={sessions.next.filter((p) => p.code === sel.code)}
+                  onPick={pickSession}
+                  showCountry={false}
+                />
                 {(sel.data?.cities || []).length > 0 && (
                   <div className={styles.cities}>
                     {sel.data.cities.map((city, i) => (

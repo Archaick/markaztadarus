@@ -40,7 +40,8 @@
       "noCity": "{{province}}: every location needs a city or regency.",
       "badNumber": "{{province}}: numbers cannot be negative.",
       "badCoords": "{{province}}: some coordinates could not be read.",
-      "outsideCoords": "{{province}}: some coordinates are outside Indonesia."
+      "outsideCoords": "{{province}}: some coordinates are outside Indonesia.",
+      "badSession": "Check the online sessions in {{province}}: a link or a time is not right."
     },
     "coords": "Coordinates",
     "coordsPlaceholder": "Coordinates / Google Maps link (optional)",

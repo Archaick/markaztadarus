@@ -44,7 +44,8 @@
       "noCity": "{{province}}: يجب أن يكون لكل موقع مدينة أو منطقة.",
       "badNumber": "{{province}}: لا يمكن أن تكون الأرقام سالبة.",
       "badCoords": "{{province}}: توجد إحداثيات تعذّرت قراءتها.",
-      "outsideCoords": "{{province}}: توجد إحداثيات خارج إندونيسيا."
+      "outsideCoords": "{{province}}: توجد إحداثيات خارج إندونيسيا.",
+      "badSession": "راجع الجلسات عن بُعد في {{province}}: رابط أو وقت غير صحيح."
     },
     "coords": "الإحداثيات",
     "coordsPlaceholder": "إحداثيات / رابط خرائط Google (اختياري)",

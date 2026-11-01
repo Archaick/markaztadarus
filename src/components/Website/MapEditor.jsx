@@ -33,6 +33,8 @@ import { formatCoords, inIndonesia, parseCoords } from "../../data/coords";
 import { SITE_DOCS } from "../HomePage/siteContent";
 import MapGlobe from "../HomePage/Map/MapGlobe";
 import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
+import SessionFields from "../Global/SessionFields";
+import { badTime, badUrl, newId, publicSession, usePrivateLinks } from "../Global/liveSessions";
 import { useSiteDraft } from "./useSiteDraft";
 import SaveBar from "./SaveBar";
 import styles from "./Website.module.css";
@@ -56,7 +58,10 @@ const ISLANDS = [
 
 // The whole country, framed once for the preview.
 
-const emptyLocation = () => ({ city: "", institution: "", coords: "" });
+const emptyLocation = () => ({ id: newId("p"), city: "", institution: "", coords: "", session: null });
+// places saved before they had ids get a steady one from where they are
+const idFor = (province, i) => `p-${province.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${i}`;
+const NO_LINK = () => "";
 const NO_ROWS = [];
 
 // Stored { [province]: {...} } ↔ editor rows sorted by name.
@@ -67,10 +72,12 @@ const toRows = (provinces) =>
       island: d.island || "",
       programs: Number.isFinite(d.programs) ? d.programs : "",
       participants: Number.isFinite(d.participants) ? d.participants : "",
-      locations: (d.locations || []).map((l) => ({
+      locations: (d.locations || []).map((l, i) => ({
+        id: l.id || idFor(name, i),
         city: l.city || "",
         institution: l.institution || "",
         coords: formatCoords(l),
+        session: l.session || null,
       })),
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -85,8 +92,11 @@ const coordsState = (text) => {
   return inIndonesia(point) ? "ok" : "outside";
 };
 
-const problemIn = (rows) => {
+const problemIn = (rows, zoomOf) => {
   for (const row of rows) {
+    if (row.locations.some((l) => l.session && (badUrl(l.session.activity) || badUrl(zoomOf(l.id)) || badTime(l.session)))) {
+      return { key: "badSession", province: row.name };
+    }
     if (row.locations.some((l) => !l.city.trim() && l.institution.trim())) return { key: "noCity", province: row.name };
     if (row.locations.some((l) => coordsState(l.coords) === "bad")) return { key: "badCoords", province: row.name };
     if (row.locations.some((l) => coordsState(l.coords) === "outside")) return { key: "outsideCoords", province: row.name };
@@ -97,16 +107,18 @@ const problemIn = (rows) => {
   return null;
 };
 
-const toStored = (rows) =>
+// `zoomOf(id)`: a place's Zoom link, copied in only when it may show on /global
+const toStored = (rows, zoomOf = NO_LINK) =>
   Object.fromEntries(
     rows.map((row) => {
       const data = {
         island: row.island.trim(),
         locations: row.locations
           .map((l) => {
-            const place = { city: l.city.trim(), institution: l.institution.trim() };
+            const place = { id: l.id, city: l.city.trim(), institution: l.institution.trim() };
             const point = parseCoords(l.coords);
-            return point ? { ...place, ...point } : place;
+            const session = publicSession(l.session, zoomOf(l.id));
+            return { ...place, ...(point || {}), ...(session && { session }) };
           })
           .filter((l) => l.city),
       };
@@ -126,6 +138,8 @@ const countOf = (row) => programCount({ programs: row.programs === "" ? 0 : row.
 export default function MapEditor({ editorEmail, onDirty }) {
   const { t } = useTranslation("internal/Website");
   const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail, "global");
+  const links = usePrivateLinks("p");
+  const dirty = site.dirty || links.dirty;
   const rows = site.draft || NO_ROWS;
   const [selected, setSelected] = useState(null);
   const [focusPlace, setFocusPlace] = useState(null); // location index tapped on the map
@@ -138,8 +152,8 @@ export default function MapEditor({ editorEmail, onDirty }) {
   const row = rows.find((r) => r.name === selected) || null;
 
   useEffect(() => {
-    onDirty?.(site.dirty);
-  }, [site.dirty, onDirty]);
+    onDirty?.(dirty);
+  }, [dirty, onDirty]);
 
   const summary = useMemo(
     () => ({ provinces: rows.length, locations: rows.reduce((sum, r) => sum + countOf(r), 0) }),
@@ -186,13 +200,15 @@ export default function MapEditor({ editorEmail, onDirty }) {
 
   const save = async () => {
     setMessage(null);
-    const problem = problemIn(rows);
+    const problem = problemIn(rows, links.value);
     if (problem) {
       setMessage({ color: "red", text: t(`map.problems.${problem.key}`, { province: problem.province }) });
       select(problem.province);
       return;
     }
-    const ok = await site.save({ provinces: toStored(rows) });
+    const ids = rows.flatMap((r) => r.locations.filter((l) => l.city.trim()).map((l) => l.id));
+    const ok = await site.save({ provinces: toStored(rows, links.value) }, (batch, auditId) => links.write(batch, auditId, ids));
+    if (ok) links.done();
     setMessage(ok ? { color: "teal", text: t("saved") } : { color: "red", text: t("saveFailed") });
   };
 
@@ -288,6 +304,8 @@ export default function MapEditor({ editorEmail, onDirty }) {
               focusPlace={focusPlace}
               onUpdate={(patch) => update(row.name, patch)}
               onSetLocation={(i, patch) => setLocation(row.name, i, patch)}
+              zoomOf={links.value}
+              onZoom={links.set}
               onRemove={() => removeProvince(row.name)}
               onClose={() => setSelected(null)}
             />
@@ -296,13 +314,14 @@ export default function MapEditor({ editorEmail, onDirty }) {
       </div>
 
       <SaveBar
-        dirty={site.dirty}
-        canSave={site.dirty || site.fromBuiltIn}
+        dirty={dirty}
+        canSave={dirty || site.fromBuiltIn}
         saving={site.saving}
         message={message}
         onDismiss={() => setMessage(null)}
         onDiscard={() => {
           site.discard();
+          links.discard();
           setMessage(null);
         }}
         onSave={save}
@@ -312,7 +331,7 @@ export default function MapEditor({ editorEmail, onDirty }) {
 }
 
 // Everything about one province: its island, numbers and the places in it.
-function ProvinceForm({ row, focusPlace, onUpdate, onSetLocation, onRemove, onClose }) {
+function ProvinceForm({ row, focusPlace, onUpdate, onSetLocation, zoomOf, onZoom, onRemove, onClose }) {
   const { t } = useTranslation("internal/Website");
   const count = countOf(row);
 
@@ -391,6 +410,7 @@ function ProvinceForm({ row, focusPlace, onUpdate, onSetLocation, onRemove, onCl
               onChange={(e) => onSetLocation(i, { institution: e.target.value })}
             />
             <CoordsInput value={loc.coords} onChange={(coords) => onSetLocation(i, { coords })} />
+            <SessionFields session={loc.session} onChange={(session) => onSetLocation(i, { session })} zoom={zoomOf(loc.id)} onZoom={(url) => onZoom(loc.id, url)} />
           </div>
         ))}
       </div>

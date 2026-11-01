@@ -30,5 +30,13 @@
     "badge": "Where Tadarus began",
     "short": "Tadarus began in Makkah al-Mukarramah",
     "text": "Tadarus began in Makkah al-Mukarramah. From here the knowledge flows, along the lines of light, to every country with Tadarus programs."
-  }
+  },
+  "liveNow": "Live now",
+  "liveNext": "Coming up",
+  "liveUntil": "until {{time}}",
+  "liveToday": "Today",
+  "liveTomorrow": "Tomorrow",
+  "liveJoin": "Join",
+  "liveZoom": "Zoom",
+  "liveActivity": "Activity"
 }

@@ -39,7 +39,8 @@
       "noCity": "{{province}}: setiap lokasi harus memiliki kota atau kabupaten.",
       "badNumber": "{{province}}: angka tidak boleh negatif.",
       "badCoords": "{{province}}: ada koordinat yang tidak terbaca.",
-      "outsideCoords": "{{province}}: ada koordinat di luar Indonesia."
+      "outsideCoords": "{{province}}: ada koordinat di luar Indonesia.",
+      "badSession": "Periksa sesi daring di {{province}}: ada tautan atau waktu yang belum benar."
     },
     "coords": "Koordinat",
     "coordsPlaceholder": "Koordinat / tautan Google Maps (opsional)",

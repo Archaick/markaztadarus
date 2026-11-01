@@ -355,6 +355,19 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Tadarus Live: the Zoom links of the online sessions, for the Tadarus
+    // Global dashboard only; a link shows publicly only when an admin copies
+    // it into the public map ("show on /global").
+    match /site_private/{docId} {
+      allow read: if hasFeature("global");
+      allow write: if hasFeature("global")
+        && docId == "links"
+        && request.resource.data.links is map
+        && request.resource.data.links.size() <= 500
+        && audited();
+      allow delete: if false;
+    }
+
     // ---------- News posts (photos as JPEG data URLs; no Storage bucket) ----------
 
     function validPost() {

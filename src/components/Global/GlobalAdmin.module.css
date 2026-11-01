@@ -84,11 +84,17 @@
   gap: 6px;
 }
 .cities li {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eef1f5;
+}
+.cityRow {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.cities li > :first-child {
+.cityRow > :first-child {
   flex: 1;
 }
 .coords {
@@ -162,6 +168,43 @@
 .insideLink small {
   color: #7a6332;
   font-size: 0.78rem;
+}
+
+/* Tadarus Live: a place's online session */
+.sessionSwitch {
+  margin-top: 4px;
+}
+.session {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #f3d6d6;
+  background: #fffafa;
+}
+.sessionTimes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 8px;
+}
+.liveDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  animation: liveBlink 1.2s ease-in-out infinite;
+}
+@keyframes liveBlink {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liveDot {
+    animation: none;
+  }
 }
 
 @media (max-width: 960px) {

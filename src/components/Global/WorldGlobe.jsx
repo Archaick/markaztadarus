@@ -5,6 +5,8 @@ import { closeUpOf, flightAt } from "../Common/haramainFlight";
 import { provinceList, provinceTotals } from "../../data/mtiProvinceData";
 import { COUNTRIES, ORIGIN, anchorOf, countryByCode, moonNow, subsolarPoint } from "./globalData";
 import { CENTROIDS, ProvinceMarks, ProvinceShapes, SHOW_PINS, SHOW_PROVINCES, provinceAt, provinceMarks } from "./ProvinceLayer";
+import LiveLayer from "./LiveLayer";
+import { useLiveSessions } from "./liveSessions";
 import styles from "./WorldGlobe.module.css";
 
 const GRATICULE = geoGraticule10();
@@ -284,6 +286,8 @@ const WorldGlobe = forwardRef(function WorldGlobe(
   const totals = useMemo(() => provinceTotals(provinces), [provinces]);
   const marks = useMemo(() => provinceMarks(list), [list]);
   const showProvinces = hasProvinces && scale >= SHOW_PROVINCES;
+  // Tadarus Live: the places with an online session, live or not right now
+  const sessions = useLiveSessions(provinces, programs).all;
 
   // what lies under a point of the drawing: where on Earth, the country, and the province (or its pin or place)
   const hit = (x, y) => {
@@ -521,6 +525,9 @@ const WorldGlobe = forwardRef(function WorldGlobe(
 
         {/* the program pins, above the line's landing at Jakarta */}
         {showProvinces && <ProvinceMarks projection={projection} scale={scale} marks={marks} selected={selectedProvince} visible={visible} />}
+
+        {/* online sessions on top of everything: LIVE where one runs now */}
+        <LiveLayer sessions={sessions} projection={projection} scale={scale} visible={visible} />
       </svg>
     </div>
   );

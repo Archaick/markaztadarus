@@ -37,5 +37,27 @@
   "manageInside": "Manage what is inside {{country}}",
   "insideSummaryIndonesia": "{{provinces}} provinces · {{count}} program locations",
   "insideSummary": "{{count}} cities",
-  "insideIndonesia": "Indonesia's provinces, programs and partner places: the map on the home page. Tap a province on the map to change it."
+  "insideIndonesia": "Indonesia's provinces, programs and partner places: the map on the home page. Tap a province on the map to change it.",
+  "session": {
+    "enable": "Online Tadarus (Zoom)",
+    "title": "Title (optional)",
+    "titlePlaceholder": "e.g. Tadarus 5T",
+    "days": "Every week on",
+    "start": "Starts",
+    "end": "Ends",
+    "zone": "Time zone",
+    "zoom": "Zoom link",
+    "zoomPublic": "Show the Zoom link on /global",
+    "zoomPublicOn": "Anyone on /global can join with it.",
+    "zoomPublicOff": "Kept for admins only; /global shows the session without the link.",
+    "activity": "Activity link (optional)",
+    "activityHint": "A page about the activity (Instagram, news, sign-up). Shown on /global.",
+    "goLive": "Live now for {{hours}} hours",
+    "endLive": "End the live",
+    "saveToShow": "Save to show it.",
+    "liveUntil": "LIVE until {{time}}",
+    "next": "Next: {{day}} {{time}}",
+    "badLink": "Use a full link starting with https://",
+    "problem": "Check the online sessions in {{country}}: a link or a time is not right."
+  }
 }

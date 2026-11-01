@@ -78,17 +78,19 @@ export function useSiteDraft(docId, toDraft, editorEmail, area = "site") {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  const save = async (data) => {
+  // `also(batch, auditId)` adds writes that belong with this one (the private Zoom links)
+  const save = async (data, also) => {
     setSaving(true);
     try {
-      await auditedWrite(user, { area, action: `${area}.${docId}`, target: docId, details: whatChanged(stored, data) }, (batch, auditId) =>
+      await auditedWrite(user, { area, action: `${area}.${docId}`, target: docId, details: whatChanged(stored, data) }, (batch, auditId) => {
         batch.set(doc(db, SITE_COLLECTION, docId), {
           ...data,
           auditId,
           updatedBy: editorEmail,
           updatedAt: serverTimestamp(),
-        })
-      );
+        });
+        also?.(batch, auditId);
+      });
       return true;
     } catch (err) {
       console.error(`Could not save ${docId}:`, err);
