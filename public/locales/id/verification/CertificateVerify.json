@@ -24,5 +24,6 @@
   },
   "certificate_number": "Nomor sertifikat",
   "pdf_download": "Unduh PDF",
-  "pdf_preparing": "Menyiapkan PDF…"
+  "pdf_preparing": "Menyiapkan PDF…",
+  "rotate_hint": "Putar ponsel untuk melihat sertifikat lebih besar"
 }

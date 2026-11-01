@@ -140,23 +140,64 @@ export default function CertificateVerify() {
   const event = certDate(cert?.eventDate);
   const issued = certDate(cert?.issuedAt);
 
+  const langs = (
+    <div className={styles.langs} role="group" aria-label="Language">
+      {LANGS.map((l) => (
+        <button
+          type="button"
+          key={l.code}
+          className={lang === l.code ? styles.langOn : ""}
+          aria-pressed={lang === l.code}
+          onClick={() => i18n.changeLanguage(l.code)}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  // made in Certificate Studio: the certificate itself is the page
+  if (state.phase === "found" && state.sheet) {
+    return (
+      <main dir={rtl ? "rtl" : "ltr"}>
+        <VerifiedSheet
+          sheet={state.sheet}
+          cert={cert}
+          revoked={revoked}
+          langs={langs}
+          footer={revoked ? t("footer_revoked") : t("footer_text")}
+          details={
+            <dl className={styles.details}>
+              {event && (
+                <div>
+                  <dt>{t("event_date")}</dt>
+                  <dd>{dateFormat.format(event)}</dd>
+                </div>
+              )}
+              {issued && (
+                <div>
+                  <dt>{t("issued_on")}</dt>
+                  <dd>{dateFormat.format(issued)}</dd>
+                </div>
+              )}
+              <div>
+                <dt>{t("document_code")}</dt>
+                <dd>
+                  <bdi className={styles.code}>{cert.code}</bdi>
+                </dd>
+              </div>
+            </dl>
+          }
+        />
+      </main>
+    );
+  }
+
   return (
     <main className={styles.page} dir={rtl ? "rtl" : "ltr"}>
       <div className={styles.pattern} aria-hidden="true" />
 
-      <div className={styles.langs} role="group" aria-label="Language">
-        {LANGS.map((l) => (
-          <button
-            type="button"
-            key={l.code}
-            className={lang === l.code ? styles.langOn : ""}
-            aria-pressed={lang === l.code}
-            onClick={() => i18n.changeLanguage(l.code)}
-          >
-            {l.label}
-          </button>
-        ))}
-      </div>
+      {langs}
 
       <section className={`${styles.card} ${revoked ? styles.cardRevoked : ""}`} aria-live="polite">
         {state.phase === "loading" ? (
@@ -207,28 +248,22 @@ export default function CertificateVerify() {
               </div>
             )}
 
-            {state.sheet ? (
-              <VerifiedSheet sheet={state.sheet} fileName={`sertifikat-${cert.code}`} revoked={revoked} />
-            ) : (
-              <>
-                <p className={styles.label}>{t("issued_to")}</p>
-                <h1 className={styles.name} dir="auto">
-                  {displayName(cert, lang)}
-                </h1>
-                <p className={styles.label}>{t("program")}</p>
-                <p className={styles.program} dir="auto">
-                  {displayProgram(cert, lang)}
-                </p>
-                {cert.description && (
-                  <p className={styles.muted} dir="auto">
-                    {cert.description}
-                  </p>
-                )}
-              </>
+            <p className={styles.label}>{t("issued_to")}</p>
+            <h1 className={styles.name} dir="auto">
+              {displayName(cert, lang)}
+            </h1>
+            <p className={styles.label}>{t("program")}</p>
+            <p className={styles.program} dir="auto">
+              {displayProgram(cert, lang)}
+            </p>
+            {cert.description && (
+              <p className={styles.muted} dir="auto">
+                {cert.description}
+              </p>
             )}
 
             <dl className={styles.details}>
-              {cert.number && !state.sheet && (
+              {cert.number && (
                 <div className={styles.wide}>
                   <dt>{t("certificate_number")}</dt>
                   <dd dir="auto">{cert.number}</dd>
@@ -254,7 +289,7 @@ export default function CertificateVerify() {
               </div>
             </dl>
 
-            {state.sheet ? null : state.signers.length > 0 ? (
+            {state.signers.length > 0 ? (
               <div className={styles.signatures}>
                 <p className={styles.signaturesTitle}>{t("signatures_title")}</p>
                 <div className={styles.signaturesGrid} style={{ "--sig-cols": Math.min(state.signers.length, 3) }}>

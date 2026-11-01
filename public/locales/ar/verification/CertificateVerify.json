@@ -24,5 +24,6 @@
   },
   "certificate_number": "رقم الشهادة",
   "pdf_download": "تنزيل PDF",
-  "pdf_preparing": "جارٍ تجهيز الملف…"
+  "pdf_preparing": "جارٍ تجهيز الملف…",
+  "rotate_hint": "أدر الهاتف لرؤية الشهادة بحجم أكبر"
 }

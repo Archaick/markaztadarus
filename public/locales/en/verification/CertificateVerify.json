@@ -24,5 +24,6 @@
   },
   "certificate_number": "Certificate number",
   "pdf_download": "Download PDF",
-  "pdf_preparing": "Preparing the PDF…"
+  "pdf_preparing": "Preparing the PDF…",
+  "rotate_hint": "Turn your phone for a bigger view"
 }
