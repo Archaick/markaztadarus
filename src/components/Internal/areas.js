@@ -11,6 +11,6 @@ export const areaOf = (key) => featureByKey(key) || ACCESS;
 export const actionKind = (action = "") => {
   const verb = action.split(".").pop();
   if (action === "trash.restore" || /^(create|invite|issue|import|duplicate|photo_add)$/.test(verb)) return "created";
-  if (/^(delete|remove|clear|purge|photo_delete|cover_remove)$/.test(verb)) return "deleted";
+  if (/^(delete|remove|clear|purge|cleanup|photo_delete|cover_remove)$/.test(verb)) return "deleted";
   return "edited";
 };

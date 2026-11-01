@@ -79,6 +79,8 @@ export default function GlobalAdmin() {
   // Indonesia's editor stays mounted once opened, so moving between levels keeps its unsaved edits
   const [mapOpened, setMapOpened] = useState(false);
   const [mapDirty, setMapDirty] = useState(false);
+  // Indonesia's provinces as being edited (unsaved too), so both levels show the same
+  const [mapPreview, setMapPreview] = useState(null);
   const globe = useRef(null);
 
   const countries = site.draft?.countries || {};
@@ -178,7 +180,7 @@ export default function GlobalAdmin() {
       <WorldGlobe
         ref={globe}
         programs={countries}
-        provinces={provinces}
+        provinces={mapPreview || provinces}
         selected={selected}
         onSelect={onSelect}
         onPoint={onPoint}
@@ -404,7 +406,7 @@ export default function GlobalAdmin() {
               )}
               {mapOpened && (
                 <div hidden={!insideIndonesia}>
-                  <MapEditor editorEmail={email} onDirty={setMapDirty} />
+                  <MapEditor editorEmail={email} onDirty={setMapDirty} onPreview={setMapPreview} />
                 </div>
               )}
 

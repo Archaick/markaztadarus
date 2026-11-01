@@ -135,7 +135,8 @@ const countOf = (row) => programCount({ programs: row.programs === "" ? 0 : row.
  * and change it in the panel beside it. The map redraws as you type, so the
  * result is visible before it is saved.
  */
-export default function MapEditor({ editorEmail, onDirty }) {
+// `onPreview(provinces)`: the edits as the map shows them, for another globe on the page
+export default function MapEditor({ editorEmail, onDirty, onPreview }) {
   const { t } = useTranslation("internal/Website");
   const site = useSiteDraft(SITE_DOCS.map, toDraft, editorEmail, "global");
   const links = usePrivateLinks("p");
@@ -150,6 +151,10 @@ export default function MapEditor({ editorEmail, onDirty }) {
   // What the home page would show with these edits.
   const preview = useMemo(() => toStored(rows), [rows]);
   const row = rows.find((r) => r.name === selected) || null;
+
+  useEffect(() => {
+    if (!site.loading) onPreview?.(preview);
+  }, [preview, site.loading, onPreview]);
 
   useEffect(() => {
     onDirty?.(dirty);

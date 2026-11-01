@@ -136,7 +136,7 @@
     "all": "All",
     "everyone": "Every admin",
     "search": "Search name, link, code…",
-    "locked": "Saved with each change by the database itself. Entries cannot be edited or deleted, and only you can see them.",
+    "locked": "Saved with each change by the database itself. Entries cannot be edited, only you can see them, and the last 30 days can never be removed.",
     "loadFailed": "Could not load the history.",
     "empty": "Nothing has happened yet.",
     "noMatch": "No activity matches these filters.",
@@ -256,6 +256,10 @@
       },
       "backup": {
         "download": "Downloaded a backup"
+      },
+      "history": {
+        "settings": "Changed how long the history is kept",
+        "cleanup": "Removed old history entries"
       }
     },
     "fields": {
@@ -314,7 +318,9 @@
       "scored": "Scored",
       "teachers": "Teachers",
       "observing": "Observing",
-      "countries": "Countries"
+      "countries": "Countries",
+      "keepDays": "Kept (days)",
+      "before": "Older than"
     },
     "allAreas": "Every area",
     "clear": "Clear filters",
@@ -331,6 +337,29 @@
       "created": "Created",
       "edited": "Edited",
       "deleted": "Deleted"
+    },
+    "keep": {
+      "button": "How long to keep",
+      "buttonWith": "Kept: {{period}}",
+      "title": "How long to keep the history",
+      "intro": "Older entries are removed automatically each time you open the Admin app. Whatever you choose, the last 30 days always stay, and a note of every cleanup stays in the history.",
+      "forever": "Forever",
+      "years_one": "{{count}} year",
+      "years_other": "{{count}} years",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "custom": "Custom",
+      "customLabel": "Keep for (days)",
+      "customHint": "At least {{min}} days, at most 3650.",
+      "foreverNote": "Nothing is ever removed.",
+      "counting": "Counting the older entries…",
+      "olderNow": "{{count}} entries are older than {{period}} right now.",
+      "save": "Save",
+      "cleanNow": "Save and remove {{count}} now",
+      "cleaned": "Removed {{count}} old entries.",
+      "failed": "Could not save or clean up. Try again."
     }
   },
   "shell": {

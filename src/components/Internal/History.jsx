@@ -6,6 +6,7 @@ import { collection, getDocs, limit, orderBy, query, startAfter } from "firebase
 import { db } from "../../../firebaseConfig";
 import { AUDIT_COLLECTION } from "./audit";
 import AdminShell from "./AdminShell";
+import HistoryRetention from "./HistoryRetention";
 import { AREAS, actionKind, areaOf } from "./areas";
 import { intlLocale } from "./language";
 import { timeAgo } from "./timeAgo";
@@ -267,9 +268,12 @@ export default function History() {
             <h1 className={a.title}>{t("features.history.title")}</h1>
             <p className={a.sub}>{t("history.intro")}</p>
           </div>
-          <Button variant="default" radius="md" leftSection={<IconRefresh size={16} />} onClick={refresh}>
-            {t("history.refresh")}
-          </Button>
+          <div className={a.headActions}>
+            <HistoryRetention onCleaned={refresh} />
+            <Button variant="default" radius="md" leftSection={<IconRefresh size={16} />} onClick={refresh}>
+              {t("history.refresh")}
+            </Button>
+          </div>
         </header>
 
         <div className={a.filters}>

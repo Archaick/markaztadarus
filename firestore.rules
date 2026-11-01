@@ -150,6 +150,20 @@ service cloud.firestore {
         && request.resource.data.target is string && request.resource.data.target.size() <= 200
         && request.resource.data.label is string && request.resource.data.label.size() <= 200
         && request.resource.data.details is map && request.resource.data.details.size() <= 20;
+      // the super admin's cleanup (Activity History → how long to keep):
+      // never anything from the last 30 days
+      allow delete: if isSuperAdmin() && resource.data.at < request.time - duration.value(30, 'd');
+    }
+
+    // How long the history keeps entries: 0 (forever) or 30 days to 10 years.
+    match /internal_settings/{docId} {
+      allow read: if isSuperAdmin();
+      allow write: if isSuperAdmin()
+        && docId == "history"
+        && request.resource.data.keepDays is int
+        && (request.resource.data.keepDays == 0
+          || (request.resource.data.keepDays >= 30 && request.resource.data.keepDays <= 3650))
+        && audited();
     }
 
     match /internal_audit_marks/{markId} {
@@ -160,6 +174,7 @@ service cloud.firestore {
         && request.resource.data.actor == adminEmail()
         && exists(auditPath(request.resource.data.audit)) == false
         && existsAfter(auditPath(request.resource.data.audit));
+      allow delete: if isSuperAdmin() && resource.data.at < request.time - duration.value(30, 'd');
     }
 
     // ---------- Internal admins (invites) ----------

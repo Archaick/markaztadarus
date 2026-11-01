@@ -136,7 +136,7 @@
     "all": "Semua",
     "everyone": "Semua admin",
     "search": "Cari nama, tautan, kode…",
-    "locked": "Dicatat oleh database bersama setiap perubahan. Catatan tidak bisa diubah atau dihapus, dan hanya Anda yang bisa melihatnya.",
+    "locked": "Dicatat oleh database bersama setiap perubahan. Catatan tidak bisa diubah, hanya Anda yang bisa melihatnya, dan 30 hari terakhir tidak pernah bisa dihapus.",
     "loadFailed": "Riwayat tidak dapat dimuat.",
     "empty": "Belum ada aktivitas.",
     "noMatch": "Tidak ada aktivitas yang cocok dengan filter ini.",
@@ -256,6 +256,10 @@
       },
       "backup": {
         "download": "Mengunduh cadangan"
+      },
+      "history": {
+        "settings": "Mengubah lama penyimpanan riwayat",
+        "cleanup": "Menghapus catatan riwayat lama"
       }
     },
     "fields": {
@@ -314,7 +318,9 @@
       "scored": "Dinilai",
       "teachers": "Guru",
       "observing": "Sedang observasi",
-      "countries": "Negara"
+      "countries": "Negara",
+      "keepDays": "Disimpan (hari)",
+      "before": "Lebih lama dari"
     },
     "allAreas": "Semua bagian",
     "clear": "Hapus filter",
@@ -331,6 +337,29 @@
       "created": "Dibuat",
       "edited": "Diubah",
       "deleted": "Dihapus"
+    },
+    "keep": {
+      "button": "Lama penyimpanan",
+      "buttonWith": "Disimpan: {{period}}",
+      "title": "Berapa lama riwayat disimpan",
+      "intro": "Catatan yang lebih lama dihapus otomatis setiap kali Anda membuka aplikasi Admin. Apa pun pilihannya, 30 hari terakhir selalu tersimpan, dan setiap pembersihan tetap tercatat di riwayat.",
+      "forever": "Selamanya",
+      "years_one": "{{count}} tahun",
+      "years_other": "{{count}} tahun",
+      "months_one": "{{count}} bulan",
+      "months_other": "{{count}} bulan",
+      "days_one": "{{count}} hari",
+      "days_other": "{{count}} hari",
+      "custom": "Atur sendiri",
+      "customLabel": "Simpan selama (hari)",
+      "customHint": "Minimal {{min}} hari, maksimal 3650.",
+      "foreverNote": "Tidak ada yang dihapus.",
+      "counting": "Menghitung catatan lama…",
+      "olderNow": "Saat ini ada {{count}} catatan yang lebih lama dari {{period}}.",
+      "save": "Simpan",
+      "cleanNow": "Simpan dan hapus {{count}} sekarang",
+      "cleaned": "{{count}} catatan lama dihapus.",
+      "failed": "Gagal menyimpan atau membersihkan. Coba lagi."
     }
   },
   "shell": {

@@ -6,6 +6,8 @@ import { db } from "../../../firebaseConfig";
 import AppShell from "./AppShell";
 import { TRASH_COLLECTION } from "./audit";
 import { purgeExpired } from "./trash";
+import { cleanHistory, loadKeepDays } from "./historyCleanup";
+import { useAccess } from "./accessContext";
 
 // the recycle bin's entries, live (null while loading, "error" if refused)
 const TrashList = createContext(null);
@@ -19,6 +21,17 @@ export const useTrashList = () => useContext(TrashList);
 export default function AdminShell({ adminCount = null, children }) {
   const { t } = useTranslation("internal/Internal");
   const [trash, setTrash] = useState(null);
+  const { user } = useAccess();
+
+  // history entries older than the chosen period go now (once per visit)
+  const cleaned = useRef(false);
+  useEffect(() => {
+    if (!user || cleaned.current) return;
+    cleaned.current = true;
+    loadKeepDays()
+      .then((days) => cleanHistory(user, days))
+      .catch((err) => console.error("Could not clean the old history:", err));
+  }, [user]);
 
   useEffect(
     () =>

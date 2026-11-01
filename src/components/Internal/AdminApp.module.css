@@ -600,3 +600,9 @@
     justify-content: space-between;
   }
 }
+
+.headActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
