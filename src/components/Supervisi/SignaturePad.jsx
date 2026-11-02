@@ -1,9 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Button } from "@mantine/core";
 import { IconEraser, IconUpload } from "@tabler/icons-react";
-import { loadImage } from "../Internal/images";
+import { loadImage, pngWithin } from "../Internal/images";
 import { useTranslation } from "react-i18next";
 import styles from "./Supervisi.module.css";
+
+const MAX_CHARS = 150000;
 
 const NS = "internal/Supervisi";
 
@@ -146,7 +148,7 @@ const SignaturePad = forwardRef(function SignaturePad({ label, name, value, onCh
       out.width = Math.round(w * scale);
       out.height = Math.round(h * scale);
       out.getContext("2d").drawImage(c, x0 - pad, y0 - pad, w, h, 0, 0, out.width, out.height);
-      return out.toDataURL("image/png");
+      return pngWithin(out, MAX_CHARS);
     },
   }));
 

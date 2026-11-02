@@ -2,6 +2,7 @@
 import { collection, doc, getDoc, getDocs, query, orderBy, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { certLang } from "./certSchema";
+import { pngWithin } from "../Internal/images";
 
 export const SIGNERS_COLLECTION = "certificate_signers";
 
@@ -27,13 +28,17 @@ export const signerInLang = (signer, lang) =>
 
 // Images are stored inline in Firestore (1MB doc limit), so keep them small
 const MAX_IMAGE_SIDE = 480;
+// A certificate design's public copy holds up to 3 signers (signature + stamp)
+// and 4 logos in one document (1 MiB at most), so each has its share.
+const SIGNER_IMAGE_CHARS = 110000;
+export const LOGO_IMAGE_CHARS = 70000;
 
 /**
  * Load an image file, downscale it, and optionally turn near-white pixels
  * transparent so scanned signatures / stamps sit cleanly on the page.
  * Returns a PNG data URL.
  */
-export const processImageFile = (file, { removeWhite = true, threshold = 225 } = {}) =>
+export const processImageFile = (file, { removeWhite = true, threshold = 225, maxChars = SIGNER_IMAGE_CHARS } = {}) =>
     new Promise((resolve, reject) => {
         if (!file || !file.type.startsWith("image/")) {
             reject(new Error("not-image"));
@@ -71,7 +76,7 @@ export const processImageFile = (file, { removeWhite = true, threshold = 225 } =
                     ctx.putImageData(data, 0, 0);
                 }
 
-                resolve(canvas.toDataURL("image/png"));
+                resolve(pngWithin(canvas, maxChars));
             };
             img.src = reader.result;
         };

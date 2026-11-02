@@ -255,7 +255,8 @@
         "purge": "Dihapus permanen dari Baru dihapus"
       },
       "backup": {
-        "download": "Mengunduh cadangan"
+        "download": "Mengunduh cadangan",
+        "restore": "Memulihkan dari cadangan"
       },
       "history": {
         "settings": "Mengubah lama penyimpanan riwayat",
@@ -445,6 +446,50 @@
     "overdue": "Cadangan terakhir sudah lebih dari sebulan — saatnya membuat yang baru.",
     "done": "{{count}} data tersimpan ({{size}}). Periksa folder unduhan Anda.",
     "failed": "Cadangan gagal dibuat. Periksa koneksi lalu coba lagi.",
-    "keepSafe": "Simpan file ini di tempat pribadi, misalnya Google Drive Anda sendiri. Isinya lengkap, termasuk nama peserta, jawaban, dan tanda tangan — jangan dibagikan kepada siapa pun."
+    "keepSafe": "Simpan file ini di tempat pribadi, misalnya Google Drive Anda sendiri. Isinya lengkap, termasuk nama peserta, jawaban, dan tanda tangan — jangan dibagikan kepada siapa pun.",
+    "storageTitle": "Penyimpanan",
+    "storageOf": "dari {{limit}} gratis",
+    "storageRecords": "{{count}} data",
+    "storageCount": "Hitung sekarang",
+    "storageCounting": "Menghitung… {{count}} data",
+    "storageCounted": "Dihitung {{time}}",
+    "storageNote": "Perkiraan, dijumlahkan dari data dan diperbarui sekali sehari. Firebase juga menyimpan indeks pencarian, jadi angkanya bisa sedikit lebih tinggi.",
+    "storageFull": "Penyimpanan sudah terisi {{percent}}%. Unduh cadangan, lalu bersihkan foto atau jawaban lama.",
+    "storageFailed": "Penyimpanan tidak dapat dihitung. Periksa koneksi Anda dan coba lagi.",
+    "restoreTitle": "Pulihkan dari cadangan",
+    "restoreIntro": "Pilih file cadangan. Tidak ada yang berubah sebelum Anda mengonfirmasi: Anda akan melihat dulu apa yang berbeda dari database saat ini.",
+    "restorePick": "Pilih file cadangan",
+    "restoreReading": "Membandingkan dengan database… {{count}} data",
+    "restoreFrom": "Cadangan dari {{time}}, {{count}} data",
+    "restoreBadFile": "Ini bukan file cadangan dari situs ini.",
+    "restoreMissing": "Hilang",
+    "restoreChanged": "Berubah",
+    "restoreSame": "Sama",
+    "restoreNothing": "Database sudah sama dengan cadangan ini.",
+    "restoreAdminsHint": "Awalnya nonaktif: admin yang sudah dihapus akan mendapat akses kembali.",
+    "restoreReplace": "Ganti juga data yang berubah sejak cadangan dibuat",
+    "restoreReplaceHint": "Versi saat ini akan hilang, jadi unduh cadangan baru dulu. Jika nonaktif, hanya data yang hilang yang kembali.",
+    "restoreNever": "Tidak ada yang dihapus, serta riwayat dan keranjang sampah tetap seperti adanya.",
+    "restoreButton": "Pulihkan {{count}} data",
+    "restoreCancel": "Batal",
+    "restoreBack": "Kembali",
+    "restoreConfirmTitle": "Pulihkan {{count}} data?",
+    "restoreConfirmAdd": "{{missing}} data yang hilang kembali seperti di cadangan. Selain itu tidak ada yang berubah.",
+    "restoreConfirmReplace": "{{missing}} data yang hilang kembali, dan {{changed}} data saat ini diganti dengan versi cadangan. Ini tidak bisa dibatalkan tanpa cadangan baru.",
+    "restoreConfirm": "Ya, pulihkan",
+    "restoreWorking": "Memulihkan… {{done}} dari {{total}}",
+    "restoreDone": "{{count}} data dipulihkan.",
+    "restorePartial": "{{count}} data dipulihkan. {{failed}} tidak dapat dipulihkan:",
+    "restoreFailed": "Pemulihan tidak dapat dimulai. Periksa koneksi Anda dan coba lagi.",
+    "areas": {
+      "certificates": "Sertifikat",
+      "forms": "Formulir dan jawaban",
+      "news": "Berita dan foto",
+      "supervision": "Supervisi guru",
+      "links": "Tautan pendek",
+      "site": "Situs dan peta",
+      "admins": "Admin dan pengaturan",
+      "history": "Riwayat dan keranjang sampah"
+    }
   }
 }

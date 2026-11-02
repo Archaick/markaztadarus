@@ -38,7 +38,7 @@ import { useAccess } from "../../Internal/accessContext";
 import { auditedWrite } from "../../Internal/audit";
 import portal from "../../Internal/InternalPortal.module.css";
 import { CERTS, PUBLIC, fromDateInput, isRevoked, normCode, publicFields, safeFileName, tidyPeople } from "../certSchema";
-import { processImageFile } from "../signerUtils";
+import { LOGO_IMAGE_CHARS, processImageFile } from "../signerUtils";
 import CertificateSheet from "./CertificateSheet";
 import { certificatesPdf, certificatesZip, saveBlob } from "./studioPdf";
 import { DESIGNS, DESIGNS_PUBLIC, MAX_LOGOS, MAX_SIGNERS, certsOf, cleanDesign, newDesign, numberFor, publicDesign, sheetData } from "./studioData";
@@ -381,7 +381,7 @@ function LookFields({ form, set, signerOptions }) {
     setLogoError("");
     try {
       // logos keep their own background (no white removal); stored small, inside the design
-      const url = await processImageFile(file, { removeWhite: false });
+      const url = await processImageFile(file, { removeWhite: false, maxChars: LOGO_IMAGE_CHARS });
       set("logos")([...(form.logos || []), url].slice(0, MAX_LOGOS));
     } catch {
       setLogoError(t("studio.fields.logoFailed"));

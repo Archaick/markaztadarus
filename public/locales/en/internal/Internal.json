@@ -255,7 +255,8 @@
         "purge": "Deleted for good from Recently deleted"
       },
       "backup": {
-        "download": "Downloaded a backup"
+        "download": "Downloaded a backup",
+        "restore": "Restored from a backup"
       },
       "history": {
         "settings": "Changed how long the history is kept",
@@ -463,6 +464,50 @@
     "overdue": "The last backup is over a month old — time for a new one.",
     "done": "Saved {{count}} records ({{size}}). Check your downloads folder.",
     "failed": "The backup could not be made. Check your connection and try again.",
-    "keepSafe": "Keep the file somewhere private, such as your own Google Drive. It holds everything, including participants' names, answers and signatures — share it with no one."
+    "keepSafe": "Keep the file somewhere private, such as your own Google Drive. It holds everything, including participants' names, answers and signatures — share it with no one.",
+    "storageTitle": "Storage",
+    "storageOf": "of {{limit}} free",
+    "storageRecords": "{{count}} records",
+    "storageCount": "Count now",
+    "storageCounting": "Counting… {{count}} records",
+    "storageCounted": "Counted {{time}}",
+    "storageNote": "An estimate, added up from the records and refreshed once a day. Firebase also keeps search indexes, so its own figure can be a little higher.",
+    "storageFull": "Storage is {{percent}}% full. Download a backup, then clear out old photos or responses.",
+    "storageFailed": "The storage could not be counted. Check your connection and try again.",
+    "restoreTitle": "Restore from a backup",
+    "restoreIntro": "Choose a backup file. Nothing changes until you confirm: first you see what is different from the database now.",
+    "restorePick": "Choose a backup file",
+    "restoreReading": "Comparing with the database… {{count}} records",
+    "restoreFrom": "Backup from {{time}}, {{count}} records",
+    "restoreBadFile": "This is not a backup file from this site.",
+    "restoreMissing": "Missing now",
+    "restoreChanged": "Changed since",
+    "restoreSame": "Same",
+    "restoreNothing": "The database already matches this backup.",
+    "restoreAdminsHint": "Off at first: a removed admin would get access back.",
+    "restoreReplace": "Also replace records that changed since the backup",
+    "restoreReplaceHint": "Their current version is lost, so download a fresh backup first. Off: only missing records come back.",
+    "restoreNever": "Nothing is ever deleted, and the history and recycle bin stay as they are.",
+    "restoreButton": "Restore {{count}} records",
+    "restoreCancel": "Cancel",
+    "restoreBack": "Back",
+    "restoreConfirmTitle": "Restore {{count}} records?",
+    "restoreConfirmAdd": "{{missing}} missing records come back as they were in the backup. Nothing else changes.",
+    "restoreConfirmReplace": "{{missing}} missing records come back, and {{changed}} current records are replaced with the backup's version. This cannot be undone without a fresh backup.",
+    "restoreConfirm": "Yes, restore",
+    "restoreWorking": "Restoring… {{done}} of {{total}}",
+    "restoreDone": "Restored {{count}} records.",
+    "restorePartial": "Restored {{count}} records. {{failed}} could not be restored:",
+    "restoreFailed": "The restore could not start. Check your connection and try again.",
+    "areas": {
+      "certificates": "Certificates",
+      "forms": "Forms and answers",
+      "news": "News and photos",
+      "supervision": "Teacher supervision",
+      "links": "Short links",
+      "site": "Website and map",
+      "admins": "Admins and settings",
+      "history": "History and recycle bin"
+    }
   }
 }

@@ -1,5 +1,9 @@
 // Photos are kept in Firestore as JPEG data URLs (this project has no Storage
 // bucket), so every image is shrunk in the browser before it is saved.
+//
+// THE RULE: every image anyone can add, anywhere in the site, goes through
+// compressImage (photos) or pngWithin (what must stay transparent: signatures,
+// stamps, logos), each with a size limit. A new upload never skips this.
 
 export const loadImage = (source) =>
   new Promise((resolve, reject) => {
@@ -20,6 +24,21 @@ export const loadImage = (source) =>
 // Scales an image (File or data URL) down to fit maxWidth × maxHeight and
 // re-encodes it as JPEG until it is at most maxChars long.
 // Resolves to { dataUrl, width, height }; rejects with "unreadable" or "too-large".
+// A canvas as a PNG (keeps transparency) of at most maxChars, made smaller until it fits.
+export const pngWithin = (canvas, maxChars) => {
+  let current = canvas;
+  let dataUrl = current.toDataURL("image/png");
+  for (let attempt = 0; attempt < 8 && dataUrl.length > maxChars; attempt += 1) {
+    const next = document.createElement("canvas");
+    next.width = Math.max(1, Math.round(current.width * 0.8));
+    next.height = Math.max(1, Math.round(current.height * 0.8));
+    next.getContext("2d").drawImage(current, 0, 0, next.width, next.height);
+    current = next;
+    dataUrl = current.toDataURL("image/png");
+  }
+  return dataUrl;
+};
+
 export const compressImage = async (source, { maxWidth, maxHeight, maxChars }) => {
   const img = await loadImage(source);
   const fit = Math.min(1, maxWidth / img.naturalWidth, maxHeight / img.naturalHeight);

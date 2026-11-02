@@ -164,6 +164,14 @@ service cloud.firestore {
         && (request.resource.data.keepDays == 0
           || (request.resource.data.keepDays >= 30 && request.resource.data.keepDays <= 3650))
         && audited();
+      // the figure on the Backup page, added up in the browser
+      allow write: if isSuperAdmin()
+        && docId == "storage"
+        && request.resource.data.keys().hasOnly(["bytes", "count", "areas", "at"])
+        && request.resource.data.bytes is int
+        && request.resource.data.count is int
+        && request.resource.data.areas is map
+        && request.resource.data.at == request.time;
     }
 
     match /internal_audit_marks/{markId} {
