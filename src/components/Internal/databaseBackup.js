@@ -87,10 +87,14 @@ export async function readCurrent(onProgress) {
 
 // ---------- How much is stored ----------
 // The free plan shows no figure a page can read, so it is added up from the
-// documents: a whole read, as for a backup, so at most once a day on its own.
+// documents: a whole read, as for a backup, so on its own at most once a day,
+// and once a week when there is enough that the download itself starts to count.
 
 export const STORAGE_LIMIT = 1024 * 1024 * 1024;
-export const STORAGE_MAX_AGE = 24 * 60 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
+const WEEKLY_FROM = 100 * 1024 * 1024;
+export const storageIsStale = (saved) =>
+  !saved?.at || Date.now() - saved.at.toMillis() > (saved.bytes >= WEEKLY_FROM ? 7 * DAY : DAY);
 const storageRef = () => doc(db, "internal_settings", "storage");
 const encoder = new TextEncoder();
 

@@ -471,7 +471,7 @@
     "storageCount": "Count now",
     "storageCounting": "Counting… {{count}} records",
     "storageCounted": "Counted {{time}}",
-    "storageNote": "An estimate, added up from the records and refreshed once a day. Firebase also keeps search indexes, so its own figure can be a little higher.",
+    "storageNote": "An estimate, added up from the records and refreshed once a day (once a week above 100 MB). Firebase also keeps search indexes, so its own figure can be a little higher.",
     "storageFull": "Storage is {{percent}}% full. Download a backup, then clear out old photos or responses.",
     "storageFailed": "The storage could not be counted. Check your connection and try again.",
     "restoreTitle": "Restore from a backup",

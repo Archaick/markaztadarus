@@ -8,7 +8,7 @@ import { useAccess } from "./accessContext";
 import AdminShell from "./AdminShell";
 import { AUDIT_COLLECTION, auditedWrite } from "./audit";
 import BackupRestore from "./BackupRestore";
-import { STORAGE_LIMIT, STORAGE_MAX_AGE, buildBackup, countStorage, loadStorage } from "./databaseBackup";
+import { STORAGE_LIMIT, buildBackup, countStorage, loadStorage, storageIsStale } from "./databaseBackup";
 import { formatDateTime, timeAgo } from "./timeAgo";
 import a from "./AdminApp.module.css";
 
@@ -63,7 +63,7 @@ export default function Backup() {
     }
   };
 
-  // the saved figure, counted again on its own once it is a day old
+  // the saved figure, counted again on its own once it is old enough
   useEffect(() => {
     let stale = false;
     loadStorage()
@@ -71,7 +71,7 @@ export default function Backup() {
       .then((saved) => {
         if (stale) return;
         setUsage(saved);
-        if (!saved?.at || Date.now() - saved.at.toMillis() > STORAGE_MAX_AGE) recount();
+        if (storageIsStale(saved)) recount();
       });
     return () => {
       stale = true;

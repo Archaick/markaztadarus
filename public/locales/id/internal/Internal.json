@@ -453,7 +453,7 @@
     "storageCount": "Hitung sekarang",
     "storageCounting": "Menghitung… {{count}} data",
     "storageCounted": "Dihitung {{time}}",
-    "storageNote": "Perkiraan, dijumlahkan dari data dan diperbarui sekali sehari. Firebase juga menyimpan indeks pencarian, jadi angkanya bisa sedikit lebih tinggi.",
+    "storageNote": "Perkiraan, dijumlahkan dari data dan diperbarui sekali sehari (sekali seminggu di atas 100 MB). Firebase juga menyimpan indeks pencarian, jadi angkanya bisa sedikit lebih tinggi.",
     "storageFull": "Penyimpanan sudah terisi {{percent}}%. Unduh cadangan, lalu bersihkan foto atau jawaban lama.",
     "storageFailed": "Penyimpanan tidak dapat dihitung. Periksa koneksi Anda dan coba lagi.",
     "restoreTitle": "Pulihkan dari cadangan",
