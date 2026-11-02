@@ -50,8 +50,11 @@ export const badTime = (s) => s && (s.days || []).length > 0 && (minutesOf(s.sta
 export const emptySession = (utc = 7) => ({ title: "", days: [], start: "19:30", end: "21:00", utc, liveUntil: 0, activity: "", zoomPublic: false });
 
 /** The public copy of a session: tidy, with the Zoom link only when it may show. */
+/** A one-off session ("live now", no weekly days) whose time has run out: it switches itself off. */
+export const sessionOver = (s, now = Date.now()) => !!s && !(s.days || []).length && Number(s.liveUntil) > 0 && Number(s.liveUntil) <= now;
+
 export function publicSession(s, zoom) {
-  if (!s) return null;
+  if (!s || sessionOver(s)) return null;
   const out = {
     title: String(s.title || "").trim().slice(0, 80),
     days: WEEK.filter((d) => (s.days || []).includes(d)),
@@ -141,7 +144,8 @@ export function useLiveSessions(provinces, countries) {
   const now = useNow();
   const places = useMemo(() => sessionPlaces(provinces, countries), [provinces, countries]);
   return useMemo(() => {
-    const all = places.map((p) => ({ ...p, ...liveState(p.session, now) }));
+    // only what is live or still to come: an ended one-off session leaves no mark
+    const all = places.map((p) => ({ ...p, ...liveState(p.session, now) })).filter((p) => p.live || p.nextAt);
     return {
       all,
       live: all.filter((p) => p.live),

@@ -34,7 +34,7 @@ import { SITE_DOCS } from "../HomePage/siteContent";
 import MapGlobe from "../HomePage/Map/MapGlobe";
 import { ALL_PROVINCES } from "../HomePage/Map/mapGeometry";
 import SessionFields from "../Global/SessionFields";
-import { badTime, badUrl, newId, publicSession, usePrivateLinks } from "../Global/liveSessions";
+import { badTime, badUrl, newId, publicSession, sessionOver, usePrivateLinks } from "../Global/liveSessions";
 import { useSiteDraft } from "./useSiteDraft";
 import SaveBar from "./SaveBar";
 import styles from "./Website.module.css";
@@ -77,7 +77,8 @@ const toRows = (provinces) =>
         city: l.city || "",
         institution: l.institution || "",
         coords: formatCoords(l),
-        session: l.session || null,
+        // an ended one-off session opens switched off
+        session: l.session && !sessionOver(l.session) ? l.session : null,
       })),
     }))
     .sort((a, b) => a.name.localeCompare(b.name));

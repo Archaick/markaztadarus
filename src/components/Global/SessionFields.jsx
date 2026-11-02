@@ -1,7 +1,8 @@
 import { Badge, Button, Chip, Group, Select, Switch, Text, TextInput } from "@mantine/core";
 import { IconBrandZoom, IconBroadcast, IconLink, IconPlayerStop } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { ID_ZONES, LIVE_HOURS, OFFSETS, WEEK, badTime, badUrl, clockAt, dayAt, emptySession, liveState, useNow, zoneLabel } from "./liveSessions";
+import { useEffect } from "react";
+import { ID_ZONES, LIVE_HOURS, OFFSETS, WEEK, badTime, badUrl, clockAt, dayAt, emptySession, liveState, sessionOver, useNow, zoneLabel } from "./liveSessions";
 import styles from "./GlobalAdmin.module.css";
 
 const LOCALES = { id: "id-ID", en: "en-GB", ar: "ar" };
@@ -19,6 +20,12 @@ export default function SessionFields({ session, onChange, zoom, onZoom, indones
   const { t, i18n } = useTranslation("internal/Global");
   const lang = (i18n.language || "id").slice(0, 2);
   const now = useNow();
+  const over = sessionOver(session, now);
+
+  // a one-off live session that ends while the form is open switches itself off
+  useEffect(() => {
+    if (over) onChange(null);
+  }, [over, onChange]);
 
   if (!session) {
     return (

@@ -24,8 +24,8 @@ function byCountry(places) {
 
 /**
  * Tadarus Live on the globe: a red pulsing bubble marked LIVE where an online
- * Tadarus is running now, a small violet dot where one meets on other days.
- * Far out, one bubble per country (LIVE 2: two of its places are live).
+ * Tadarus is running now; nothing for sessions that are not (the map stays
+ * clear). Far out, one bubble per country (LIVE 2: two of its places are live).
  */
 export default function LiveLayer({ sessions, projection, scale, visible }) {
   if (!sessions.length) return null;

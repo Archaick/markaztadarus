@@ -286,8 +286,8 @@ const WorldGlobe = forwardRef(function WorldGlobe(
   const totals = useMemo(() => provinceTotals(provinces), [provinces]);
   const marks = useMemo(() => provinceMarks(list), [list]);
   const showProvinces = hasProvinces && scale >= SHOW_PROVINCES;
-  // Tadarus Live: the places with an online session, live or not right now
-  const sessions = useLiveSessions(provinces, programs).all;
+  // Tadarus Live: only the sessions running now (the coming ones are listed on /global, not drawn)
+  const sessions = useLiveSessions(provinces, programs).live;
 
   // what lies under a point of the drawing: where on Earth, the country, and the province (or its pin or place)
   const hit = (x, y) => {

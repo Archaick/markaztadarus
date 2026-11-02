@@ -18,7 +18,7 @@ import WorldGlobe from "./WorldGlobe";
 import { COUNTRIES, DEFAULT_GLOBAL, GLOBAL_DOC, countryName } from "./globalData";
 import Flag from "./Flag";
 import SessionFields from "./SessionFields";
-import { badTime, badUrl, newId, publicSession, usePrivateLinks } from "./liveSessions";
+import { badTime, badUrl, newId, publicSession, sessionOver, usePrivateLinks } from "./liveSessions";
 import styles from "./GlobalAdmin.module.css";
 
 const NS = "internal/Global";
@@ -29,7 +29,12 @@ const MAX_CITIES = 30;
 const toDraft = (stored) => {
   const countries = JSON.parse(JSON.stringify(stored?.countries || DEFAULT_GLOBAL.countries));
   Object.entries(countries).forEach(([code, c]) => {
-    c.cities = (c.cities || []).map((city, i) => ({ ...city, id: city.id || `c-${code.toLowerCase()}-${i}` }));
+    c.cities = (c.cities || []).map(({ session, ...city }, i) => ({
+      ...city,
+      id: city.id || `c-${code.toLowerCase()}-${i}`,
+      // an ended one-off session opens switched off
+      ...(session && !sessionOver(session) && { session }),
+    }));
   });
   return { countries };
 };
