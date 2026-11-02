@@ -185,7 +185,7 @@
 }
 .sessionTimes {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.1fr;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 8px;
 }
 .liveDot {
@@ -222,4 +222,10 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+@container (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
 }

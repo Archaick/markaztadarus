@@ -59,5 +59,8 @@
     "next": "Next: {{day}} {{time}}",
     "badLink": "Use a full link starting with https://",
     "problem": "Check the online sessions in {{country}}: a link or a time is not right."
-  }
+  },
+  "brand": "Global",
+  "admin": "Admin",
+  "insideCities": "This country's cities, placed by tapping the globe, and their online sessions."
 }

@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ActionIcon, Alert, Button, Card, Loader, NumberInput, SegmentedControl, Select, Text, TextInput, Textarea, Title, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconChevronRight, IconExternalLink, IconMapPinPlus, IconTrash, IconWorld } from "@tabler/icons-react";
+import { ActionIcon, Alert, Button, Loader, NumberInput, Select, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
+import { IconChevronRight, IconExternalLink, IconMapPin, IconMapPinPlus, IconTrash, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
-import { AccountBar, InternalLayout } from "../Internal/InternalUI";
-import layout from "../Internal/AccessControl.module.css";
+import AppShell from "../Internal/AppShell";
 import portal from "../Internal/InternalPortal.module.css";
-import formStyles from "../Forms/Forms.module.css";
-import websiteStyles from "../Website/Website.module.css";
+import app from "../Website/WebsiteApp.module.css";
 import SaveBar from "../Website/SaveBar";
 import MapEditor from "../Website/MapEditor";
 import { useSiteDraft } from "../Website/useSiteDraft";
@@ -55,6 +53,7 @@ const toStored = (draft, zoomOf) => ({
 });
 const cityIds = (draft) => Object.values(draft?.countries || {}).flatMap((c) => (c.cities || []).map((city) => city.id));
 const round = (n) => Math.round(n * 10000) / 10000;
+const linkTo = (country, level) => `country=${country || ""}${level === "inside" ? "&level=inside" : ""}`;
 
 /**
  * /internal/global, on two levels. "Countries": which countries have Tadarus
@@ -68,7 +67,7 @@ const round = (n) => Math.round(n * 10000) / 10000;
 export default function GlobalAdmin() {
   const { t, i18n } = useTranslation([NS, "internal/Internal"]);
   const lang = (i18n.language || "id").slice(0, 2);
-  const { email } = useAccess();
+  const { email, isSuperAdmin } = useAccess();
   const site = useSiteDraft(GLOBAL_DOC, toDraft, email, "global");
   const links = usePrivateLinks("c");
   const dirty = site.dirty || links.dirty;
@@ -76,8 +75,11 @@ export default function GlobalAdmin() {
   const provinces = siteMap?.provinces && Object.keys(siteMap.provinces).length ? siteMap.provinces : mtiProvinces;
   const indonesia = useMemo(() => provinceTotals(provinces), [provinces]);
   const [params, setParams] = useSearchParams();
-  const [selected, setSelected] = useState(() => params.get("country") || "ID");
-  const [level, setLevel] = useState(() => (params.get("level") === "inside" ? "inside" : "world"));
+  // where we are lives in the address, so the menu can move between the levels
+  const selected = params.has("country") ? params.get("country") || null : "ID";
+  const level = params.get("level") === "inside" ? "inside" : "world";
+  const go = (country, nextLevel) => setParams(linkTo(country, nextLevel), { replace: true });
+  const setSelected = (code) => go(code, level);
   const [placing, setPlacing] = useState(false);
   const [message, setMessage] = useState(null);
   const [search, setSearch] = useState("");
@@ -97,14 +99,6 @@ export default function GlobalAdmin() {
   useEffect(() => {
     if (insideIndonesia) setMapOpened(true);
   }, [insideIndonesia]);
-
-  // keep the address in step, so a reload (or a shared link) opens the same place
-  useEffect(() => {
-    const next = new URLSearchParams();
-    if (selected) next.set("country", selected);
-    if (inside) next.set("level", "inside");
-    if (next.toString() !== params.toString()) setParams(next, { replace: true });
-  }, [selected, inside, params, setParams]);
 
   const options = useMemo(
     () =>
@@ -127,12 +121,11 @@ export default function GlobalAdmin() {
       delete next[code];
       return next;
     });
-    setSelected(null);
+    go(null, "world");
     setPlacing(false);
-    setLevel("world");
   };
   const goLevel = (next) => {
-    setLevel(next);
+    go(selected, next);
     setPlacing(false);
   };
 
@@ -151,8 +144,7 @@ export default function GlobalAdmin() {
     setMessage(null);
     const bad = Object.entries(countries).find(([, c]) => (c.cities || []).some((city) => city.session && (badUrl(city.session.activity) || badUrl(links.value(city.id)) || badTime(city.session))));
     if (bad) {
-      setSelected(bad[0]);
-      setLevel("inside");
+      go(bad[0], "inside");
       setMessage({ color: "red", text: t("session.problem", { country: countryName(bad[0], lang) }) });
       return;
     }
@@ -161,24 +153,19 @@ export default function GlobalAdmin() {
     setMessage(ok ? { color: "green", text: t("saved") } : { color: "red", text: t("saveFailed") });
   };
 
-  const dot = (dirty) => (dirty ? " ●" : "");
-  const levels = (
-    <SegmentedControl
-      fullWidth
-      radius="md"
-      className={styles.levels}
-      value={inside ? "inside" : "world"}
-      onChange={goLevel}
-      data={[
-        { value: "world", label: `${t("levels.world")}${dot(dirty)}` },
-        {
-          value: "inside",
-          disabled: !current,
-          label: current ? `${t("levels.inside", { country: countryName(selected, lang) })}${dot(selected === "ID" && mapDirty)}` : t("levels.insidePick"),
-        },
-      ]}
-    />
-  );
+  const name = selected ? countryName(selected, lang) : "";
+  const BASE = "/internal/global";
+  const sections = [
+    {
+      label: t("title"),
+      items: [
+        { to: `${BASE}?${linkTo(selected, "world")}`, icon: IconWorld, label: t("levels.world"), count: dirty ? "●" : undefined, active: !inside },
+        ...(current
+          ? [{ to: `${BASE}?${linkTo(selected, "inside")}`, icon: IconMapPin, label: t("levels.inside", { country: name }), count: selected === "ID" && mapDirty ? "●" : undefined, active: inside }]
+          : []),
+      ],
+    },
+  ];
 
   const preview = (
     <div className={`${styles.preview} ${placing ? styles.placing : ""}`}>
@@ -209,30 +196,17 @@ export default function GlobalAdmin() {
   );
 
   return (
-    <InternalLayout align="top">
-      <div className={`${layout.page} ${websiteStyles.pageWide}`}>
-        <a href="/internal" className={layout.back}>
-          <IconArrowLeft size={16} className={portal.flipRtl} /> {t("internal/Internal:backToHub")}
-        </a>
-
-        <Card className={layout.panel}>
-          <AccountBar />
-          <div className={formStyles.headerRow}>
-            <div className={layout.heading}>
-              <span className={layout.headingIcon} style={{ background: "linear-gradient(135deg, #f2c94c 0%, #0a1d4a 100%)" }}>
-                <IconWorld size={22} />
-              </span>
-              <div>
-                <Title order={2} className={layout.headingTitle}>
-                  {t("title")}
-                </Title>
-                <Text className={layout.headingText}>{t("intro")}</Text>
-              </div>
-            </div>
-            <Button variant="light" color="yellow" component="a" href="/global" target="_blank" rel="noreferrer" rightSection={<IconExternalLink size={16} />}>
-              {t("open")}
-            </Button>
+    <AppShell brand={t("brand")} role={isSuperAdmin ? t("internal/Internal:superAdmin") : t("admin")} sections={sections} collapseKey="mt.globalMenu">
+      <div className={app.page}>
+        <header className={app.head}>
+          <div>
+            <h1 className={app.title}>{inside ? t("levels.inside", { country: name }) : t("title")}</h1>
+            <p className={app.sub}>{!inside ? t("intro") : insideIndonesia ? t("insideIndonesia") : t("insideCities")}</p>
           </div>
+          <Button variant="default" radius="md" component="a" href="/global" target="_blank" rel="noreferrer" leftSection={<IconExternalLink size={16} />}>
+            {t("open")}
+          </Button>
+        </header>
 
           {site.loading ? (
             <Loader />
@@ -241,8 +215,6 @@ export default function GlobalAdmin() {
               {/* about the countries list, so not shown inside Indonesia (its editor says its own) */}
               {site.loadFailed && !insideIndonesia && <Alert color="red" mb="md">{t("loadFailed")}</Alert>}
               {site.fromBuiltIn && !insideIndonesia && <Alert color="blue" mb="md">{t("builtIn")}</Alert>}
-
-              {levels}
 
               {/* ---------- Countries: the world level ---------- */}
               {!inside && (
@@ -404,13 +376,8 @@ export default function GlobalAdmin() {
               )}
 
               {/* ---------- Inside Indonesia: the provinces (the home-page map) ---------- */}
-              {insideIndonesia && (
-                <Text size="sm" c="dimmed" mb="sm">
-                  {t("insideIndonesia")}
-                </Text>
-              )}
               {mapOpened && (
-                <div hidden={!insideIndonesia}>
+                <div className={app.view} hidden={!insideIndonesia}>
                   <MapEditor editorEmail={email} onDirty={setMapDirty} onPreview={setMapPreview} />
                 </div>
               )}
@@ -432,8 +399,7 @@ export default function GlobalAdmin() {
               )}
             </>
           )}
-        </Card>
       </div>
-    </InternalLayout>
+    </AppShell>
   );
 }

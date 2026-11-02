@@ -59,5 +59,8 @@
     "next": "Berikutnya: {{day}} {{time}}",
     "badLink": "Gunakan tautan lengkap yang diawali https://",
     "problem": "Periksa sesi daring di {{country}}: ada tautan atau waktu yang belum benar."
-  }
+  },
+  "brand": "Global",
+  "admin": "Admin",
+  "insideCities": "Kota-kota di negara ini, ditempatkan dengan mengetuk globe, beserta sesi daringnya."
 }
