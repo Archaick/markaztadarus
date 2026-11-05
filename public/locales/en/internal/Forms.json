@@ -97,7 +97,8 @@
       "noQuestions": "Add at least one question.",
       "noLabel": "Question {{n}} has no text.",
       "emptyOption": "Question {{n}} has an empty option.",
-      "duplicateOption": "Question {{n}} has the same option twice."
+      "duplicateOption": "Question {{n}} has the same option twice.",
+      "noFileKinds": "Question {{n}} allows no file types."
     },
     "addSection": "Add section",
     "sectionOf": "Section {{n}} of {{total}}",
@@ -120,7 +121,22 @@
     "reorderHint": "Drag, or use the arrows. Check the \"After section\" rules again after reordering.",
     "untitledSection": "Untitled section",
     "cancel": "Cancel",
-    "apply": "Apply"
+    "apply": "Apply",
+    "fileAllowed": "Allowed file types",
+    "fileCount": "Maximum number of files",
+    "fileSize": "Maximum size per file",
+    "fileNameFrom": "Name the folder from",
+    "fileNameNone": "Date and response number",
+    "fileNote": "Files go to the private Markaz Tadarus Forms Shared Drive, in a folder for each response. People don't need a Google account.",
+    "fileKinds": {
+      "image": "Image",
+      "video": "Video",
+      "audio": "Audio",
+      "pdf": "PDF",
+      "document": "Document",
+      "spreadsheet": "Spreadsheet",
+      "presentation": "Presentation"
+    }
   },
   "types": {
     "short": "Short answer",
@@ -129,7 +145,8 @@
     "phone": "WhatsApp / phone",
     "date": "Date",
     "choice": "Multiple choice (one)",
-    "checkbox": "Checkboxes (many)"
+    "checkbox": "Checkboxes (many)",
+    "file": "File upload"
   },
   "cover": {
     "tag": "Cover",
@@ -179,7 +196,8 @@
     "exportExcel": "Download Excel",
     "reportFailed": "The report could not be made. Try again.",
     "viewSummary": "Summary",
-    "viewList": "Responses ({{count}})"
+    "viewList": "Responses ({{count}})",
+    "openFolder": "Open folder in Drive"
   },
   "share": {
     "draftTitle": "This form is still a draft",
@@ -227,7 +245,10 @@
     "errors": {
       "required": "This question is required.",
       "number": "Enter numbers only.",
-      "phone": "This WhatsApp number is not valid."
+      "phone": "This WhatsApp number is not valid.",
+      "fileType": "That type of file is not accepted here.",
+      "fileSize": "That file is over {{size}}.",
+      "fileCount": "You can add up to {{count}} files."
     },
     "next": "Next",
     "back": "Back",
@@ -250,7 +271,12 @@
       "png": "Download PNG",
       "making": "Preparing…",
       "failed": "The file could not be made. Try again."
-    }
+    },
+    "fileAdd": "Add files",
+    "fileRemove": "Remove {{name}}",
+    "fileHint": "{{kinds}}. Up to {{count}} files, {{size}} each.",
+    "uploading": "Sending your files… {{percent}}%. Please keep this page open.",
+    "uploadError": "Your files could not be sent. Check your connection and try again; your answers are still here."
   },
   "print": {
     "button": "Print / PDF",

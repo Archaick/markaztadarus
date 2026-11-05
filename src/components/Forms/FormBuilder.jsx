@@ -11,6 +11,7 @@ import {
   Text,
   TextInput,
   Tooltip,
+  MultiSelect,
 } from "@mantine/core";
 import {
   IconArrowDown,
@@ -35,7 +36,9 @@ import { stableKey } from "../Internal/stableKey";
 import styles from "./Forms.module.css";
 import ReorderSections from "./ReorderSections";
 import { RichTextarea } from "./richText";
-import { AUTO_GRADED, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, quizOf, sectionsOf } from "./formSchema";
+import { plainText } from "./richText";
+import { FILE, FILE_KINDS, MAX_FILES_CHOICES, MAX_MB_CHOICES, fileSettings, sizeText } from "./fileUpload";
+import { AUTO_GRADED, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, questionsOf, quizOf, sectionsOf } from "./formSchema";
 
 const editableOf = (form, key) => ({
   title: form.title || "",
@@ -65,6 +68,7 @@ const problemIn = (draft) => {
       if (options.length === 0 || options.some((o) => !o)) return { key: "emptyOption", n };
       if (new Set(options).size !== options.length) return { key: "duplicateOption", n };
     }
+    if (f.type === FILE && !fileSettings(f).kinds.length) return { key: "noFileKinds", n };
   }
   return null;
 };
@@ -213,6 +217,10 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
         if (quiz.enabled) out.points = Math.max(0, Math.min(1000, Number(f.points ?? 0) || 0));
         if (f.placeholder?.trim()) out.placeholder = f.placeholder.trim();
         if (HAS_OPTIONS.has(f.type)) out.options = f.options.map((o) => o.trim());
+        if (f.type === FILE) {
+          const { kinds, maxFiles, maxMB, nameFrom } = fileSettings(f);
+          Object.assign(out, { kinds, maxFiles, maxMB, nameFrom: questionsOf(draft.fields).some((q) => q.id === nameFrom) ? nameFrom : "" });
+        }
         // leading on by the answer (one-choice or checkboxes) in a form with sections
         if (HAS_OPTIONS.has(f.type) && f.goTo && hasSections) {
           out.goTo = Object.fromEntries(
@@ -515,6 +523,50 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
               >
                 {t("builder.addOption")}
               </Button>
+            </div>
+          ) : f.type === FILE ? (
+            <div className={styles.fileSettings}>
+              <MultiSelect
+                size="xs"
+                label={t("builder.fileAllowed")}
+                data={FILE_KINDS.map((value) => ({ value, label: t(`builder.fileKinds.${value}`) }))}
+                value={fileSettings(f).kinds}
+                onChange={(kinds) => setField(index, { kinds })}
+                comboboxProps={{ withinPortal: true }}
+              />
+              <Select
+                size="xs"
+                label={t("builder.fileCount")}
+                data={MAX_FILES_CHOICES.map(String)}
+                value={String(fileSettings(f).maxFiles)}
+                onChange={(v) => v && setField(index, { maxFiles: Number(v) })}
+                allowDeselect={false}
+                comboboxProps={{ withinPortal: true }}
+              />
+              <Select
+                size="xs"
+                label={t("builder.fileSize")}
+                data={MAX_MB_CHOICES.map((mb) => ({ value: String(mb), label: sizeText(mb) }))}
+                value={String(fileSettings(f).maxMB)}
+                onChange={(v) => v && setField(index, { maxMB: Number(v) })}
+                allowDeselect={false}
+                comboboxProps={{ withinPortal: true }}
+              />
+              <Select
+                size="xs"
+                label={t("builder.fileNameFrom")}
+                placeholder={t("builder.fileNameNone")}
+                data={questionsOf(draft.fields)
+                  .filter((q) => q.id !== f.id && ["short", "phone", "number"].includes(q.type) && q.label.trim())
+                  .map((q) => ({ value: q.id, label: plainText(q.label).slice(0, 60) }))}
+                value={fileSettings(f).nameFrom || null}
+                onChange={(v) => setField(index, { nameFrom: v || "" })}
+                clearable
+                comboboxProps={{ withinPortal: true }}
+              />
+              <Text size="xs" c="dimmed" className={styles.fileNote}>
+                {t("builder.fileNote")}
+              </Text>
             </div>
           ) : (
             f.type !== "date" && (

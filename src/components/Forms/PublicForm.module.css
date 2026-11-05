@@ -685,3 +685,109 @@
     justify-content: center;
   }
 }
+
+/* a file-upload question */
+.filePick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1.5px dashed #94a3b8;
+  border-radius: 10px;
+  color: #1e293b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filePick:hover {
+  border-color: #10b981;
+  background: #f0fdf4;
+}
+
+.filePick input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.filePick:focus-within {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+.filePickOff {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.fileList li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.fileName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: #1e293b;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  flex: none;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.fileList button {
+  flex: none;
+  display: grid;
+  padding: 0.2rem;
+  border: 0;
+  background: none;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.fileHint {
+  margin: 0.45rem 0 0;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.fileError {
+  margin: 0.35rem 0 0;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.uploadBox {
+  margin-bottom: 0.8rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.uploadBox p {
+  margin: 0.5rem 0 0;
+  color: #334155;
+  font-size: 0.88rem;
+}

@@ -5,7 +5,7 @@ export const FORMS_COLLECTION = "forms";
 export const RESPONSES = "responses";
 
 // Labels live in public/locales/*/internal/Forms.json under types.<value>.
-export const FIELD_TYPES = ["short", "long", "number", "phone", "date", "choice", "checkbox"];
+export const FIELD_TYPES = ["short", "long", "number", "phone", "date", "choice", "checkbox", "file"];
 
 export const HAS_OPTIONS = new Set(["choice", "checkbox"]);
 
@@ -13,7 +13,7 @@ export const HAS_OPTIONS = new Set(["choice", "checkbox"]);
 export const STATUS_COLORS = { draft: "gray", open: "teal", closed: "red" };
 export const STATUSES = Object.keys(STATUS_COLORS);
 
-export const MAX_LENGTH = { short: 300, long: 3000, phone: 30, number: 30, date: 20 };
+export const MAX_LENGTH = { short: 300, long: 3000, phone: 30, number: 30, date: 20, file: 300 };
 
 const randomId = () => Math.random().toString(36).slice(2, 10);
 

@@ -95,7 +95,8 @@
       "noQuestions": "Tambahkan setidaknya satu pertanyaan.",
       "noLabel": "Pertanyaan {{n}} belum berisi teks.",
       "emptyOption": "Pertanyaan {{n}} memiliki opsi kosong.",
-      "duplicateOption": "Pertanyaan {{n}} memiliki opsi yang sama dua kali."
+      "duplicateOption": "Pertanyaan {{n}} memiliki opsi yang sama dua kali.",
+      "noFileKinds": "Pertanyaan {{n}} belum memilih jenis file."
     },
     "addSection": "Tambah bagian",
     "sectionOf": "Bagian {{n}} dari {{total}}",
@@ -118,7 +119,22 @@
     "reorderHint": "Seret atau gunakan panah. Periksa kembali aturan \"Setelah bagian\" sesudah mengubah urutan.",
     "untitledSection": "Bagian tanpa judul",
     "cancel": "Batal",
-    "apply": "Terapkan"
+    "apply": "Terapkan",
+    "fileAllowed": "Jenis file yang diizinkan",
+    "fileCount": "Jumlah file maksimum",
+    "fileSize": "Ukuran maksimum per file",
+    "fileNameFrom": "Nama folder dari",
+    "fileNameNone": "Tanggal dan nomor jawaban",
+    "fileNote": "File masuk ke Shared Drive privat Markaz Tadarus Forms, dalam satu folder untuk setiap jawaban. Pengisi tidak memerlukan akun Google.",
+    "fileKinds": {
+      "image": "Gambar",
+      "video": "Video",
+      "audio": "Audio",
+      "pdf": "PDF",
+      "document": "Dokumen",
+      "spreadsheet": "Spreadsheet",
+      "presentation": "Presentasi"
+    }
   },
   "types": {
     "short": "Jawaban singkat",
@@ -127,7 +143,8 @@
     "phone": "WhatsApp / telepon",
     "date": "Tanggal",
     "choice": "Pilihan ganda (satu)",
-    "checkbox": "Kotak centang (banyak)"
+    "checkbox": "Kotak centang (banyak)",
+    "file": "Unggah file"
   },
   "cover": {
     "tag": "Sampul",
@@ -177,7 +194,8 @@
     "exportExcel": "Unduh Excel",
     "reportFailed": "Laporan gagal dibuat. Coba lagi.",
     "viewSummary": "Ringkasan",
-    "viewList": "Jawaban ({{count}})"
+    "viewList": "Jawaban ({{count}})",
+    "openFolder": "Buka folder di Drive"
   },
   "share": {
     "draftTitle": "Formulir ini masih draf",
@@ -225,7 +243,10 @@
     "errors": {
       "required": "Pertanyaan ini wajib diisi.",
       "number": "Masukkan angka saja.",
-      "phone": "Nomor WhatsApp tidak valid."
+      "phone": "Nomor WhatsApp tidak valid.",
+      "fileType": "Jenis file ini tidak diterima di sini.",
+      "fileSize": "File ini lebih dari {{size}}.",
+      "fileCount": "Anda dapat menambahkan maksimal {{count}} file."
     },
     "next": "Berikutnya",
     "back": "Kembali",
@@ -248,7 +269,12 @@
       "png": "Unduh PNG",
       "making": "Menyiapkan…",
       "failed": "File gagal dibuat. Coba lagi."
-    }
+    },
+    "fileAdd": "Tambah file",
+    "fileRemove": "Hapus {{name}}",
+    "fileHint": "{{kinds}}. Maksimal {{count}} file, masing-masing {{size}}.",
+    "uploading": "Mengirim file Anda… {{percent}}%. Jangan tutup halaman ini.",
+    "uploadError": "File Anda tidak dapat dikirim. Periksa koneksi lalu coba lagi; jawaban Anda masih tersimpan di sini."
   },
   "print": {
     "button": "Cetak / PDF",

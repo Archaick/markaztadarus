@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Checkbox, Loader, Radio, TextInput, Textarea } from "@mantine/core";
-import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconChevronDown, IconCircleX, IconClock, IconEye, IconLock, IconSend } from "@tabler/icons-react";
+import { Checkbox, Loader, Progress, Radio, TextInput, Textarea } from "@mantine/core";
+import { IconAlertCircle, IconArrowLeft, IconArrowRight, IconCircleCheck, IconChevronDown, IconCircleX, IconClock, IconEye, IconLock, IconSend, IconUpload, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { addDoc, collection, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -13,6 +13,7 @@ import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./PublicForm.module.css";
 import OwnCopy from "./OwnCopy";
 import { RichText } from "./richText";
+import { FILE, acceptOf, fileProblem, fileSettings, fileSizeText, sizeText, uploadAnswerFiles } from "./fileUpload";
 import {
   COVER_DOC,
   FORMS_COLLECTION,
@@ -97,12 +98,67 @@ function StateCard({ icon: Icon, tone, title, text, children }) {
   );
 }
 
-function FieldInput({ field, value, onChange, error }) {
+/** Files to send with the form: checked here, sent to Drive when the form is submitted. */
+function FileInput({ field, value, onChange, error, disabled }) {
+  const { t } = useTranslation(NS);
+  const { maxFiles, maxMB, kinds } = fileSettings(field);
+  const files = value || [];
+  const [problem, setProblem] = useState("");
+
+  const add = (event) => {
+    const picked = [...event.target.files];
+    event.target.value = ""; // the same file can be picked again after removing it
+    const refused = picked.map((file) => fileProblem(field, file)).find(Boolean);
+    const fit = picked.filter((file) => !fileProblem(field, file)).filter((file) => !files.some((f) => f.name === file.name && f.size === file.size));
+    const next = [...files, ...fit];
+    setProblem(refused ? `file${refused === "type" ? "Type" : "Size"}` : next.length > maxFiles ? "fileCount" : "");
+    onChange(next.slice(0, maxFiles));
+  };
+
+  return (
+    <div>
+      {files.length > 0 && (
+        <ul className={styles.fileList}>
+          {files.map((file) => (
+            <li key={`${file.name}${file.size}`}>
+              <span className={styles.fileName} dir="auto">
+                {file.name}
+              </span>
+              <span className={styles.fileSize}>{fileSizeText(file.size)}</span>
+              <button type="button" disabled={disabled} onClick={() => onChange(files.filter((f) => f !== file))} aria-label={t("public.fileRemove", { name: file.name })}>
+                <IconX size={15} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      {files.length < maxFiles && (
+        <label className={`${styles.filePick} ${disabled ? styles.filePickOff : ""}`}>
+          <input type="file" multiple={maxFiles > 1} accept={acceptOf(field)} onChange={add} disabled={disabled} />
+          <IconUpload size={18} />
+          {t("public.fileAdd")}
+        </label>
+      )}
+      <p className={styles.fileHint}>
+        {t("public.fileHint", {
+          kinds: kinds.map((k) => t(`builder.fileKinds.${k}`)).join(", "),
+          count: maxFiles,
+          size: sizeText(maxMB),
+        })}
+      </p>
+      {(problem || error) && <p className={styles.fileError}>{error || t(`public.errors.${problem}`, { count: maxFiles, size: sizeText(maxMB) })}</p>}
+    </div>
+  );
+}
+
+function FieldInput({ field, value, onChange, error, disabled }) {
   const { t } = useTranslation(NS);
   // Answers are typed in whatever language the person uses.
   const common = { error: error || undefined, size: "md", dir: "auto", classNames: { input: styles.input } };
 
   switch (field.type) {
+    case FILE:
+      return <FileInput field={field} value={value} onChange={onChange} error={error} disabled={disabled} />;
     case "long":
       return (
         <Textarea
@@ -281,6 +337,7 @@ export default function PublicForm() {
   const [errors, setErrors] = useState({}); // fieldId → public.errors.<key>
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [uploading, setUploading] = useState(null); // how much of the files has gone, 0 to 1
   const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState(null); // a quiz's result after sending
   const [sent, setSent] = useState(null); // { answers, sectionIds, at }: for the person's own copy
@@ -433,8 +490,16 @@ export default function PublicForm() {
     if (!isOpen) return;
 
     setSubmitting(true);
+    let hadFiles = false;
     try {
-      const sent = cleanAnswers(paged ? path.flatMap((p) => sections[p.index].questions) : fields, answers);
+      const visited = paged ? path.flatMap((p) => sections[p.index].questions) : fields;
+      // the files first: only their folder's link goes in the response
+      const fileQuestions = visited.filter((q) => q.type === FILE && answers[q.id]?.length);
+      hadFiles = fileQuestions.length > 0;
+      if (hadFiles) setUploading(0);
+      const folderUrl = await uploadAnswerFiles(form, visited, answers, setUploading);
+      hadFiles = false; // sent: anything after this is the answers themselves
+      const sent = cleanAnswers(visited, { ...answers, ...Object.fromEntries(fileQuestions.map((q) => [q.id, folderUrl])) });
       await addDoc(collection(db, FORMS_COLLECTION, form.id, RESPONSES), {
         answers: sent,
         submittedAt: serverTimestamp(),
@@ -442,14 +507,17 @@ export default function PublicForm() {
       // a quiz: graded here when results are released right away, else announced for later
       const quiz = quizOf(form);
       if (quiz.enabled) setResult(quiz.release === "immediate" && form.quizKey ? gradeResponse(form.fields, form.quizKey, sent) : { later: true });
-      setSent({ answers: sent, sectionIds: paged ? path.map((p) => sections[p.index].id) : null, at: new Date() });
+      // their own copy names the files: the folder itself is private
+      const copy = { ...sent, ...Object.fromEntries(fileQuestions.map((q) => [q.id, answers[q.id].map((file) => file.name)])) };
+      setSent({ answers: copy, sectionIds: paged ? path.map((p) => sections[p.index].id) : null, at: new Date() });
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       console.error("Submit failed:", err);
-      setSubmitError(err.code === "permission-denied" ? "closedError" : "sendError");
+      setSubmitError(err.code === "permission-denied" || err.reason === "closed" ? "closedError" : hadFiles ? "uploadError" : "sendError");
     } finally {
       setSubmitting(false);
+      setUploading(null);
     }
   };
 
@@ -513,9 +581,17 @@ export default function PublicForm() {
               value={answers[f.id]}
               onChange={(v) => setAnswer(f.id, v)}
               error={errors[f.id] ? t(`public.errors.${errors[f.id]}`) : ""}
+              disabled={submitting}
             />
           </div>
         ))}
+
+        {uploading !== null && (
+          <div className={styles.uploadBox} role="status">
+            <Progress value={uploading * 100} color="teal" size="md" animated />
+            <p>{t("public.uploading", { percent: Math.round(uploading * 100) })}</p>
+          </div>
+        )}
 
         {submitError && (
           <div className={styles.submitError}>

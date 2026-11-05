@@ -14,6 +14,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import {
+  IconBrandGoogleDrive,
   IconBrandWhatsapp,
   IconCircleCheck,
   IconCircleX,
@@ -62,6 +63,7 @@ import {
   quizOf,
   whatsappNumber,
 } from "./formSchema";
+import { FILE } from "./fileUpload";
 
 const MAX_RESPONSES = 2000;
 
@@ -111,7 +113,7 @@ export default function ResponsesPanel({ form, quizKey }) {
 
   // The first two text-like questions make a good title and subtitle per row.
   const [primary, secondary] = useMemo(
-    () => fields.filter((f) => !HAS_OPTIONS.has(f.type)).slice(0, 2),
+    () => fields.filter((f) => !HAS_OPTIONS.has(f.type) && f.type !== FILE).slice(0, 2),
     [fields]
   );
 
@@ -428,7 +430,21 @@ export default function ResponsesPanel({ form, quizKey }) {
                       </div>
                     )}
                     <div className={styles.answerValueRow}>
-                      <p className={styles.answerValue} dir="auto">{displayAnswer(value) || <em>{t("responses.noAnswer")}</em>}</p>
+                      {f.type === FILE && value ? (
+                        <Button
+                          size="compact-sm"
+                          variant="light"
+                          component="a"
+                          href={value}
+                          target="_blank"
+                          rel="noreferrer"
+                          leftSection={<IconBrandGoogleDrive size={15} />}
+                        >
+                          {t("responses.openFolder")}
+                        </Button>
+                      ) : (
+                        <p className={styles.answerValue} dir="auto">{displayAnswer(value) || <em>{t("responses.noAnswer")}</em>}</p>
+                      )}
                       {f.type === "phone" && value && (
                         <Button
                           size="compact-xs"
