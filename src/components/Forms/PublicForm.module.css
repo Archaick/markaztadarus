@@ -791,3 +791,79 @@
   color: #334155;
   font-size: 0.88rem;
 }
+
+/* a tracing question */
+.traceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.75rem;
+}
+
+.traceCell {
+  width: 100%;
+  max-width: 340px;
+  margin-inline: auto;
+}
+
+.traceBox {
+  position: relative;
+  height: min(42vw, 170px);
+  min-height: 120px;
+  overflow: hidden;
+  border: 2px dashed #94a3b8;
+  border-radius: 12px;
+  background: #fcfaf7;
+  user-select: none;
+}
+
+.traceDone {
+  border-style: solid;
+  border-color: #10b981;
+}
+
+.traceGuide,
+.traceInk {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.traceGuide {
+  pointer-events: none;
+}
+
+.traceInk {
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.traceBar {
+  height: 6px;
+  margin-top: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.traceBar span {
+  display: block;
+  height: 100%;
+  background: #1a569c;
+  transition: width 0.15s ease;
+}
+
+.traceBar .traceBarFull {
+  background: #10b981;
+}
+
+/* a phone: one word at a time, with room at the sides to swipe the page past them */
+@media (max-width: 600px) {
+  .traceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .traceCell {
+    max-width: 76%;
+  }
+}

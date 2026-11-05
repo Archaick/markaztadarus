@@ -13,6 +13,7 @@ import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./PublicForm.module.css";
 import OwnCopy from "./OwnCopy";
 import { RichText } from "./richText";
+import TraceCanvas from "./TraceCanvas";
 import { FILE, acceptOf, fileProblem, fileSettings, fileSizeText, sizeText, uploadAnswerFiles } from "./fileUpload";
 import {
   COVER_DOC,
@@ -20,6 +21,7 @@ import {
   MAX_LENGTH,
   MEDIA,
   RESPONSES,
+  TRACE,
   answerError,
   cleanAnswers,
   displayAnswer,
@@ -151,12 +153,31 @@ function FileInput({ field, value, onChange, error, disabled }) {
   );
 }
 
+/** The words to trace, right to left like the worksheet. A word counts once its bar fills. */
+function TraceInput({ field, value, onChange, error, disabled }) {
+  const { t } = useTranslation(NS);
+  const traced = value || [];
+  return (
+    <div>
+      <div className={styles.traceGrid} dir="rtl">
+        {(field.words || []).map((word) => (
+          <TraceCanvas key={word} word={word} done={traced.includes(word)} disabled={disabled} onDone={() => onChange((now) => [...new Set([...(now || []), word])])} />
+        ))}
+      </div>
+      <p className={styles.fileHint}>{t("public.traceHint")}</p>
+      {error && <p className={styles.fileError}>{error}</p>}
+    </div>
+  );
+}
+
 function FieldInput({ field, value, onChange, error, disabled }) {
   const { t } = useTranslation(NS);
   // Answers are typed in whatever language the person uses.
   const common = { error: error || undefined, size: "md", dir: "auto", classNames: { input: styles.input } };
 
   switch (field.type) {
+    case TRACE:
+      return <TraceInput field={field} value={value} onChange={onChange} error={error} disabled={disabled} />;
     case FILE:
       return <FileInput field={field} value={value} onChange={onChange} error={error} disabled={disabled} />;
     case "long":
@@ -455,7 +476,8 @@ export default function PublicForm() {
   const isLast = !next;
 
   const setAnswer = (id, value) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
+    // a function: several words of one question can finish in quick succession
+    setAnswers((prev) => ({ ...prev, [id]: typeof value === "function" ? value(prev[id]) : value }));
     if (errors[id]) setErrors((prev) => ({ ...prev, [id]: "" }));
   };
 

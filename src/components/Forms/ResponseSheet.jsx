@@ -1,5 +1,5 @@
 import letterhead from "../../assets/imgs/letterhead-mt.png";
-import { FIRST_SECTION, displayAnswer, isEmptyAnswer } from "./formSchema";
+import { FIRST_SECTION, TRACE, displayAnswer, isEmptyAnswer } from "./formSchema";
 import { RichText } from "./richText";
 import styles from "./FormPrint.module.css";
 
@@ -12,6 +12,29 @@ import styles from "./FormPrint.module.css";
 
 export const SHEET_PX = 794; // A4 at 96 dpi
 export const TAGLINE = "Markaz Tadarus Indonesia — Menyatukan Hati dengan al-Qur'an";
+
+// Right to left, as on the Tadarus worksheets: traced words in ink, the rest still grey.
+function TraceTable({ question, value }) {
+  const words = question.words || [];
+  return (
+    <table className={styles.traceTable} dir="rtl">
+      <tbody>
+        <tr>
+          {words.map((word) => (
+            <td key={word} className={(value || []).includes(word) ? styles.traceInked : styles.traceGrey}>
+              {word}
+            </td>
+          ))}
+        </tr>
+        <tr>
+          {words.map((word) => (
+            <td key={word} className={styles.traceBlank} />
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  );
+}
 
 function SectionPage({ section, answers, footer }) {
   return (
@@ -36,7 +59,9 @@ function SectionPage({ section, answers, footer }) {
             <h2 className={styles.label} dir="auto">
               <RichText text={q.label} as="inline" />
             </h2>
-            {isEmptyAnswer(value) ? (
+            {q.type === TRACE ? (
+              <TraceTable question={q} value={value} />
+            ) : isEmptyAnswer(value) ? (
               // empty: lines to write on by hand
               <div className={styles.blank} aria-hidden="true">
                 <span />

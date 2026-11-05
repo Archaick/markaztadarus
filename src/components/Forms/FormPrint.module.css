@@ -165,3 +165,32 @@
     border-top: 0;
   }
 }
+
+/* a tracing question, like the worksheets */
+.traceTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-family: "Amiri", serif;
+}
+
+.traceTable td {
+  padding: 4px 10px;
+  border: 1px solid #111827;
+  font-size: 24px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.traceGrey {
+  color: #c4c8cf;
+}
+
+.traceInked {
+  color: #0b3366;
+}
+
+.traceTable .traceBlank {
+  height: 48px;
+  padding: 0;
+}

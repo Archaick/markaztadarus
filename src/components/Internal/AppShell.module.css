@@ -400,3 +400,97 @@
 [dir="rtl"] .flip {
   transform: scaleX(-1);
 }
+
+/* ── the folded menu on a computer: one even column of square buttons ── */
+.navItem svg {
+  flex-shrink: 0;
+}
+
+@media (min-width: 901px) {
+  .collapsed .sidebar {
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    /* it still scrolls on a short screen, without a bar taking up the width */
+    scrollbar-width: none;
+  }
+  .collapsed .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .collapsed .brand {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border-radius: 16px;
+  }
+  .collapsed .brand img {
+    width: 38px;
+    height: 38px;
+  }
+  /* the account: no box of its own, just the picture, the flags and sign out */
+  .collapsed .account {
+    flex-shrink: 0;
+    width: 56px;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .collapsed .flags {
+    width: 100%;
+    padding: 4px;
+  }
+  .collapsed .flags button {
+    width: 100%;
+  }
+  .collapsed .signOut {
+    width: 100%;
+    height: 44px;
+    padding: 0;
+  }
+  .collapsed .action {
+    flex-shrink: 0;
+    width: 56px;
+  }
+  .collapsed .action :global(.mantine-Button-root) {
+    width: 100%;
+    height: 44px;
+    padding: 0;
+  }
+  .collapsed .action :global(.mantine-Button-inner) {
+    justify-content: center;
+  }
+  .collapsed .action :global(.mantine-Button-section) {
+    margin: 0;
+  }
+  .collapsed .nav {
+    align-items: center;
+    width: 100%;
+  }
+  .collapsed .navGroup {
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+  /* a thin line where a section's name would be */
+  .collapsed .navGroup + .navGroup {
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    width: 56px;
+  }
+  .collapsed .navItem {
+    flex-shrink: 0;
+    width: 56px;
+    height: 48px;
+    padding: 0;
+  }
+  .collapsed .sidebarFoot {
+    width: 56px;
+  }
+  .collapsed .collapse {
+    height: 44px;
+    padding: 0;
+  }
+}

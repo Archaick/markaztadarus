@@ -113,7 +113,7 @@ export default function ResponsesPanel({ form, quizKey }) {
 
   // The first two text-like questions make a good title and subtitle per row.
   const [primary, secondary] = useMemo(
-    () => fields.filter((f) => !HAS_OPTIONS.has(f.type) && f.type !== FILE).slice(0, 2),
+    () => fields.filter((f) => !HAS_OPTIONS.has(f.type) && f.type !== FILE && f.type !== "trace").slice(0, 2),
     [fields]
   );
 

@@ -12,6 +12,7 @@ import {
   TextInput,
   Tooltip,
   MultiSelect,
+  Textarea,
 } from "@mantine/core";
 import {
   IconArrowDown,
@@ -38,7 +39,7 @@ import ReorderSections from "./ReorderSections";
 import { RichTextarea } from "./richText";
 import { plainText } from "./richText";
 import { FILE, FILE_KINDS, MAX_FILES_CHOICES, MAX_MB_CHOICES, fileSettings, sizeText } from "./fileUpload";
-import { AUTO_GRADED, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, questionsOf, quizOf, sectionsOf } from "./formSchema";
+import { AUTO_GRADED, MAX_TRACE_WORDS, TRACE, FIELD_TYPES, FIRST_SECTION, FORMS_COLLECTION, HAS_OPTIONS, KEY_DOC, PRIVATE, SECTION, isSection, newField, newId, newSection, questionsOf, quizOf, sectionsOf } from "./formSchema";
 
 const editableOf = (form, key) => ({
   title: form.title || "",
@@ -69,9 +70,17 @@ const problemIn = (draft) => {
       if (new Set(options).size !== options.length) return { key: "duplicateOption", n };
     }
     if (f.type === FILE && !fileSettings(f).kinds.length) return { key: "noFileKinds", n };
+    if (f.type === TRACE) {
+      const words = cleanWords(f);
+      if (!words.length) return { key: "noTraceWords", n };
+      if (words.length > MAX_TRACE_WORDS) return { key: "tooManyTraceWords", n };
+      if (new Set(words).size !== words.length) return { key: "duplicateTraceWord", n };
+    }
   }
   return null;
 };
+
+const cleanWords = (f) => (f.words || []).map((w) => w.trim()).filter(Boolean);
 
 export default function FormBuilder({ form, editorEmail, quizKey }) {
   const { user } = useAccess();
@@ -217,6 +226,7 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
         if (quiz.enabled) out.points = Math.max(0, Math.min(1000, Number(f.points ?? 0) || 0));
         if (f.placeholder?.trim()) out.placeholder = f.placeholder.trim();
         if (HAS_OPTIONS.has(f.type)) out.options = f.options.map((o) => o.trim());
+        if (f.type === TRACE) out.words = cleanWords(f);
         if (f.type === FILE) {
           const { kinds, maxFiles, maxMB, nameFrom } = fileSettings(f);
           Object.assign(out, { kinds, maxFiles, maxMB, nameFrom: questionsOf(draft.fields).some((q) => q.id === nameFrom) ? nameFrom : "" });
@@ -524,6 +534,20 @@ export default function FormBuilder({ form, editorEmail, quizKey }) {
                 {t("builder.addOption")}
               </Button>
             </div>
+          ) : f.type === TRACE ? (
+            <Textarea
+              mt="xs"
+              size="sm"
+              label={t("builder.traceWords")}
+              description={t("builder.traceWordsHint", { max: MAX_TRACE_WORDS })}
+              value={(f.words || []).join("\n")}
+              onChange={(e) => setField(index, { words: e.target.value.split("\n") })}
+              autosize
+              minRows={3}
+              maxRows={12}
+              dir="rtl"
+              className={styles.traceWords}
+            />
           ) : f.type === FILE ? (
             <div className={styles.fileSettings}>
               <MultiSelect

@@ -5,9 +5,14 @@ export const FORMS_COLLECTION = "forms";
 export const RESPONSES = "responses";
 
 // Labels live in public/locales/*/internal/Forms.json under types.<value>.
-export const FIELD_TYPES = ["short", "long", "number", "phone", "date", "choice", "checkbox", "file"];
+export const FIELD_TYPES = ["short", "long", "number", "phone", "date", "choice", "checkbox", "file", "trace"];
 
 export const HAS_OPTIONS = new Set(["choice", "checkbox"]);
+
+// A tracing question: the words to trace (`words`, read right to left). The answer
+// is the words traced to the end; printed, they fill the worksheet's table.
+export const TRACE = "trace";
+export const MAX_TRACE_WORDS = 12;
 
 // Labels and hints live under status.<key> in the Forms translations.
 export const STATUS_COLORS = { draft: "gray", open: "teal", closed: "red" };
@@ -207,6 +212,7 @@ const digits = (value) => String(value || "").replace(/\D/g, "");
 // Returns the public.errors.<key> for one answer, or "" when it is fine.
 export const answerError = (fieldDef, value) => {
   if (isEmptyAnswer(value)) return fieldDef.required ? "required" : "";
+  if (fieldDef.type === TRACE && fieldDef.required && value.length < (fieldDef.words || []).length) return "traceAll";
   if (fieldDef.type === "number" && !/^-?\d+([.,]\d+)?$/.test(String(value).trim())) {
     return "number";
   }
@@ -223,7 +229,7 @@ export const cleanAnswers = (fields, answers) => {
     const value = answers[f.id];
     if (isEmptyAnswer(value)) return;
     if (Array.isArray(value)) {
-      out[f.id] = value.filter((v) => (f.options || []).includes(v));
+      out[f.id] = value.filter((v) => ((f.type === TRACE ? f.words : f.options) || []).includes(v));
     } else {
       out[f.id] = String(value).trim().slice(0, MAX_LENGTH[f.type] || 300);
     }

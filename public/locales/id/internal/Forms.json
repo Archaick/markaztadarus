@@ -96,7 +96,10 @@
       "noLabel": "Pertanyaan {{n}} belum berisi teks.",
       "emptyOption": "Pertanyaan {{n}} memiliki opsi kosong.",
       "duplicateOption": "Pertanyaan {{n}} memiliki opsi yang sama dua kali.",
-      "noFileKinds": "Pertanyaan {{n}} belum memilih jenis file."
+      "noFileKinds": "Pertanyaan {{n}} belum memilih jenis file.",
+      "noTraceWords": "Pertanyaan {{n}} belum memiliki kata.",
+      "tooManyTraceWords": "Pertanyaan {{n}} memiliki terlalu banyak kata.",
+      "duplicateTraceWord": "Pertanyaan {{n}} memiliki kata yang sama dua kali."
     },
     "addSection": "Tambah bagian",
     "sectionOf": "Bagian {{n}} dari {{total}}",
@@ -134,7 +137,9 @@
       "document": "Dokumen",
       "spreadsheet": "Spreadsheet",
       "presentation": "Presentasi"
-    }
+    },
+    "traceWords": "Kata yang ditulis",
+    "traceWordsHint": "Satu kata atau frasa per baris, yang pertama di atas; tampil di sebelah kanan seperti lembar kerja. Maksimal {{max}}."
   },
   "types": {
     "short": "Jawaban singkat",
@@ -144,7 +149,8 @@
     "date": "Tanggal",
     "choice": "Pilihan ganda (satu)",
     "checkbox": "Kotak centang (banyak)",
-    "file": "Unggah file"
+    "file": "Unggah file",
+    "trace": "Menulis di atas huruf"
   },
   "cover": {
     "tag": "Sampul",
@@ -246,7 +252,8 @@
       "phone": "Nomor WhatsApp tidak valid.",
       "fileType": "Jenis file ini tidak diterima di sini.",
       "fileSize": "File ini lebih dari {{size}}.",
-      "fileCount": "Anda dapat menambahkan maksimal {{count}} file."
+      "fileCount": "Anda dapat menambahkan maksimal {{count}} file.",
+      "traceAll": "Tulis setiap kata sampai bilahnya penuh."
     },
     "next": "Berikutnya",
     "back": "Kembali",
@@ -274,7 +281,8 @@
     "fileRemove": "Hapus {{name}}",
     "fileHint": "{{kinds}}. Maksimal {{count}} file, masing-masing {{size}}.",
     "uploading": "Mengirim file Anda… {{percent}}%. Jangan tutup halaman ini.",
-    "uploadError": "File Anda tidak dapat dikirim. Periksa koneksi lalu coba lagi; jawaban Anda masih tersimpan di sini."
+    "uploadError": "File Anda tidak dapat dikirim. Periksa koneksi lalu coba lagi; jawaban Anda masih tersimpan di sini.",
+    "traceHint": "Tulis di atas huruf sampai setiap bilah penuh. Tinta tetap di dalam huruf."
   },
   "print": {
     "button": "Cetak / PDF",

@@ -98,7 +98,10 @@
       "noLabel": "Question {{n}} has no text.",
       "emptyOption": "Question {{n}} has an empty option.",
       "duplicateOption": "Question {{n}} has the same option twice.",
-      "noFileKinds": "Question {{n}} allows no file types."
+      "noFileKinds": "Question {{n}} allows no file types.",
+      "noTraceWords": "Question {{n}} has no words to trace.",
+      "tooManyTraceWords": "Question {{n}} has too many words to trace.",
+      "duplicateTraceWord": "Question {{n}} has the same word twice."
     },
     "addSection": "Add section",
     "sectionOf": "Section {{n}} of {{total}}",
@@ -136,7 +139,9 @@
       "document": "Document",
       "spreadsheet": "Spreadsheet",
       "presentation": "Presentation"
-    }
+    },
+    "traceWords": "Words to trace",
+    "traceWordsHint": "One word or phrase per line, first one on top; it shows on the right, like the worksheet. Up to {{max}}."
   },
   "types": {
     "short": "Short answer",
@@ -146,7 +151,8 @@
     "date": "Date",
     "choice": "Multiple choice (one)",
     "checkbox": "Checkboxes (many)",
-    "file": "File upload"
+    "file": "File upload",
+    "trace": "Tracing"
   },
   "cover": {
     "tag": "Cover",
@@ -248,7 +254,8 @@
       "phone": "This WhatsApp number is not valid.",
       "fileType": "That type of file is not accepted here.",
       "fileSize": "That file is over {{size}}.",
-      "fileCount": "You can add up to {{count}} files."
+      "fileCount": "You can add up to {{count}} files.",
+      "traceAll": "Trace every word until its bar fills."
     },
     "next": "Next",
     "back": "Back",
@@ -276,7 +283,8 @@
     "fileRemove": "Remove {{name}}",
     "fileHint": "{{kinds}}. Up to {{count}} files, {{size}} each.",
     "uploading": "Sending your files… {{percent}}%. Please keep this page open.",
-    "uploadError": "Your files could not be sent. Check your connection and try again; your answers are still here."
+    "uploadError": "Your files could not be sent. Check your connection and try again; your answers are still here.",
+    "traceHint": "Trace over the letters until each bar fills. Ink stays inside the letters."
   },
   "print": {
     "button": "Print / PDF",
