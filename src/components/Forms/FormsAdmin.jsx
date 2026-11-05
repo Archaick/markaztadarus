@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ActionIcon, Alert, Badge, Button, CopyButton, Group, Loader, Modal, Select, Text, TextInput, Tooltip } from "@mantine/core";
-import { IconCheck, IconClipboardText, IconCopy, IconExternalLink, IconFiles, IconMessages, IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconCheck, IconClipboardText, IconCopy, IconExternalLink, IconFiles, IconMessages, IconPlus, IconSearch, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, doc, getCountFromServer, getDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -9,6 +9,7 @@ import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { timeAgo } from "../Internal/timeAgo";
 import FormsShell, { FORMS_BASE, useFormsList } from "./FormsShell";
+import DeleteFormModal from "./DeleteFormModal";
 import styles from "./Forms.module.css";
 import app from "./FormsApp.module.css";
 import {
@@ -54,6 +55,7 @@ function FormsList() {
   const [sort, setSort] = useState("recent");
   const [counts, setCounts] = useState({});
   const [copyOf, setCopyOf] = useState(null); // a form being duplicated
+  const [deleting, setDeleting] = useState(null); // a closed form being deleted
   const creating = params.get("new") === "1";
 
   const list = useMemo(() => (Array.isArray(forms) ? forms : []), [forms]);
@@ -213,6 +215,13 @@ function FormsList() {
                       <IconFiles size={17} />
                     </ActionIcon>
                   </Tooltip>
+                  {form.status === "closed" && (
+                    <Tooltip label={t("list.delete")}>
+                      <ActionIcon variant="subtle" color="red" onClick={() => setDeleting(form)} aria-label={t("list.delete")}>
+                        <IconTrash size={17} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             );
@@ -220,6 +229,7 @@ function FormsList() {
         </div>
       )}
 
+      <DeleteFormModal form={deleting} opened={!!deleting} onClose={() => setDeleting(null)} onDeleted={() => setDeleting(null)} />
       <CreateFormModal opened={creating || !!copyOf} source={copyOf} onClose={closeCreate} createdBy={email} onCreated={(id) => navigate(`${FORMS_BASE}/${id}`)} />
     </div>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button, CopyButton, Group, Modal, Text, TextInput, Textarea } from "@mantine/core";
+import { Alert, Button, CopyButton, Group, Text, Textarea } from "@mantine/core";
 import {
   IconAlertTriangle,
   IconBrandWhatsapp,
@@ -12,12 +12,9 @@ import {
 } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
 import QRCode from "qrcode";
-import { collection, doc, getDoc, getDocs, limit, query } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
-import { useAccess } from "../Internal/accessContext";
-import { AUDIT_CHUNK, auditedWrite } from "../Internal/audit";
+import DeleteFormModal from "./DeleteFormModal";
 import styles from "./Forms.module.css";
-import { COVER_DOC, FORMS_COLLECTION, KEY_DOC, MEDIA, PRIVATE, RESPONSES, formLink } from "./formSchema";
+import { formLink } from "./formSchema";
 
 export default function SharePanel({ form, onOpen }) {
   const { t } = useTranslation("internal/Forms");
@@ -30,9 +27,6 @@ export default function SharePanel({ form, onOpen }) {
     t("share.message", { lng: form.language || "id", title: form.title, link })
   );
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [confirmText, setConfirmText] = useState("");
-  const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
 
   useEffect(() => {
     QRCode.toDataURL(link, { errorCorrectionLevel: "M", margin: 2, width: 480 })
@@ -45,58 +39,6 @@ export default function SharePanel({ form, onOpen }) {
     a.href = qr;
     a.download = `QR-form-${form.id}.png`;
     a.click();
-  };
-
-  const deleteForm = async () => {
-    setDeleting(true);
-    setDeleteError(false);
-    try {
-      // Responses live in a subcollection, which Firestore does not remove
-      // with the parent, so clear them first in batches.
-      // All of it is one entry in the recycle bin, restored together.
-      const trash = { group: `form-${form.id}-${Date.now().toString(36)}`, more: false };
-      let removed = 0;
-      for (;;) {
-        const snap = await getDocs(query(collection(db, FORMS_COLLECTION, form.id, RESPONSES), limit(AUDIT_CHUNK)));
-        if (snap.empty) break;
-        await auditedWrite(
-          user,
-          { area: "forms", action: "responses.clear", target: form.id, label: form.title, details: { count: snap.size } },
-          (batch, _auditId, markDelete) =>
-            snap.docs.forEach((d) => {
-              batch.delete(d.ref);
-              markDelete(`forms~${form.id}~responses~${d.id}`, d.data().auditId);
-            }),
-          { trash }
-        );
-        trash.more = true;
-        removed += snap.size;
-      }
-      const cover = await getDoc(doc(db, FORMS_COLLECTION, form.id, MEDIA, COVER_DOC));
-      const key = await getDoc(doc(db, FORMS_COLLECTION, form.id, PRIVATE, KEY_DOC));
-      await auditedWrite(
-        user,
-        { area: "forms", action: "form.delete", target: form.id, label: form.title, details: { status: form.status, responses: removed } },
-        (batch, _auditId, markDelete) => {
-          if (cover.exists()) {
-            batch.delete(cover.ref);
-            markDelete(`forms~${form.id}~media~${COVER_DOC}`, cover.data().auditId);
-          }
-          if (key.exists()) {
-            batch.delete(key.ref);
-            markDelete(`forms~${form.id}~private~${KEY_DOC}`, key.data().auditId);
-          }
-          batch.delete(doc(db, FORMS_COLLECTION, form.id));
-          markDelete(`forms~${form.id}`, form.auditId);
-        },
-        { trash }
-      );
-      navigate("/internal/forms", { replace: true });
-    } catch (err) {
-      console.error("Could not delete form:", err);
-      setDeleteError(true);
-      setDeleting(false);
-    }
   };
 
   const closed = form.status === "closed";
@@ -221,39 +163,7 @@ export default function SharePanel({ form, onOpen }) {
         </Button>
       </div>
 
-      <Modal
-        opened={deleteOpen}
-        onClose={() => {
-          setDeleteOpen(false);
-          setConfirmText("");
-        }}
-        title={t("share.deleteModalTitle")}
-        centered
-      >
-        <Text size="sm">
-          <Trans t={t} i18nKey="share.deleteConfirm" values={{ id: form.id }} components={{ b: <strong dir="ltr" /> }} />
-        </Text>
-        <TextInput
-          mt="sm"
-          dir="ltr"
-          value={confirmText}
-          onChange={(e) => setConfirmText(e.target.value)}
-          placeholder={form.id}
-        />
-        {deleteError && (
-          <Alert color="red" mt="sm">
-            {t("share.deleteFailed")}
-          </Alert>
-        )}
-        <Group justify="flex-end" mt="lg">
-          <Button variant="default" onClick={() => setDeleteOpen(false)}>
-            {t("share.cancel")}
-          </Button>
-          <Button color="red" disabled={confirmText.trim() !== form.id} loading={deleting} onClick={deleteForm}>
-            {t("share.deleteForever")}
-          </Button>
-        </Group>
-      </Modal>
+      <DeleteFormModal form={form} opened={deleteOpen} onClose={() => setDeleteOpen(false)} onDeleted={() => navigate("/internal/forms", { replace: true })} />
     </div>
   );
 }

@@ -219,14 +219,15 @@
     "shortLink": "Ingin tautan yang lebih pendek? Buat di <a>Pengelola Tautan</a> yang mengarah ke formulir ini.",
     "downloadQr": "Unduh QR",
     "deleteTitle": "Hapus formulir ini",
-    "deleteText": "Menghapus formulir dan semua jawabannya. Tidak dapat dibatalkan — ekspor CSV terlebih dahulu.",
+    "deleteText": "Memindahkan formulir dan semua jawabannya ke Baru dihapus. Dapat dipulihkan selama 30 hari, lalu dihapus dari server untuk selamanya.",
     "deleteButton": "Hapus formulir",
     "deleteModalTitle": "Hapus formulir dan semua jawaban",
     "deleteConfirm": "Ketik <b>{{id}}</b> untuk mengonfirmasi.",
     "cancel": "Batal",
-    "deleteForever": "Hapus permanen",
+    "deleteForever": "Hapus",
     "deleteFailed": "Tidak dapat menghapus formulir. Coba lagi.",
-    "message": "Assalamu'alaikum.\n\nMohon kesediaannya untuk mengisi formulir *{{title}}* melalui tautan berikut:\n{{link}}\n\nJazakumullahu khairan."
+    "message": "Assalamu'alaikum.\n\nMohon kesediaannya untuk mengisi formulir *{{title}}* melalui tautan berikut:\n{{link}}\n\nJazakumullahu khairan.",
+    "deleteDrive": "File yang diunggah tetap ada di Google Drive; hapus foldernya di sana jika tidak diperlukan."
   },
   "public": {
     "yourAnswer": "Jawaban Anda",
@@ -374,7 +375,8 @@
     "duplicateTitle": "Duplikat formulir",
     "duplicateText": "Membuat salinan \"{{title}}\": pertanyaan, bagian, pengaturan, sampul, dan kunci jawaban ikut tersalin. Jawaban tidak ikut tersalin; salinan dimulai sebagai draf.",
     "duplicateSubmit": "Buat salinan",
-    "copySuffix": "(salinan)"
+    "copySuffix": "(salinan)",
+    "delete": "Hapus formulir"
   },
   "stats": {
     "perDay": "Jawaban per hari",

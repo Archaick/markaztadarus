@@ -221,14 +221,15 @@
     "shortLink": "Want a shorter link? Create one in the <a>Redirect Manager</a> pointing to this form.",
     "downloadQr": "Download QR",
     "deleteTitle": "Delete this form",
-    "deleteText": "Removes the form and every response. This cannot be undone — export the CSV first.",
+    "deleteText": "Moves the form and every response to Recently deleted. You can restore it for 30 days, then it is removed from the server for good.",
     "deleteButton": "Delete form",
     "deleteModalTitle": "Delete form and all responses",
     "deleteConfirm": "Type <b>{{id}}</b> to confirm.",
     "cancel": "Cancel",
-    "deleteForever": "Delete forever",
+    "deleteForever": "Delete",
     "deleteFailed": "Could not delete the form. Try again.",
-    "message": "Assalamu'alaikum.\n\nPlease take a moment to fill in the form *{{title}}* using this link:\n{{link}}\n\nJazakumullahu khairan."
+    "message": "Assalamu'alaikum.\n\nPlease take a moment to fill in the form *{{title}}* using this link:\n{{link}}\n\nJazakumullahu khairan.",
+    "deleteDrive": "Files people uploaded stay in Google Drive; delete their folder there if you want them gone."
   },
   "public": {
     "yourAnswer": "Your answer",
@@ -376,7 +377,8 @@
     "duplicateTitle": "Duplicate form",
     "duplicateText": "Makes a copy of \"{{title}}\": its questions, sections, settings, cover and answer key. Responses are not copied; the copy starts as a draft.",
     "duplicateSubmit": "Make a copy",
-    "copySuffix": "(copy)"
+    "copySuffix": "(copy)",
+    "delete": "Delete form"
   },
   "stats": {
     "perDay": "Responses per day",
