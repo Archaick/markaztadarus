@@ -9,6 +9,7 @@ import PostCard from "./PostCard";
 import ArticleView from "./ArticleView";
 import styles from "./Blog.module.css";
 import { IMAGES, POSTS, THUMBS, fetchPublished } from "./blogSchema";
+import { photoOf } from "./photoFiles";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -41,7 +42,7 @@ export default function BlogPost() {
       if (!postId || !id || requested.current.has(id)) return;
       requested.current.add(id);
       getDoc(doc(db, POSTS, postId, IMAGES, id))
-        .then((snap) => snap.exists() && setImages((m) => ({ ...m, [id]: snap.data() })))
+        .then((snap) => snap.exists() && setImages((m) => ({ ...m, [id]: photoOf(snap.data()) })))
         .catch((err) => {
           requested.current.delete(id);
           console.error("Could not load photo:", err);
@@ -60,12 +61,12 @@ export default function BlogPost() {
     let alive = true;
     if (thumbsReady) {
       getDocs(collection(db, POSTS, postId, THUMBS))
-        .then((snap) => alive && setThumbs(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))))
+        .then((snap) => alive && setThumbs(Object.fromEntries(snap.docs.map((d) => [d.id, photoOf(d.data())]))))
         .catch((err) => console.error("Could not load photos:", err));
       if (coverId) loadImage(coverId);
     } else {
       getDocs(collection(db, POSTS, postId, IMAGES))
-        .then((snap) => alive && setImages(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))))
+        .then((snap) => alive && setImages(Object.fromEntries(snap.docs.map((d) => [d.id, photoOf(d.data())]))))
         .catch((err) => console.error("Could not load photos:", err));
     }
     fetchPublished({ size: 4 })

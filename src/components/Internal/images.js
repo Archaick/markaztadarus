@@ -1,5 +1,5 @@
-// Photos are kept in Firestore as JPEG data URLs (this project has no Storage
-// bucket), so every image is shrunk in the browser before it is saved.
+// Photos are kept as JPEGs in Firestore or, for news, in Cloud Storage; either
+// way every image is shrunk in the browser before it is saved.
 //
 // THE RULE: every image anyone can add, anywhere in the site, goes through
 // compressImage (photos) or pngWithin (what must stay transparent: signatures,
@@ -10,6 +10,8 @@ export const loadImage = (source) =>
     const isFile = typeof source !== "string";
     const url = isFile ? URL.createObjectURL(source) : source;
     const img = new Image();
+    // a photo from Cloud Storage: without this a canvas may not read it back
+    if (!isFile && /^https?:/.test(url)) img.crossOrigin = "anonymous";
     img.onload = () => {
       if (isFile) URL.revokeObjectURL(url);
       resolve(img);

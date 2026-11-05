@@ -18,9 +18,8 @@ import { intlLocale } from "../Internal/language";
  *   status: "draft" | "published"
  *   images: [imageId, …] in display order, coverId, coverThumb (small JPEG)
  * posts/{slug}/images/{imageId}
- *   dataUrl (JPEG), width, height, createdAt
- *
- * Photos live in Firestore because this project has no Storage bucket.
+ *   url and file (in Cloud Storage), or dataUrl (a JPEG, for older photos);
+ *   width, height, createdAt
  */
 export const POSTS = "posts";
 export const IMAGES = "images";

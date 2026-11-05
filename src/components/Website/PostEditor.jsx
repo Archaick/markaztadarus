@@ -39,6 +39,7 @@ import topoData from "../../data/indonesia-provinces.topo.json";
 import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { stableKey } from "../Internal/stableKey";
+import { photoFile, photoOf, storePhoto } from "../Blog/photoFiles";
 import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, hasLargeCard, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
 import { buildPostThumbs } from "./postThumbs";
 import SaveBar from "./SaveBar";
@@ -104,7 +105,7 @@ export default function PostEditor() {
     () =>
       onSnapshot(
         collection(db, POSTS, postId, IMAGES),
-        (snap) => setImages(Object.fromEntries(snap.docs.map((d) => [d.id, d.data()]))),
+        (snap) => setImages(Object.fromEntries(snap.docs.map((d) => [d.id, photoOf(d.data())]))),
         (err) => console.error("Could not load photos:", err)
       ),
     [postId]
@@ -244,9 +245,12 @@ export default function PostEditor() {
           patch.coverId = ref.id;
           patch.coverThumb = await makeThumb(image.dataUrl);
         }
+        const { width, height } = image;
+        const stored = await storePhoto(photoFile(postId, IMAGES, ref.id), image.dataUrl);
+        const storedGrid = await storePhoto(photoFile(postId, THUMBS, ref.id), grid.dataUrl);
         await writePost("post.photo_add", patch, { photo: file.name }, (batch, auditId) => {
-          batch.set(ref, { ...image, auditId, createdAt: serverTimestamp() });
-          batch.set(doc(db, POSTS, postId, THUMBS, ref.id), { ...grid, auditId });
+          batch.set(ref, { ...stored, width, height, auditId, createdAt: serverTimestamp() });
+          batch.set(doc(db, POSTS, postId, THUMBS, ref.id), { ...storedGrid, width: grid.width, height: grid.height, auditId });
         });
       } catch (err) {
         console.error("Photo upload failed:", err);

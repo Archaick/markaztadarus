@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["https://markaztadarus.com", "https://www.markaztadarus.com", "https://markaz-tadarus.web.app", "http://localhost:5173", "http://localhost:5174"],
+    "method": ["GET"],
+    "responseHeader": ["Content-Type"],
+    "maxAgeSeconds": 3600
+  }
+]

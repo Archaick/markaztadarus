@@ -4,6 +4,7 @@ import { ReCaptchaV3Provider, initializeAppCheck } from "firebase/app-check";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -30,6 +31,7 @@ if (import.meta.env.PROD && import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 // `npm run dev -- --mode emulator` with VITE_USE_EMULATORS=true in
 // .env.emulator.local talks to `firebase emulators:start` instead of the
@@ -37,6 +39,7 @@ const auth = getAuth(app);
 if (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATORS === "true") {
   connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
   connectFirestoreEmulator(db, "127.0.0.1", 8085);
+  connectStorageEmulator(storage, "127.0.0.1", 9199);
 }
 
-export { app, db, analytics, auth }; 
+export { app, db, analytics, auth, storage }; 

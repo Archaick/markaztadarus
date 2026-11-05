@@ -1,7 +1,9 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
+import { arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { AUDIT_CHUNK, TRASH_COLLECTION, TRASH_ITEMS, auditedWrite, kindOf } from "./audit";
 import { normalizeEmail } from "./access";
+import { IMAGES, POSTS, makeThumb } from "../Blog/blogSchema";
+import { photoOf, removePhoto } from "../Blog/photoFiles";
 import { PATH_PATTERN, REDIRECT_COLLECTION, REDIRECT_PUBLIC, publicId, publicLink } from "../Redirects/redirectSchema";
 
 // Restoring and emptying the recycle bin (see audit.js), for the super admin.
@@ -61,6 +63,34 @@ function chunks(items) {
   return out;
 }
 
+// Photos coming back to a post that is still there go back in its gallery too
+// (the post's own list is what the pages show). With no cover left, the first
+// becomes it. A post coming back in this same entry already lists its photos.
+async function galleryUpdates(items) {
+  const posts = new Map();
+  items.forEach((item) => {
+    const [top, postId, kind, photoId] = item.path.split("/");
+    if (top !== POSTS || kind !== IMAGES || items.some((x) => x.path === `${POSTS}/${postId}`)) return;
+    posts.set(postId, [...(posts.get(postId) || []), { id: photoId, data: item.data }]);
+  });
+  const updates = [];
+  for (const [postId, photos] of posts) {
+    const ref = doc(db, POSTS, postId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) continue; // its own restore will bring its list back
+    const patch = { images: arrayUnion(...photos.map((x) => x.id)) };
+    if (!snap.data().coverId) {
+      patch.coverId = photos[0].id;
+      patch.coverThumb = await makeThumb(photoOf(photos[0].data).dataUrl).catch((err) => {
+        console.error("Could not make the card image:", err);
+        return "";
+      });
+    }
+    updates.push({ ref, patch });
+  }
+  return updates;
+}
+
 /**
  * Puts every document of a bin entry back where it was, under its own id
  * (so printed QR codes and shared links work again), and marks the entry
@@ -68,6 +98,7 @@ function chunks(items) {
  */
 export async function restoreGroup(user, group, items, onProgress) {
   const parts = chunks(items);
+  const galleries = await galleryUpdates(items);
   let done = 0;
   for (const [i, part] of parts.entries()) {
     const last = i === parts.length - 1;
@@ -91,6 +122,7 @@ export async function restoreGroup(user, group, items, onProgress) {
           }
         });
         if (last) {
+          galleries.forEach(({ ref, patch }) => batch.update(ref, { ...patch, auditId }));
           batch.update(doc(db, TRASH_COLLECTION, group.id), {
             restoredAt: serverTimestamp(),
             restoredBy: normalizeEmail(user?.email),
@@ -102,6 +134,12 @@ export async function restoreGroup(user, group, items, onProgress) {
     onProgress?.(done / items.length);
   }
 }
+
+// Copies that are going for good take their file in Cloud Storage with them.
+const removeFiles = (items) =>
+  Promise.all(
+    items.filter((item) => item.data?.file).map((item) => removePhoto(item.data.file).catch((err) => console.error("Could not remove a photo file:", err)))
+  );
 
 /**
  * Removes the entries whose 30 days are up, copies and all (no history
@@ -118,6 +156,7 @@ export async function purgeExpired(groups) {
       items.slice(i, i + 450).forEach((item) => batch.delete(item.ref));
       await batch.commit();
     }
+    await removeFiles(items);
     await deleteDoc(doc(db, TRASH_COLLECTION, group.id));
   }
   return expired.length;
@@ -145,4 +184,5 @@ export async function purgeGroup(user, group, items) {
       }
     );
   }
+  await removeFiles(items);
 }

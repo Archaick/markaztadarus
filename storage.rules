@@ -1,0 +1,41 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Mirrored in firestore.rules.
+    function hasVerifiedEmail() {
+      return request.auth != null
+        && request.auth.token.email is string
+        && request.auth.token.email_verified == true;
+    }
+
+    function isSuperAdmin() {
+      return hasVerifiedEmail() && request.auth.token.email.lower() == "saeedhareez@gmail.com";
+    }
+
+    function hasFeature(feature) {
+      let admin = /databases/(default)/documents/internal_admins/$(request.auth.token.email.lower());
+      return isSuperAdmin()
+        || (hasVerifiedEmail() && firestore.exists(admin) && firestore.get(admin).data.features.hasAny([feature]));
+    }
+
+    // News photos. Visitors open them through the link kept on the photo's
+    // document in Firestore, which drafts do not show; nobody can list them.
+    // A file is never replaced, and goes only when the recycle bin lets go of
+    // its copy, so Restore always finds it.
+    match /posts/{postId}/{kind}/{fileName} {
+      allow get: if hasFeature("site");
+      allow list: if false;
+      allow create: if hasFeature("site")
+        && kind in ["images", "thumbs"]
+        && request.resource.contentType == "image/jpeg"
+        && request.resource.size < 1024 * 1024;
+      allow update: if false;
+      allow delete: if isSuperAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

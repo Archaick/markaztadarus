@@ -59,19 +59,19 @@ export const areaOfPath = (path) => {
 // Every document in the database, one at a time.
 async function readAll(onDoc, onProgress) {
   let count = 0;
-  const add = (snapDoc) => {
-    onDoc(snapDoc, count);
+  const add = async (snapDoc) => {
+    await onDoc(snapDoc, count);
     count += 1;
   };
   for (const [name, inner = []] of TREE) {
     onProgress?.({ collection: name, count });
     const snap = await getDocs(collection(db, name));
-    snap.docs.forEach(add);
+    for (const d of snap.docs) await add(d);
     if (!inner.length) continue;
     for (let i = 0; i < snap.docs.length; i += PARALLEL) {
       const slice = snap.docs.slice(i, i + PARALLEL);
       const subs = await Promise.all(slice.flatMap((d) => inner.map((sub) => getDocs(collection(d.ref, sub)))));
-      subs.forEach((s) => s.docs.forEach(add));
+      for (const s of subs) for (const d of s.docs) await add(d);
       onProgress?.({ collection: name, count });
     }
   }
@@ -140,6 +140,23 @@ export async function countStorage(onProgress) {
   return saveStorage(sum.result());
 }
 
+// A photo in Cloud Storage goes into the file too (__file__), so a backup is
+// still everything. One that cannot be read stops the backup: better no file
+// than one that looks complete and is not.
+async function withFile(data) {
+  if (!data.url || !data.file) return data;
+  const res = await fetch(data.url);
+  if (!res.ok) throw new Error(`Could not read ${data.file}: ${res.status}`);
+  const blob = await res.blob();
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+  return { ...data, __file__: dataUrl };
+}
+
 /**
  * Reads everything and returns it as a JSON file:
  * { project, createdAt, createdBy, count, documents: { "<path>": data } }.
@@ -149,10 +166,10 @@ export async function countStorage(onProgress) {
 export async function buildBackup(email, onProgress) {
   const parts = [];
   const sum = tally();
-  const count = await readAll((snapDoc, index) => {
-    const json = JSON.stringify(encode(snapDoc.data()));
+  const count = await readAll(async (snapDoc, index) => {
+    const json = JSON.stringify(await withFile(encode(snapDoc.data())));
     parts.push(`${index ? "," : ""}\n${JSON.stringify(snapDoc.ref.path)}:${json}`);
-    sum.add(snapDoc.ref.path, json);
+    sum.add(snapDoc.ref.path, JSON.stringify(encode(snapDoc.data())));
   }, onProgress);
 
   const head = { project: "markaz-tadarus", createdAt: new Date().toISOString(), createdBy: email, count };

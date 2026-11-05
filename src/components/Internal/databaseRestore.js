@@ -1,6 +1,7 @@
 import { Bytes, GeoPoint, Timestamp, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "./audit";
+import { storePhoto } from "../Blog/photoFiles";
 import { TREE, areaOfPath, readCurrent } from "./databaseBackup";
 
 // Putting a backup file back. It only ever adds or replaces documents, never
@@ -54,6 +55,7 @@ const sameKeysText = (value) => {
 const contentOf = (data) => {
   const rest = { ...data };
   delete rest.auditId;
+  delete rest.__file__; // the backup's copy of a Cloud Storage photo
   return JSON.stringify(sameKeysText(rest));
 };
 
@@ -88,6 +90,7 @@ function restoredData(path, data, auditId) {
   if (path === "redirect_public/_secured") return { at: serverTimestamp() };
   const value = decode(data);
   if (path.startsWith("redirect_public/")) return value;
+  delete value.__file__;
   return { ...value, auditId };
 }
 
@@ -124,12 +127,25 @@ export async function runRestore(user, backup, paths, onProgress) {
   let restored = 0;
   const failed = [];
 
-  const write = (group) =>
-    auditedWrite(
+  // a photo whose file is gone comes back from the backup's copy first
+  const putFilesBack = async (group) => {
+    for (const path of group) {
+      const data = backup.documents[path];
+      if (!data.__file__) continue;
+      // asks the server: the browser keeps its own copy of a photo long after the file has gone
+      const alive = await fetch(data.url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false);
+      if (!alive) backup.documents[path] = { ...data, ...(await storePhoto(data.file, data.__file__)) };
+    }
+  };
+
+  const write = async (group) => {
+    await putFilesBack(group);
+    return auditedWrite(
       user,
       { area: "access", action: "backup.restore", label: backup.name, details: { documents: group.length, from: backup.createdAt } },
       (batch, auditId) => group.forEach((path) => batch.set(doc(db, path), restoredData(path, backup.documents[path], auditId)))
     );
+  };
 
   for (const group of intoBatches(ordered, backup.documents)) {
     try {

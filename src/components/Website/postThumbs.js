@@ -2,6 +2,7 @@ import { collection, doc, getDocs } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
 import { IMAGES, POSTS, THUMBS, hasLargeCard, makeGridThumb, makeThumb } from "../Blog/blogSchema";
+import { photoOf } from "../Blog/photoFiles";
 
 // Thumbnails per batch: each is up to ~70 KB, well inside a request's size.
 const PER_BATCH = 10;
@@ -17,7 +18,7 @@ const PER_BATCH = 10;
  * otherwise they are read here. Returns how many thumbnails were made.
  */
 export async function buildPostThumbs({ user, post, images }) {
-  const full = images || Object.fromEntries((await getDocs(collection(db, POSTS, post.id, IMAGES))).docs.map((d) => [d.id, d.data()]));
+  const full = images || Object.fromEntries((await getDocs(collection(db, POSTS, post.id, IMAGES))).docs.map((d) => [d.id, photoOf(d.data())]));
   const have = new Set((await getDocs(collection(db, POSTS, post.id, THUMBS))).docs.map((d) => d.id));
   const missing = (post.images || []).filter((id) => full[id] && !have.has(id));
 
