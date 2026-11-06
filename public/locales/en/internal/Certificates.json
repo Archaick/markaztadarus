@@ -320,8 +320,14 @@
       "qrPlace": "QR code position",
       "qrCorner": "In the corner",
       "qrSignature": "In place of the signature",
-      "qrCornerHint": "The QR sits at the bottom left; signatures and stamps still print.",
-      "qrSignatureHint": "The QR sits above the first signer's name, as a digital signature."
+      "qrCornerHint": "The QR sits in a corner of the page; signatures and stamps still print.",
+      "qrSignatureHint": "The QR sits above the first signer's name, as a digital signature.",
+      "template": "Page design",
+      "templateHint": "The green seminar page or the gold training page. Both keep the same words, signers and QR code.",
+      "templates": {
+        "mint": "Green (seminar)",
+        "gold": "Gold (training)"
+      }
     },
     "people": {
       "saveFirst": "Save the design first; then add the participants here.",

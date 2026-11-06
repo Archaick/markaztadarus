@@ -4,10 +4,19 @@ import { verifyLink } from "../certSchema";
 import { KUFIC_PATH, PAGE_H, PAGE_W } from "./kufic";
 import mtMark from "../../../assets/certificate/mt-mark.svg";
 import sealKaaba from "../../../assets/certificate/seal-kaaba.png";
+import goldPaper from "../../../assets/certificate/gold-paper.jpg";
+import goldTitle from "../../../assets/certificate/gold-title.png";
+import goldSeal from "../../../assets/certificate/gold-seal.png";
+import annabaLogo from "../../../assets/certificate/annaba-logo.png";
 import styles from "./CertificateSheet.module.css";
 
 /*
- * The Markaz Tadarus certificate, drawn in code from the original design
+ * The Markaz Tadarus certificates, in two designs: `mint` (the original: the
+ * mint paper and embossed square-Kufic band, drawn in code) and `gold` (the
+ * training certificate: gold Kufic medallion, navy ring, the An-Naba and
+ * Markaz Tadarus logos, a gold seal), whose artwork comes from its own file.
+ *
+ * The mint one, drawn in code from the original design
  * (whose source file was lost): the mint paper, the embossed square-Kufic band,
  * "SERTIFIKAT", the number, the name, the sentence, the place and date, the
  * signers, the seal, the logos, and a QR code that opens /verify/<code>.
@@ -33,7 +42,10 @@ export const DEFAULT_CERTIFICATE = {
   seal: true,
   code: "", // the verification code: with one, the QR code appears
   qrPlace: "corner", // "corner" (bottom left, with the signatures) or "signature" (in place of the first signer's signature)
+  template: "mint", // "mint" or "gold"
 };
+
+export const TEMPLATES = ["mint", "gold"];
 
 // "*green*" parts of the sentence
 const Rich = ({ text }) =>
@@ -105,6 +117,10 @@ export default function CertificateSheet({ data, width = 1123, placeholders = fa
   const qrInSign = c.qrPlace === "signature" && signers.length > 0;
   const qrShown = qr || placeholders;
   const qrBox = qr ? <img src={qr} alt="" /> : <div className={styles.qrSlot}>QR</div>;
+
+  if (c.template === "gold") {
+    return <GoldSheet c={c} width={width} scale={scale} sheetRef={sheetRef} placeholders={placeholders} signers={signers} logos={logos} qrInSign={qrInSign} qrShown={qrShown} qrBox={qrBox} />;
+  }
 
   return (
     <div ref={sheetRef} className={styles.frame} style={{ width, height: PAGE_H * scale }}>
@@ -234,6 +250,108 @@ export default function CertificateSheet({ data, width = 1123, placeholders = fa
         )}
 
         {c.seal && <img src={sealKaaba} alt="" className={styles.seal} />}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The gold training certificate, laid out from its own file (842 x 596, here in
+ * the same page units as the mint one): the paper with its Kufic medallion,
+ * the logos top right, "SERTIFIKAT" in gold, the text from the medallion's
+ * edge, the signers, the gold seal and the QR code above it.
+ */
+function GoldSheet({ c, width, scale, sheetRef, placeholders, signers, logos, qrInSign, qrShown, qrBox }) {
+  // the title as the file draws it; any other title in the same gold
+  const ownTitle = String(c.title || "").trim().toUpperCase() === "SERTIFIKAT";
+  // a longer title narrows to stay on the page (about 0.7 of the font size per letter)
+  const titleWidth = Math.min(String(c.title || "").length * 26.5, 400);
+  return (
+    <div ref={sheetRef} className={`${styles.frame} ${styles.goldFrame}`} style={{ width, height: PAGE_H * scale }}>
+      <div className={`${styles.page} ${styles.gold}`} style={{ transform: `scale(${scale})` }}>
+        <img src={goldPaper} alt="" className={styles.goldPaper} />
+
+        <div className={styles.goldLogos}>
+          <img src={annabaLogo} alt="" className={styles.annaba} />
+          <div className={styles.mtLogo}>
+            <img src={mtMark} alt="" />
+            <b>MARKAZ TADARUS</b>
+            <span>INDONESIA</span>
+          </div>
+          {logos.map((src, i) => (
+            <img key={i} src={src} alt="" className={styles.partnerLogo} />
+          ))}
+          {placeholders && logos.length === 0 && <div className={styles.goldSlot}>Logo lembaga mitra</div>}
+        </div>
+
+        {ownTitle ? (
+          <img src={goldTitle} alt={c.title} className={styles.goldTitle} />
+        ) : (
+          <svg className={styles.goldTitle} style={{ width: 400 }} viewBox="0 0 400 36" aria-label={c.title}>
+            <defs>
+              <linearGradient id="goldInk" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#8a5a12" />
+                <stop offset="0.35" stopColor="#e8c25a" />
+                <stop offset="0.55" stopColor="#a8741c" />
+                <stop offset="0.8" stopColor="#f2d47a" />
+                <stop offset="1" stopColor="#8a5a12" />
+              </linearGradient>
+            </defs>
+            <text x="0" y="31" fill="url(#goldInk)" fontFamily="'Times New Roman', Georgia, serif" fontWeight="700" fontSize="38" textLength={titleWidth} lengthAdjust="spacingAndGlyphs">
+              {c.title}
+            </text>
+          </svg>
+        )}
+
+        <div className={styles.goldNumber}>
+          <span>{c.numberLabel}</span> <span dir="auto">{c.number || (placeholders ? "[Nomor Sertifikat]" : "")}</span>
+        </div>
+        <div className={styles.goldGivenTo} dir="auto">
+          {c.givenTo}
+        </div>
+        <FitLine className={styles.goldName} max={23} min={12} width={380}>
+          {c.name || (placeholders ? "[Nama Peserta]" : "")}
+        </FitLine>
+        <p className={styles.goldDescription} dir="auto">
+          <Rich text={c.description} />
+        </p>
+
+        <div className={styles.goldPlaceDate} dir="auto">
+          {[c.place, c.issueDate || (placeholders ? "[tanggal sertifikat disahkan]" : "")].filter(Boolean).join(", ")}
+        </div>
+        <div className={styles.goldSigners} data-count={signers.length}>
+          {signers.map((s, i) => (
+            <div key={i} className={styles.goldSigner}>
+              {qrInSign && i === 0 ? (
+                <div className={`${styles.goldInk} ${styles.qrSign}`}>
+                  {qrShown && qrBox}
+                  {c.code && <b>{c.code}</b>}
+                </div>
+              ) : (
+                <div className={styles.goldInk}>
+                  {s.signature && <img src={s.signature} alt="" className={styles.goldSignature} />}
+                  {s.stamp && <img src={s.stamp} alt="" className={styles.goldStamp} />}
+                </div>
+              )}
+              <div className={styles.goldSignerName} dir="auto">
+                {s.name}
+              </div>
+              <div className={styles.goldSignerRole} dir="auto">
+                {s.role}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {qrShown && !qrInSign && (
+          <div className={styles.goldQr}>
+            {qrBox}
+            <span>Verifikasi keaslian</span>
+            <b>{c.code || (placeholders ? "[KODE]" : "")}</b>
+          </div>
+        )}
+
+        {c.seal && <img src={goldSeal} alt="" className={styles.goldSeal} />}
       </div>
     </div>
   );

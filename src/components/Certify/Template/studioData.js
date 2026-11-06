@@ -1,6 +1,6 @@
 import { cleanText, normCode } from "../certSchema";
 import { resolveCertificateSigners } from "../signerUtils";
-import { DEFAULT_CERTIFICATE } from "./CertificateSheet";
+import { DEFAULT_CERTIFICATE, TEMPLATES } from "./CertificateSheet";
 
 /*
  * Certificate Studio: a design is one event's certificate (its words, logos,
@@ -21,6 +21,9 @@ export const MAX_LOGOS = 4;
 export const MAX_SIGNERS = 3;
 export const MAX_DESCRIPTION = 600;
 
+// the page: `mint` (the original) or `gold` (the training certificate); a design saved before there was a choice is mint
+const templateOf = (d) => (TEMPLATES.includes(d?.template) ? d.template : "mint");
+
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 const pad = (n) => String(n).padStart(2, "0");
 const today = () => {
@@ -33,6 +36,7 @@ export const newDesign = () => {
   const d = new Date();
   return {
     name: "",
+    template: "mint",
     title: DEFAULT_CERTIFICATE.title,
     numberLabel: DEFAULT_CERTIFICATE.numberLabel,
     numberPattern: `{no}/MTI/SERT/${ROMAN[d.getMonth()]}/${d.getFullYear()}`,
@@ -52,6 +56,7 @@ export const newDesign = () => {
 /** The design's fields, tidied for saving. */
 export const cleanDesign = (d) => ({
   name: cleanText(d.name),
+  template: templateOf(d),
   title: cleanText(d.title),
   numberLabel: cleanText(d.numberLabel),
   numberPattern: cleanText(d.numberPattern),
@@ -74,6 +79,7 @@ export const cleanDesign = (d) => ({
 
 /** The public copy of a design: the fields the printed certificate is drawn from. */
 export const publicDesign = (d) => ({
+  template: templateOf(d),
   title: d.title || "",
   numberLabel: d.numberLabel || "",
   givenTo: d.givenTo || "",
@@ -106,6 +112,7 @@ export const sheetData = (design, cert, signers) => {
   // none picked: the default signers, as on the verification page
   const chosen = resolveCertificateSigners({ signerIds: design.signerIds || [] }, signers || []).slice(0, MAX_SIGNERS);
   return {
+    template: templateOf(design),
     title: design.title,
     numberLabel: design.numberLabel,
     number: cert?.number || "",

@@ -269,3 +269,38 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* the two page designs, side by side */
+.templates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.template {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+  border: 2px solid var(--mantine-color-gray-3);
+  border-radius: 10px;
+  background: var(--mantine-color-body);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+}
+
+.template:hover {
+  border-color: var(--mantine-color-teal-3);
+}
+
+.templateOn {
+  border-color: var(--mantine-color-teal-6);
+  box-shadow: 0 0 0 3px var(--mantine-color-teal-1);
+}
+
+.template > div {
+  pointer-events: none;
+}

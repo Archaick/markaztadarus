@@ -275,3 +275,215 @@
   width: 63px;
   height: 63px;
 }
+
+/* ---------- the gold training certificate ----------
+   Positions come from its own file (842 x 596), scaled into these page units. */
+.goldFrame {
+  background: #fff;
+}
+.gold {
+  color: #1b1b1b;
+}
+.goldPaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.goldLogos {
+  position: absolute;
+  top: 12.0px;
+  right: 16.5px;
+  height: 47.9px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.goldLogos .partnerLogo {
+  max-height: 42.0px;
+}
+.annaba {
+  height: 40.5px;
+  width: auto;
+}
+.goldSlot {
+  width: 44.9px;
+  height: 44.9px;
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  border: 1.4px solid #b08a2e;
+  font-size: 6.4px;
+  line-height: 1.25;
+  text-align: center;
+  color: #6b5320;
+}
+.goldTitle {
+  position: absolute;
+  left: 200.0px;
+  top: 81.7px;
+  width: 265.2px;
+  height: 36.0px;
+  overflow: visible;
+}
+.goldNumber,
+.goldGivenTo,
+.goldPlaceDate {
+  position: absolute;
+  left: 200.8px;
+  font-size: 10.6px;
+  font-weight: 500;
+}
+.goldNumber {
+  top: 122.9px;
+}
+.goldGivenTo {
+  top: 158.1px;
+}
+.goldName {
+  position: absolute;
+  left: 200.8px;
+  top: 179.8px;
+  white-space: nowrap;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #c39a2e;
+}
+.goldDescription {
+  position: absolute;
+  left: 200.8px;
+  top: 218.0px;
+  width: 378.3px;
+  margin: 0;
+  font-size: 10.1px;
+  font-weight: 500;
+  line-height: 1.62;
+}
+.gold .mark {
+  color: #c39a2e;
+  font-weight: 500;
+}
+.goldPlaceDate {
+  top: 295.9px;
+}
+.goldSigners {
+  position: absolute;
+  left: 187.3px;
+  bottom: 34.5px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.goldSigner {
+  width: 180px;
+  padding-left: 13.5px;
+}
+.goldSigners[data-count="2"] .goldSigner {
+  width: 172px;
+}
+/* the QR code standing in for the first signature: the code beside it */
+.goldInk.qrSign {
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 5px;
+  padding-bottom: 3px;
+}
+.goldInk.qrSign img,
+.goldInk.qrSign .qrSlot {
+  width: 46px;
+  height: 46px;
+}
+.goldInk.qrSign b {
+  font-size: 6px;
+  letter-spacing: 0.3px;
+}
+/* three signers share the row: a little smaller */
+.goldSigners[data-count="3"] .goldSigner {
+  width: 115px;
+  padding-left: 10px;
+}
+.goldSigners[data-count="3"] .goldInk {
+  height: 52px;
+}
+.goldSigners[data-count="3"] .goldSignature {
+  max-width: 88px;
+  max-height: 50px;
+}
+.goldSigners[data-count="3"] .goldStamp {
+  left: 46px;
+  max-width: 52px;
+  max-height: 52px;
+}
+.goldSigners[data-count="3"] .goldSignerName {
+  font-size: 9px;
+}
+.goldSigners[data-count="3"] .goldSignerRole {
+  font-size: 8.4px;
+}
+.goldInk {
+  position: relative;
+  height: 64.4px;
+  display: flex;
+  align-items: center;
+}
+.goldSignature {
+  position: relative;
+  z-index: 1;
+  max-width: 100px;
+  max-height: 62.9px;
+  object-fit: contain;
+}
+.goldStamp {
+  position: absolute;
+  left: 58px;
+  top: 0;
+  max-width: 62.9px;
+  max-height: 62.9px;
+  object-fit: contain;
+  opacity: 0.92;
+}
+.goldSignerName {
+  padding-bottom: 2px;
+  border-bottom: 0.8px solid #1b1b1b;
+  font-size: 10.6px;
+  font-weight: 600;
+  color: #c39a2e;
+}
+.goldSignerRole {
+  padding-top: 3px;
+  font-size: 10px;
+  font-weight: 500;
+}
+.goldSeal {
+  position: absolute;
+  left: 553.6px;
+  top: 370.8px;
+  width: 62.9px;
+  height: 62.9px;
+}
+/* the QR code, above the seal */
+.goldQr {
+  position: absolute;
+  left: 557.3px;
+  top: 298.1px;
+  width: 55.4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.goldQr img,
+.goldQr .qrSlot {
+  width: 46.4px;
+  height: 46.4px;
+}
+.goldQr span {
+  margin-top: 1px;
+  font-size: 4.6px;
+  color: #6b5320;
+}
+.goldQr b {
+  font-size: 5.6px;
+  letter-spacing: 0.3px;
+}

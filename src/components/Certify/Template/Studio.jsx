@@ -39,7 +39,7 @@ import { auditedWrite } from "../../Internal/audit";
 import portal from "../../Internal/InternalPortal.module.css";
 import { CERTS, PUBLIC, fromDateInput, isRevoked, normCode, publicFields, safeFileName, tidyPeople } from "../certSchema";
 import { LOGO_IMAGE_CHARS, processImageFile } from "../signerUtils";
-import CertificateSheet from "./CertificateSheet";
+import CertificateSheet, { TEMPLATES } from "./CertificateSheet";
 import { certificatesPdf, certificatesZip, saveBlob } from "./studioPdf";
 import { DESIGNS, DESIGNS_PUBLIC, MAX_LOGOS, MAX_SIGNERS, certsOf, cleanDesign, newDesign, numberFor, publicDesign, sheetData } from "./studioData";
 import styles from "./Studio.module.css";
@@ -332,7 +332,7 @@ function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCrea
             </div>
           )}
 
-          {section === "look" && <LookFields form={form} set={set} signerOptions={signerOptions} />}
+          {section === "look" && <LookFields form={form} set={set} signerOptions={signerOptions} signers={signers} />}
 
           {section === "people" && (
             <People
@@ -373,7 +373,7 @@ function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCrea
   );
 }
 
-function LookFields({ form, set, signerOptions }) {
+function LookFields({ form, set, signerOptions, signers }) {
   const { t } = useTranslation(NS);
   const [logoError, setLogoError] = useState("");
   const addLogo = async (file) => {
@@ -394,8 +394,27 @@ function LookFields({ form, set, signerOptions }) {
     set("logos")(logos);
   };
 
+  const page = TEMPLATES.includes(form.template) ? form.template : "mint";
+
   return (
     <div className={styles.fields}>
+      <div>
+        <Text size="sm" fw={500}>
+          {t("studio.fields.template")}
+        </Text>
+        <Text size="xs" c="dimmed" mb={8}>
+          {t("studio.fields.templateHint")}
+        </Text>
+        <div className={styles.templates}>
+          {TEMPLATES.map((key) => (
+            <button type="button" key={key} className={`${styles.template} ${page === key ? styles.templateOn : ""}`} onClick={() => set("template")(key)} aria-pressed={page === key}>
+              <FitSheet data={sheetData({ ...form, template: key }, null, signers)} placeholders />
+              <span>{t(`studio.fields.templates.${key}`)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <MultiSelect
         label={t("studio.fields.signers")}
         description={t("studio.fields.signersHint")}
