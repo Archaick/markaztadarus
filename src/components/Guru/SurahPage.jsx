@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { IconArrowLeft, IconBook, IconCheck, IconLock, IconPencil, IconPlayerPlayFilled, IconStarFilled } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { sectionType } from "../Belajar/belajarSchema";
+import { fiveTOf, kindOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
 import { Ring } from "./GuruHome";
@@ -53,7 +53,7 @@ export default function SurahPage() {
 
         <ol className={styles.path}>
           {s.steps.map(({ section, progress, state }, i) => {
-            const kind = sectionType(section.key)?.kind || "quiz";
+            const kind = kindOf(section);
             const stars = starsOf(progress);
             const Icon = state === "done" ? IconCheck : state === "locked" ? IconLock : kind === "written" ? IconPencil : kind === "reading" ? IconBook : IconPlayerPlayFilled;
             const body = (
@@ -63,8 +63,8 @@ export default function SurahPage() {
                 </span>
                 <span className={styles.stepCard}>
                   <span className={styles.stepTop}>
-                    <b>{t(`section.${section.key}`)}</b>
-                    {sectionType(section.key)?.t && <i>{t(`fiveT.${sectionType(section.key).t}`)}</i>}
+                    <b>{sectionTitle(section, t)}</b>
+                    {fiveTOf(section) && <i>{t(`fiveT.${fiveTOf(section)}`)}</i>}
                   </span>
                   <span className={styles.stepMeta}>
                     {state === "locked"

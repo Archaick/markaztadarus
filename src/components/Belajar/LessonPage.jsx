@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Badge, Button, Group, Loader, Modal, Switch, Tabs, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconChevronRight, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Button, Group, Loader, Modal, Switch, Tabs, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
+import { IconArrowLeft, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteLesson, saveLesson } from "./actions";
-import { BASE, NS, SECTION_TYPES, blankAyah, issuesOfSection, questionsOf } from "./belajarSchema";
+import { BASE, NS, blankAyah } from "./belajarSchema";
+import SectionsList from "./SectionsList";
 import { LessonForm } from "./LessonsPage";
 import styles from "./Belajar.module.css";
 
@@ -73,28 +74,7 @@ export default function LessonPage() {
           <Tabs.Tab value="materi">{t("lesson.tabMateri", { count: (lesson.ayat || []).length })}</Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="sections">
-          <div className={styles.rows}>
-            {SECTION_TYPES.map((type, i) => {
-              const section = sections.find((s) => s.key === type.key);
-              const issues = section ? issuesOfSection(section) : 0;
-              const count = section ? (type.kind === "written" ? (section.tasks || []).length : questionsOf(section).length) : 0;
-              return (
-                <Link key={type.key} to={`${BASE}/surat/${lesson.id}/${type.key}`} className={styles.row}>
-                  <span className={styles.rowNo}>{i + 1}</span>
-                  <div className={styles.rowMain}>
-                    <div className={styles.rowTitle}>{t(`section.${type.key}`)}</div>
-                    <div className={styles.rowSub}>
-                      {section ? t(`kind.${type.kind}Count`, { count }) : t("lesson.notYet")}
-                      {type.t && <> · <span className={styles.tag}>{t(`fiveT.${type.t}`)}</span></>}
-                    </div>
-                  </div>
-                  {issues > 0 && <Badge color="orange">{t("lessons.issues", { count: issues })}</Badge>}
-                  {!section && <IconPlus size={18} color="var(--muted)" />}
-                  <IconChevronRight size={18} color="var(--muted)" />
-                </Link>
-              );
-            })}
-          </div>
+          <SectionsList lesson={lesson} sections={sections} />
         </Tabs.Panel>
         <Tabs.Panel value="materi">
           <MateriEditor lesson={lesson} />

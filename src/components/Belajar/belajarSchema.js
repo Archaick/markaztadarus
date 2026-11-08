@@ -50,6 +50,31 @@ export const SECTION_TYPES = [
 
 export const sectionType = (key) => SECTION_TYPES.find((s) => s.key === key);
 
+// Sections are the admin's own: each has an order, a kind, an optional name
+// and an optional 5T tag. The standard list above is only the template a new
+// surah starts with (and fills in what an older section does not say).
+
+/** A section's name: the admin's own, else the standard one (in the page's language). */
+export const sectionTitle = (section, t) => (section?.title || "").trim() || (sectionType(section?.key) ? t(`section.${section.key}`) : section?.key || "");
+
+/** quiz · reading · written */
+export const kindOf = (section) => section?.kind || sectionType(section?.key)?.kind || "quiz";
+
+/** The 5T step a section belongs to, or "" for none. */
+export const fiveTOf = (section) => (section && "fiveT" in section ? section.fiveT || "" : sectionType(section?.key)?.t || "");
+
+const templateRank = (s) => {
+  const i = SECTION_TYPES.findIndex((x) => x.key === s.key);
+  return i < 0 ? 99 : i;
+};
+
+/** The admin's order (older sections without one keep the book's order). */
+export const bySectionOrder = (a, b) => (a.order ?? templateRank(a)) - (b.order ?? templateRank(b)) || templateRank(a) - templateRank(b);
+
+/** The standard sections as new documents for one surah. */
+export const templateSections = (lessonId) =>
+  SECTION_TYPES.map((s, i) => ({ lessonId, key: s.key, kind: s.kind, fiveT: s.t || "", title: "", order: i + 1, reading: [], parts: s.kind === "quiz" ? [{ heading: "", instructions: "", questions: [] }] : [], tasks: [], instructions: "" }));
+
 export const FIVE_T = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 
 export const QUESTION_TYPES = ["single", "truefalse", "multi", "match"];
@@ -95,13 +120,8 @@ export const byOrder = (a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title
 /** A section has something for a learner (questions, text or tasks). */
 export const hasContent = (s) => questionsOf(s).length > 0 || (s?.reading || []).some((b) => (b.text || "").trim()) || (s?.tasks || []).length > 0;
 
-const rankOf = (s) => {
-  const i = SECTION_TYPES.findIndex((x) => x.key === s.key);
-  return i < 0 ? 99 : i;
-};
-
-/** The sections a learner works through in one surah, in the book's order. */
-export const learnerSections = (sections, lessonId) => sections.filter((s) => s.lessonId === lessonId && hasContent(s)).sort((a, b) => rankOf(a) - rankOf(b));
+/** The sections a learner works through in one surah, in the order the admin set. */
+export const learnerSections = (sections, lessonId) => sections.filter((s) => s.lessonId === lessonId && hasContent(s)).sort(bySectionOrder);
 
 /**
  * Where a learner is in one surah: each section with done / open / locked

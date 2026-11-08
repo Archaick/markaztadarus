@@ -85,7 +85,7 @@ export default function BelajarApp() {
               <Routes>
                 <Route index element={<LessonsPage />} />
                 <Route path="surat/:lessonId" element={<LessonPage />} />
-                <Route path="surat/:lessonId/:sectionKey" element={<SectionPage />} />
+                <Route path="surat/:lessonId/:sectionId" element={<SectionPage />} />
                 <Route path="kelas" element={<ClassesPage />} />
                 <Route path="kelas/:classId" element={<ClassPage />} />
                 <Route path="akses" element={<SuperOnly><AccessPage /></SuperOnly>} />

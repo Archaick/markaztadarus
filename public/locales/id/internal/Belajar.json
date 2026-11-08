@@ -218,5 +218,26 @@
     "notePlaceholder": "Tulis catatan atau masukan…",
     "saveNote": "Simpan catatan",
     "noteSaved": "Tersimpan"
+  },
+  "sections": {
+    "empty": "Surat ini belum punya bagian. Pakai susunan Buku Guru, atau buat bagian sendiri.",
+    "useTemplate": "Pakai susunan Buku Guru ({{count}} bagian)",
+    "add": "Tambah bagian",
+    "addButton": "Tambahkan",
+    "edit": "Ubah bagian",
+    "open": "Buka",
+    "up": "Naikkan",
+    "down": "Turunkan",
+    "deleteBody": "Bagian \"{{name}}\" dan semua isinya akan dihapus. Super admin dapat memulihkannya dari Baru dihapus selama 30 hari.",
+    "fromBook": "Dari Buku Guru",
+    "own": "Bagian sendiri",
+    "pick": "Bagian",
+    "name": "Nama bagian",
+    "namePlaceholder": "mis. Muraja'ah, Kuis Akhir",
+    "nameHint": "Kosongkan untuk memakai nama standar.",
+    "kind": "Jenis",
+    "tag": "Langkah 5T",
+    "noTag": "Tanpa label 5T",
+    "kindWarning": "Bagian ini sudah berisi soal atau tugas. Mengubah jenisnya bisa menyembunyikan isi itu dari guru."
   }
 }

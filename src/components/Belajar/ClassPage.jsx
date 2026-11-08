@@ -10,7 +10,7 @@ import { isValidEmail, normalizeEmail } from "../Internal/access";
 import { timeAgo } from "../Internal/timeAgo";
 import { useBelajar } from "./BelajarData";
 import { deleteClass, inviteEmails, removeLearner, renewCode, saveNote, updateClass } from "./actions";
-import { BASE, NS, PROGRESS, surahState } from "./belajarSchema";
+import { BASE, NS, PROGRESS, sectionTitle, surahState } from "./belajarSchema";
 import { SurahPicker } from "./ClassesPage";
 import styles from "./Belajar.module.css";
 
@@ -386,7 +386,7 @@ function LearnerDrawer({ row, klass, onClose }) {
           {steps.map(({ section, progress, state }) => (
             <div key={section.id} className={styles.stepRow}>
               <span className={`${styles.stepDot} ${styles[`step_${state}`]}`}>{state === "done" ? <IconCheck size={12} /> : state === "locked" ? <IconLock size={11} /> : null}</span>
-              <span className={styles.stepName}>{t(`section.${section.key}`)}</span>
+              <span className={styles.stepName}>{sectionTitle(section, t)}</span>
               {progress?.max > 0 && (
                 <span className={styles.stepScore}>
                   {progress.best}/{progress.max}
@@ -462,7 +462,7 @@ function WrittenAnswers({ section, progress, learner, user }) {
           onClick={async () => {
             setBusy(true);
             try {
-              await saveNote(user, progress, note, `${learner.name || learner.email} · ${section.key}`);
+              await saveNote(user, progress, note, `${learner.name || learner.email} · ${sectionTitle(section, t)}`);
               setSaved(true);
             } finally {
               setBusy(false);

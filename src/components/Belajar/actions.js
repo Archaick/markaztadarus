@@ -1,7 +1,7 @@
 import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
-import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, newCode, sectionType } from "./belajarSchema";
+import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, SECTION_TYPES, newCode, templateSections } from "./belajarSchema";
 
 // Every write of the learning platform's admin, each recorded in the
 // activity history and deletes kept in the recycle bin (see Internal/audit.js).
@@ -33,34 +33,81 @@ export async function deleteLesson(user, lesson, sections) {
   });
 }
 
-const sectionData = (lesson, key, data) => {
-  const type = sectionType(key);
-  return plain({
-    lessonId: lesson.id,
-    key,
-    kind: type?.kind || "quiz",
-    order: type ? undefined : 99,
-    reading: [],
-    parts: [],
-    tasks: [],
-    instructions: "",
-    ...data,
-  });
+// ---------- sections (the admin's own list per surah) ----------
+
+const sectionBody = (data) => {
+  const out = plain(data);
+  out.title = String(out.title || "").slice(0, 120);
+  return out;
 };
 
-export async function saveSection(user, lesson, section, key, data) {
-  const ref = section ? doc(db, SECTIONS, section.id) : doc(collection(db, SECTIONS));
-  const clean = sectionData(lesson, key, data);
-  await auditedWrite(user, entry(section ? "bel.section.update" : "bel.section.create", `${lesson.title} · ${key}`, {}, ref.id), (batch, auditId) =>
-    section
-      ? batch.update(ref, { ...clean, auditId, updatedAt: serverTimestamp() })
-      : batch.set(ref, { ...clean, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
+/** A surah with the standard sections of Buku Guru, in one save. */
+export async function createLessonWithSections(user, data) {
+  const ref = doc(collection(db, LESSONS));
+  const clean = plain(data);
+  await auditedWrite(user, entry("bel.lesson.create", clean.title || "", { sections: SECTION_TYPES.length }, ref.id), (batch, auditId) => {
+    batch.set(ref, { program: "guru", published: false, tamhid: { text: [], themes: [] }, ayat: [], ...clean, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+    templateSections(ref.id).forEach((section) => batch.set(doc(collection(db, SECTIONS)), { ...section, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }));
+  });
+  return ref.id;
+}
+
+/** Adds the standard sections a surah does not have yet, after the ones it has. */
+export async function addTemplateSections(user, lesson, existing) {
+  const have = new Set(existing.map((s) => s.key));
+  const last = existing.reduce((n, s) => Math.max(n, s.order || 0), 0);
+  const missing = templateSections(lesson.id).filter((s) => !have.has(s.key));
+  if (!missing.length) return;
+  await auditedWrite(user, entry("bel.section.create", lesson.title, { sections: missing.length }, lesson.id), (batch, auditId) =>
+    missing.forEach((section, i) => batch.set(doc(collection(db, SECTIONS)), { ...section, order: last + i + 1, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }))
+  );
+}
+
+/** A new section of the admin's own (or a standard one), at the end. */
+export async function createSection(user, lesson, existing, { title, key, kind, fiveT }) {
+  const ref = doc(collection(db, SECTIONS));
+  const order = existing.reduce((n, s) => Math.max(n, s.order || 0), 0) + 1;
+  const data = sectionBody({
+    lessonId: lesson.id,
+    key: key || `bagian-${ref.id.slice(0, 6).toLowerCase()}`,
+    kind,
+    fiveT: fiveT || "",
+    title: title || "",
+    order,
+    reading: [],
+    parts: kind === "quiz" ? [{ heading: "", instructions: "", questions: [] }] : [],
+    tasks: [],
+    instructions: "",
+  });
+  await auditedWrite(user, entry("bel.section.create", `${lesson.title} · ${data.title || data.key}`, { kind }, ref.id), (batch, auditId) =>
+    batch.set(ref, { ...data, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() })
   );
   return ref.id;
 }
 
+/** A section's name, kind or 5T tag. */
+export async function updateSectionMeta(user, lesson, section, changes) {
+  await auditedWrite(user, entry("bel.section.update", `${lesson.title} · ${changes.title || section.title || section.key}`, {}, section.id), (batch, auditId) =>
+    batch.update(doc(db, SECTIONS, section.id), { ...sectionBody({ title: section.title, ...changes }), auditId, updatedAt: serverTimestamp() })
+  );
+}
+
+/** A new order for all the surah's sections (after moving one up or down). */
+export async function reorderSections(user, lesson, ordered) {
+  await auditedWrite(user, entry("bel.section.update", lesson.title, { reordered: ordered.length }, lesson.id), (batch, auditId) =>
+    ordered.forEach((s, i) => (s.order !== i + 1 ? batch.update(doc(db, SECTIONS, s.id), { order: i + 1, auditId, updatedAt: serverTimestamp() }) : null))
+  );
+}
+
+/** What a section holds: its reading, question parts, tasks and instructions. */
+export async function saveSectionContent(user, lesson, section, data) {
+  await auditedWrite(user, entry("bel.section.update", `${lesson.title} · ${section.title || section.key}`, {}, section.id), (batch, auditId) =>
+    batch.update(doc(db, SECTIONS, section.id), { ...plain(data), auditId, updatedAt: serverTimestamp() })
+  );
+}
+
 export async function deleteSection(user, lesson, section) {
-  await auditedWrite(user, entry("bel.section.delete", `${lesson.title} · ${section.key}`, {}, section.id), (batch, _a, markDelete) => {
+  await auditedWrite(user, entry("bel.section.delete", `${lesson.title} · ${section.title || section.key}`, {}, section.id), (batch, _a, markDelete) => {
     batch.delete(doc(db, SECTIONS, section.id));
     markDelete(`${SECTIONS}~${section.id}`, section.auditId);
   });

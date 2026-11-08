@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { IconArrowLeft, IconCheck, IconMessageCircle, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { questionsOf, sectionType } from "../Belajar/belajarSchema";
+import { kindOf, questionsOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
 import Player from "./Player";
@@ -24,8 +24,8 @@ export default function SectionView() {
   if (step.state === "locked") return <Navigate to={`${GURU}/surat/${surah.lesson.id}`} replace />;
 
   const section = step.section;
-  const kind = sectionType(section.key)?.kind || section.kind || "quiz";
-  const title = `${surah.lesson.title} · ${t(`section.${section.key}`)}`;
+  const kind = kindOf(section);
+  const title = `${surah.lesson.title} · ${sectionTitle(section, t)}`;
   const backTo = `${GURU}/surat/${surah.lesson.id}`;
   const questions = questionsOf(section);
   const mine = progress.get(section.id);
@@ -42,7 +42,7 @@ export default function SectionView() {
           <IconArrowLeft size={18} className={styles.flip} /> {surah.lesson.title}
         </Link>
         <span className={styles.helloSmall}>{surah.lesson.title}</span>
-        <h1 className={styles.helloTitle}>{t(`section.${section.key}`)}</h1>
+        <h1 className={styles.helloTitle}>{sectionTitle(section, t)}</h1>
 
         {(section.reading || []).length > 0 && <Reading blocks={section.reading} />}
 

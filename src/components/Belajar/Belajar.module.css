@@ -458,3 +458,10 @@ a.row:hover {
     width: 110px;
   }
 }
+.rowGo {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--muted);
+}

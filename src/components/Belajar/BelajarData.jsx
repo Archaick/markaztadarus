@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
-import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, SECTIONS, SECTION_TYPES, byOrder } from "./belajarSchema";
+import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, SECTIONS, byOrder, bySectionOrder } from "./belajarSchema";
 
 const DataContext = createContext(null);
 
@@ -16,11 +16,6 @@ const live = (name, setter) =>
       setter([]);
     }
   );
-
-const sectionRank = (s) => {
-  const i = SECTION_TYPES.findIndex((x) => x.key === s.key);
-  return i < 0 ? 99 : i;
-};
 
 /** Everything the admin works with, kept live (`null` while loading). */
 export function BelajarProvider({ children }) {
@@ -54,7 +49,7 @@ export function BelajarProvider({ children }) {
       classById: new Map((classes || []).map((c) => [c.id, c])),
       codeById: new Map((codes || []).map((c) => [c.id, c])),
       inviteByEmail: new Map((invites || []).map((i) => [i.id, i])),
-      sectionsOf: (lessonId) => (sections || []).filter((s) => s.lessonId === lessonId).sort((a, b) => sectionRank(a) - sectionRank(b)),
+      sectionsOf: (lessonId) => (sections || []).filter((s) => s.lessonId === lessonId).sort(bySectionOrder),
       learnersOf: (classId) => (learners || []).filter((l) => (l.classIds || []).includes(classId)),
       invitedTo: (classId) => (invites || []).filter((i) => (i.classIds || []).includes(classId)),
     }),

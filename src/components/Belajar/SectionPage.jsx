@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionIcon, Alert, Badge, Button, Checkbox, Group, Loader, Modal, NumberInput, Radio, SegmentedControl, Select, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
 import { IconAlertTriangle, IconArrowLeft, IconArrowDown, IconArrowUp, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
-import { deleteSection, saveSection } from "./actions";
-import { BASE, NS, QUESTION_TYPES, blankQuestion, newId, questionIssues, sectionType } from "./belajarSchema";
+import { deleteSection, saveSectionContent } from "./actions";
+import { BASE, NS, QUESTION_TYPES, blankQuestion, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
 import TeacherCards from "./TeacherCards";
 import styles from "./Belajar.module.css";
 
@@ -22,7 +22,8 @@ const move = (arr, i, d) => {
 
 /** One section of a surah: its text to read, question parts and written tasks. */
 export default function SectionPage() {
-  const { lessonId, sectionKey } = useParams();
+  const { lessonId, sectionId } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation(NS);
   const { user } = useAccess();
   const { loading, lessonById, sectionsOf } = useBelajar();
@@ -33,19 +34,21 @@ export default function SectionPage() {
 
   if (loading) return <Loader />;
   const lesson = lessonById.get(lessonId);
-  const type = sectionType(sectionKey);
-  if (!lesson || !type) return <Text c="dimmed">{t("lesson.missing")}</Text>;
-  const section = sectionsOf(lesson.id).find((s) => s.key === sectionKey) || null;
-  const value = draft || (section ? { ...blankOf(section.kind), ...section } : blankOf(type.kind));
+  // the address names the section (older links named its standard key)
+  const section = lesson ? sectionsOf(lesson.id).find((s) => s.id === sectionId) || sectionsOf(lesson.id).find((s) => s.key === sectionId) : null;
+  if (!lesson || !section) return <Text c="dimmed">{t("lesson.missing")}</Text>;
+  const kind = kindOf(section);
+  const tag = fiveTOf(section);
+  const name = sectionTitle(section, t);
+  const value = draft || { ...blankOf(kind), ...section };
   const set = (patch) => setDraft({ ...value, ...patch });
   const bad = (value.parts || []).flatMap((p) => p.questions).filter((q) => questionIssues(q).length).length;
 
   const save = async () => {
     setBusy(true);
     try {
-      const { reading, parts, tasks, instructions, kind } = value;
-      await saveSection(user, lesson, section, sectionKey, {
-        kind,
+      const { reading, parts, tasks, instructions } = value;
+      await saveSectionContent(user, lesson, section, {
         instructions,
         reading: reading.filter((b) => b.text.trim()),
         parts,
@@ -64,13 +67,13 @@ export default function SectionPage() {
       </Link>
       <div className={styles.pageHead}>
         <div>
-          <h1 className={styles.pageTitle}>{t(`section.${sectionKey}`)}</h1>
+          <h1 className={styles.pageTitle}>{name}</h1>
           <p className={styles.pageSub}>
-            {t(`kind.${type.kind}`)}
-            {type.t && (
+            {t(`kind.${kind}`)}
+            {tag && (
               <>
                 {" "}
-                · <span className={styles.tag}>{t(`fiveT.${type.t}`)}</span>
+                · <span className={styles.tag}>{t(`fiveT.${tag}`)}</span>
               </>
             )}
           </p>
@@ -100,15 +103,10 @@ export default function SectionPage() {
           <Alert color="blue" mb="lg">
             {t("sectionPage.previewNote")}
           </Alert>
-          <TeacherCards key={JSON.stringify(value).length} section={value} title={`${lesson.title} · ${t(`section.${sectionKey}`)}`} />
+          <TeacherCards key={JSON.stringify(value).length} section={value} title={`${lesson.title} · ${name}`} />
         </>
       ) : (
         <>
-          {!section && !draft && (
-            <Alert color="blue" mb="md">
-              {t("sectionPage.new")}
-            </Alert>
-          )}
           {bad > 0 && (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />} mb="md">
               {t("sectionPage.bad", { count: bad })}
@@ -117,7 +115,7 @@ export default function SectionPage() {
 
           <ReadingEditor value={value.reading} onChange={(reading) => set({ reading })} />
 
-          {type.kind === "quiz" &&
+          {kind === "quiz" &&
             value.parts.map((part, p) => (
               <div key={p} className={styles.panel}>
                 <Group align="flex-end" mb="sm" wrap="nowrap">
@@ -165,13 +163,13 @@ export default function SectionPage() {
                 </Group>
               </div>
             ))}
-          {type.kind === "quiz" && (
+          {kind === "quiz" && (
             <Button mt="md" variant="subtle" color="#003366" leftSection={<IconPlus size={16} />} onClick={() => set({ parts: [...value.parts, { heading: "", instructions: "", questions: [] }] })}>
               {t("sectionPage.addPart")}
             </Button>
           )}
 
-          {type.kind === "written" && (
+          {kind === "written" && (
             <div className={styles.panel}>
               <Textarea mb="md" label={t("sectionPage.instructions")} autosize minRows={1} value={value.instructions} onChange={(e) => set({ instructions: e.currentTarget.value })} />
               {value.tasks.map((task, i) => (
@@ -226,8 +224,7 @@ export default function SectionPage() {
               setBusy(true);
               try {
                 await deleteSection(user, lesson, section);
-                setRemoving(false);
-                setDraft(null);
+                navigate(`${BASE}/surat/${lesson.id}`);
               } finally {
                 setBusy(false);
               }

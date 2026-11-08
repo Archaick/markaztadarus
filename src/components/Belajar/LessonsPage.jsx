@@ -5,8 +5,8 @@ import { IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
-import { saveLesson } from "./actions";
-import { BASE, NS, SECTION_TYPES, blankAyah, issuesOfSection, questionsOf } from "./belajarSchema";
+import { createLessonWithSections, saveLesson } from "./actions";
+import { BASE, NS, blankAyah, hasContent, issuesOfSection } from "./belajarSchema";
 import { SURAHS, surahByNo } from "./surahs";
 import styles from "./Belajar.module.css";
 
@@ -41,9 +41,9 @@ export default function LessonsPage() {
         <div className={styles.grid}>
           {lessons.map((lesson) => {
             const secs = sectionsOf(lesson.id);
-            const questions = secs.reduce((n, s) => n + questionsOf(s).length, 0);
+            const questions = secs.reduce((n, s) => n + (s.parts || []).reduce((m, p) => m + (p.questions || []).length, 0), 0);
             const issues = secs.reduce((n, s) => n + issuesOfSection(s), 0);
-            const filled = new Set(secs.filter((s) => questionsOf(s).length || (s.tasks || []).length || (s.reading || []).length).map((s) => s.key));
+            const filled = new Set(secs.filter(hasContent).map((s) => s.id));
             return (
               <Link key={lesson.id} to={`${BASE}/surat/${lesson.id}`} className={styles.lessonCard}>
                 <div className={styles.lessonTop}>
@@ -60,12 +60,12 @@ export default function LessonsPage() {
                   {issues > 0 && <Badge color="orange">{t("lessons.issues", { count: issues })}</Badge>}
                 </div>
                 <div className={styles.fiveT} title={t("lessons.progress")}>
-                  {SECTION_TYPES.map((s) => (
-                    <span key={s.key} className={filled.has(s.key) ? styles.on : ""} />
+                  {secs.map((s) => (
+                    <span key={s.id} className={filled.has(s.id) ? styles.on : ""} />
                   ))}
                 </div>
                 <Text size="xs" c="dimmed">
-                  {t("lessons.sections", { n: filled.size, total: SECTION_TYPES.length })}
+                  {t("lessons.sections", { n: filled.size, total: secs.length })}
                 </Text>
               </Link>
             );
@@ -94,7 +94,7 @@ function NewLesson({ opened, onClose, taken, nextOrder }) {
   const create = async () => {
     setBusy(true);
     try {
-      const id = await saveLesson(user, null, {
+      const id = await createLessonWithSections(user, {
         title: surah.name,
         titleAr: surah.ar,
         surah: surah.no,

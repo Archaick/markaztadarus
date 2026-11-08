@@ -229,5 +229,26 @@
     "notePlaceholder": "Write a note or feedback…",
     "saveNote": "Save note",
     "noteSaved": "Saved"
+  },
+  "sections": {
+    "empty": "This surah has no sections yet. Use the Teacher's Book layout, or make your own.",
+    "useTemplate": "Use the Teacher's Book layout ({{count}} sections)",
+    "add": "Add section",
+    "addButton": "Add",
+    "edit": "Edit section",
+    "open": "Open",
+    "up": "Move up",
+    "down": "Move down",
+    "deleteBody": "The section \"{{name}}\" and everything in it will be deleted. The super admin can restore it from Recently deleted for 30 days.",
+    "fromBook": "From the Teacher's Book",
+    "own": "Your own",
+    "pick": "Section",
+    "name": "Section name",
+    "namePlaceholder": "e.g. Review, Final Quiz",
+    "nameHint": "Leave empty to use the standard name.",
+    "kind": "Type",
+    "tag": "5T step",
+    "noTag": "No 5T tag",
+    "kindWarning": "This section already has questions or tasks. Changing its type may hide them from teachers."
   }
 }
