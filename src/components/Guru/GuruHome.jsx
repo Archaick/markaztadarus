@@ -6,6 +6,7 @@ import { fiveTOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
 import InstallCard from "./InstallCard";
+import Lantern, { lanternItems } from "./Lantern";
 import styles from "./Guru.module.css";
 
 /** A ring that fills to `value` percent. */
@@ -91,12 +92,13 @@ export default function GuruHome() {
             <div className={styles.surahList}>
               {surahs.map((s, i) => (
                 <Link key={s.lesson.id} to={`${GURU}/surat/${s.lesson.id}`} className={styles.surahCard} style={{ "--i": i }}>
-                  <Ring value={s.percent} size={56} stroke={6}>
-                    {s.percent === 100 ? "✓" : <small>{s.percent}%</small>}
-                  </Ring>
+                  <span className={`${styles.lightCard} ${styles.lightThumb}`}>
+                    <Lantern compact items={lanternItems(s.steps)} label={`${s.lesson.title}: ${s.percent}%`} />
+                  </span>
                   <span className={styles.surahText}>
                     <b>{s.lesson.title}</b>
                     <span>{t("home.steps", { done: s.done, total: s.total })}</span>
+                    <span className={styles.surahPercent}>{s.percent}%</span>
                   </span>
                   <span className={styles.surahAr}>{s.lesson.titleAr}</span>
                   <IconChevronRight size={18} className={styles.flip} />

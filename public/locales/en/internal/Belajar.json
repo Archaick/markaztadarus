@@ -100,7 +100,8 @@
     "pick": "Surah",
     "pickHint": "Search by surah name or number",
     "none": "Nothing found",
-    "create": "Create surah card"
+    "create": "Create surah card",
+    "tabQuestions": "Questions ({{count}})"
   },
   "materi": {
     "tamhidText": "Tamhid questions and answers",
@@ -140,7 +141,8 @@
     "pick": "Correct match",
     "addPair": "Add pair",
     "explanation": "Explanation (optional)",
-    "explanationHint": "Shown to the teacher after answering."
+    "explanationHint": "Shown to the teacher after answering.",
+    "option": "Option {{l}}"
   },
   "cards": {
     "start": "Start answering",
@@ -261,5 +263,60 @@
     "delete": "Delete teacher",
     "deleteBody": "{{name}} will be deleted with all their progress, scores, written answers and email invite.",
     "deleteNote": "The super admin can restore them from Recently deleted for 30 days. If they sign in again and use a class code, they join as a new learner."
+  },
+  "board": {
+    "add": "Add question",
+    "tryAll": "Try them all as a teacher",
+    "filter": "Section:",
+    "all": "All ({{count}})",
+    "summary": "{{count}} questions in {{sections}} sections",
+    "noSections": "This surah has no question sections yet. Open the Book sections tab to add some.",
+    "trySection": "Try",
+    "settings": "Reading & instructions",
+    "view": "Teacher view",
+    "edit": "Edit",
+    "remove": "Delete",
+    "addHere": "Add a question to this section",
+    "addMore": "Add another question",
+    "lines": "{{count}} answer lines",
+    "pickTitle": "Choose a question type",
+    "pickIntro": "Pick the section, then tap a card. The right form opens; you just fill it in.",
+    "forSection": "Add to section",
+    "groupQuiz": "Questions with an answer key",
+    "groupWritten": "Written tasks",
+    "newTitle": "New {{type}}",
+    "editTitle": "Edit {{type}}",
+    "saveMore": "Save & add another",
+    "saved": "Saved ✓ This section now has {{count}} questions. Type the next one:",
+    "taskPrompt": "Write the task…",
+    "removeTitle": "Delete this question?",
+    "removeBody": "It will be removed from {{section}} and cannot be brought back.",
+    "types": {
+      "single": {
+        "name": "Multiple choice",
+        "desc": "One correct answer among several options.",
+        "ex": "How many ayat in Al-Fatihah? → 7"
+      },
+      "truefalse": {
+        "name": "True / False",
+        "desc": "A statement; the teacher picks true or false.",
+        "ex": "Al-Fatihah is recited every rak'ah → True"
+      },
+      "multi": {
+        "name": "Choose all correct",
+        "desc": "More than one correct answer.",
+        "ex": "Other names of Al-Fatihah → 2 answers"
+      },
+      "match": {
+        "name": "Matching",
+        "desc": "Pair the left with the right; the right side is shuffled.",
+        "ex": "Ayat 1–4 → Praise of Allah"
+      },
+      "task": {
+        "name": "Written task",
+        "desc": "The teacher answers in their own words; you read it and leave a note.",
+        "ex": "Write one habit you want to improve"
+      }
+    }
   }
 }

@@ -949,9 +949,67 @@
   }
 }
 .match {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1.4fr;
-  gap: 12px;
+  gap: 12px clamp(26px, 6vw, 48px);
+}
+.matchLines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+}
+.matchHalo {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 9;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.matchLine {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lineDraw 0.38s ease-out forwards;
+  transition: stroke 0.25s;
+}
+.matchLineWrong {
+  stroke-dasharray: 0.04 0.035;
+  animation: none;
+  stroke-dashoffset: 0;
+}
+@keyframes lineDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* a pair's own colour (--pc): a hint of it on the left, filled once paired */
+.chip.chipColored {
+  border-color: color-mix(in srgb, var(--pc) 45%, transparent);
+}
+.chipColored .pairNo {
+  background: var(--pc);
+}
+.chip.chipFilled {
+  border-color: var(--pc);
+  background: color-mix(in srgb, var(--pc) 14%, #fff);
+  color: color-mix(in srgb, var(--pc) 55%, #0f1f33);
+  animation: chipPop 0.25s ease-out;
+}
+@keyframes chipPop {
+  50% {
+    transform: scale(1.03);
+  }
+}
+.pairNoEmpty {
+  background: transparent !important;
+  border: 2px dashed rgba(26, 73, 112, 0.3);
 }
 .matchCol {
   display: flex;
@@ -1091,6 +1149,38 @@
 .sheetWrong .sheetButton {
   background: #e5484d;
   box-shadow: 0 6px 0 #b4252a;
+}
+.sheetButton {
+  position: relative;
+  overflow: hidden;
+}
+/* fills while the sheet waits, then it goes on by itself */
+.sheetTimer {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.3);
+  transform-origin: left center;
+  animation: sheetFill linear forwards;
+}
+[dir="rtl"] .sheetTimer {
+  transform-origin: right center;
+}
+@keyframes sheetFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.sheetLabel {
+  position: relative;
+}
+.sheetHint {
+  margin: 0;
+  font-size: 0.8rem;
+  text-align: center;
+  opacity: 0.7;
 }
 .sheetButton:active {
   transform: translateY(4px);
@@ -1310,4 +1400,123 @@
 /* in the installed app, keep clear of the phone's notch */
 .topBar {
   padding-top: max(12px, env(safe-area-inset-top));
+}
+.match .chip {
+  z-index: 2;
+}
+.chip.chipColored.chipOn {
+  border-color: var(--pc);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pc) 25%, transparent);
+}
+
+/* a written task inside the practice player (admin preview) */
+.taskBox {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid rgba(26, 73, 112, 0.14);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+.taskBox:focus {
+  outline: none;
+  border-color: var(--navy-2);
+}
+
+/* the lantern's dark glass surfaces */
+.lightCard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 30px;
+  color: #fff;
+  background:
+    radial-gradient(90% 80% at 50% 38%, #24598a 0%, transparent 72%),
+    linear-gradient(165deg, #173f63 0%, #0b2038 100%);
+  box-shadow: 0 26px 46px -28px rgba(10, 30, 55, 0.75);
+}
+.lightHero {
+  padding: 0 18px 18px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.lightHero svg {
+  max-width: 400px;
+  margin: 0 auto -18px;
+}
+.lightAr {
+  position: relative;
+  display: block;
+  font-family: "Amiri", serif;
+  font-size: 2.3rem;
+  line-height: 1.5;
+}
+.lightTitle {
+  position: relative;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.lightMeta {
+  position: relative;
+  display: block;
+  margin-top: 2px;
+  color: #b9cfe6;
+  font-size: 0.9rem;
+}
+.fiveRow {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+.fiveChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  font-size: 0.78rem;
+  font-weight: 600;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.fiveChip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+}
+.fiveChip b {
+  color: #b9cfe6;
+  font-weight: 600;
+}
+.fiveChipDone {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 24%, transparent);
+}
+.lightThumb {
+  flex: none;
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px -12px rgba(10, 30, 55, 0.8);
+}
+.lightEnd {
+  width: 100%;
+  max-width: 340px;
+}
+.surahPercent {
+  display: block;
+  margin-top: 2px;
+  color: var(--navy-2) !important;
+  font-size: 0.8rem;
+  font-weight: 800;
 }

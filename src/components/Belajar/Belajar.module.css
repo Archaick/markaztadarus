@@ -465,3 +465,339 @@ a.row:hover {
   height: 28px;
   color: var(--muted);
 }
+
+/* ---------- Soal: every question of a surah on one board ---------- */
+.boardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.boardSide {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.addBig {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 30px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #2c5a96, #0f2a4a);
+  color: #fff;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(15, 42, 74, 0.28);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.addBig:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(15, 42, 74, 0.34);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.chipsLabel {
+  margin-inline-end: 4px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border: 1px solid var(--surface-line, var(--line));
+  border-radius: 12px;
+  background: var(--surface-strong, #fff);
+  color: var(--ink, #0f1f33);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: #2c5a96;
+}
+.chipOn {
+  background: #1f4f8a;
+  border-color: #1f4f8a;
+  color: #fff;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+.dot[data-t="tamhid"],
+.secTag[data-t="tamhid"] {
+  --t: #7c3aed;
+}
+.dot[data-t="tilawah"],
+.secTag[data-t="tilawah"] {
+  --t: #0284c7;
+}
+.dot[data-t="tafsir"],
+.secTag[data-t="tafsir"] {
+  --t: #059669;
+}
+.dot[data-t="tadabbur"],
+.secTag[data-t="tadabbur"] {
+  --t: #d97706;
+}
+.dot[data-t="tazkiyah"],
+.secTag[data-t="tazkiyah"] {
+  --t: #db2777;
+}
+.dot[data-t] {
+  background: var(--t, #94a3b8);
+}
+.secBlock {
+  margin-bottom: 30px;
+}
+.secHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid rgba(201, 162, 39, 0.35);
+}
+.secNo {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2c5a96, #0f2a4a);
+  color: #fff;
+  font-weight: 800;
+}
+.secName {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.secName b {
+  font-size: 1.1rem;
+}
+.secTag {
+  color: var(--t, var(--muted));
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.qcard {
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border: 1px solid var(--surface-line, var(--line));
+  border-radius: 16px;
+  background: var(--surface-strong, #fff);
+  box-shadow: var(--surface-shadow, none);
+}
+.qcardBad {
+  border-color: #fdba74;
+  box-shadow: inset 4px 0 0 #fb923c;
+}
+.qtop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.qno {
+  color: var(--muted);
+  font-weight: 700;
+}
+.qtype {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #eef2fb;
+  color: #2c4f8a;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.qmeta {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.qactions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-start: auto;
+}
+.qactions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: #2c4f8a;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.qactions button:hover:not(:disabled) {
+  background: rgba(44, 79, 138, 0.08);
+}
+.qactions button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.qactions .qview {
+  color: #7c3aed;
+}
+.qactions .qdel {
+  color: #dc2626;
+}
+.qstem {
+  margin: 8px 0 8px;
+  font-size: 1.02rem;
+  font-weight: 600;
+  white-space: pre-wrap;
+}
+.qempty {
+  color: #ea580c;
+  font-weight: 500;
+}
+.qopts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.qopt {
+  padding: 4px 11px;
+  border: 1px solid var(--line, #e2e8f0);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.92rem;
+}
+.qoptRight {
+  border-color: #6ee7b7;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+}
+.addHere {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 12px;
+  border: 1.5px dashed rgba(44, 79, 138, 0.35);
+  border-radius: 14px;
+  background: transparent;
+  color: #2c4f8a;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.addHere:hover {
+  background: rgba(44, 79, 138, 0.06);
+}
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.typeGroup {
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid rgba(201, 162, 39, 0.35);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.typeCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 18px;
+  border: 1.5px solid #dbe3ef;
+  border-radius: 18px;
+  background: #fff;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.typeCard:hover {
+  transform: translateY(-3px);
+  border-color: #2c5a96;
+  box-shadow: 0 12px 26px rgba(15, 42, 74, 0.14);
+}
+.typeNo {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #1f3f6e;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.typeIcon {
+  color: #2c4f8a;
+}
+.typeName {
+  font-size: 1.1rem;
+}
+.typeDesc {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+.typeEx {
+  margin-top: auto;
+  padding: 4px 9px;
+  border-radius: 8px;
+  background: #f1f5fb;
+  color: #2c4f8a;
+  font-size: 0.8rem;
+}
+.savedNote {
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 0.9rem;
+  font-weight: 600;
+}

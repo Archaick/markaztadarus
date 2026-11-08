@@ -69,7 +69,8 @@
     "single": "Pilih satu jawaban",
     "multi": "Pilih semua yang benar",
     "truefalse": "Benar atau salah?",
-    "match": "Pasangkan"
+    "match": "Pasangkan",
+    "task": "Tugas tertulis"
   },
   "player": {
     "exit": "Keluar",
@@ -93,7 +94,11 @@
     "accuracy": "Akurasi",
     "time": "Waktu",
     "done": "Selesai",
-    "again": "Latihan lagi"
+    "again": "Latihan lagi",
+    "soundOn": "Nyalakan suara",
+    "soundOff": "Matikan suara",
+    "tapToStay": "Ketuk di sini untuk berhenti sejenak",
+    "writeHere": "Tulis jawaban Anda di sini…"
   },
   "section": {
     "tadarus": "Tadarus Surat",

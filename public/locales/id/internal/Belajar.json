@@ -95,7 +95,8 @@
     "pick": "Surat",
     "pickHint": "Cari nama atau nomor surat",
     "none": "Tidak ditemukan",
-    "create": "Buat kartu surat"
+    "create": "Buat kartu surat",
+    "tabQuestions": "Soal ({{count}})"
   },
   "materi": {
     "tamhidText": "Tanya jawab Tamhid",
@@ -134,7 +135,8 @@
     "pick": "Pasangan yang benar",
     "addPair": "Tambah pasangan",
     "explanation": "Penjelasan (opsional)",
-    "explanationHint": "Ditampilkan kepada guru setelah menjawab."
+    "explanationHint": "Ditampilkan kepada guru setelah menjawab.",
+    "option": "Pilihan {{l}}"
   },
   "cards": {
     "start": "Mulai menjawab",
@@ -250,5 +252,60 @@
     "delete": "Hapus guru",
     "deleteBody": "{{name}} akan dihapus beserta semua kemajuan, nilai, jawaban tertulis dan undangan emailnya.",
     "deleteNote": "Super admin dapat memulihkannya dari Baru dihapus selama 30 hari. Jika ia masuk lagi dan memakai kode kelas, ia akan menjadi peserta baru."
+  },
+  "board": {
+    "add": "Tambah soal",
+    "tryAll": "Coba semua sebagai guru",
+    "filter": "Bagian:",
+    "all": "Semua ({{count}})",
+    "summary": "{{count}} soal di {{sections}} bagian",
+    "noSections": "Surat ini belum punya bagian soal. Buka tab Bagian buku untuk menambahkannya.",
+    "trySection": "Coba",
+    "settings": "Bacaan & petunjuk",
+    "view": "Lihat",
+    "edit": "Ubah",
+    "remove": "Hapus",
+    "addHere": "Tambah soal ke bagian ini",
+    "addMore": "Tambah soal lagi",
+    "lines": "{{count}} baris jawaban",
+    "pickTitle": "Pilih jenis soal",
+    "pickIntro": "Pilih bagiannya, lalu ketuk satu kartu. Formulirnya langsung terbuka, Anda tinggal mengisi.",
+    "forSection": "Masukkan ke bagian",
+    "groupQuiz": "Soal dengan kunci jawaban",
+    "groupWritten": "Tugas tertulis",
+    "newTitle": "{{type}} baru",
+    "editTitle": "Ubah {{type}}",
+    "saveMore": "Simpan & tambah lagi",
+    "saved": "Tersimpan ✓ Bagian ini sekarang punya {{count}} soal. Isi yang berikutnya:",
+    "taskPrompt": "Tulis tugasnya…",
+    "removeTitle": "Hapus soal ini?",
+    "removeBody": "Soal ini akan dihapus dari bagian {{section}} dan tidak bisa dikembalikan.",
+    "types": {
+      "single": {
+        "name": "Pilihan ganda",
+        "desc": "Satu jawaban benar dari beberapa pilihan.",
+        "ex": "Berapa ayat Al-Fatihah? → 7"
+      },
+      "truefalse": {
+        "name": "Benar / Salah",
+        "desc": "Sebuah pernyataan; guru memilih benar atau salah.",
+        "ex": "Al-Fatihah dibaca tiap rakaat → Benar"
+      },
+      "multi": {
+        "name": "Pilih semua yang benar",
+        "desc": "Lebih dari satu jawaban benar.",
+        "ex": "Nama lain Al-Fatihah → 2 jawaban"
+      },
+      "match": {
+        "name": "Mencocokkan",
+        "desc": "Pasangkan kiri dengan kanan; kanan diacak.",
+        "ex": "Ayat 1–4 → Pujian kepada Allah"
+      },
+      "task": {
+        "name": "Tugas tertulis",
+        "desc": "Guru menjawab dengan kata-katanya sendiri; Anda membaca dan memberi catatan.",
+        "ex": "Tuliskan satu kebiasaan yang ingin diperbaiki"
+      }
+    }
   }
 }

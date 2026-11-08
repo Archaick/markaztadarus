@@ -69,7 +69,8 @@
     "single": "Choose one answer",
     "multi": "Choose all that are correct",
     "truefalse": "True or false?",
-    "match": "Match the pairs"
+    "match": "Match the pairs",
+    "task": "Written task"
   },
   "player": {
     "exit": "Leave",
@@ -93,7 +94,11 @@
     "accuracy": "Accuracy",
     "time": "Time",
     "done": "Done",
-    "again": "Practise again"
+    "again": "Practise again",
+    "soundOn": "Turn sound on",
+    "soundOff": "Turn sound off",
+    "tapToStay": "Tap here to pause",
+    "writeHere": "Write your answer here…"
   },
   "section": {
     "tadarus": "Surah Tadarus",

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { fiveTOf, kindOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
-import { Ring } from "./GuruHome";
+import Lantern, { FIVE, FIVE_COLOR, lanternItems } from "./Lantern";
 import styles from "./Guru.module.css";
 
 export const starsOf = (p) => {
@@ -38,16 +38,26 @@ export default function SurahPage() {
         <Link to={GURU} className={styles.back}>
           <IconArrowLeft size={18} className={styles.flip} /> {t("surah.back")}
         </Link>
-        <section className={styles.surahHead}>
-          <span className={styles.surahHeadAr}>{s.lesson.titleAr}</span>
-          <div className={styles.surahHeadRow}>
-            <div>
-              <h1 className={styles.helloTitle}>{s.lesson.title}</h1>
-              <span className={styles.helloSmall}>{t("surah.meta", { ayat: (s.lesson.ayat || []).length, done: s.done, total: s.total })}</span>
-            </div>
-            <Ring value={s.percent} size={70} stroke={7}>
-              <b>{s.percent}%</b>
-            </Ring>
+        <section className={`${styles.lightCard} ${styles.lightHero}`}>
+          <Lantern items={lanternItems(s.steps)} label={`${s.lesson.title}: ${s.percent}%`} />
+          <span className={styles.lightAr}>{s.lesson.titleAr}</span>
+          <h1 className={styles.lightTitle}>{s.lesson.title}</h1>
+          <span className={styles.lightMeta}>{t("surah.meta", { ayat: (s.lesson.ayat || []).length, done: s.done, total: s.total })}</span>
+          <div className={styles.fiveRow}>
+            {FIVE.map((k) => {
+              const of = s.steps.filter((x) => fiveTOf(x.section) === k);
+              if (!of.length) return null;
+              const done = of.filter((x) => x.state === "done").length;
+              return (
+                <span key={k} className={`${styles.fiveChip} ${done === of.length ? styles.fiveChipDone : ""}`} style={{ "--c": FIVE_COLOR[k] }}>
+                  <i />
+                  {t(`fiveT.${k}`)}
+                  <b>
+                    {done}/{of.length}
+                  </b>
+                </span>
+              );
+            })}
           </div>
         </section>
 

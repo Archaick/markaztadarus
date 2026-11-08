@@ -6,8 +6,9 @@ import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteLesson, saveLesson } from "./actions";
-import { BASE, NS, blankAyah } from "./belajarSchema";
+import { BASE, NS, blankAyah, kindOf, questionsOf } from "./belajarSchema";
 import SectionsList from "./SectionsList";
+import QuestionsBoard from "./QuestionsBoard";
 import { LessonForm } from "./LessonsPage";
 import styles from "./Belajar.module.css";
 
@@ -68,11 +69,15 @@ export default function LessonPage() {
         </Group>
       </div>
 
-      <Tabs defaultValue="sections" keepMounted={false}>
+      <Tabs defaultValue="questions" keepMounted={false}>
         <Tabs.List mb="lg">
+          <Tabs.Tab value="questions">{t("lesson.tabQuestions", { count: sections.reduce((n, s) => n + (kindOf(s) === "written" ? (s.tasks || []).length : questionsOf(s).length), 0) })}</Tabs.Tab>
           <Tabs.Tab value="sections">{t("lesson.tabSections")}</Tabs.Tab>
           <Tabs.Tab value="materi">{t("lesson.tabMateri", { count: (lesson.ayat || []).length })}</Tabs.Tab>
         </Tabs.List>
+        <Tabs.Panel value="questions">
+          <QuestionsBoard lesson={lesson} sections={sections} />
+        </Tabs.Panel>
         <Tabs.Panel value="sections">
           <SectionsList lesson={lesson} sections={sections} />
         </Tabs.Panel>

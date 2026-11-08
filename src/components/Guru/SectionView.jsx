@@ -6,6 +6,7 @@ import { kindOf, questionsOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
 import Player from "./Player";
+import Lantern, { lanternItems } from "./Lantern";
 import styles from "./Guru.module.css";
 
 /** One section: its text to read, then the practice player; or written tasks; or a reading. */
@@ -31,7 +32,15 @@ export default function SectionView() {
   const mine = progress.get(section.id);
 
   if (playing && questions.length) {
-    return <Player section={section} title={title} onFinish={(r) => saveProgress(section, r).catch((err) => console.error("Could not save progress:", err))} onExit={() => navigate(backTo)} />;
+    return (
+      <Player
+        section={section}
+        title={title}
+        celebrate={<Lantern items={lanternItems(surah.steps)} fire={section.id} label={surah.lesson.title} />}
+        onFinish={(r) => saveProgress(section, r).catch((err) => console.error("Could not save progress:", err))}
+        onExit={() => navigate(backTo)}
+      />
+    );
   }
 
   return (
