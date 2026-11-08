@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import { Menu } from "@mantine/core";
-import { IconBrandGoogle, IconLanguage, IconLogout, IconPlus } from "@tabler/icons-react";
+import { IconBrandGoogle, IconDeviceMobileDown, IconLanguage, IconLogout, IconPlus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { changeLanguage } from "../Internal/language";
@@ -10,6 +10,8 @@ import { LearnerProvider, useLearner } from "./guruData";
 import GuruHome from "./GuruHome";
 import SurahPage from "./SurahPage";
 import SectionView from "./SectionView";
+import { InstallProvider, useInstall } from "./install";
+import { IosSteps } from "./InstallCard";
 import styles from "./Guru.module.css";
 
 export const NS = "guru/Guru";
@@ -25,7 +27,9 @@ export default function GuruApp() {
   return (
     <div className={styles.app} dir={i18n.language.startsWith("ar") ? "rtl" : "ltr"}>
       <div className={styles.backdrop} aria-hidden="true" />
-      <Gate />
+      <InstallProvider>
+        <Gate />
+      </InstallProvider>
     </div>
   );
 }
@@ -87,8 +91,11 @@ export function Brand() {
 export function TopBar() {
   const { t } = useTranslation(NS);
   const { user, signOutUser } = useAccess();
+  const { canInstall, ios, install } = useInstall();
+  const [steps, setSteps] = useState(false);
   return (
     <header className={styles.topBar}>
+      <IosSteps opened={steps} onClose={() => setSteps(false)} />
       <Brand />
       <Menu position="bottom-end" radius="lg" shadow="lg" width={230}>
         <Menu.Target>
@@ -101,6 +108,11 @@ export function TopBar() {
           <Menu.Item component={Link} to={`${GURU}/gabung`} leftSection={<IconPlus size={16} />}>
             {t("menu.join")}
           </Menu.Item>
+          {(canInstall || ios) && (
+            <Menu.Item leftSection={<IconDeviceMobileDown size={16} />} onClick={() => (canInstall ? install() : setSteps(true))}>
+              {t("install.menu")}
+            </Menu.Item>
+          )}
           <Menu.Label>
             <IconLanguage size={12} /> {t("menu.language")}
           </Menu.Label>

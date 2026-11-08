@@ -114,5 +114,17 @@
     "tafsir": "Tafsir",
     "tadabbur": "Tadabbur",
     "tazkiyah": "Tazkiyah"
+  },
+  "install": {
+    "title": "Pasang Tadarus Guru",
+    "text": "Buka langsung dari layar HP, seperti aplikasi.",
+    "button": "Pasang",
+    "how": "Caranya",
+    "later": "Nanti saja",
+    "menu": "Pasang di HP",
+    "iosTitle": "Pasang di iPhone",
+    "ios1": "Ketuk tombol Bagikan di bawah layar Safari",
+    "ios2": "Pilih \"Tambah ke Layar Utama\"",
+    "ios3": "Ketuk \"Tambah\". Tadarus Guru muncul di layar HP Anda."
   }
 }

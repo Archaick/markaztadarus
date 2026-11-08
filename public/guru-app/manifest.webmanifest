@@ -1,0 +1,19 @@
+{
+  "id": "/guru",
+  "name": "Tadarus Guru",
+  "short_name": "Tadarus Guru",
+  "description": "Belajar Buku Guru Metode Tadarus 5T, surat demi surat.",
+  "lang": "id",
+  "start_url": "/guru",
+  "scope": "/guru",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef3f8",
+  "theme_color": "#0f2a4a",
+  "categories": ["education"],
+  "icons": [
+    { "src": "/guru-app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/guru-app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/guru-app/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

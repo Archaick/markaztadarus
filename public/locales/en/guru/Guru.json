@@ -114,5 +114,17 @@
     "tafsir": "Tafsir",
     "tadabbur": "Tadabbur",
     "tazkiyah": "Tazkiyah"
+  },
+  "install": {
+    "title": "Install Tadarus Guru",
+    "text": "Open it straight from your phone's home screen, like an app.",
+    "button": "Install",
+    "how": "How",
+    "later": "Later",
+    "menu": "Install on phone",
+    "iosTitle": "Install on iPhone",
+    "ios1": "Tap the Share button at the bottom of Safari",
+    "ios2": "Choose \"Add to Home Screen\"",
+    "ios3": "Tap \"Add\". Tadarus Guru appears on your home screen."
   }
 }

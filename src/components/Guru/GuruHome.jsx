@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { IconChevronRight, IconPlayerPlayFilled, IconTrophy } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
-import { sectionType } from "../Belajar/belajarSchema";
+import { fiveTOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
+import InstallCard from "./InstallCard";
 import styles from "./Guru.module.css";
 
 /** A ring that fills to `value` percent. */
@@ -63,10 +64,10 @@ export default function GuruHome() {
               {next.lesson.titleAr}
             </span>
             <span className={styles.heroLabel}>{overall.done ? t("home.continue") : t("home.start")}</span>
-            <span className={styles.heroSection}>{t(`section.${next.step.section.key}`)}</span>
+            <span className={styles.heroSection}>{sectionTitle(next.step.section, t)}</span>
             <span className={styles.heroSurah}>
               {t("home.surah", { name: next.lesson.title })}
-              {sectionType(next.step.section.key)?.t && <i>{t(`fiveT.${sectionType(next.step.section.key).t}`)}</i>}
+              {fiveTOf(next.step.section) && <i>{t(`fiveT.${fiveTOf(next.step.section)}`)}</i>}
             </span>
             <span className={styles.heroPlay}>
               <IconPlayerPlayFilled size={22} />
@@ -81,6 +82,8 @@ export default function GuruHome() {
         ) : (
           <div className={`${styles.glassCard} ${styles.emptyCard}`}>{t("home.nothingYet")}</div>
         )}
+
+        <InstallCard />
 
         {surahs.length > 0 && (
           <>

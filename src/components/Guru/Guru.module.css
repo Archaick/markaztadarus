@@ -1214,3 +1214,100 @@
     animation: none;
   }
 }
+
+/* ── install as an app ── */
+.installCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 40px 14px 14px;
+  border-radius: 22px;
+  border: 1px solid var(--glass-line);
+  background: var(--glass-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  animation: rise 0.5s 0.2s both;
+}
+:global([dir="rtl"]) .installCard {
+  padding: 14px 14px 14px 40px;
+}
+.installCard img {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  box-shadow: 0 10px 20px -10px rgba(15, 42, 74, 0.7);
+}
+.installText {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+.installText b {
+  color: var(--navy);
+}
+.installText span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+.installButton {
+  flex: none;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--navy-2), var(--navy));
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.installClose {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.iosSteps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.iosSteps li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  color: #0f2a4a;
+}
+.iosSteps li::before {
+  counter-increment: step;
+  content: counter(step);
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1a4970;
+  color: #fff;
+  font-size: 0.85rem;
+}
+/* in the installed app, keep clear of the phone's notch */
+.topBar {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
