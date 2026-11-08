@@ -15,7 +15,8 @@
     "history": "Activity history",
     "trash": "Recently deleted",
     "backup": "Backup",
-    "classes": "Classes"
+    "classes": "Classes",
+    "teachers": "Teachers"
   },
   "fiveT": {
     "tamhid": "Tamhid",
@@ -250,5 +251,15 @@
     "tag": "5T step",
     "noTag": "No 5T tag",
     "kindWarning": "This section already has questions or tasks. Changing its type may hide them from teachers."
+  },
+  "teachers": {
+    "title": "Teachers",
+    "intro": "Every teacher who has joined, from all classes. Delete a teacher to remove their record and progress.",
+    "empty": "No teachers yet. Teachers appear here once they join with a class code or an email invite.",
+    "search": "Search name or email…",
+    "noClass": "Not in any class",
+    "delete": "Delete teacher",
+    "deleteBody": "{{name}} will be deleted with all their progress, scores, written answers and email invite.",
+    "deleteNote": "The super admin can restore them from Recently deleted for 30 days. If they sign in again and use a class code, they join as a new learner."
   }
 }

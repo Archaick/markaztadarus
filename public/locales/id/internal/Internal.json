@@ -289,7 +289,8 @@
         },
         "invite": "Mengundang peserta",
         "learner": {
-          "remove": "Mengeluarkan peserta dari kelas"
+          "remove": "Mengeluarkan peserta dari kelas",
+          "delete": "Menghapus guru"
         },
         "note": "Memberi catatan pada jawaban"
       }

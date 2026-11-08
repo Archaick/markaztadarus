@@ -289,7 +289,8 @@
         },
         "invite": "Invited learners",
         "learner": {
-          "remove": "Removed a learner from a class"
+          "remove": "Removed a learner from a class",
+          "delete": "Deleted a teacher"
         },
         "note": "Left a note on an answer"
       }

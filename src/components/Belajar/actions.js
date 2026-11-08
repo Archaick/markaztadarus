@@ -1,4 +1,4 @@
-import { collection, doc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
 import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, SECTION_TYPES, newCode, templateSections } from "./belajarSchema";
@@ -177,3 +177,52 @@ export async function saveNote(user, progress, note, label) {
     batch.update(doc(db, PROGRESS, progress.id), { note: note.slice(0, 2000), noteBy: user?.displayName || user?.email || "", noteAt: serverTimestamp(), auditId })
   );
 }
+
+// Deletes made of many documents go out in parts (each delete also writes its
+// mark and its copy in the bin), all in one bin entry.
+const DELETES_PER_WRITE = 120;
+
+/**
+ * Deletes a teacher entirely: their learner record, all their progress and
+ * their email invite. One entry in the recycle bin, so it can be restored.
+ */
+export async function deleteLearner(user, learner, progressDocs, invite) {
+  const label = learner.name || learner.email;
+  const trash = { group: `learner-${learner.id}-${Date.now().toString(36)}`, more: false };
+  const extra = progressDocs.slice(0, Math.max(0, progressDocs.length - DELETES_PER_WRITE));
+  for (let i = 0; i < extra.length; i += DELETES_PER_WRITE) {
+    const part = extra.slice(i, i + DELETES_PER_WRITE);
+    await auditedWrite(
+      user,
+      entry("bel.learner.delete", label, { progress: part.length }, learner.id),
+      (batch, _a, markDelete) =>
+        part.forEach((p) => {
+          batch.delete(doc(db, PROGRESS, p.id));
+          markDelete(`${PROGRESS}~${p.id}`, p.auditId);
+        }),
+      { trash }
+    );
+    trash.more = true;
+  }
+  const last = progressDocs.slice(extra.length);
+  await auditedWrite(
+    user,
+    entry("bel.learner.delete", label, { email: learner.email, progress: progressDocs.length }, learner.id),
+    (batch, _a, markDelete) => {
+      last.forEach((p) => {
+        batch.delete(doc(db, PROGRESS, p.id));
+        markDelete(`${PROGRESS}~${p.id}`, p.auditId);
+      });
+      if (invite) {
+        batch.delete(doc(db, INVITES, invite.id));
+        markDelete(`${INVITES}~${invite.id}`, invite.auditId);
+      }
+      batch.delete(doc(db, LEARNERS, learner.id));
+      markDelete(`${LEARNERS}~${learner.id}`, learner.auditId);
+    },
+    { trash }
+  );
+}
+
+/** A teacher's progress records (to delete them with the teacher). */
+export const progressOf = async (uid) => (await getDocs(query(collection(db, PROGRESS), where("uid", "==", uid)))).docs.map((d) => ({ id: d.id, ...d.data() }));

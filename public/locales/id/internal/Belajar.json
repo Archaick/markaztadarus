@@ -15,7 +15,8 @@
     "history": "Riwayat aktivitas",
     "trash": "Baru dihapus",
     "backup": "Cadangan",
-    "classes": "Kelas"
+    "classes": "Kelas",
+    "teachers": "Guru"
   },
   "fiveT": {
     "tamhid": "Tamhid",
@@ -239,5 +240,15 @@
     "tag": "Langkah 5T",
     "noTag": "Tanpa label 5T",
     "kindWarning": "Bagian ini sudah berisi soal atau tugas. Mengubah jenisnya bisa menyembunyikan isi itu dari guru."
+  },
+  "teachers": {
+    "title": "Guru",
+    "intro": "Semua guru yang sudah bergabung, dari semua kelas. Hapus guru untuk menghapus data dan kemajuannya.",
+    "empty": "Belum ada guru. Guru muncul di sini setelah bergabung dengan kode kelas atau undangan email.",
+    "search": "Cari nama atau email…",
+    "noClass": "Tidak di kelas mana pun",
+    "delete": "Hapus guru",
+    "deleteBody": "{{name}} akan dihapus beserta semua kemajuan, nilai, jawaban tertulis dan undangan emailnya.",
+    "deleteNote": "Super admin dapat memulihkannya dari Baru dihapus selama 30 hari. Jika ia masuk lagi dan memakai kode kelas, ia akan menjadi peserta baru."
   }
 }

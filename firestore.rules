@@ -661,6 +661,9 @@ service cloud.firestore {
       // an admin takes someone out of a class
       allow update: if hasFeature("belajar") && audited()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["classIds", "auditId", "updatedAt"]);
+      // a deleted teacher put back from the recycle bin
+      allow create: if hasFeature("belajar") && audited()
+        && request.resource.data.uid == uid && request.resource.data.classIds is list;
       allow delete: if hasFeature("belajar") && marked("belajar_learners~" + uid);
     }
 
@@ -686,6 +689,9 @@ service cloud.firestore {
         && validProgress()
         && !request.resource.data.diff(resource.data).affectedKeys().hasAny(["note", "noteBy", "noteAt", "auditId"])
         && (resource.data.get("done", false) == false || request.resource.data.get("done", false) == true);
+      // a deleted teacher's progress put back from the recycle bin
+      allow create: if hasFeature("belajar") && audited() && validProgress()
+        && progressId == request.resource.data.uid + "_" + request.resource.data.sectionId;
       // the admin's note on a written answer
       allow update: if hasFeature("belajar") && audited()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["note", "noteBy", "noteAt", "auditId"]);

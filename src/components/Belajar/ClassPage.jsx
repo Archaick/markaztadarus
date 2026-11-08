@@ -12,6 +12,7 @@ import { useBelajar } from "./BelajarData";
 import { deleteClass, inviteEmails, removeLearner, renewCode, saveNote, updateClass } from "./actions";
 import { BASE, NS, PROGRESS, sectionTitle, surahState } from "./belajarSchema";
 import { SurahPicker } from "./ClassesPage";
+import { DeleteTeacher } from "./TeachersPage";
 import styles from "./Belajar.module.css";
 
 /** Every progress record of these learners, live (in groups of 30, Firestore's limit for "in"). */
@@ -367,6 +368,7 @@ function LearnerDrawer({ row, klass, onClose }) {
   const { t } = useTranslation(NS);
   const { user } = useAccess();
   const [confirm, setConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(null);
   const [busy, setBusy] = useState(false);
   if (!row) return <Drawer opened={false} onClose={onClose} />;
   const l = row.learner;
@@ -398,9 +400,15 @@ function LearnerDrawer({ row, klass, onClose }) {
           ))}
         </div>
       ))}
-      <Button mt="md" variant="subtle" color="red" leftSection={<IconUserMinus size={16} />} onClick={() => setConfirm(true)}>
-        {t("classes.removeLearner")}
-      </Button>
+      <Group mt="md" gap="xs">
+        <Button variant="subtle" color="red" leftSection={<IconUserMinus size={16} />} onClick={() => setConfirm(true)}>
+          {t("classes.removeLearner")}
+        </Button>
+        <Button variant="light" color="red" leftSection={<IconTrash size={16} />} onClick={() => setDeleting(l)}>
+          {t("teachers.delete")}
+        </Button>
+      </Group>
+      <DeleteTeacher learner={deleting} onClose={() => setDeleting(null)} onDone={onClose} />
       <Modal opened={confirm} onClose={() => setConfirm(false)} title={t("classes.removeLearner")} centered>
         <Text mb="md">{t("classes.removeLearnerBody", { name: l.name || l.email, klass: klass.name })}</Text>
         <Button
