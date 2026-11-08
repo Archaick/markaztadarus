@@ -43,9 +43,10 @@ const FLAGS = {
  * sections: [{ label, items: [{ to, end?, icon, label, count?, active? }] }]
  *   (`active` decides by itself when the item is lit, e.g. for filters in the address);
  * action: something for the top of the menu (a "New …" button);
- * collapseKey: where the folded menu is remembered.
+ * collapseKey: where the folded menu is remembered;
+ * variant: "glass" for the frosted look (the learning platform), else the classic one.
  */
-export default function AppShell({ brand, role, sections, action, collapseKey, children }) {
+export default function AppShell({ brand, role, sections, action, collapseKey, variant, children }) {
   const { t, i18n } = useTranslation("internal/Internal");
   const { user, signOutUser } = useAccess();
   const [initial] = useState(savedLanguage);
@@ -72,7 +73,7 @@ export default function AppShell({ brand, role, sections, action, collapseKey, c
   const rtl = language.startsWith("ar");
 
   return (
-    <div className={`${styles.app} ${collapsed ? styles.collapsed : ""}`} dir={rtl ? "rtl" : "ltr"}>
+    <div className={`${styles.app} ${variant === "glass" ? styles.glass : ""} ${collapsed ? styles.collapsed : ""}`} dir={rtl ? "rtl" : "ltr"}>
       <header className={styles.topbar}>
         <button type="button" className={styles.menuButton} onClick={() => setOpen(true)} aria-label={t("shell.open")}>
           <IconMenu2 size={22} />

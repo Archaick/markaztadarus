@@ -1,0 +1,172 @@
+{
+  "brand": "Belajar",
+  "save": "Simpan",
+  "cancel": "Batal",
+  "delete": "Hapus",
+  "role": {
+    "super": "Super admin",
+    "admin": "Admin belajar"
+  },
+  "nav": {
+    "guru": "Buku Guru",
+    "lessons": "Surat",
+    "admin": "Super admin",
+    "access": "Akses admin",
+    "history": "Riwayat aktivitas",
+    "trash": "Baru dihapus",
+    "backup": "Cadangan"
+  },
+  "fiveT": {
+    "tamhid": "Tamhid",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir",
+    "tadabbur": "Tadabbur",
+    "tazkiyah": "Tazkiyah"
+  },
+  "section": {
+    "tadarus": "Tadarus Surat",
+    "tujuan": "Tujuan & Target",
+    "pendahuluan": "Pendahuluan Menarik",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir & Makna Kata",
+    "tuhanku": "Mengenal Tuhanku",
+    "doaku": "Doaku",
+    "rasulku": "Rasulku Mengajariku",
+    "akhlakku": "Al-Qur'an Akhlakku",
+    "keterampilan": "Keterampilanku",
+    "amalku": "Amalku"
+  },
+  "kind": {
+    "quiz": "Soal dengan kunci jawaban",
+    "reading": "Bacaan",
+    "written": "Tugas tertulis",
+    "quizCount": "{{count}} soal",
+    "writtenCount": "{{count}} tugas",
+    "readingCount": "Bacaan"
+  },
+  "qtype": {
+    "single": "Pilihan ganda",
+    "multi": "Pilih semua yang benar",
+    "truefalse": "Benar / Salah",
+    "match": "Mencocokkan"
+  },
+  "block": {
+    "heading": "Judul",
+    "text": "Teks",
+    "arabic": "Arab"
+  },
+  "issue": {
+    "noStem": "Soal kosong",
+    "emptyOption": "Pilihan kosong",
+    "noAnswer": "Belum ada kunci",
+    "tooMany": "Lebih dari satu kunci",
+    "onlyOne": "Hanya satu kunci"
+  },
+  "lessons": {
+    "title": "Buku Guru",
+    "intro": "Setiap surat adalah satu kartu. Isi soal di setiap bagian; guru akan melihatnya sebagai kartu di /guru.",
+    "new": "Surat baru",
+    "empty": "Belum ada surat. Tambahkan surat pertama untuk mulai mengisi soal.",
+    "published": "Terbit",
+    "draft": "Draf",
+    "ayat": "{{count}} ayat",
+    "sections": "{{n}}/{{total}} bagian",
+    "questions": "{{count}} soal",
+    "issues": "{{count}} perlu dicek",
+    "progress": "Bagian yang sudah ada"
+  },
+  "lesson": {
+    "edit": "Ubah surat",
+    "delete": "Hapus surat",
+    "deleteBody": "Surat {{title}} dan {{count}} bagiannya akan dihapus. Super admin dapat memulihkannya dari keranjang sampah selama 30 hari.",
+    "missing": "Surat ini tidak ditemukan.",
+    "name": "Nama surat",
+    "nameAr": "Nama dalam bahasa Arab",
+    "surah": "Nomor surat",
+    "order": "Urutan di buku",
+    "book": "Buku",
+    "surahNo": "Surat ke-{{n}}",
+    "publish": "Terbitkan untuk guru",
+    "tabSections": "Bagian buku",
+    "tabMateri": "Materi 5T ({{count}} ayat)",
+    "notYet": "Belum diisi",
+    "pick": "Surat",
+    "pickHint": "Cari nama atau nomor surat",
+    "none": "Tidak ditemukan",
+    "create": "Buat kartu surat"
+  },
+  "materi": {
+    "tamhidText": "Tanya jawab Tamhid",
+    "onePerLine": "Satu poin per baris.",
+    "themes": "Peta tema ayat",
+    "ayatRange": "Ayat",
+    "tema": "Tema",
+    "addTheme": "Tambah tema",
+    "ayah": "Ayat {{n}}",
+    "addAyah": "Tambah ayat"
+  },
+  "sectionPage": {
+    "new": "Bagian ini masih kosong. Tambahkan soal di bawah lalu simpan.",
+    "bad": "{{count}} soal perlu dicek (ditandai oranye).",
+    "delete": "Hapus bagian",
+    "deleteBody": "Bagian ini dan semua soalnya akan dihapus. Super admin dapat memulihkannya dari keranjang sampah selama 30 hari.",
+    "reading": "Bacaan pembuka",
+    "noReading": "Tidak ada bacaan. Tambahkan doa, hadis, atau teks yang dibaca guru sebelum menjawab.",
+    "addBlock": "Tambah baris",
+    "partHeading": "Judul bagian",
+    "instructions": "Petunjuk",
+    "addPart": "Tambah bagian soal",
+    "task": "Tugas {{n}}",
+    "lines": "Baris jawaban",
+    "addTask": "Tambah tugas",
+    "modeEdit": "Isi soal",
+    "modePreview": "Tampilan guru",
+    "previewNote": "Beginilah guru akan melihat bagian ini. Perubahan yang belum disimpan juga ikut tampil."
+  },
+  "question": {
+    "stem": "Tulis soalnya…",
+    "addOption": "Tambah pilihan",
+    "matchHint": "Untuk setiap baris kiri, pilih pasangan yang benar di kanan. Guru akan melihat pilihan kanan diacak.",
+    "left": "Kiri (mis. Ayat 1-4)",
+    "right": "Pilihan kanan",
+    "pick": "Pasangan yang benar",
+    "addPair": "Tambah pasangan",
+    "explanation": "Penjelasan (opsional)",
+    "explanationHint": "Ditampilkan kepada guru setelah menjawab."
+  },
+  "cards": {
+    "start": "Mulai menjawab",
+    "empty": "Belum ada soal di bagian ini.",
+    "of": "Soal {{n}} dari {{total}}",
+    "check": "Periksa jawaban",
+    "right": "Benar, masya Allah!",
+    "wrong": "Belum tepat. Jawaban yang benar ditandai hijau.",
+    "rightWas": "Pasangan yang benar",
+    "next": "Lanjut",
+    "result": "{{right}} dari {{total}} soal dijawab benar.",
+    "again": "Ulangi",
+    "writeHere": "Tulis jawaban Anda di sini…"
+  },
+  "access": {
+    "title": "Akses admin",
+    "intro": "Undang admin yang mengelola platform belajar. Mereka masuk dengan akun Google dari email yang Anda undang.",
+    "invite": "Undang admin",
+    "email": "Email Google",
+    "inviteButton": "Undang",
+    "invalid": "Email tidak valid.",
+    "isSuper": "Ini adalah akun super admin.",
+    "already": "{{email}} sudah menjadi admin platform belajar.",
+    "failed": "Gagal menyimpan. Periksa koneksi Anda dan coba lagi.",
+    "invited": "{{email}} sekarang bisa membuka platform belajar. Kirimkan pesan ini kepadanya:",
+    "message": "Assalamu'alaikum,\n\nAnda diundang menjadi admin platform belajar Markaz Tadarus.\n\nBuka {{link}} lalu masuk dengan Google memakai {{email}}.",
+    "copy": "Salin pesan",
+    "copied": "Tersalin",
+    "list": "Admin platform belajar ({{count}})",
+    "none": "Belum ada admin. Hanya super admin yang bisa membuka platform ini.",
+    "active": "Sudah masuk",
+    "pending": "Belum masuk",
+    "alsoSite": "Juga memegang dasbor situs (diatur di /internal)",
+    "remove": "Cabut akses",
+    "removeBody": "{{email}} tidak akan bisa membuka platform belajar lagi. Dasbor situs lain yang dipegangnya tidak berubah."
+  }
+}

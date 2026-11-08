@@ -145,7 +145,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(["at", "actor", "actorName", "area", "action", "target", "label", "details"])
         && request.resource.data.at == request.time
         && request.resource.data.actor == adminEmail()
-        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access", "supervisi", "global"]
+        && request.resource.data.area in ["certificates", "redirects", "forms", "site", "access", "supervisi", "global", "belajar"]
         && request.resource.data.action is string && request.resource.data.action.size() <= 60
         && request.resource.data.target is string && request.resource.data.target.size() <= 200
         && request.resource.data.label is string && request.resource.data.label.size() <= 200
@@ -166,7 +166,7 @@ service cloud.firestore {
         && audited();
       // the figure on the Backup page, added up in the browser
       allow write: if isSuperAdmin()
-        && docId == "storage"
+        && docId in ["storage", "storage_belajar"]
         && request.resource.data.keys().hasOnly(["bytes", "count", "areas", "at"])
         && request.resource.data.bytes is int
         && request.resource.data.count is int
@@ -193,7 +193,7 @@ service cloud.firestore {
       return data.email == email
         && email == email.lower()
         && data.features is list
-        && data.features.hasOnly(["certificates", "redirects", "forms", "site", "supervisi", "global"]);
+        && data.features.hasOnly(["certificates", "redirects", "forms", "site", "supervisi", "global", "belajar"]);
     }
 
     match /internal_admins/{email} {
@@ -563,6 +563,33 @@ service cloud.firestore {
     }
 
     // Deny everything else
+    // ---------- Belajar 5T (the learning platform, /belajar) ----------
+    // Buku Guru lessons (one per surah, with the 5T material) and their
+    // sections (reading, questions with answers, written tasks). Admins given
+    // "belajar" only for now; teachers (/guru) will get read access later.
+
+    match /belajar_lessons/{lessonId} {
+      allow read: if hasFeature("belajar");
+      allow create, update: if hasFeature("belajar") && audited()
+        && request.resource.data.title is string && request.resource.data.title.size() <= 200
+        && request.resource.data.get("program", "guru") in ["guru", "anak"]
+        && request.resource.data.get("published", false) is bool
+        && request.resource.data.get("ayat", []) is list && request.resource.data.get("ayat", []).size() <= 300;
+      allow delete: if hasFeature("belajar") && marked("belajar_lessons~" + lessonId);
+    }
+
+    match /belajar_sections/{sectionId} {
+      allow read: if hasFeature("belajar");
+      allow create, update: if hasFeature("belajar") && audited()
+        && request.resource.data.lessonId is string
+        && request.resource.data.key is string && request.resource.data.key.size() <= 40
+        && request.resource.data.kind in ["quiz", "reading", "written"]
+        && request.resource.data.get("parts", []) is list && request.resource.data.get("parts", []).size() <= 10
+        && request.resource.data.get("tasks", []) is list && request.resource.data.get("tasks", []).size() <= 30
+        && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80;
+      allow delete: if hasFeature("belajar") && marked("belajar_sections~" + sectionId);
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

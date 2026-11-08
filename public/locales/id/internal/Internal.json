@@ -57,6 +57,10 @@
     "global": {
       "title": "Tadarus Global",
       "description": "Globe Tadarus di seluruh dunia: negara, provinsi Indonesia, program, dan kota."
+    },
+    "belajar": {
+      "title": "Belajar 5T",
+      "description": "Platform belajar Metode 5T: Buku Guru per surat, soal dengan kunci, dan impor dari Word."
     }
   },
   "hub": {
@@ -261,6 +265,23 @@
       "history": {
         "settings": "Mengubah lama penyimpanan riwayat",
         "cleanup": "Menghapus catatan riwayat lama"
+      },
+      "bel": {
+        "lesson": {
+          "create": "Menambah surat",
+          "update": "Mengubah surat",
+          "delete": "Menghapus surat"
+        },
+        "section": {
+          "create": "Menambah bagian",
+          "update": "Mengubah bagian",
+          "delete": "Menghapus bagian"
+        },
+        "import": "Mengimpor dari Word",
+        "backup": {
+          "download": "Mengunduh cadangan platform belajar",
+          "restore": "Memulihkan cadangan platform belajar"
+        }
       }
     },
     "fields": {
@@ -432,7 +453,9 @@
       "supervisi_sessions": "{{count}} supervisi",
       "signatures": "tanda tangan",
       "supervisi_instruments": "{{count}} instrumen",
-      "internal_admins": "{{count}} admin"
+      "internal_admins": "{{count}} admin",
+      "belajar_lessons": "{{count}} surat",
+      "belajar_sections": "{{count}} bagian"
     }
   },
   "backup": {
@@ -489,7 +512,9 @@
       "links": "Tautan pendek",
       "site": "Situs dan peta",
       "admins": "Admin dan pengaturan",
-      "history": "Riwayat dan keranjang sampah"
-    }
+      "history": "Riwayat dan keranjang sampah",
+      "learning": "Platform belajar (surat dan soal)"
+    },
+    "introBelajar": "Satu file berisi semua data platform belajar: surat, bagian dan soal. Simpan di tempat pribadi, misalnya Google Drive Anda."
   }
 }

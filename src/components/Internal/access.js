@@ -3,6 +3,7 @@ import {
   IconClipboardCheck,
   IconClipboardText,
   IconLink,
+  IconSchool,
   IconWorld,
   IconWorldWww,
 } from "@tabler/icons-react";
@@ -52,6 +53,12 @@ export const FEATURES = [
     href: "/internal/global",
     icon: IconWorld,
     color: "linear-gradient(135deg, #f2c94c 0%, #0a1d4a 100%)",
+  },
+  {
+    key: "belajar",
+    href: "/belajar",
+    icon: IconSchool,
+    color: "linear-gradient(135deg, #10b981 0%, #003366 100%)",
   },
 ];
 

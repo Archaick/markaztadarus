@@ -9,7 +9,7 @@ import { TREE, areaOfPath, readCurrent } from "./databaseBackup";
 // The history and the bin keep their own record of what happened, and the
 // rules refuse rewriting them, so a backup's copies of those stay in the file.
 const NEVER = new Set(["internal_audit", "internal_audit_marks", "internal_trash"]);
-const STORAGE_FIGURE = "internal_settings/storage";
+const STORAGE_FIGURES = new Set(["internal_settings/storage", "internal_settings/storage_belajar"]);
 
 // One request carries at most 10 MiB and the rules look at a limited number of
 // other documents per request; each short link's copy looks at its link.
@@ -17,14 +17,13 @@ const BATCH_DOCS = 100;
 const BATCH_BYTES = 6 * 1024 * 1024;
 const BATCH_LINK_COPIES = 5;
 
-const INNER = new Map(TREE.map(([name, inner = []]) => [name, inner]));
-
-// a path the backup would have written: collection/doc or collection/doc/inner/doc
-const isKnownPath = (path) => {
+// a path a backup of `tree` would have written: collection/doc or collection/doc/inner/doc
+const isKnownPath = (path, tree = TREE) => {
+  const inner = new Map(tree.map(([name, sub = []]) => [name, sub]));
   const parts = path.split("/");
   if (parts.some((p) => !p) || (parts.length !== 2 && parts.length !== 4)) return false;
-  if (!INNER.has(parts[0])) return false;
-  return parts.length === 2 || INNER.get(parts[0]).includes(parts[2]);
+  if (!inner.has(parts[0])) return false;
+  return parts.length === 2 || inner.get(parts[0]).includes(parts[2]);
 };
 
 // The reverse of encode() in databaseBackup.js.
@@ -59,11 +58,12 @@ const contentOf = (data) => {
   return JSON.stringify(sameKeysText(rest));
 };
 
-/** The backup in a file, or null when it is not one of this site's. */
-export async function readBackupFile(file) {
+/** The backup in a file, or null when it is not one of this site's (or of this part of it). */
+export async function readBackupFile(file, scope) {
   try {
     const parsed = JSON.parse(await file.text());
     if (parsed?.project !== "markaz-tadarus" || !parsed.documents || typeof parsed.documents !== "object") return null;
+    if ((parsed.scope || "site") !== (scope?.key || "site")) return null;
     return { name: file.name, createdAt: parsed.createdAt, documents: parsed.documents };
   } catch {
     return null;
@@ -71,11 +71,11 @@ export async function readBackupFile(file) {
 }
 
 /** What differs from the database now, per part of the system. Reads only. */
-export async function comparePlan(backup, onProgress) {
-  const current = await readCurrent(onProgress);
+export async function comparePlan(backup, onProgress, scope) {
+  const current = await readCurrent(onProgress, scope?.tree);
   const areas = {};
   Object.entries(backup.documents).forEach(([path, data]) => {
-    if (!isKnownPath(path) || NEVER.has(path.split("/")[0]) || path === STORAGE_FIGURE) return;
+    if (!isKnownPath(path, scope?.tree) || NEVER.has(path.split("/")[0]) || STORAGE_FIGURES.has(path)) return;
     const area = (areas[areaOfPath(path)] ||= { missing: [], changed: [], same: 0 });
     if (!current.has(path)) area.missing.push(path);
     else if (contentOf(current.get(path)) !== contentOf(data)) area.changed.push(path);
@@ -121,7 +121,7 @@ function intoBatches(paths, documents) {
  * before its answers. A refused batch is tried one document at a time, so one
  * bad record does not hold the others back. Returns { restored, failed: [path] }.
  */
-export async function runRestore(user, backup, paths, onProgress) {
+export async function runRestore(user, backup, paths, onProgress, scope) {
   const wanted = new Set(paths);
   const ordered = Object.keys(backup.documents).filter((p) => wanted.has(p));
   let restored = 0;
@@ -142,7 +142,7 @@ export async function runRestore(user, backup, paths, onProgress) {
     await putFilesBack(group);
     return auditedWrite(
       user,
-      { area: "access", action: "backup.restore", label: backup.name, details: { documents: group.length, from: backup.createdAt } },
+      { area: scope?.auditArea || "access", action: scope?.restoreAction || "backup.restore", label: backup.name, details: { documents: group.length, from: backup.createdAt } },
       (batch, auditId) => group.forEach((path) => batch.set(doc(db, path), restoredData(path, backup.documents[path], auditId)))
     );
   };

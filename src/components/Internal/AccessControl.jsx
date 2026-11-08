@@ -34,6 +34,10 @@ import { db } from "../../../firebaseConfig";
 import { useAccess } from "./accessContext";
 import { auditedWrite } from "./audit";
 import { ADMINS_COLLECTION, FEATURES, SUPER_ADMIN_EMAIL, isValidEmail, normalizeEmail } from "./access";
+
+// the learning platform's admins are invited from its own app (/belajar/akses)
+const SITE_FEATURES = FEATURES.filter((f) => f.key !== "belajar");
+const OWN = "belajar";
 import AdminShell from "./AdminShell";
 import { timeAgo } from "./timeAgo";
 import a from "./AdminApp.module.css";
@@ -166,14 +170,24 @@ export default function AccessControl() {
     if (!removeTarget) return;
     setBusyEmail(removeTarget.id);
     try {
-      await auditedWrite(
-        user,
-        { area: "access", action: "admin.remove", target: removeTarget.id, label: removeTarget.id, details: { from: removeTarget.features || [] } },
-        (batch, _auditId, markDelete) => {
-          batch.delete(doc(db, ADMINS_COLLECTION, removeTarget.id));
-          markDelete(`admins~${removeTarget.id}`, removeTarget.auditId);
-        }
-      );
+      const from = removeTarget.features || [];
+      if (from.includes(OWN)) {
+        // still an admin of the learning platform: only the site's dashboards go
+        await auditedWrite(
+          user,
+          { area: "access", action: "admin.update", target: removeTarget.id, label: removeTarget.id, details: { from, to: [OWN] } },
+          (batch, auditId) => batch.update(doc(db, ADMINS_COLLECTION, removeTarget.id), { features: [OWN], auditId, updatedAt: serverTimestamp() })
+        );
+      } else {
+        await auditedWrite(
+          user,
+          { area: "access", action: "admin.remove", target: removeTarget.id, label: removeTarget.id, details: { from } },
+          (batch, _auditId, markDelete) => {
+            batch.delete(doc(db, ADMINS_COLLECTION, removeTarget.id));
+            markDelete(`admins~${removeTarget.id}`, removeTarget.auditId);
+          }
+        );
+      }
       setNotice({ color: "teal", key: "removed", email: removeTarget.id });
       if (lastInvite?.email === removeTarget.id) setLastInvite(null);
     } catch (err) {
@@ -185,7 +199,8 @@ export default function AccessControl() {
     }
   };
 
-  const list = useMemo(() => admins || [], [admins]);
+  // someone who only has the learning platform is looked after in /belajar
+  const list = useMemo(() => (admins || []).filter((x) => !(x.features || []).length || (x.features || []).some((k) => k !== OWN)), [admins]);
   const active = list.filter((x) => x.lastLoginAt).length;
   const shown = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -204,7 +219,7 @@ export default function AccessControl() {
   };
 
   return (
-    <AdminShell adminCount={admins ? admins.length + 1 : null}>
+    <AdminShell adminCount={admins ? list.length + 1 : null}>
       <div className={a.page}>
         <header className={a.head}>
           <div>
@@ -218,7 +233,7 @@ export default function AccessControl() {
 
         <div className={a.stats}>
           <div>
-            <b>{admins ? admins.length + 1 : "…"}</b>
+            <b>{admins ? list.length + 1 : "…"}</b>
             <span>{t("access.stats.total")}</span>
           </div>
           <div>
@@ -226,7 +241,7 @@ export default function AccessControl() {
             <span>{t("access.stats.active")}</span>
           </div>
           <div>
-            <b>{admins ? admins.length - active : "…"}</b>
+            <b>{admins ? list.length - active : "…"}</b>
             <span>{t("access.stats.pending")}</span>
           </div>
         </div>
@@ -253,7 +268,7 @@ export default function AccessControl() {
           <Select
             className={a.pick}
             placeholder={t("access.allDashboards")}
-            data={FEATURES.map((f) => ({ value: f.key, label: featureTitle(f.key) }))}
+            data={SITE_FEATURES.map((f) => ({ value: f.key, label: featureTitle(f.key) }))}
             value={dashboard}
             onChange={setDashboard}
             clearable
@@ -284,10 +299,10 @@ export default function AccessControl() {
         </div>
 
         {/* the grid: an admin per row, a dashboard per column */}
-        <div className={a.grid} style={{ "--features": FEATURES.length }}>
+        <div className={a.grid} style={{ "--features": SITE_FEATURES.length }}>
           <div className={`${a.gridRow} ${a.gridHead}`} aria-hidden="true">
             <span>{t("access.columns.admin")}</span>
-            {FEATURES.map((f) => {
+            {SITE_FEATURES.map((f) => {
               const Icon = f.icon;
               return (
                 <span key={f.key} className={a.featureHead} title={featureTitle(f.key)}>
@@ -318,7 +333,7 @@ export default function AccessControl() {
                   </span>
                 </div>
               </div>
-              {FEATURES.map((f) => (
+              {SITE_FEATURES.map((f) => (
                 <span key={f.key} className={a.cell}>
                   <span className={`${a.toggle} ${a.toggleLocked}`} title={t("access.always")}>
                     <IconLock size={14} />
@@ -334,12 +349,12 @@ export default function AccessControl() {
               <Loader size="sm" />
             </Group>
           )}
-          {admins?.length === 0 && !listError && (
+          {admins && list.length === 0 && !listError && (
             <Text c="dimmed" ta="center" py="lg" size="sm">
               {t("access.empty")}
             </Text>
           )}
-          {admins?.length > 0 && shown.length === 0 && (
+          {list.length > 0 && shown.length === 0 && (
             <Text c="dimmed" ta="center" py="lg" size="sm">
               {t("access.noMatch")}
             </Text>
@@ -370,7 +385,7 @@ export default function AccessControl() {
                 </div>
               </div>
 
-              {FEATURES.map((f) => {
+              {SITE_FEATURES.map((f) => {
                 const on = (admin.features || []).includes(f.key);
                 const title = featureTitle(f.key);
                 return (
@@ -430,7 +445,7 @@ export default function AccessControl() {
             </Text>
             <Chip.Group multiple value={inviteFeatures} onChange={setInviteFeatures}>
               <Group gap="xs">
-                {FEATURES.map((f) => (
+                {SITE_FEATURES.map((f) => (
                   <Chip key={f.key} value={f.key} variant="light" radius="sm">
                     {featureTitle(f.key)}
                   </Chip>

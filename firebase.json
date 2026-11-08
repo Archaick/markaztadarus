@@ -39,7 +39,7 @@
         ]
       },
       {
-        "source": "{/internal,/internal/**,/cert-admin,/cert-login}",
+        "source": "{/internal,/internal/**,/cert-admin,/cert-login,/belajar,/belajar/**}",
         "headers": [
           {
             "key": "X-Frame-Options",

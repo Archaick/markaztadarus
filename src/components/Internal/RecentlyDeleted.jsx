@@ -3,7 +3,8 @@ import { Alert, Badge, Button, Group, Loader, Modal, Progress, SegmentedControl,
 import { IconAlertTriangle, IconArrowBackUp, IconClockHour4, IconSearch, IconTrash, IconTrashX, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
-import AdminShell, { useTrashList } from "./AdminShell";
+import { useTrashList } from "./AdminShell";
+import { ScopeFrame, useScope } from "./scope";
 import { AREAS, areaOf } from "./areas";
 import { TRASH_DAYS } from "./audit";
 import { intlLocale } from "./language";
@@ -36,15 +37,16 @@ export default function RecentlyDeleted() {
   const { t, i18n } = useTranslation("internal/Internal");
   const { user } = useAccess();
   return (
-    <AdminShell>
+    <ScopeFrame>
       <BinPage t={t} i18n={i18n} user={user} />
-    </AdminShell>
+    </ScopeFrame>
   );
 }
 
 function BinPage({ t, i18n, user }) {
   const live = useTrashList();
-  const groups = Array.isArray(live) ? live : live === "error" ? NO_GROUPS : null;
+  const scope = useScope();
+  const groups = useMemo(() => (Array.isArray(live) ? live.filter((g) => scope.includes(g.area)) : live === "error" ? NO_GROUPS : null), [live, scope]);
   const [search, setSearch] = useState("");
   const [area, setArea] = useState(null);
   const [actor, setActor] = useState(null);
@@ -130,7 +132,7 @@ function BinPage({ t, i18n, user }) {
         <Select
           className={a.pick}
           placeholder={t("history.allAreas")}
-          data={AREAS.map((x) => ({ value: x.key, label: t(`features.${x.key}.title`) }))}
+          data={AREAS.filter((x) => scope.includes(x.key)).map((x) => ({ value: x.key, label: t(`features.${x.key}.title`) }))}
           value={area}
           onChange={setArea}
           clearable

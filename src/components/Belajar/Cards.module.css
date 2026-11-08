@@ -1,0 +1,177 @@
+/* The teacher's cards (preview in the admin now, /guru later): calm, big tap targets, MTI navy and gold. */
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted, #5d6b7d);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.card {
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--surface-strong, #fff);
+  border: 1px solid var(--surface-line, #e3e8ee);
+  box-shadow: var(--surface-shadow, 0 22px 40px -30px rgba(0, 51, 102, 0.55));
+  backdrop-filter: var(--surface-blur, none);
+}
+.kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: #faf5eb;
+  color: #8a6420;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.stem {
+  margin: 0 0 16px;
+  font-size: 1.12rem;
+  font-weight: 600;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+.arabic {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 1.55rem;
+  line-height: 2.1;
+  direction: rtl;
+  text-align: right;
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.twoUp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid rgba(15, 42, 74, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  color: inherit;
+  font: inherit;
+  font-size: 1rem;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.twoUp .option {
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+.option:hover {
+  border-color: #cc9933;
+}
+.option:active {
+  transform: scale(0.99);
+}
+.optionArabic span:last-child {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 1.35rem;
+}
+.letter {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: #fff;
+  color: #003366;
+  font-weight: 800;
+}
+.optionPicked {
+  border-color: #003366;
+  background: #e6ebf0;
+}
+.optionRight {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+.optionWrong {
+  border-color: #e03131;
+  background: #fff5f5;
+}
+.optionDim {
+  opacity: 0.55;
+}
+.matchList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.matchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.matchLeft {
+  flex: 1;
+  font-weight: 700;
+}
+.feedback {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+}
+.feedback p {
+  margin: 6px 0 0;
+}
+.feedbackRight {
+  background: #ecfdf5;
+  color: #065f46;
+}
+.feedbackWrong {
+  background: #fff5f5;
+  color: #9b1c1c;
+}
+.finish {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.score {
+  font-size: 3.4rem;
+  font-weight: 800;
+  color: #003366;
+}
+.readingCard {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: #faf5eb;
+}
+.readingHeading {
+  margin: 10px 0 4px;
+  color: #003366;
+}
+.readingText {
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+.instructions {
+  margin: 0;
+  color: var(--muted, #5d6b7d);
+  font-weight: 600;
+}

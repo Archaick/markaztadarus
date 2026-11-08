@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Alert, Badge, Button, Loader, SegmentedControl, Select, TextInput } from "@mantine/core";
 import { IconChevronDown, IconRefresh, IconSearch, IconShieldLock, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { collection, getDocs, limit, orderBy, query, startAfter } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query, startAfter, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { AUDIT_COLLECTION } from "./audit";
-import AdminShell from "./AdminShell";
+import { ScopeFrame, useScope } from "./scope";
 import HistoryRetention from "./HistoryRetention";
 import { AREAS, actionKind, areaOf } from "./areas";
 import { intlLocale } from "./language";
@@ -52,16 +52,24 @@ export default function History() {
   const [kind, setKind] = useState(null); // created · edited · deleted
   const [open, setOpen] = useState(() => new Set());
   const autoPages = useRef(0);
+  const scope = useScope();
 
-  const load = useCallback(async (after) => {
-    const q = after
-      ? query(collection(db, AUDIT_COLLECTION), orderBy("at", "desc"), startAfter(after), limit(PAGE))
-      : query(collection(db, AUDIT_COLLECTION), orderBy("at", "desc"), limit(PAGE));
-    const snap = await getDocs(q);
-    setCursor(snap.docs[snap.docs.length - 1] || after || null);
-    setMore(snap.size === PAGE);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-  }, []);
+  // the learning platform asks for its own entries; the site's page leaves those out
+  const load = useCallback(
+    async (after) => {
+      const parts = [
+        ...(scope.key === "belajar" ? [where("area", "==", "belajar")] : []),
+        orderBy("at", "desc"),
+        ...(after ? [startAfter(after)] : []),
+        limit(PAGE),
+      ];
+      const snap = await getDocs(query(collection(db, AUDIT_COLLECTION), ...parts));
+      setCursor(snap.docs[snap.docs.length - 1] || after || null);
+      setMore(snap.size === PAGE);
+      return snap.docs.map((d) => ({ id: d.id, ...d.data() })).filter((e) => scope.includes(e.area));
+    },
+    [scope]
+  );
 
   const refresh = useCallback(() => {
     setError(false);
@@ -261,7 +269,7 @@ export default function History() {
   };
 
   return (
-    <AdminShell>
+    <ScopeFrame>
       <div className={a.page}>
         <header className={a.head}>
           <div>
@@ -269,7 +277,7 @@ export default function History() {
             <p className={a.sub}>{t("history.intro")}</p>
           </div>
           <div className={a.headActions}>
-            <HistoryRetention onCleaned={refresh} />
+            {!scope.framed && <HistoryRetention onCleaned={refresh} />}
             <Button variant="default" radius="md" leftSection={<IconRefresh size={16} />} onClick={refresh}>
               {t("history.refresh")}
             </Button>
@@ -287,7 +295,7 @@ export default function History() {
           <Select
             className={a.pick}
             placeholder={t("history.allAreas")}
-            data={AREAS.map((x) => ({ value: x.key, label: `${areaTitle(x.key)}${areaCounts[x.key] ? ` (${areaCounts[x.key]})` : ""}` }))}
+            data={AREAS.filter((x) => scope.includes(x.key)).map((x) => ({ value: x.key, label: `${areaTitle(x.key)}${areaCounts[x.key] ? ` (${areaCounts[x.key]})` : ""}` }))}
             value={area}
             onChange={setArea}
             clearable
@@ -403,6 +411,6 @@ export default function History() {
         )}
         {oldest && <p className={a.footnote}>{t("history.loadedUntil", { date: format(oldest, { dateStyle: "long" }) })}</p>}
       </div>
-    </AdminShell>
+    </ScopeFrame>
   );
 }

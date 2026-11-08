@@ -14,24 +14,11 @@ const TrashList = createContext(null);
 export const useTrashList = () => useContext(TrashList);
 
 /**
- * Access Control, Activity History and Recently deleted: the super admin's
- * own app, in the shared internal frame. The menu shows how many deletes are
- * waiting in the bin.
+ * The recycle bin's entries, live, for the pages inside (the site's admin
+ * app and the learning platform's). Entries past their 30 days go once per visit.
  */
-export default function AdminShell({ adminCount = null, children }) {
-  const { t } = useTranslation("internal/Internal");
+export function TrashListProvider({ children }) {
   const [trash, setTrash] = useState(null);
-  const { user } = useAccess();
-
-  // history entries older than the chosen period go now (once per visit)
-  const cleaned = useRef(false);
-  useEffect(() => {
-    if (!user || cleaned.current) return;
-    cleaned.current = true;
-    loadKeepDays()
-      .then((days) => cleanHistory(user, days))
-      .catch((err) => console.error("Could not clean the old history:", err));
-  }, [user]);
 
   useEffect(
     () =>
@@ -54,7 +41,39 @@ export default function AdminShell({ adminCount = null, children }) {
     purgeExpired(trash).catch((err) => console.error("Could not empty expired bin entries:", err));
   }, [trash]);
 
-  const waiting = Array.isArray(trash) ? trash.filter((g) => !g.restoredAt).length : null;
+  return <TrashList.Provider value={trash}>{children}</TrashList.Provider>;
+}
+
+/**
+ * Access Control, Activity History and Recently deleted: the super admin's
+ * own app, in the shared internal frame. The menu shows how many deletes are
+ * waiting in the bin.
+ */
+export default function AdminShell({ adminCount = null, children }) {
+  return (
+    <TrashListProvider>
+      <AdminFrame adminCount={adminCount}>{children}</AdminFrame>
+    </TrashListProvider>
+  );
+}
+
+function AdminFrame({ adminCount, children }) {
+  const { t } = useTranslation("internal/Internal");
+  const trash = useTrashList();
+  const { user } = useAccess();
+
+  // history entries older than the chosen period go now (once per visit)
+  const cleaned = useRef(false);
+  useEffect(() => {
+    if (!user || cleaned.current) return;
+    cleaned.current = true;
+    loadKeepDays()
+      .then((days) => cleanHistory(user, days))
+      .catch((err) => console.error("Could not clean the old history:", err));
+  }, [user]);
+
+  // the learning platform's deletes are counted in its own app
+  const waiting = Array.isArray(trash) ? trash.filter((g) => !g.restoredAt && g.area !== "belajar").length : null;
   const sections = [
     {
       label: t("adminApp.nav"),
@@ -67,10 +86,8 @@ export default function AdminShell({ adminCount = null, children }) {
     },
   ];
   return (
-    <TrashList.Provider value={trash}>
-      <AppShell brand={t("adminApp.brand")} role={t("superAdmin")} sections={sections} collapseKey="mt.adminMenu">
-        {children}
-      </AppShell>
-    </TrashList.Provider>
+    <AppShell brand={t("adminApp.brand")} role={t("superAdmin")} sections={sections} collapseKey="mt.adminMenu">
+      {children}
+    </AppShell>
   );
 }

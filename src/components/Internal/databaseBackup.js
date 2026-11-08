@@ -29,6 +29,9 @@ export const TREE = [
   ["forms", ["media", "private", "responses"]],
 ];
 
+// The learning platform (/belajar) is backed up apart, from its own page.
+export const BELAJAR_TREE = [["belajar_lessons"], ["belajar_sections"]];
+
 // documents whose inner collections are read at once
 const PARALLEL = 8;
 
@@ -50,20 +53,21 @@ export const areaOfPath = (path) => {
   if (top === "forms") return "forms";
   if (top === "posts") return "news";
   if (top.startsWith("supervisi")) return "supervision";
+  if (top.startsWith("belajar")) return "learning";
   if (top.startsWith("redirect")) return "links";
   if (top.startsWith("site_")) return "site";
   if (top === "internal_admins" || top === "internal_settings") return "admins";
   return "history";
 };
 
-// Every document in the database, one at a time.
-async function readAll(onDoc, onProgress) {
+// Every document of `tree` (the site's by default), one at a time.
+async function readAll(onDoc, onProgress, tree = TREE) {
   let count = 0;
   const add = async (snapDoc) => {
     await onDoc(snapDoc, count);
     count += 1;
   };
-  for (const [name, inner = []] of TREE) {
+  for (const [name, inner = []] of tree) {
     onProgress?.({ collection: name, count });
     const snap = await getDocs(collection(db, name));
     for (const d of snap.docs) await add(d);
@@ -79,9 +83,9 @@ async function readAll(onDoc, onProgress) {
 }
 
 /** Every document as it is now: path to its encoded data. */
-export async function readCurrent(onProgress) {
+export async function readCurrent(onProgress, tree = TREE) {
   const current = new Map();
-  await readAll((d) => current.set(d.ref.path, encode(d.data())), onProgress);
+  await readAll((d) => current.set(d.ref.path, encode(d.data())), onProgress, tree);
   return current;
 }
 
@@ -95,7 +99,8 @@ const DAY = 24 * 60 * 60 * 1000;
 const WEEKLY_FROM = 100 * 1024 * 1024;
 export const storageIsStale = (saved) =>
   !saved?.at || Date.now() - saved.at.toMillis() > (saved.bytes >= WEEKLY_FROM ? 7 * DAY : DAY);
-const storageRef = () => doc(db, "internal_settings", "storage");
+// "storage" for the site, "storage_belajar" for the learning platform
+const storageRef = (name = "storage") => doc(db, "internal_settings", name);
 const encoder = new TextEncoder();
 
 // Firestore's own measure: the path, the data and 32 bytes of its own.
@@ -118,26 +123,27 @@ function tally() {
   };
 }
 
-export async function loadStorage() {
-  const snap = await getDoc(storageRef());
+export async function loadStorage(name) {
+  const snap = await getDoc(storageRef(name));
   return snap.exists() ? snap.data() : null;
 }
 
 /** Saves the figure; it still shows if saving fails. */
-async function saveStorage(usage) {
+async function saveStorage(usage, name) {
   const at = Timestamp.now();
   try {
-    await setDoc(storageRef(), { ...usage, at: serverTimestamp() });
+    await setDoc(storageRef(name), { ...usage, at: serverTimestamp() });
   } catch (err) {
     console.error("Could not save the storage figure:", err);
   }
   return { ...usage, at };
 }
 
-export async function countStorage(onProgress) {
+/** `scope` (see scope.js) says which documents and where the figure is kept. */
+export async function countStorage(onProgress, scope) {
   const sum = tally();
-  await readAll((d) => sum.add(d.ref.path, JSON.stringify(encode(d.data()))), onProgress);
-  return saveStorage(sum.result());
+  await readAll((d) => sum.add(d.ref.path, JSON.stringify(encode(d.data()))), onProgress, scope?.tree);
+  return saveStorage(sum.result(), scope?.storageDoc);
 }
 
 // A photo in Cloud Storage goes into the file too (__file__), so a backup is
@@ -163,17 +169,18 @@ async function withFile(data) {
  * Built in pieces, so photos do not make one huge string.
  * `onProgress({ collection, count })` follows along.
  */
-export async function buildBackup(email, onProgress) {
+export async function buildBackup(email, onProgress, scope) {
   const parts = [];
   const sum = tally();
   const count = await readAll(async (snapDoc, index) => {
     const json = JSON.stringify(await withFile(encode(snapDoc.data())));
     parts.push(`${index ? "," : ""}\n${JSON.stringify(snapDoc.ref.path)}:${json}`);
     sum.add(snapDoc.ref.path, JSON.stringify(encode(snapDoc.data())));
-  }, onProgress);
+  }, onProgress, scope?.tree);
 
-  const head = { project: "markaz-tadarus", createdAt: new Date().toISOString(), createdBy: email, count };
+  // `scope` tells a site backup from a learning-platform one when it is put back
+  const head = { project: "markaz-tadarus", scope: scope?.key || "site", createdAt: new Date().toISOString(), createdBy: email, count };
   const opening = JSON.stringify(head).replace(/}$/, ',"documents":{');
   const blob = new Blob([opening, ...parts, "\n}}\n"], { type: "application/json" });
-  return { blob, count, usage: await saveStorage(sum.result()) };
+  return { blob, count, usage: await saveStorage(sum.result(), scope?.storageDoc) };
 }

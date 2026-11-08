@@ -494,3 +494,72 @@
     padding: 0;
   }
 }
+
+
+/* ── glass: the frosted look (the learning platform) ──
+   A calm cool backdrop; the menu floats as frosted navy; pages read the
+   --surface variables for their cards (white when the frame is classic). */
+.glass {
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-strong: rgba(255, 255, 255, 0.82);
+  --surface-line: rgba(255, 255, 255, 0.92);
+  --surface-shadow: 0 22px 50px -32px rgba(16, 33, 65, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --surface-blur: blur(20px) saturate(150%);
+  --line: rgba(15, 42, 74, 0.09);
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(170deg, #f7f9fc 0%, #eef3f8 45%, #e5ecf5 100%);
+}
+.glass::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(42vmax 42vmax at 100% 0%, rgba(150, 185, 225, 0.5), transparent 70%),
+    radial-gradient(48vmax 48vmax at 10% 100%, rgba(60, 100, 160, 0.22), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%231a4970' stroke-opacity='0.05' stroke-width='1'%3E%3Crect x='22' y='22' width='28' height='28'/%3E%3Crect x='22' y='22' width='28' height='28' transform='rotate(45 36 36)'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: auto, auto, 72px 72px;
+}
+.glass .sidebar {
+  top: 14px;
+  height: calc(100vh - 28px);
+  margin: 14px 0 14px 14px;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(10, 47, 92, 0.88) 0%, rgba(0, 51, 102, 0.86) 55%, rgba(0, 34, 68, 0.92) 100%);
+  box-shadow: 0 30px 60px -30px rgba(0, 34, 68, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+:global([dir="rtl"]) .glass .sidebar {
+  margin: 14px 14px 14px 0;
+}
+/* the menu still scrolls on a short screen, without a bar down its side */
+.glass .sidebar {
+  scrollbar-width: none;
+}
+.glass .sidebar::-webkit-scrollbar {
+  display: none;
+}
+.glass .brand {
+  background: rgba(255, 255, 255, 0.94);
+}
+.glass .account {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+@media (max-width: 900px) {
+  .glass .sidebar,
+  :global([dir="rtl"]) .glass .sidebar {
+    top: 0;
+    height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+  .glass .topbar {
+    background: rgba(0, 51, 102, 0.85);
+    backdrop-filter: blur(18px);
+  }
+}

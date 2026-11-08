@@ -41,6 +41,7 @@ const History = lazy(() => import("./components/Internal/History"));
 const RecentlyDeleted = lazy(() => import("./components/Internal/RecentlyDeleted"));
 const Backup = lazy(() => import("./components/Internal/Backup"));
 const SupervisiApp = lazy(() => import("./components/Supervisi/SupervisiApp"));
+const BelajarApp = lazy(() => import("./components/Belajar/BelajarApp"));
 const RedirectAdmin = lazy(() => import("./components/RedirectManager/RedirectAdmin"));
 const FormsAdmin = lazy(() => import("./components/Forms/FormsAdmin"));
 const FormDetail = lazy(() => import("./components/Forms/FormDetail"));
@@ -85,6 +86,7 @@ const App = () => {
                 element={<RequireFeature feature="super"><AccessControl /></RequireFeature>}
               />
               <Route path="/internal/supervisi/*" element={<SupervisiApp />} />
+              <Route path="/belajar/*" element={<BelajarApp />} />
               <Route
                 path="/internal/history"
                 element={<RequireFeature feature="super"><History /></RequireFeature>}

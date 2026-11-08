@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { comparePlan, readBackupFile, runRestore } from "./databaseRestore";
 import { formatDateTime } from "./timeAgo";
+import { useScope } from "./scope";
 import a from "./AdminApp.module.css";
 
-const AREA_ORDER = ["certificates", "forms", "news", "supervision", "links", "site", "admins"];
 
 /**
  * Putting a backup back: pick the file, see what differs from the database
@@ -17,10 +17,11 @@ const AREA_ORDER = ["certificates", "forms", "news", "supervision", "links", "si
 export default function BackupRestore({ onRestored, disabled }) {
   const { t } = useTranslation("internal/Internal");
   const { user } = useAccess();
+  const scope = useScope();
   const resetFile = useRef(null);
   const [backup, setBackup] = useState(null);
   const [plan, setPlan] = useState(null);
-  const [off, setOff] = useState(() => new Set(["admins"])); // a removed admin must not come back unnoticed
+  const [off, setOff] = useState(() => new Set(scope.restoreOff)); // a removed admin must not come back unnoticed
   const [replace, setReplace] = useState(false);
   const [reading, setReading] = useState(null);
   const [progress, setProgress] = useState(null);
@@ -31,7 +32,7 @@ export default function BackupRestore({ onRestored, disabled }) {
     setBackup(null);
     setPlan(null);
     setReplace(false);
-    setOff(new Set(["admins"]));
+    setOff(new Set(scope.restoreOff));
     resetFile.current?.();
   };
 
@@ -41,13 +42,13 @@ export default function BackupRestore({ onRestored, disabled }) {
     setPlan(null);
     setReading({ count: 0 });
     try {
-      const loaded = await readBackupFile(file);
+      const loaded = await readBackupFile(file, scope);
       if (!loaded) {
         setNotice({ color: "red", text: t("backup.restoreBadFile") });
         resetFile.current?.();
         return;
       }
-      setPlan(await comparePlan(loaded, setReading));
+      setPlan(await comparePlan(loaded, setReading, scope));
       setBackup(loaded);
     } catch (err) {
       console.error("Reading the backup failed:", err);
@@ -58,7 +59,7 @@ export default function BackupRestore({ onRestored, disabled }) {
     }
   };
 
-  const areas = plan ? AREA_ORDER.filter((k) => plan[k]).map((key) => ({ key, ...plan[key] })) : [];
+  const areas = plan ? scope.restoreOrder.filter((k) => plan[k]).map((key) => ({ key, ...plan[key] })) : [];
   const chosen = areas.filter((area) => !off.has(area.key));
   const missing = chosen.flatMap((area) => area.missing);
   const changed = replace ? chosen.flatMap((area) => area.changed) : [];
@@ -78,7 +79,7 @@ export default function BackupRestore({ onRestored, disabled }) {
     setConfirming(false);
     setProgress({ done: 0, total });
     try {
-      const { restored, failed } = await runRestore(user, backup, [...missing, ...changed], setProgress);
+      const { restored, failed } = await runRestore(user, backup, [...missing, ...changed], setProgress, scope);
       setNotice(
         failed.length
           ? { color: "orange", text: t("backup.restorePartial", { count: restored, failed: failed.length }), failed }

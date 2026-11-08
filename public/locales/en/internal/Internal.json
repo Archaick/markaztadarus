@@ -57,6 +57,10 @@
     "global": {
       "title": "Tadarus Global",
       "description": "The Tadarus world globe: countries, Indonesia's provinces, programs and cities."
+    },
+    "belajar": {
+      "title": "Belajar 5T",
+      "description": "The 5T Method learning platform: the Teacher's Book by surah, questions with answers, and import from Word."
     }
   },
   "hub": {
@@ -261,6 +265,23 @@
       "history": {
         "settings": "Changed how long the history is kept",
         "cleanup": "Removed old history entries"
+      },
+      "bel": {
+        "lesson": {
+          "create": "Added a surah",
+          "update": "Changed a surah",
+          "delete": "Deleted a surah"
+        },
+        "section": {
+          "create": "Added a section",
+          "update": "Changed a section",
+          "delete": "Deleted a section"
+        },
+        "import": "Imported from Word",
+        "backup": {
+          "download": "Downloaded a learning platform backup",
+          "restore": "Restored a learning platform backup"
+        }
       }
     },
     "fields": {
@@ -450,7 +471,9 @@
       "supervisi_instruments_one": "{{count}} instrument",
       "supervisi_instruments_other": "{{count}} instruments",
       "internal_admins_one": "{{count}} admin",
-      "internal_admins_other": "{{count}} admins"
+      "internal_admins_other": "{{count}} admins",
+      "belajar_lessons": "{{count}} surahs",
+      "belajar_sections": "{{count}} sections"
     }
   },
   "backup": {
@@ -507,7 +530,9 @@
       "links": "Short links",
       "site": "Website and map",
       "admins": "Admins and settings",
-      "history": "History and recycle bin"
-    }
+      "history": "History and recycle bin",
+      "learning": "Learning platform (surahs and questions)"
+    },
+    "introBelajar": "One file with every record of the learning platform: surahs, sections and questions. Keep it somewhere private, such as your own Google Drive."
   }
 }

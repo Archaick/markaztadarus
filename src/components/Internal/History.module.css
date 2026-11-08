@@ -44,7 +44,11 @@
   padding: 14px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
-  background: #fff;
+  background: var(--surface, #fff);
+  border-color: var(--surface-line, var(--line));
+  box-shadow: var(--surface-shadow, none);
+  backdrop-filter: var(--surface-blur, none);
+  -webkit-backdrop-filter: var(--surface-blur, none);
 }
 .icon {
   flex-shrink: 0;
