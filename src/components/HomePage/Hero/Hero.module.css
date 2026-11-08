@@ -36,13 +36,42 @@
   text-align: start;
 }
 
-.title {
-  font-size: clamp(2.4rem, 5vw, 4rem);
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.2rem;
+  padding: 0.45rem 0.95rem 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: var(--glass, rgba(255, 255, 255, 0.6));
+  border: 1px solid var(--glass-line, rgba(255, 255, 255, 0.85));
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur, blur(18px));
+  color: #8a6a14;
+  font-size: 0.82rem;
   font-weight: 800;
-  color: #1a4970;
-  line-height: 1.05;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.eyebrowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d4a912;
+  box-shadow: 0 0 0 4px rgba(212, 169, 18, 0.2);
+}
+
+.title {
+  font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+  font-weight: 800;
+  line-height: 1.02;
   letter-spacing: -2px;
   margin: 0 0 1rem;
+  background: linear-gradient(120deg, #0f2a4a 0%, #1a4970 55%, #2f6a9a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
@@ -54,15 +83,47 @@
   margin: 0;
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .button {
-  background-color: #1a4970;
-  height: 56px;
-  padding: 0 2.3rem;
+  background: linear-gradient(135deg, #1a4970 0%, #0f2a4a 100%);
+  height: 54px;
+  padding: 0 2.1rem;
   border-radius: 100px;
   font-size: 1rem;
   font-weight: 700;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  box-shadow: 0 15px 40px rgba(26, 73, 112, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 18px 36px -14px rgba(15, 42, 74, 0.6);
+}
+
+.button:hover {
+  transform: translateY(-2px);
+}
+
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 1.8rem;
+  border-radius: 100px;
+  background: var(--glass, rgba(255, 255, 255, 0.6));
+  border: 1px solid var(--glass-line, rgba(255, 255, 255, 0.85));
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur, blur(18px));
+  color: #1a4970;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.ghost:hover {
+  background: var(--glass-strong, rgba(255, 255, 255, 0.8));
+  transform: translateY(-2px);
 }
 
 /* ── What the lit step means ── */
@@ -78,12 +139,12 @@
   display: flex;
   align-items: flex-start;
   gap: 0.8rem;
-  padding: 0.9rem 1rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(171, 139, 43, 0.2);
-  box-shadow: 0 12px 30px rgba(16, 33, 65, 0.08);
-  backdrop-filter: blur(8px);
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  background: var(--glass, rgba(255, 255, 255, 0.6));
+  border: 1px solid var(--glass-line, rgba(255, 255, 255, 0.85));
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur, blur(18px));
   text-align: start;
   animation: stepIn 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
@@ -174,12 +235,22 @@
   container-type: inline-size;
 }
 
+/* the frosted disk the orbit turns on */
+.disk {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 40px 80px -40px rgba(16, 33, 65, 0.45), inset 0 2px 0 rgba(255, 255, 255, 0.9), inset 0 -20px 60px rgba(26, 73, 112, 0.06);
+  backdrop-filter: blur(24px) saturate(150%);
+}
+
 .stageGlow {
   position: absolute;
   inset: 22%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 169, 18, 0.18) 0%, rgba(212, 169, 18, 0.05) 45%, transparent 70%);
-  animation: breathe 6s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.3) 45%, transparent 70%);
   pointer-events: none;
 }
 
@@ -284,10 +355,10 @@
   height: 100%;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid rgba(171, 139, 43, 0.2);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 6px 20px rgba(16, 33, 65, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 12px 28px -12px rgba(16, 33, 65, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -451,6 +522,10 @@
   :global([dir="rtl"]) .stepDots {
     justify-content: center;
     padding: 0;
+  }
+
+  .actions {
+    justify-content: center;
   }
 
   .watermark {

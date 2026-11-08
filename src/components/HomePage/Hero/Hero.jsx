@@ -59,6 +59,7 @@ const Hero = () => {
 
   const steps = (
     <div className={styles.stage}>
+      <div className={styles.disk} />
       <div className={styles.stageGlow} />
       <img src="/MTIFavicon.png" alt="" className={styles.centerMark} />
 
@@ -101,13 +102,13 @@ const Hero = () => {
 
   return (
     <div id="home" className={styles.hero}>
-      <div className={styles.orb1}></div>
-
-      {/* Institutional Watermark */}
-      <img src="/MTIFavicon.png" alt="" className={styles.watermark} />
 
       <div className={styles.inner} dir={rtl ? "rtl" : "ltr"}>
         <div className={styles.content}>
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowDot} />
+            {t("tagline")}
+          </span>
           <Title order={1} className={styles.title}>
             {t("title")}
           </Title>
@@ -138,9 +139,14 @@ const Hero = () => {
             </div>
           </div>
 
-          <Button size="lg" className={styles.button} component="a" href="#programs">
-            {t("cta_button")}
-          </Button>
+          <div className={styles.actions}>
+            <Button size="lg" className={styles.button} component="a" href="#programs">
+              {t("cta_button")}
+            </Button>
+            <a className={styles.ghost} href="#about">
+              {t("about_button")}
+            </a>
+          </div>
         </div>
 
         {steps}

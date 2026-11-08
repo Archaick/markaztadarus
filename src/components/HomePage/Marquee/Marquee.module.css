@@ -2,10 +2,9 @@
   position: relative;
   text-align: center;
   padding: 3.5rem 2rem;
-  background-color: #ffffff;
+  background: transparent;
   font-family: "Outfit", "Inter", sans-serif;
   overflow: hidden;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .title {
@@ -35,6 +34,9 @@
   margin: 0.6rem 0;
   padding: 0.5rem 0;
   position: relative;
+  /* the logos fade out at both edges, over any background */
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
 /* Enhanced Edge Fading */
@@ -51,18 +53,19 @@
 
 .marqueeRow::before {
   left: 0;
-  background: linear-gradient(to right, #ffffff, transparent);
+  display: none;
 }
 
 .marqueeRow::after {
   right: 0;
-  background: linear-gradient(to left, #ffffff, transparent);
+  display: none;
 }
 
 .logoWrapper {
-  background: #ffffff;
-  border: 1.5px solid rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
   padding: 0.9rem 1.8rem;
   margin: 0 0.8rem;
   display: flex;

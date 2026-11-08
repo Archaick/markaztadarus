@@ -7,6 +7,7 @@ import LatestNews from "../Blog/LatestNews";
 import MarqueeComponent from "./Marquee/Marquee";
 import Programs from "./Programs/Programs";
 import Whatsapp from "../Whatsapp/Whatsapp";
+import styles from "./Home.module.css";
 const Home = () => {
   // Links like /#about from other pages: the browser's own jump runs before
   // the sections exist, so scroll once they are on the page.
@@ -18,7 +19,13 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.home}>
+      <div className={styles.backdrop} aria-hidden="true">
+        <div className={styles.pattern} />
+        <span className={`${styles.blob} ${styles.gold}`} />
+        <span className={`${styles.blob} ${styles.navy}`} />
+        <span className={`${styles.blob} ${styles.teal}`} />
+      </div>
       <Hero />
       <About />
       <Map />

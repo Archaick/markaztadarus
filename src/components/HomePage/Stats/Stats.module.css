@@ -2,8 +2,8 @@
    full-width band), the intro beside a tile per figure in gold. */
 
 .section {
-  padding: 24px 0 96px;
-  background: #f2f4f7; /* continues the Programs section above */
+  padding: 24px 0 64px;
+  background: transparent;
   font-family: "Outfit", "Inter", "Cairo", sans-serif;
 }
 
@@ -24,8 +24,10 @@
   background:
     radial-gradient(60% 80% at 0% 0%, rgba(212, 176, 74, 0.18), transparent 60%),
     radial-gradient(50% 70% at 100% 100%, rgba(80, 140, 200, 0.18), transparent 60%),
-    linear-gradient(135deg, #1a4970 0%, #0f2e4d 100%);
-  box-shadow: 0 30px 60px -36px rgba(15, 46, 77, 0.7);
+    linear-gradient(135deg, rgba(26, 73, 112, 0.9) 0%, rgba(15, 46, 77, 0.94) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 30px 60px -36px rgba(15, 46, 77, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px) saturate(140%);
   color: #fff;
   overflow: hidden;
 }
