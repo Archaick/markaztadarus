@@ -1,7 +1,7 @@
 import { collection, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
-import { LESSONS, SECTIONS, sectionType } from "./belajarSchema";
+import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, newCode, sectionType } from "./belajarSchema";
 
 // Every write of the learning platform's admin, each recorded in the
 // activity history and deletes kept in the recycle bin (see Internal/audit.js).
@@ -64,4 +64,69 @@ export async function deleteSection(user, lesson, section) {
     batch.delete(doc(db, SECTIONS, section.id));
     markDelete(`${SECTIONS}~${section.id}`, section.auditId);
   });
+}
+
+// ---------- classes (Kelas), their codes, invites and learners ----------
+
+/** A new class with its own join code (both in one save). */
+export async function createClass(user, data) {
+  const ref = doc(collection(db, CLASSES));
+  const code = newCode();
+  await auditedWrite(user, entry("bel.class.create", data.name, { lessons: data.lessonIds.length, code }, ref.id), (batch, auditId) => {
+    batch.set(ref, { ...plain(data), code, active: true, program: "guru", auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+    batch.set(doc(db, CODES, code), { classId: ref.id, active: true, auditId, createdAt: serverTimestamp() });
+  });
+  return ref.id;
+}
+
+export async function updateClass(user, klass, changes, details = {}) {
+  await auditedWrite(user, entry("bel.class.update", klass.name, details, klass.id), (batch, auditId) => {
+    batch.update(doc(db, CLASSES, klass.id), { ...plain(changes), auditId, updatedAt: serverTimestamp() });
+    // the code follows the class being open or closed
+    if ("active" in changes) batch.update(doc(db, CODES, klass.code), { active: !!changes.active, auditId, updatedAt: serverTimestamp() });
+  });
+}
+
+/** A fresh code; the old one stops working at once. */
+export async function renewCode(user, klass, oldCodeDoc) {
+  const code = newCode();
+  await auditedWrite(user, entry("bel.class.update", klass.name, { code }, klass.id), (batch, auditId, markDelete) => {
+    batch.update(doc(db, CLASSES, klass.id), { code, auditId, updatedAt: serverTimestamp() });
+    batch.set(doc(db, CODES, code), { classId: klass.id, active: klass.active !== false, auditId, createdAt: serverTimestamp() });
+    batch.delete(doc(db, CODES, klass.code));
+    markDelete(`${CODES}~${klass.code}`, oldCodeDoc?.auditId);
+  });
+  return code;
+}
+
+export async function deleteClass(user, klass, codeDoc) {
+  await auditedWrite(user, entry("bel.class.delete", klass.name, {}, klass.id), (batch, _a, markDelete) => {
+    batch.delete(doc(db, CODES, klass.code));
+    markDelete(`${CODES}~${klass.code}`, codeDoc?.auditId);
+    batch.delete(doc(db, CLASSES, klass.id));
+    markDelete(`${CLASSES}~${klass.id}`, klass.auditId);
+  });
+}
+
+/** Invites emails to a class; each one joins it the first time they sign in at /guru. */
+export async function inviteEmails(user, klass, emails, existing) {
+  await auditedWrite(user, entry("bel.invite", klass.name, { emails: emails.slice(0, 20) }, klass.id), (batch, auditId) =>
+    emails.forEach((email) => {
+      const before = existing.get(email)?.classIds || [];
+      batch.set(doc(db, INVITES, email), { classIds: Array.from(new Set([...before, klass.id])), auditId, updatedAt: serverTimestamp() });
+    })
+  );
+}
+
+export async function removeLearner(user, klass, learner) {
+  await auditedWrite(user, entry("bel.learner.remove", learner.name || learner.email, { class: klass.name }, learner.id), (batch, auditId) =>
+    batch.update(doc(db, LEARNERS, learner.id), { classIds: (learner.classIds || []).filter((c) => c !== klass.id), auditId, updatedAt: serverTimestamp() })
+  );
+}
+
+/** The admin's note on a written answer, shown to the teacher. */
+export async function saveNote(user, progress, note, label) {
+  await auditedWrite(user, entry("bel.note", label, {}, progress.id), (batch, auditId) =>
+    batch.update(doc(db, PROGRESS, progress.id), { note: note.slice(0, 2000), noteBy: user?.displayName || user?.email || "", noteAt: serverTimestamp(), auditId })
+  );
 }

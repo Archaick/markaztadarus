@@ -569,7 +569,8 @@ service cloud.firestore {
     // "belajar" only for now; teachers (/guru) will get read access later.
 
     match /belajar_lessons/{lessonId} {
-      allow read: if hasFeature("belajar");
+      // learners (any signed-in Google account) see only published surahs
+      allow read: if hasFeature("belajar") || (hasVerifiedEmail() && resource.data.get("published", false) == true);
       allow create, update: if hasFeature("belajar") && audited()
         && request.resource.data.title is string && request.resource.data.title.size() <= 200
         && request.resource.data.get("program", "guru") in ["guru", "anak"]
@@ -579,7 +580,7 @@ service cloud.firestore {
     }
 
     match /belajar_sections/{sectionId} {
-      allow read: if hasFeature("belajar");
+      allow read: if hasFeature("belajar") || hasVerifiedEmail();
       allow create, update: if hasFeature("belajar") && audited()
         && request.resource.data.lessonId is string
         && request.resource.data.key is string && request.resource.data.key.size() <= 40
@@ -588,6 +589,107 @@ service cloud.firestore {
         && request.resource.data.get("tasks", []) is list && request.resource.data.get("tasks", []).size() <= 30
         && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80;
       allow delete: if hasFeature("belajar") && marked("belajar_sections~" + sectionId);
+    }
+
+    // ---------- Belajar 5T: classes and learners (/guru, later /anak) ----------
+    // A class (Kelas) has the surahs assigned to it and a join code. A
+    // learner is any Google account that joined a class with its code or was
+    // invited by email; they may only add classes they have a code or an
+    // invite for, and write only their own progress (never undoing "done").
+
+    function learnerPath(uid) {
+      return /databases/$(database)/documents/belajar_learners/$(uid);
+    }
+
+    function inClass(classId) {
+      return isSignedIn()
+        && exists(learnerPath(request.auth.uid))
+        && get(learnerPath(request.auth.uid)).data.classIds.hasAny([classId]);
+    }
+
+    match /belajar_classes/{classId} {
+      allow read: if hasFeature("belajar") || inClass(classId);
+      allow create, update: if hasFeature("belajar") && audited()
+        && request.resource.data.name is string && request.resource.data.name.size() <= 120
+        && request.resource.data.lessonIds is list && request.resource.data.lessonIds.size() <= 120
+        && request.resource.data.code is string && request.resource.data.code.size() <= 12;
+      allow delete: if hasFeature("belajar") && marked("belajar_classes~" + classId);
+    }
+
+    // CODE -> class; a signed-in learner looks one up to join
+    match /belajar_codes/{code} {
+      allow get: if isSignedIn();
+      allow list: if hasFeature("belajar");
+      allow create, update: if hasFeature("belajar") && audited()
+        && request.resource.data.keys().hasOnly(["classId", "active", "auditId", "createdAt", "updatedAt"])
+        && request.resource.data.classId is string
+        && request.resource.data.active is bool;
+      allow delete: if hasFeature("belajar") && marked("belajar_codes~" + code);
+    }
+
+    // classes an email was invited to, claimed when that account signs in
+    match /belajar_invites/{email} {
+      allow read: if hasFeature("belajar") || (hasVerifiedEmail() && signedInEmail() == email);
+      allow create, update: if hasFeature("belajar") && audited()
+        && email == email.lower()
+        && request.resource.data.classIds is list && request.resource.data.classIds.size() <= 50;
+      allow delete: if hasFeature("belajar") && marked("belajar_invites~" + email);
+    }
+
+    // the classes a learner may add in this write: the code's class and their invites
+    function learnerAdds(uid) {
+      let before = resource == null ? [] : resource.data.get("classIds", []);
+      let added = request.resource.data.classIds.removeAll(before);
+      let code = request.resource.data.get("joinCode", "none");
+      let codePath = /databases/$(database)/documents/belajar_codes/$(code);
+      let viaCode = (code is string && code.size() > 0 && code.size() <= 12 && exists(codePath) && get(codePath).data.active == true)
+        ? [get(codePath).data.classId] : [];
+      let invitePath = /databases/$(database)/documents/belajar_invites/$(signedInEmail());
+      let viaInvite = exists(invitePath) ? get(invitePath).data.classIds : [];
+      return added.hasOnly(viaCode.concat(viaInvite));
+    }
+
+    match /belajar_learners/{uid} {
+      allow read: if (isSignedIn() && request.auth.uid == uid) || hasFeature("belajar");
+      allow create, update: if hasVerifiedEmail() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(["uid", "email", "name", "photoURL", "classIds", "joinCode", "joinedAt", "lastSeenAt", "auditId", "updatedAt"])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == signedInEmail()
+        && request.resource.data.classIds is list && request.resource.data.classIds.size() <= 50
+        && (resource == null || request.resource.data.get("auditId", "") == resource.data.get("auditId", ""))
+        && learnerAdds(uid);
+      // an admin takes someone out of a class
+      allow update: if hasFeature("belajar") && audited()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["classIds", "auditId", "updatedAt"]);
+      allow delete: if hasFeature("belajar") && marked("belajar_learners~" + uid);
+    }
+
+    function validProgress() {
+      let data = request.resource.data;
+      return data.keys().hasOnly(["uid", "lessonId", "sectionId", "sectionKey", "best", "last", "max", "attempts", "done", "doneAt", "answers", "submittedAt", "updatedAt", "note", "noteBy", "noteAt", "auditId"])
+        && data.uid is string && data.sectionId is string && data.lessonId is string
+        && data.get("answers", {}) is map && data.get("answers", {}).size() <= 40
+        && data.get("attempts", 0) is int && data.get("attempts", 0) <= 100000;
+    }
+
+    match /belajar_progress/{progressId} {
+      allow read: if (isSignedIn() && resource.data.uid == request.auth.uid) || hasFeature("belajar");
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && progressId == request.auth.uid + "_" + request.resource.data.sectionId
+        && validProgress()
+        && !request.resource.data.keys().hasAny(["note", "noteBy", "noteAt", "auditId"]);
+      allow update: if isSignedIn()
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.sectionId == resource.data.sectionId
+        && validProgress()
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(["note", "noteBy", "noteAt", "auditId"])
+        && (resource.data.get("done", false) == false || request.resource.data.get("done", false) == true);
+      // the admin's note on a written answer
+      allow update: if hasFeature("belajar") && audited()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["note", "noteBy", "noteAt", "auditId"]);
+      allow delete: if hasFeature("belajar") && marked("belajar_progress~" + progressId);
     }
 
     match /{document=**} {

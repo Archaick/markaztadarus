@@ -1,0 +1,118 @@
+{
+  "menu": {
+    "account": "Akun",
+    "join": "Gabung kelas lain",
+    "language": "Bahasa",
+    "signOut": "Keluar"
+  },
+  "signIn": {
+    "eyebrow": "Platform belajar guru",
+    "text": "Pelajari Buku Guru Metode Tadarus 5T, surat demi surat, dengan soal yang langsung dinilai.",
+    "google": "Masuk dengan Google",
+    "failed": "Gagal masuk. Coba lagi."
+  },
+  "join": {
+    "hello": "Assalamu'alaikum, {{name}}",
+    "title": "Masukkan kode kelas",
+    "text": "Kode 6 huruf dari admin Markaz Tadarus.",
+    "code": "Kode kelas",
+    "button": "Gabung",
+    "unknown": "Kode tidak ditemukan. Periksa lagi hurufnya.",
+    "closed": "Kelas ini sedang tidak menerima peserta baru.",
+    "already": "Anda sudah ada di kelas ini.",
+    "ok": "Berhasil bergabung!",
+    "failed": "Gagal bergabung. Periksa koneksi Anda.",
+    "otherAccount": "Bukan {{email}}? Ganti akun",
+    "back": "Kembali ke beranda"
+  },
+  "home": {
+    "morning": "Selamat pagi",
+    "noon": "Selamat siang",
+    "afternoon": "Selamat sore",
+    "evening": "Selamat malam",
+    "salam": "Assalamu'alaikum, {{name}}",
+    "start": "Mulai belajar",
+    "continue": "Lanjutkan",
+    "surah": "Surat {{name}}",
+    "allDone": "Semua selesai, masya Allah!",
+    "allDoneText": "Anda telah menyelesaikan semua bagian. Ulangi kapan saja untuk menambah bintang.",
+    "nothingYet": "Belum ada surat untuk kelas Anda. Admin akan segera menambahkannya.",
+    "yourSurahs": "Surat Anda",
+    "steps": "{{done}} dari {{total}} bagian"
+  },
+  "surah": {
+    "back": "Beranda",
+    "missing": "Surat ini tidak tersedia untuk kelas Anda.",
+    "meta": "{{ayat}} ayat · {{done}}/{{total}} bagian",
+    "locked": "Selesaikan bagian sebelumnya dulu",
+    "best": "Nilai terbaik {{best}}/{{max}}",
+    "questions": "{{count}} soal",
+    "tasks": "{{count}} tugas tertulis",
+    "sent": "Terkirim, menunggu catatan admin",
+    "noted": "Admin memberi catatan",
+    "read": "Sudah dibaca",
+    "toRead": "Bacaan"
+  },
+  "view": {
+    "ready": "{{count}} soal siap dikerjakan",
+    "readyHint": "Satu soal per kartu. Yang salah akan muncul lagi.",
+    "start": "Mulai",
+    "again": "Ulangi",
+    "haveRead": "Saya sudah membaca",
+    "noteFrom": "Catatan dari {{name}}",
+    "task": "Tugas {{n}}",
+    "writeHere": "Tulis jawaban Anda…",
+    "send": "Kirim jawaban",
+    "resend": "Kirim ulang"
+  },
+  "qtype": {
+    "single": "Pilih satu jawaban",
+    "multi": "Pilih semua yang benar",
+    "truefalse": "Benar atau salah?",
+    "match": "Pasangkan"
+  },
+  "player": {
+    "exit": "Keluar",
+    "check": "Periksa",
+    "continue": "Lanjut",
+    "notQuite": "Belum tepat",
+    "correctIs": "Jawaban yang benar:",
+    "comesBack": "Soal ini akan muncul lagi sebentar lagi.",
+    "tryAgain": "Coba lagi",
+    "praise": [
+      "Benar, masya Allah!",
+      "Barakallahu fiik!",
+      "Tepat sekali!",
+      "Bagus sekali!",
+      "Luar biasa!"
+    ],
+    "endGreat": "Mumtaz! Luar biasa!",
+    "endGood": "Bagus, terus semangat!",
+    "endKeep": "Terus berlatih, pasti bisa!",
+    "right": "Benar",
+    "accuracy": "Akurasi",
+    "time": "Waktu",
+    "done": "Selesai",
+    "again": "Latihan lagi"
+  },
+  "section": {
+    "tadarus": "Tadarus Surat",
+    "tujuan": "Tujuan & Target",
+    "pendahuluan": "Pendahuluan Menarik",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir & Makna Kata",
+    "tuhanku": "Mengenal Tuhanku",
+    "doaku": "Doaku",
+    "rasulku": "Rasulku Mengajariku",
+    "akhlakku": "Al-Qur'an Akhlakku",
+    "keterampilan": "Keterampilanku",
+    "amalku": "Amalku"
+  },
+  "fiveT": {
+    "tamhid": "Tamhid",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir",
+    "tadabbur": "Tadabbur",
+    "tazkiyah": "Tazkiyah"
+  }
+}

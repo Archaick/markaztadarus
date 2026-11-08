@@ -9,6 +9,25 @@ export const NS = "internal/Belajar";
 
 export const LESSONS = "belajar_lessons";
 export const SECTIONS = "belajar_sections";
+// classes (Kelas) with the surahs assigned to them, their join codes, the
+// learners (one per Google account), email invites, and progress
+// (one per learner per section: "<uid>_<sectionId>").
+export const CLASSES = "belajar_classes";
+export const CODES = "belajar_codes";
+export const LEARNERS = "belajar_learners";
+export const INVITES = "belajar_invites";
+export const PROGRESS = "belajar_progress";
+
+/** A join code that is easy to read out and type: no 0/O, 1/I/L. */
+export function newCode() {
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let out = "";
+  const bytes = crypto.getRandomValues(new Uint8Array(6));
+  bytes.forEach((b) => (out += chars[b % chars.length]));
+  return out;
+}
+
+export const normalizeCode = (value) => (value || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
 
 export const PROGRAMS = ["guru", "anak"];
 
@@ -72,3 +91,33 @@ export const issuesOfSection = (section) => questionsOf(section).filter((q) => q
 
 /** Surah lessons in the book's order. */
 export const byOrder = (a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || "").localeCompare(b.title || "");
+
+/** A section has something for a learner (questions, text or tasks). */
+export const hasContent = (s) => questionsOf(s).length > 0 || (s?.reading || []).some((b) => (b.text || "").trim()) || (s?.tasks || []).length > 0;
+
+const rankOf = (s) => {
+  const i = SECTION_TYPES.findIndex((x) => x.key === s.key);
+  return i < 0 ? 99 : i;
+};
+
+/** The sections a learner works through in one surah, in the book's order. */
+export const learnerSections = (sections, lessonId) => sections.filter((s) => s.lessonId === lessonId && hasContent(s)).sort((a, b) => rankOf(a) - rankOf(b));
+
+/**
+ * Where a learner is in one surah: each section with done / open / locked
+ * (a section opens when the one before it is done), and how far along.
+ * `progress` is a Map sectionId → progress document.
+ */
+export function surahState(sections, lessonId, progress) {
+  const list = learnerSections(sections, lessonId);
+  let open = true;
+  const steps = list.map((s) => {
+    const p = progress.get(s.id);
+    const done = !!p?.done;
+    const state = done ? "done" : open ? "open" : "locked";
+    if (!done) open = false;
+    return { section: s, progress: p, state };
+  });
+  const done = steps.filter((x) => x.state === "done").length;
+  return { steps, done, total: steps.length, percent: steps.length ? Math.round((done / steps.length) * 100) : 0, next: steps.find((x) => x.state === "open") || null };
+}

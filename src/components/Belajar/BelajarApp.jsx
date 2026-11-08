@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Loader } from "@mantine/core";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { IconBook2, IconDatabaseExport, IconHistory, IconTrash, IconUsersGroup } from "@tabler/icons-react";
+import { IconBook2, IconDatabaseExport, IconHistory, IconSchool, IconTrash, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import RequireFeature from "../Internal/RequireFeature";
 import AppShell from "../Internal/AppShell";
@@ -12,6 +12,8 @@ import { BelajarProvider, useBelajar } from "./BelajarData";
 import LessonsPage from "./LessonsPage";
 import LessonPage from "./LessonPage";
 import SectionPage from "./SectionPage";
+import ClassesPage from "./ClassesPage";
+import ClassPage from "./ClassPage";
 import { BASE, NS } from "./belajarSchema";
 
 // the super admin's pages, the same as the site's, for this platform's records only
@@ -23,13 +25,16 @@ const Backup = lazy(() => import("../Internal/Backup"));
 function Shell({ children }) {
   const { t } = useTranslation(NS);
   const { isSuperAdmin } = useAccess();
-  const { lessons } = useBelajar();
+  const { lessons, classes } = useBelajar();
   const trash = useTrashList();
   const waiting = Array.isArray(trash) ? trash.filter((g) => !g.restoredAt && BELAJAR_SCOPE.includes(g.area)).length : null;
   const sections = [
     {
       label: t("nav.guru"),
-      items: [{ to: BASE, end: true, icon: IconBook2, label: t("nav.lessons"), count: lessons?.length ?? null }],
+      items: [
+        { to: BASE, end: true, icon: IconBook2, label: t("nav.lessons"), count: lessons?.length ?? null },
+        { to: `${BASE}/kelas`, icon: IconSchool, label: t("nav.classes"), count: classes?.length ?? null },
+      ],
     },
     ...(isSuperAdmin
       ? [
@@ -81,6 +86,8 @@ export default function BelajarApp() {
                 <Route index element={<LessonsPage />} />
                 <Route path="surat/:lessonId" element={<LessonPage />} />
                 <Route path="surat/:lessonId/:sectionKey" element={<SectionPage />} />
+                <Route path="kelas" element={<ClassesPage />} />
+                <Route path="kelas/:classId" element={<ClassPage />} />
                 <Route path="akses" element={<SuperOnly><AccessPage /></SuperOnly>} />
                 <Route path="riwayat" element={<SuperOnly><History /></SuperOnly>} />
                 <Route path="sampah" element={<SuperOnly><RecentlyDeleted /></SuperOnly>} />

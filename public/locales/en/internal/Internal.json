@@ -281,7 +281,17 @@
         "backup": {
           "download": "Downloaded a learning platform backup",
           "restore": "Restored a learning platform backup"
-        }
+        },
+        "class": {
+          "create": "Created a class",
+          "update": "Changed a class",
+          "delete": "Deleted a class"
+        },
+        "invite": "Invited learners",
+        "learner": {
+          "remove": "Removed a learner from a class"
+        },
+        "note": "Left a note on an answer"
       }
     },
     "fields": {
@@ -473,7 +483,12 @@
       "internal_admins_one": "{{count}} admin",
       "internal_admins_other": "{{count}} admins",
       "belajar_lessons": "{{count}} surahs",
-      "belajar_sections": "{{count}} sections"
+      "belajar_sections": "{{count}} sections",
+      "belajar_classes": "{{count}} classes",
+      "belajar_codes": "{{count}} class codes",
+      "belajar_invites": "{{count}} invites",
+      "belajar_learners": "{{count}} learners",
+      "belajar_progress": "{{count}} progress records"
     }
   },
   "backup": {

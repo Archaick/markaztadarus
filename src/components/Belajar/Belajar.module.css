@@ -273,3 +273,188 @@ a.row:hover {
   backdrop-filter: var(--surface-blur, none);
   -webkit-backdrop-filter: var(--surface-blur, none);
 }
+
+/* ── classes (Kelas) ── */
+.classCard {
+  overflow: hidden;
+}
+.classGlow {
+  position: absolute;
+  inset: -40% -30% auto auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(150, 185, 225, 0.45), transparent 70%);
+  pointer-events: none;
+}
+.codePill {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1a4970, #003366);
+  color: #fff;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  box-shadow: 0 10px 20px -12px rgba(0, 51, 102, 0.8);
+}
+.pickList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.pickItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1.5px solid var(--surface-line, var(--line));
+  background: var(--surface, #fff);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.pickOn {
+  border-color: #1a4970;
+  background: rgba(26, 73, 112, 0.08);
+}
+.pickName {
+  flex: 1;
+  font-weight: 700;
+}
+.pickAr {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+
+.codeCard {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 26px;
+  border-radius: 26px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(60% 120% at 100% 0%, rgba(150, 185, 225, 0.35), transparent 60%),
+    linear-gradient(135deg, rgba(26, 73, 112, 0.94), rgba(0, 34, 68, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 30px 60px -34px rgba(0, 34, 68, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.codeMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.codeLabel {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+.codeBig {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  line-height: 1.1;
+}
+.codeHint {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9rem;
+}
+.codeActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.codeSwitch {
+  color: #fff;
+  font-weight: 600;
+}
+
+.rowButton {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.rowButton:hover {
+  background: rgba(26, 73, 112, 0.05);
+}
+.meter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(220px, 30vw);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.stepRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+.stepRow + .stepRow {
+  border-top: 1px solid var(--line);
+}
+.stepDot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #fff;
+}
+.step_done {
+  background: #10b981;
+}
+.step_open {
+  background: #fff;
+  border: 2px solid #cc9933;
+}
+.step_locked {
+  background: #cbd5e1;
+}
+.stepName {
+  flex: 1;
+  font-weight: 600;
+}
+.stepScore {
+  font-weight: 800;
+  color: #003366;
+}
+.stepTries {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.answers {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(26, 73, 112, 0.05);
+}
+.answer + .answer {
+  margin-top: 10px;
+}
+.answerText {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fff;
+}
+@media (max-width: 640px) {
+  .meter {
+    width: 110px;
+  }
+}

@@ -281,7 +281,17 @@
         "backup": {
           "download": "نزّل نسخة احتياطية لمنصة التعلّم",
           "restore": "استعاد نسخة احتياطية لمنصة التعلّم"
-        }
+        },
+        "class": {
+          "create": "أنشأ فصلًا",
+          "update": "عدّل فصلًا",
+          "delete": "حذف فصلًا"
+        },
+        "invite": "دعا متعلّمين",
+        "learner": {
+          "remove": "أخرج متعلّمًا من فصل"
+        },
+        "note": "كتب ملاحظة على إجابة"
       }
     },
     "fields": {
@@ -455,7 +465,12 @@
       "supervisi_instruments": "أدوات: {{count}}",
       "internal_admins": "مشرفون: {{count}}",
       "belajar_lessons": "{{count}} سورة",
-      "belajar_sections": "{{count}} قسم"
+      "belajar_sections": "{{count}} قسم",
+      "belajar_classes": "{{count}} فصل",
+      "belajar_codes": "{{count}} رمز فصل",
+      "belajar_invites": "{{count}} دعوة",
+      "belajar_learners": "{{count}} متعلّم",
+      "belajar_progress": "{{count}} سجل تقدّم"
     }
   },
   "backup": {

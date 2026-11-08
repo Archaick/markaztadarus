@@ -1,0 +1,118 @@
+{
+  "menu": {
+    "account": "Account",
+    "join": "Join another class",
+    "language": "Language",
+    "signOut": "Sign out"
+  },
+  "signIn": {
+    "eyebrow": "Teacher learning platform",
+    "text": "Study the Teacher's Book of the Tadarus 5T Method, surah by surah, with questions marked instantly.",
+    "google": "Sign in with Google",
+    "failed": "Could not sign in. Try again."
+  },
+  "join": {
+    "hello": "Assalamu'alaikum, {{name}}",
+    "title": "Enter your class code",
+    "text": "The 6-letter code from the Markaz Tadarus admin.",
+    "code": "Class code",
+    "button": "Join",
+    "unknown": "That code was not found. Check the letters.",
+    "closed": "This class is not taking new learners right now.",
+    "already": "You are already in this class.",
+    "ok": "You joined!",
+    "failed": "Could not join. Check your connection.",
+    "otherAccount": "Not {{email}}? Switch account",
+    "back": "Back to home"
+  },
+  "home": {
+    "morning": "Good morning",
+    "noon": "Good afternoon",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "salam": "Assalamu'alaikum, {{name}}",
+    "start": "Start learning",
+    "continue": "Continue",
+    "surah": "Surah {{name}}",
+    "allDone": "All done, masha'Allah!",
+    "allDoneText": "You have finished every section. Practise again any time to earn more stars.",
+    "nothingYet": "No surahs for your class yet. The admin will add them soon.",
+    "yourSurahs": "Your surahs",
+    "steps": "{{done}} of {{total}} sections"
+  },
+  "surah": {
+    "back": "Home",
+    "missing": "This surah is not available for your class.",
+    "meta": "{{ayat}} ayat · {{done}}/{{total}} sections",
+    "locked": "Finish the section before it first",
+    "best": "Best score {{best}}/{{max}}",
+    "questions": "{{count}} questions",
+    "tasks": "{{count}} written tasks",
+    "sent": "Sent, waiting for the admin's note",
+    "noted": "The admin left a note",
+    "read": "Read",
+    "toRead": "Reading"
+  },
+  "view": {
+    "ready": "{{count}} questions ready",
+    "readyHint": "One question per card. Missed ones come back.",
+    "start": "Start",
+    "again": "Practise again",
+    "haveRead": "I have read this",
+    "noteFrom": "Note from {{name}}",
+    "task": "Task {{n}}",
+    "writeHere": "Write your answer…",
+    "send": "Send answers",
+    "resend": "Send again"
+  },
+  "qtype": {
+    "single": "Choose one answer",
+    "multi": "Choose all that are correct",
+    "truefalse": "True or false?",
+    "match": "Match the pairs"
+  },
+  "player": {
+    "exit": "Leave",
+    "check": "Check",
+    "continue": "Continue",
+    "notQuite": "Not quite",
+    "correctIs": "The correct answer:",
+    "comesBack": "This question will come back shortly.",
+    "tryAgain": "Try again",
+    "praise": [
+      "Correct, masha'Allah!",
+      "Barakallahu fik!",
+      "Exactly right!",
+      "Well done!",
+      "Excellent!"
+    ],
+    "endGreat": "Mumtaz! Excellent!",
+    "endGood": "Good, keep going!",
+    "endKeep": "Keep practising, you can do it!",
+    "right": "Correct",
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "done": "Done",
+    "again": "Practise again"
+  },
+  "section": {
+    "tadarus": "Surah Tadarus",
+    "tujuan": "Goals & Targets",
+    "pendahuluan": "Engaging Introduction",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir & Word Meanings",
+    "tuhanku": "Knowing My Lord",
+    "doaku": "My Du'a",
+    "rasulku": "My Prophet Teaches Me",
+    "akhlakku": "The Qur'an, My Character",
+    "keterampilan": "My Skills",
+    "amalku": "My Deeds"
+  },
+  "fiveT": {
+    "tamhid": "Tamhid",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir",
+    "tadabbur": "Tadabbur",
+    "tazkiyah": "Tazkiyah"
+  }
+}

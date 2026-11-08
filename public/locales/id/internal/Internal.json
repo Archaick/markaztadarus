@@ -281,7 +281,17 @@
         "backup": {
           "download": "Mengunduh cadangan platform belajar",
           "restore": "Memulihkan cadangan platform belajar"
-        }
+        },
+        "class": {
+          "create": "Membuat kelas",
+          "update": "Mengubah kelas",
+          "delete": "Menghapus kelas"
+        },
+        "invite": "Mengundang peserta",
+        "learner": {
+          "remove": "Mengeluarkan peserta dari kelas"
+        },
+        "note": "Memberi catatan pada jawaban"
       }
     },
     "fields": {
@@ -455,7 +465,12 @@
       "supervisi_instruments": "{{count}} instrumen",
       "internal_admins": "{{count}} admin",
       "belajar_lessons": "{{count}} surat",
-      "belajar_sections": "{{count}} bagian"
+      "belajar_sections": "{{count}} bagian",
+      "belajar_classes": "{{count}} kelas",
+      "belajar_codes": "{{count}} kode kelas",
+      "belajar_invites": "{{count}} undangan",
+      "belajar_learners": "{{count}} peserta",
+      "belajar_progress": "{{count}} catatan kemajuan"
     }
   },
   "backup": {

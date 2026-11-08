@@ -30,7 +30,7 @@ export const TREE = [
 ];
 
 // The learning platform (/belajar) is backed up apart, from its own page.
-export const BELAJAR_TREE = [["belajar_lessons"], ["belajar_sections"]];
+export const BELAJAR_TREE = [["belajar_lessons"], ["belajar_sections"], ["belajar_classes"], ["belajar_codes"], ["belajar_invites"], ["belajar_learners"], ["belajar_progress"]];
 
 // documents whose inner collections are read at once
 const PARALLEL = 8;
