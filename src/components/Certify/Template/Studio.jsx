@@ -75,7 +75,7 @@ function FitSheet({ data, placeholders }) {
  * Tadarus template with its own words, logos and signers), then issued to the
  * participants and downloaded as print-ready PDFs.
  */
-export default function Studio({ designs, certs, signers, notify, onIssue }) {
+export default function Studio({ designs, certs, signers, notify, onIssue, onDelete }) {
   const { t } = useTranslation(NS);
   const [openId, setOpenId] = useState(null); // a design id, or "new"
 
@@ -90,6 +90,7 @@ export default function Studio({ designs, certs, signers, notify, onIssue }) {
         signers={signers}
         notify={notify}
         onIssue={onIssue}
+        onDelete={onDelete}
         onClose={() => setOpenId(null)}
         onCreated={setOpenId}
       />
@@ -143,7 +144,7 @@ export default function Studio({ designs, certs, signers, notify, onIssue }) {
   );
 }
 
-function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCreated }) {
+function DesignEditor({ design, certs, signers, notify, onIssue, onDelete, onClose, onCreated }) {
   const { t } = useTranslation(NS);
   const { user, email } = useAccess();
   const isNew = !design;
@@ -341,6 +342,7 @@ function DesignEditor({ design, certs, signers, notify, onIssue, onClose, onCrea
               issued={issued}
               signers={signers}
               onIssue={onIssue}
+              onDelete={onDelete}
               notify={notify}
               previewId={previewId}
               onPreview={(id) => setPreviewId((p) => (p === id ? null : id))}
@@ -496,7 +498,7 @@ function LookFields({ form, set, signerOptions, signers }) {
   );
 }
 
-function People({ design, dirty, issued, signers, onIssue, notify, previewId, onPreview }) {
+function People({ design, dirty, issued, signers, onIssue, onDelete, notify, previewId, onPreview }) {
   const { t } = useTranslation(NS);
   const [pasted, setPasted] = useState("");
   const [issuing, setIssuing] = useState(null); // progress 0..1
@@ -690,6 +692,13 @@ function People({ design, dirty, issued, signers, onIssue, notify, previewId, on
                     <IconFileTypePdf size={17} />
                   </ActionIcon>
                 </Tooltip>
+                {onDelete && (
+                  <Tooltip label={t("studio.people.delete")}>
+                    <ActionIcon variant="subtle" color="red" disabled={!!making} onClick={() => onDelete(c)} aria-label={t("studio.people.delete")}>
+                      <IconTrash size={17} />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
               </li>
             ))}
           </ul>

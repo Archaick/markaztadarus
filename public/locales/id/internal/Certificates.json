@@ -353,7 +353,8 @@
       "making": "Membuat PDF… {{percent}}%",
       "revoked": "Dicabut",
       "excelFailed": "File Excel itu tidak bisa dibaca.",
-      "pdfFailed": "PDF gagal dibuat. Coba lagi."
+      "pdfFailed": "PDF gagal dibuat. Coba lagi.",
+      "delete": "Hapus sertifikat peserta ini"
     },
     "errors": {
       "noName": "Isi nama acara.",

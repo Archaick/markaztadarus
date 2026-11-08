@@ -719,7 +719,7 @@ export default function Admin() {
             )}
 
             {view === "studio" && (
-              <Studio designs={designs} certs={certs} signers={signers} notify={notify} onIssue={createMany} />
+              <Studio designs={designs} certs={certs} signers={signers} notify={notify} onIssue={createMany} onDelete={setDeleting} />
             )}
 
             {view === "signers" && (

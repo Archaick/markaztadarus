@@ -353,7 +353,8 @@
       "making": "Making the PDF… {{percent}}%",
       "revoked": "Revoked",
       "excelFailed": "That Excel file could not be read.",
-      "pdfFailed": "The PDF could not be made. Try again."
+      "pdfFailed": "The PDF could not be made. Try again.",
+      "delete": "Delete this participant's certificate"
     },
     "errors": {
       "noName": "Give the event a name.",

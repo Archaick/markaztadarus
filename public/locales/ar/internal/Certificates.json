@@ -353,7 +353,8 @@
       "making": "جارٍ إنشاء PDF… {{percent}}%",
       "revoked": "ملغاة",
       "excelFailed": "تعذّرت قراءة ملف Excel.",
-      "pdfFailed": "تعذّر إنشاء PDF. حاول مرة أخرى."
+      "pdfFailed": "تعذّر إنشاء PDF. حاول مرة أخرى.",
+      "delete": "حذف شهادة هذا المشارك"
     },
     "errors": {
       "noName": "اكتب اسم الفعالية.",
