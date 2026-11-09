@@ -3,6 +3,7 @@ import { IconCheck, IconClock, IconRefresh, IconStarFilled, IconTarget, IconVolu
 import { useTranslation } from "react-i18next";
 import { questionsOf } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
+import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -37,7 +38,7 @@ const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
  * little later until it is right; the score counts first tries. The end
  * shows stars, accuracy and time. `onFinish({ score, max })` saves it.
  */
-export default function Player({ section, title, celebrate, onFinish, onExit }) {
+export default function Player({ section, title, guide, onFinish, onExit }) {
   const { t } = useTranslation(NS);
   const questions = useMemo(() => questionsOf(section), [section]);
   const [queue, setQueue] = useState(() => questions.map((_, i) => i));
@@ -51,6 +52,7 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
   const [ended, setEnded] = useState(null);
   const [sound, setSound] = useState(soundOn);
   const [hold, setHold] = useState(false); // tapped the sheet: wait for "Lanjut"
+  const [fired, setFired] = useState(null); // the question whose beam just went out
   const started = useRef(Date.now());
   const saved = useRef(false);
 
@@ -70,13 +72,16 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
   const mark = useCallback(
     (ok) => {
       setFirst((f) => (qi in f ? f : { ...f, [qi]: ok }));
-      if (ok) setSolved((s) => new Set(s).add(qi));
+      if (ok) {
+        setSolved((s) => new Set(s).add(qi));
+        setFired(questions[qi].id);
+      }
       else setQueue((list) => [...list.slice(0, pos + 1 + RETRY_GAP), qi, ...list.slice(pos + 1 + RETRY_GAP)]);
       play(ok ? "right" : "wrong");
       const words = Array.isArray(praises) ? praises : ["✓"];
       setVerdict({ ok, praise: words[Math.floor(Math.random() * words.length)] });
     },
-    [qi, pos, praises]
+    [qi, pos, praises, questions]
   );
 
   const finish = useCallback(() => {
@@ -110,8 +115,25 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
     else mark(sameSet(picked, q.correct || []));
   };
 
+  const without = (k) => Object.fromEntries(Object.entries(pairs).filter(([left]) => Number(left) !== k));
+
+  // tapping a paired item on the left takes it back and makes it the one to place again
+  const tapLeft = (k) => {
+    if (verdict) return;
+    if (pairs[k] !== undefined) setPairs(without(k));
+    setLeftOn(k);
+  };
+
   const tapRight = (j) => {
-    if (verdict || leftOn === null) return;
+    if (verdict) return;
+    const owner = Object.keys(pairs).find((k) => pairs[k] === j);
+    // nothing being placed, or tapping the pair of the one being placed: take that pair back
+    if (owner !== undefined && (leftOn === null || Number(owner) === leftOn)) {
+      setPairs(without(Number(owner)));
+      setLeftOn(Number(owner));
+      return;
+    }
+    if (leftOn === null) return;
     const clean = Object.fromEntries(Object.entries(pairs).filter(([, v]) => v !== j));
     setPairs({ ...clean, [leftOn]: j });
     const nextFree = q.left.findIndex((_, k) => k !== leftOn && clean[k] === undefined);
@@ -144,6 +166,17 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
     return () => window.removeEventListener("keydown", onKey);
   });
 
+  // the player is the whole screen: only it scrolls, not the page behind it
+  useEffect(() => {
+    const { documentElement: html, body } = document;
+    const before = [html.style.overflow, body.style.overflow];
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    return () => {
+      [html.style.overflow, body.style.overflow] = before;
+    };
+  }, []);
+
   // in match questions, start with the first row ready
   useEffect(() => {
     if (q?.type === "match") setLeftOn(0);
@@ -151,22 +184,31 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
 
   if (!questions.length) return null;
 
+  // the sky: real progress through the surah, or (in an admin preview) through these questions
+  const frac = solved.size / questions.length;
+  const steps = guide?.steps || [];
+  const firedQuestion = fired ? questions.find((x) => x.id === fired) : null;
+  const sky = (
+    <Sky
+      className={styles.skyFull}
+      label={title}
+      names={fiveNames(t)}
+      shares={guide ? quizShares(steps, guide.sectionId, frac) : sharesOf(questions.map((x, i) => ({ t: x.fiveT, done: solved.has(i) })))}
+      progress={steps.length ? steps.reduce((n, x) => n + (x.state === "done" ? 1 : x.section.id === guide.sectionId ? frac : 0), 0) / steps.length : frac}
+      fireKey={fired}
+      fireT={firedQuestion ? firedQuestion.fiveT || guide?.tag : undefined}
+      celebrate={!!ended}
+    />
+  );
+
   if (ended) {
     const pct = ended.max ? Math.round((ended.score / ended.max) * 100) : 100;
     const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct > 0 ? 1 : 0;
     const time = `${Math.floor(ended.seconds / 60)}:${String(ended.seconds % 60).padStart(2, "0")}`;
     return (
-      <div className={styles.player}>
+      <div className={`${styles.player} ${styles.skyOn}`}>
+      {sky}
         <div className={styles.endWrap}>
-          {celebrate ? (
-            <div className={`${styles.lightCard} ${styles.lightEnd}`}>{celebrate}</div>
-          ) : (
-            <div className={styles.burst} aria-hidden="true">
-              {Array.from({ length: 14 }, (_, i) => (
-                <span key={i} style={{ "--i": i }} />
-              ))}
-            </div>
-          )}
           <div className={styles.stars}>
             {[0, 1, 2].map((i) => (
               <IconStarFilled key={i} className={i < stars ? styles.starOn : styles.starOff} style={{ animationDelay: `${0.25 + i * 0.18}s` }} />
@@ -204,6 +246,7 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
               setPos(0);
               setFirst({});
               setSolved(new Set());
+              setFired(null);
               reset();
               setEnded(null);
               started.current = Date.now();
@@ -231,7 +274,8 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
   const rightText = q.type === "match" ? q.left.map((l, k) => `${l} → ${q.right[q.answer[k]] ?? "?"}`).join("\n") : (q.correct || []).map((k) => q.options[k]).join("\n");
 
   return (
-    <div className={styles.player}>
+    <div className={`${styles.player} ${styles.skyOn}`}>
+      {sky}
       <div className={styles.playerTop}>
         <button type="button" className={styles.close} onClick={onExit} aria-label={t("player.exit")}>
           <IconX size={22} />
@@ -257,7 +301,14 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
       </div>
 
       <div className={styles.stage} key={`${pos}-${qi}`}>
-        <span className={styles.kicker}>{!verdict && first[qi] === false ? t("player.tryAgain") : t(`qtype.${q.type}`)}</span>
+        <div className={styles.kickerRow}>
+          <span className={styles.kicker}>{!verdict && first[qi] === false ? t("player.tryAgain") : t(`qtype.${q.type}`)}</span>
+          {(q.fiveT || guide?.tag) && (
+            <span className={styles.kickerFive} style={{ "--c": FIVE_COLOR[q.fiveT || guide.tag] }}>
+              {t(`fiveT.${q.fiveT || guide.tag}`)}
+            </span>
+          )}
+        </div>
         <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir="auto">
           {q.stem}
         </p>
@@ -265,7 +316,10 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
         {q.type === "task" ? (
           <textarea className={styles.taskBox} rows={Math.max(3, q.lines || 3)} placeholder={t("player.writeHere")} dir="auto" />
         ) : q.type === "match" ? (
-          <MatchBoard q={q} order={order} pairs={pairs} leftOn={leftOn} verdict={verdict} onLeft={(k) => !verdict && setLeftOn(k)} onRight={tapRight} />
+          <>
+            <MatchBoard q={q} order={order} pairs={pairs} leftOn={leftOn} verdict={verdict} onLeft={tapLeft} onRight={tapRight} />
+            {!verdict && Object.keys(pairs).length > 0 && <p className={styles.matchHint}>{t("player.matchUndo")}</p>}
+          </>
         ) : (
           <div className={q.type === "truefalse" ? styles.twoUp : styles.options}>
             {q.options.map((opt, k) => (
@@ -285,7 +339,9 @@ export default function Player({ section, title, celebrate, onFinish, onExit }) 
             className={styles.primaryBig}
             onClick={() => {
               setSolved((x) => new Set(x).add(qi));
-              next();
+              setFired(q.id);
+              play("right");
+              setTimeout(next, 750);
             }}
           >
             {t("player.continue")}

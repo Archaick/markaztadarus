@@ -98,7 +98,8 @@
     "soundOn": "Turn sound on",
     "soundOff": "Turn sound off",
     "tapToStay": "Tap here to pause",
-    "writeHere": "Write your answer here…"
+    "writeHere": "Write your answer here…",
+    "matchUndo": "Made a mistake? Tap a pair to undo it."
   },
   "section": {
     "tadarus": "Surah Tadarus",

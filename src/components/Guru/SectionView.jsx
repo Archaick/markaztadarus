@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { IconArrowLeft, IconCheck, IconMessageCircle, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { kindOf, questionsOf, sectionTitle } from "../Belajar/belajarSchema";
+import { fiveTOf, kindOf, questionsOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
 import Player from "./Player";
-import Lantern, { lanternItems } from "./Lantern";
 import styles from "./Guru.module.css";
 
 /** One section: its text to read, then the practice player; or written tasks; or a reading. */
@@ -36,7 +35,7 @@ export default function SectionView() {
       <Player
         section={section}
         title={title}
-        celebrate={<Lantern items={lanternItems(surah.steps)} fire={section.id} label={surah.lesson.title} />}
+        guide={{ steps: surah.steps, sectionId: section.id, tag: fiveTOf(section) }}
         onFinish={(r) => saveProgress(section, r).catch((err) => console.error("Could not save progress:", err))}
         onExit={() => navigate(backTo)}
       />

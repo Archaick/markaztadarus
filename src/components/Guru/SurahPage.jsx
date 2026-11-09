@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { fiveTOf, kindOf, sectionTitle } from "../Belajar/belajarSchema";
 import { useLearner } from "./guruData";
 import { GURU, NS, TopBar } from "./GuruApp";
-import Lantern, { FIVE, FIVE_COLOR, lanternItems } from "./Lantern";
+import Sky, { FIVE, FIVE_COLOR, fiveNames, sharesOf, stepItems } from "./Sky";
 import styles from "./Guru.module.css";
 
 export const starsOf = (p) => {
@@ -39,7 +39,9 @@ export default function SurahPage() {
           <IconArrowLeft size={18} className={styles.flip} /> {t("surah.back")}
         </Link>
         <section className={`${styles.lightCard} ${styles.lightHero}`}>
-          <Lantern items={lanternItems(s.steps)} label={`${s.lesson.title}: ${s.percent}%`} />
+          <div className={styles.skyBand}>
+            <Sky mode="card" className={styles.skyFill} names={fiveNames(t)} shares={sharesOf(stepItems(s.steps))} progress={s.percent / 100} label={`${s.lesson.title}: ${s.percent}%`} />
+          </div>
           <span className={styles.lightAr}>{s.lesson.titleAr}</span>
           <h1 className={styles.lightTitle}>{s.lesson.title}</h1>
           <span className={styles.lightMeta}>{t("surah.meta", { ayat: (s.lesson.ayat || []).length, done: s.done, total: s.total })}</span>

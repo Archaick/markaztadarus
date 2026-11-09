@@ -1426,26 +1426,92 @@
   border-color: var(--navy-2);
 }
 
-/* the lantern's dark glass surfaces */
+/* the sky: behind the whole quiz, and in a band or thumbnail elsewhere */
+.skyFull {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.skyFill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.skyOn {
+  background: #081a35;
+}
+.skyOn .playerTop {
+  position: relative;
+}
+.skyOn .close,
+.skyOn .count {
+  color: #fff;
+}
+.skyOn .bar {
+  background: rgba(255, 255, 255, 0.22);
+}
+/* the question sits on frosted glass, so it reads the same at night and at dawn */
+.skyOn .stage {
+  position: relative;
+  flex: none;
+  width: min(720px, calc(100% - 24px));
+  margin: 84px auto 200px;
+  padding: 20px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 50px -28px rgba(5, 15, 35, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.skyOn .endWrap {
+  margin: 150px auto 30px;
+  width: min(460px, calc(100% - 24px));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 50px -28px rgba(5, 15, 35, 0.7);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.kickerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.kickerFive {
+  padding: 3px 10px;
+  border: 1px solid var(--c);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 14%, #fff);
+  color: color-mix(in srgb, var(--c) 60%, #0f1f33);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
 .lightCard {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-line);
   border-radius: 30px;
-  color: #fff;
-  background:
-    radial-gradient(90% 80% at 50% 38%, #24598a 0%, transparent 72%),
-    linear-gradient(165deg, #173f63 0%, #0b2038 100%);
-  box-shadow: 0 26px 46px -28px rgba(10, 30, 55, 0.75);
+  color: var(--navy);
+  background: var(--glass-strong);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
 }
 .lightHero {
   padding: 0 18px 18px;
   margin-bottom: 8px;
   text-align: center;
 }
-.lightHero svg {
-  max-width: 400px;
-  margin: 0 auto -18px;
+.skyBand {
+  position: relative;
+  height: 170px;
+  margin: 0 -18px 8px;
 }
 .lightAr {
   position: relative;
@@ -1453,6 +1519,7 @@
   font-family: "Amiri", serif;
   font-size: 2.3rem;
   line-height: 1.5;
+  color: var(--navy-2);
 }
 .lightTitle {
   position: relative;
@@ -1464,7 +1531,7 @@
   position: relative;
   display: block;
   margin-top: 2px;
-  color: #b9cfe6;
+  color: var(--muted);
   font-size: 0.9rem;
 }
 .fiveRow {
@@ -1480,13 +1547,11 @@
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(26, 73, 112, 0.14);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.7);
   font-size: 0.78rem;
   font-weight: 600;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
 }
 .fiveChip i {
   width: 8px;
@@ -1495,23 +1560,19 @@
   background: var(--c);
 }
 .fiveChip b {
-  color: #b9cfe6;
+  color: var(--muted);
   font-weight: 600;
 }
 .fiveChipDone {
   border-color: var(--c);
-  background: color-mix(in srgb, var(--c) 24%, transparent);
+  background: color-mix(in srgb, var(--c) 14%, #fff);
 }
 .lightThumb {
   flex: none;
+  position: relative;
   width: 68px;
   height: 68px;
   border-radius: 20px;
-  box-shadow: 0 10px 20px -12px rgba(10, 30, 55, 0.8);
-}
-.lightEnd {
-  width: 100%;
-  max-width: 340px;
 }
 .surahPercent {
   display: block;
@@ -1519,4 +1580,14 @@
   color: var(--navy-2) !important;
   font-size: 0.8rem;
   font-weight: 800;
+}
+.matchHint {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+/* a mouse click leaves no focus ring in the player; keyboard users still get one */
+.player button:focus:not(:focus-visible) {
+  outline: none;
 }

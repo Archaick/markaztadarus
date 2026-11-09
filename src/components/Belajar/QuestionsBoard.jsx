@@ -17,10 +17,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import Player from "../Guru/Player";
-import Lantern from "../Guru/Lantern";
 import guru from "../Guru/Guru.module.css";
 import { saveSectionContent } from "./actions";
-import { BASE, NS, blankQuestion, fiveTOf, hasContent, kindOf, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
+import { BASE, NS, blankQuestion, fiveTOf, kindOf, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
 import QuestionEditor from "./QuestionEditor";
 import styles from "./Belajar.module.css";
 
@@ -76,7 +75,7 @@ export default function QuestionsBoard({ lesson, sections }) {
   const total = targets.reduce((n, s) => n + countOf(s), 0);
   // written tasks play too (as a box to write in), so the preview is the whole surah
   const tasksOf = (s) => (s.tasks || []).map((x) => ({ ...x, type: "task", stem: x.prompt }));
-  const allQuestions = targets.flatMap((s) => (kindOf(s) === "written" ? tasksOf(s) : questionsOf(s)));
+  const allQuestions = targets.flatMap((s) => (kindOf(s) === "written" ? tasksOf(s) : questionsOf(s)).map((x) => ({ ...x, fiveT: fiveTOf(s) })));
   const sectionById = (id) => targets.find((s) => s.id === id);
 
   const write = async (section, data) => {
@@ -103,13 +102,7 @@ export default function QuestionsBoard({ lesson, sections }) {
     setFailed(false);
     setEditing({ sectionId, type, isNew: true, item: type === "task" ? { id: newId(), prompt: "", lines: 3 } : blankQuestion(type) });
   };
-  // the lantern at the end of a preview: lit up to the section just tried (`upTo`), or all of it
-  const lanternFor = (upTo) => {
-    const list = sections.filter(hasContent);
-    const last = upTo ? list.findIndex((s) => s.id === upTo) : list.length - 1;
-    return <Lantern items={list.map((s, i) => ({ id: s.id, t: fiveTOf(s), done: i <= last }))} fire={upTo} label={lesson.title} />;
-  };
-  const play = (questions, title, celebrate) => setPlaying({ section: { kind: "quiz", parts: [{ heading: "", instructions: "", questions }] }, title, celebrate });
+  const play = (questions, title) => setPlaying({ section: { kind: "quiz", parts: [{ heading: "", instructions: "", questions }] }, title });
 
   if (targets.length === 0) {
     return (
@@ -127,7 +120,7 @@ export default function QuestionsBoard({ lesson, sections }) {
         </button>
         <div className={styles.boardSide}>
           <span className={styles.pageSub}>{t("board.summary", { count: total, sections: targets.length })}</span>
-          <Button variant="light" color="violet" radius="xl" leftSection={<IconEye size={16} />} disabled={!allQuestions.length} onClick={() => play(allQuestions, lesson.title, lanternFor())}>
+          <Button variant="light" color="violet" radius="xl" leftSection={<IconEye size={16} />} disabled={!allQuestions.length} onClick={() => play(allQuestions, lesson.title)}>
             {t("board.tryAll")}
           </Button>
         </div>
@@ -170,7 +163,7 @@ export default function QuestionsBoard({ lesson, sections }) {
               </div>
               <Group gap={6} ml="auto">
                 {countOf(s) > 0 && (
-                  <Button size="compact-sm" variant="subtle" color="violet" leftSection={<IconPlayerPlayFilled size={13} />} onClick={() => play(kind === "written" ? tasksOf(s) : qs, `${lesson.title} · ${sectionTitle(s, t)}`, lanternFor(s.id))}>
+                  <Button size="compact-sm" variant="subtle" color="violet" leftSection={<IconPlayerPlayFilled size={13} />} onClick={() => play((kind === "written" ? tasksOf(s) : qs).map((x) => ({ ...x, fiveT: fiveTOf(s) })), `${lesson.title} · ${sectionTitle(s, t)}`)}>
                     {t("board.trySection")}
                   </Button>
                 )}
@@ -188,7 +181,7 @@ export default function QuestionsBoard({ lesson, sections }) {
                   q={q}
                   first={i === 0}
                   last={i === qs.length - 1}
-                  onView={() => play([q], sectionTitle(s, t))}
+                  onView={() => play([{ ...q, fiveT: fiveTOf(s) }], sectionTitle(s, t))}
                   onEdit={() => {
                     setFailed(false);
                     setEditing({ sectionId: s.id, type: q.type, item: q, isNew: false });
@@ -315,7 +308,7 @@ export default function QuestionsBoard({ lesson, sections }) {
       {/* trying them as a teacher: the very player of /guru */}
       {playing && (
         <div className={guru.app} style={{ display: "contents" }}>
-          <Player section={playing.section} title={playing.title} celebrate={playing.celebrate} onFinish={() => {}} onExit={() => setPlaying(null)} />
+          <Player section={playing.section} title={playing.title} onFinish={() => {}} onExit={() => setPlaying(null)} />
         </div>
       )}
     </>
