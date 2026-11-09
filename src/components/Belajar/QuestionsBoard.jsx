@@ -17,9 +17,10 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import Player from "../Guru/Player";
+import TeacherWalk from "../Guru/TeacherWalk";
 import guru from "../Guru/Guru.module.css";
 import { saveSectionContent } from "./actions";
-import { BASE, NS, blankQuestion, fiveTOf, kindOf, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
+import { BASE, NS, blankQuestion, fiveTOf, kindOf, learnerSections, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
 import QuestionEditor from "./QuestionEditor";
 import styles from "./Belajar.module.css";
 
@@ -68,14 +69,13 @@ export default function QuestionsBoard({ lesson, sections }) {
   const [editing, setEditing] = useState(null); // { sectionId, type, item, isNew }
   const [removing, setRemoving] = useState(null); // { section, item }
   const [playing, setPlaying] = useState(null); // { section, title }
+  const [walking, setWalking] = useState(false); // the whole surah, on the teachers' own screens
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
   const shown = filter === "all" ? targets : targets.filter((s) => s.id === filter);
   const total = targets.reduce((n, s) => n + countOf(s), 0);
-  // written tasks play too (as a box to write in), so the preview is the whole surah
   const tasksOf = (s) => (s.tasks || []).map((x) => ({ ...x, type: "task", stem: x.prompt }));
-  const allQuestions = targets.flatMap((s) => (kindOf(s) === "written" ? tasksOf(s) : questionsOf(s)).map((x) => ({ ...x, fiveT: fiveTOf(s) })));
   const sectionById = (id) => targets.find((s) => s.id === id);
 
   const write = async (section, data) => {
@@ -120,7 +120,7 @@ export default function QuestionsBoard({ lesson, sections }) {
         </button>
         <div className={styles.boardSide}>
           <span className={styles.pageSub}>{t("board.summary", { count: total, sections: targets.length })}</span>
-          <Button variant="light" color="violet" radius="xl" leftSection={<IconEye size={16} />} disabled={!allQuestions.length} onClick={() => play(allQuestions, lesson.title)}>
+          <Button variant="light" color="violet" radius="xl" leftSection={<IconEye size={16} />} disabled={!learnerSections(sections, lesson.id).length} onClick={() => setWalking(true)}>
             {t("board.tryAll")}
           </Button>
         </div>
@@ -128,15 +128,16 @@ export default function QuestionsBoard({ lesson, sections }) {
 
       <div className={styles.chips}>
         <span className={styles.chipsLabel}>{t("board.filter")}</span>
-        <button type="button" className={`${styles.chip} ${filter === "all" ? styles.chipOn : ""}`} onClick={() => setFilter("all")}>
-          {t("board.all", { count: total })}
-        </button>
-        {targets.map((s) => (
-          <button key={s.id} type="button" className={`${styles.chip} ${filter === s.id ? styles.chipOn : ""}`} onClick={() => setFilter(s.id)}>
-            <i className={styles.dot} data-t={fiveTOf(s) || "none"} />
-            {sectionTitle(s, t)} ({countOf(s)})
-          </button>
-        ))}
+        <Select
+          aria-label={t("board.filter")}
+          w={340}
+          maw="100%"
+          radius="md"
+          allowDeselect={false}
+          value={filter}
+          onChange={(value) => setFilter(value || "all")}
+          data={[{ value: "all", label: t("board.all", { count: total }) }, ...targets.map((s) => ({ value: s.id, label: `${sectionTitle(s, t)} (${countOf(s)})` }))]}
+        />
       </div>
 
       {failed && !editing && (
@@ -306,6 +307,8 @@ export default function QuestionsBoard({ lesson, sections }) {
       </Modal>
 
       {/* trying them as a teacher: the very player of /guru */}
+      {walking && <TeacherWalk lesson={lesson} sections={sections} onClose={() => setWalking(false)} />}
+
       {playing && (
         <div className={guru.app} style={{ display: "contents" }}>
           <Player section={playing.section} title={playing.title} onFinish={() => {}} onExit={() => setPlaying(null)} />

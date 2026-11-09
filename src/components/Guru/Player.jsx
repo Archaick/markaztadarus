@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconCheck, IconClock, IconRefresh, IconStarFilled, IconTarget, IconVolume, IconVolumeOff, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { questionsOf } from "../Belajar/belajarSchema";
+import { isArabic, questionsOf, textDir } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
 import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
 import styles from "./Guru.module.css";
@@ -10,11 +10,6 @@ const NS = "guru/Guru";
 const RETRY_GAP = 2; // a missed question comes back this many questions later
 // how long the sheet stays before going on by itself (ms); an explanation adds time to read it
 const AUTO_NEXT = { right: 1600, wrong: 4500, note: 2500 };
-
-const isArabic = (s) => {
-  const letters = (s || "").replace(/\s/g, "");
-  return letters.length > 0 && (s.match(/[؀-ۿ]/g) || []).length > letters.length * 0.5;
-};
 
 // the same shuffle for one question every time it shows
 const shuffle = (n, seed) => {
@@ -300,7 +295,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
         </button>
       </div>
 
-      <div className={styles.stage} key={`${pos}-${qi}`}>
+      <div className={`${styles.stage} ${["task", "multi", "match"].includes(q.type) ? styles.stageBar : ""}`} key={`${pos}-${qi}`}>
         <div className={styles.kickerRow}>
           <span className={styles.kicker}>{!verdict && first[qi] === false ? t("player.tryAgain") : t(`qtype.${q.type}`)}</span>
           {(q.fiveT || guide?.tag) && (
@@ -309,7 +304,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
             </span>
           )}
         </div>
-        <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir="auto">
+        <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
           {q.stem}
         </p>
 
@@ -323,8 +318,8 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
         ) : (
           <div className={q.type === "truefalse" ? styles.twoUp : styles.options}>
             {q.options.map((opt, k) => (
-              <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} dir="auto">
-                {q.type !== "truefalse" && <span className={styles.letter}>{q.type === "multi" ? (picked.includes(k) || (verdict && q.correct.includes(k)) ? "✓" : "") : String.fromCharCode(65 + k)}</span>}
+              <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} dir={textDir(opt)}>
+                {q.type !== "truefalse" && <span className={`${styles.letter} ${q.type === "multi" ? styles.letterBox : ""}`}>{q.type === "multi" ? (picked.includes(k) || (verdict && q.correct.includes(k)) ? "✓" : "") : String.fromCharCode(65 + k)}</span>}
                 <span>{opt}</span>
               </button>
             ))}
@@ -366,7 +361,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
           {!verdict.ok && (
             <div className={styles.sheetBody}>
               <span>{t("player.correctIs")}</span>
-              <p className={isArabic(rightText) ? styles.arabicSmall : undefined} dir="auto">
+              <p className={isArabic(rightText) ? styles.arabicSmall : undefined} dir={textDir(rightText)}>
                 {rightText}
               </p>
             </div>
@@ -446,7 +441,7 @@ function MatchBoard({ q, order, pairs, leftOn, verdict, onLeft, onRight }) {
               type="button"
               key={k}
               ref={(el) => (lefts.current[k] = el)}
-              dir="auto"
+              dir={textDir(l)}
               style={{ "--pc": judged(k) }}
               className={`${styles.chip} ${styles.chipColored} ${leftOn === k ? styles.chipOn : ""} ${paired ? styles.chipFilled : ""}`}
               onClick={() => onLeft(k)}
@@ -466,7 +461,7 @@ function MatchBoard({ q, order, pairs, leftOn, verdict, onLeft, onRight }) {
               type="button"
               key={j}
               ref={(el) => (rights.current[j] = el)}
-              dir="auto"
+              dir={textDir(q.right[j])}
               style={k === null ? undefined : { "--pc": judged(k) }}
               className={`${styles.chip} ${k === null ? "" : `${styles.chipColored} ${styles.chipFilled}`}`}
               onClick={() => onRight(j)}

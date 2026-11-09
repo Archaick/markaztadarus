@@ -2,10 +2,9 @@ import { useMemo, useState } from "react";
 import { Button, Progress, Select, Text, Textarea } from "@mantine/core";
 import { IconCheck, IconRefresh, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { NS, questionsOf } from "./belajarSchema";
+import { NS, isArabic, questionsOf, textDir } from "./belajarSchema";
 import styles from "./Cards.module.css";
 
-const isArabic = (s) => /[؀-ۿ]/.test(s || "") && (s.match(/[؀-ۿ]/g) || []).length > (s || "").replace(/\s/g, "").length * 0.5;
 
 // the same order every time for one question (so a re-render does not reshuffle)
 const shuffled = (arr, seed) => {
@@ -46,7 +45,7 @@ export default function TeacherCards({ section, title }) {
         {(section.tasks || []).map((task, i) => (
           <div key={task.id} className={styles.card}>
             <span className={styles.kicker}>{t("sectionPage.task", { n: i + 1 })}</span>
-            <p className={styles.stem} dir="auto">
+            <p className={styles.stem} dir={textDir(task.prompt)}>
               {task.prompt}
             </p>
             <Textarea autosize minRows={task.lines || 3} placeholder={t("cards.writeHere")} />
@@ -110,7 +109,7 @@ function Reading({ blocks, bare = false }) {
             {b.text}
           </h4>
         ) : (
-          <p key={i} className={b.type === "arabic" ? styles.arabic : styles.readingText} dir="auto">
+          <p key={i} className={b.type === "arabic" ? styles.arabic : styles.readingText} dir={b.type === "arabic" ? "rtl" : textDir(b.text)}>
             {b.text}
           </p>
         )
@@ -158,7 +157,7 @@ function QuestionCard({ q, onDone, onNext }) {
   return (
     <div className={styles.card}>
       <span className={styles.kicker}>{t(`qtype.${q.type}`)}</span>
-      <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir="auto">
+      <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
         {q.stem}
       </p>
 
@@ -168,7 +167,7 @@ function QuestionCard({ q, onDone, onNext }) {
             const ok = checked !== null && match[k] !== null && Number(match[k]) === q.answer[k];
             return (
               <div key={k} className={styles.matchRow}>
-                <span className={styles.matchLeft} dir="auto">
+                <span className={styles.matchLeft} dir={textDir(left)}>
                   {left}
                 </span>
                 <Select
@@ -193,7 +192,7 @@ function QuestionCard({ q, onDone, onNext }) {
       ) : (
         <div className={q.type === "truefalse" ? styles.twoUp : styles.options}>
           {q.options.map((opt, k) => (
-            <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} dir="auto">
+            <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} dir={textDir(q.options[k])}>
               {q.type !== "truefalse" && <span className={styles.letter}>{String.fromCharCode(65 + k)}</span>}
               <span>{opt}</span>
             </button>

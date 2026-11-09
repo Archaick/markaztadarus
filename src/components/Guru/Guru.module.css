@@ -1452,29 +1452,42 @@
 .skyOn .bar {
   background: rgba(255, 255, 255, 0.22);
 }
-/* the question sits on frosted glass, so it reads the same at night and at dawn */
-.skyOn .stage {
+/* the question sits on night glass: part of the sky, and it reads the same at night and at dawn */
+.skyOn {
+  --ok: #34d399;
+  --bad: #fb7185;
+  --glow: #ffd98a;
+  --glass-text: #eef3ff;
+  --glass-soft: rgba(214, 226, 255, 0.72);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --night-glass: linear-gradient(160deg, rgba(24, 42, 84, 0.8), rgba(9, 20, 46, 0.88));
+}
+.skyOn .stage,
+.skyOn .endWrap {
   position: relative;
   flex: none;
+  border: 1px solid var(--glass-edge);
+  background: var(--night-glass);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 30px 60px -30px rgba(2, 8, 24, 0.9);
+  color: var(--glass-text);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+}
+.skyOn .stage {
   width: min(720px, calc(100% - 24px));
-  margin: 84px auto 200px;
-  padding: 20px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 24px 50px -28px rgba(5, 15, 35, 0.7);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  margin: 84px auto 16px;
+  padding: 22px 20px;
+  border-radius: 28px;
+}
+/* room for the Check button only when the question has one, so a question that fits never scrolls */
+.skyOn .stageBar {
+  margin-bottom: 96px;
 }
 .skyOn .endWrap {
   margin: 150px auto 30px;
   width: min(460px, calc(100% - 24px));
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 24px 50px -28px rgba(5, 15, 35, 0.7);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  border-radius: 30px;
 }
 .kickerRow {
   display: flex;
@@ -1590,4 +1603,259 @@
 /* a mouse click leaves no focus ring in the player; keyboard users still get one */
 .player button:focus:not(:focus-visible) {
   outline: none;
+}
+.skyOn button:focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 2px;
+}
+
+/* everything inside the night glass */
+.skyOn .bar {
+  height: 8px;
+}
+.skyOn .bar span {
+  background: linear-gradient(90deg, #ffe7b0, var(--glow));
+  box-shadow: 0 0 14px rgba(255, 217, 138, 0.75);
+}
+.skyOn .stem,
+.skyOn .endTitle {
+  color: var(--glass-text);
+}
+.skyOn .endSub,
+.skyOn .matchHint {
+  color: var(--glass-soft);
+}
+.skyOn .kicker {
+  background: rgba(255, 255, 255, 0.1);
+  color: #d6e2ff;
+}
+.skyOn .kickerFive {
+  border-color: color-mix(in srgb, var(--c) 60%, transparent);
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  color: color-mix(in srgb, var(--c) 45%, #fff);
+}
+
+.skyOn .option,
+.skyOn .chip {
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-fill);
+  color: var(--glass-text);
+  backdrop-filter: none;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.12s, opacity 0.18s;
+}
+.skyOn .option:hover,
+.skyOn .chip:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.11);
+}
+.skyOn .option:active,
+.skyOn .chip:active {
+  border-bottom-width: 1px;
+  transform: scale(0.985);
+}
+.skyOn .letter {
+  border: 1px solid var(--glass-edge);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  color: #d6e2ff;
+}
+/* "choose all that apply" gets square tick boxes; one-answer questions keep circles */
+.skyOn .letterBox {
+  border-radius: 9px;
+}
+.skyOn .optionPicked {
+  border-color: var(--glow);
+  background: rgba(255, 217, 138, 0.12);
+  box-shadow: 0 0 22px -6px rgba(255, 217, 138, 0.6);
+}
+.skyOn .optionPicked .letter {
+  border-color: var(--glow);
+  background: var(--glow);
+  color: #2a1e05;
+}
+.skyOn .optionRight {
+  border-color: var(--ok);
+  background: rgba(52, 211, 153, 0.16);
+  box-shadow: 0 0 26px -6px rgba(52, 211, 153, 0.7);
+}
+.skyOn .optionRight .letter {
+  border-color: var(--ok);
+  background: var(--ok);
+  color: #04291d;
+}
+.skyOn .optionWrong {
+  border-color: var(--bad);
+  background: rgba(251, 113, 133, 0.15);
+  box-shadow: 0 0 26px -8px rgba(251, 113, 133, 0.7);
+}
+.skyOn .optionWrong .letter {
+  border-color: var(--bad);
+  background: var(--bad);
+  color: #3a0612;
+}
+
+.skyOn .matchHalo {
+  stroke: rgba(9, 20, 46, 0.7);
+}
+.skyOn .chip.chipColored {
+  border-color: color-mix(in srgb, var(--pc) 55%, transparent);
+}
+.skyOn .chip.chipFilled {
+  border-color: var(--pc);
+  background: color-mix(in srgb, var(--pc) 24%, transparent);
+  color: #fff;
+}
+.skyOn .chip.chipColored.chipOn {
+  box-shadow: 0 0 22px -4px var(--pc);
+}
+.skyOn .pairNoEmpty {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.skyOn .taskBox {
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-fill);
+  color: var(--glass-text);
+}
+.skyOn .taskBox::placeholder {
+  color: var(--glass-soft);
+}
+.skyOn .taskBox:focus {
+  border-color: var(--glow);
+}
+
+.skyOn .primaryBig {
+  background: linear-gradient(135deg, #ffe7b0, #f5c563);
+  color: #2a1e05;
+  box-shadow: 0 14px 34px -14px rgba(255, 217, 138, 0.8);
+}
+.skyOn .primaryBig:disabled {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  opacity: 0.6;
+}
+.skyOn .ghostBig {
+  border-color: var(--glass-edge);
+  background: var(--glass-fill);
+  color: var(--glass-text);
+}
+.skyOn .checkBar {
+  background: none;
+}
+
+.skyOn .sheet {
+  border-top: 1px solid;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.skyOn .sheetRight {
+  border-color: rgba(52, 211, 153, 0.45);
+  background: linear-gradient(180deg, rgba(14, 70, 62, 0.95), rgba(7, 30, 42, 0.97));
+  box-shadow: 0 -24px 60px -24px rgba(52, 211, 153, 0.5);
+  color: #d9fff0;
+}
+.skyOn .sheetWrong {
+  border-color: rgba(251, 113, 133, 0.45);
+  background: linear-gradient(180deg, rgba(84, 24, 50, 0.95), rgba(32, 13, 36, 0.97));
+  box-shadow: 0 -24px 60px -24px rgba(251, 113, 133, 0.45);
+  color: #ffe4e9;
+}
+.skyOn .sheetIcon {
+  background: rgba(255, 255, 255, 0.12);
+}
+.skyOn .sheetRight .sheetIcon {
+  color: var(--ok);
+}
+.skyOn .sheetWrong .sheetIcon {
+  color: var(--bad);
+}
+.skyOn .sheetRight .sheetButton {
+  background: linear-gradient(135deg, #6ee7b7, #34d399);
+  box-shadow: 0 12px 30px -14px rgba(52, 211, 153, 0.9);
+  color: #04291d;
+}
+.skyOn .sheetWrong .sheetButton {
+  background: linear-gradient(135deg, #fda4af, #fb7185);
+  box-shadow: 0 12px 30px -14px rgba(251, 113, 133, 0.9);
+  color: #3a0612;
+}
+.skyOn .sheetButton:active {
+  transform: scale(0.985);
+}
+
+.skyOn .tile {
+  border-color: var(--glass-edge);
+  background: var(--glass-fill);
+  box-shadow: none;
+  color: var(--glow);
+}
+.skyOn .tile b {
+  color: var(--glass-text);
+}
+.skyOn .tile span {
+  color: var(--glass-soft);
+}
+.skyOn .starOn {
+  color: var(--glow);
+  filter: drop-shadow(0 0 10px rgba(255, 217, 138, 0.7));
+}
+.skyOn .starOff {
+  color: rgba(255, 255, 255, 0.16);
+}
+
+/* short phones: a tighter card, so the whole question fits on one screen */
+@media (max-height: 740px) {
+  .skyOn .stage {
+    gap: 10px;
+    margin-top: 66px;
+    padding: 16px;
+  }
+  .skyOn .stem {
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+  .skyOn .options,
+  .skyOn .matchCol {
+    gap: 8px;
+  }
+  .skyOn .option {
+    min-height: 50px;
+    padding: 9px 14px;
+  }
+  .skyOn .twoUp .option {
+    min-height: 66px;
+  }
+  .skyOn .chip {
+    min-height: 50px;
+    padding: 7px 10px;
+  }
+  .skyOn .matchHint {
+    margin-top: 4px;
+  }
+  .skyOn .endWrap {
+    gap: 10px;
+    margin-top: 140px;
+    margin-bottom: 12px;
+    padding: 20px 18px;
+  }
+}
+/* on a wide, short window the 5T names are larger: keep them clear of the card */
+@media (max-height: 740px) and (min-width: 600px) {
+  .skyOn .stage {
+    margin-top: 82px;
+  }
+}
+
+/* the admin's "try as a teacher": the teachers' screens, over the dashboard */
+.walk {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+.walkBack {
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 }

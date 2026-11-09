@@ -82,6 +82,14 @@ export const QUESTION_TYPES = ["single", "truefalse", "multi", "match"];
 // limits mirrored in firestore.rules
 export const LIMITS = { title: 200, text: 4000, parts: 10, questions: 60, tasks: 30, reading: 80, ayat: 300 };
 
+/** Text written only in Arabic. A sentence mixing Arabic with Latin words is not: it reads left to right. */
+export const isArabic = (s) => {
+  const letters = (s || "").replace(/\s/g, "");
+  return letters.length > 0 && !/[A-Za-z]/.test(letters) && (letters.match(/[؀-ۿ]/g) || []).length > letters.length * 0.5;
+};
+/** The direction of one piece of content: "auto" would follow its first word and scramble a mixed sentence. */
+export const textDir = (s) => (isArabic(s) ? "rtl" : "ltr");
+
 export const newId = () => Math.random().toString(36).slice(2, 10);
 
 export const blankQuestion = (type = "single") => {

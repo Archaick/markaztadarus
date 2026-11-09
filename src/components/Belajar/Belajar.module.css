@@ -518,56 +518,20 @@ a.row:hover {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border: 1px solid var(--surface-line, var(--line));
-  border-radius: 12px;
-  background: var(--surface-strong, #fff);
-  color: var(--ink, #0f1f33);
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.chip:hover {
-  border-color: #2c5a96;
-}
-.chipOn {
-  background: #1f4f8a;
-  border-color: #1f4f8a;
-  color: #fff;
-}
-.dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #94a3b8;
-}
-.dot[data-t="tamhid"],
 .secTag[data-t="tamhid"] {
   --t: #7c3aed;
 }
-.dot[data-t="tilawah"],
 .secTag[data-t="tilawah"] {
   --t: #0284c7;
 }
-.dot[data-t="tafsir"],
 .secTag[data-t="tafsir"] {
   --t: #059669;
 }
-.dot[data-t="tadabbur"],
 .secTag[data-t="tadabbur"] {
   --t: #d97706;
 }
-.dot[data-t="tazkiyah"],
 .secTag[data-t="tazkiyah"] {
   --t: #db2777;
-}
-.dot[data-t] {
-  background: var(--t, #94a3b8);
 }
 .secBlock {
   margin-bottom: 30px;
