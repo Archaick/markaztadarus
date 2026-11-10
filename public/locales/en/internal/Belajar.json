@@ -332,5 +332,15 @@
     "headerRow": "First row is the header",
     "task": "Write the task…",
     "drag": "Drag to move"
+  },
+  "status": {
+    "done": "Filled in",
+    "lines_one": "{{count}} line of reading",
+    "lines_other": "{{count}} lines of reading",
+    "tables_one": "{{count}} table",
+    "tables_other": "{{count}} tables",
+    "noReading": "No reading yet",
+    "noQuestions": "No questions yet",
+    "noTasks": "No tasks yet"
   }
 }

@@ -321,5 +321,13 @@
     "headerRow": "Baris pertama sebagai judul",
     "task": "Tulis tugas…",
     "drag": "Seret untuk memindahkan"
+  },
+  "status": {
+    "done": "Sudah terisi",
+    "lines": "{{count}} baris bacaan",
+    "tables": "{{count}} tabel",
+    "noReading": "Belum ada bacaan",
+    "noQuestions": "Belum ada soal",
+    "noTasks": "Belum ada tugas"
   }
 }

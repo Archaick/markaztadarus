@@ -219,6 +219,8 @@ export async function deleteLearner(user, learner, progressDocs, invite) {
       }
       batch.delete(doc(db, LEARNERS, learner.id));
       markDelete(`${LEARNERS}~${learner.id}`, learner.auditId);
+      // off the Tadarus Global map; it comes back by itself if the teacher is restored and returns
+      batch.delete(doc(db, "guru_map", learner.id));
     },
     { trash }
   );

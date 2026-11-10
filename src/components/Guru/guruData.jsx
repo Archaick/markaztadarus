@@ -3,6 +3,7 @@ import { collection, doc, getDoc, onSnapshot, query, serverTimestamp, setDoc, up
 import { db } from "../../../firebaseConfig";
 import { useAccess } from "../Internal/accessContext";
 import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, normalizeCode, surahState } from "../Belajar/belajarSchema";
+import { GURU_MAP } from "./places";
 
 // What a learner sees at /guru: the classes they joined, the surahs those
 // classes were given (published ones only), their sections and the
@@ -189,7 +190,25 @@ export function LearnerProvider({ children }) {
     [uid, learner, progress]
   );
 
-  const touch = useCallback(() => (uid && learner ? updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {}) : null), [uid, learner]);
+  // their place on the Tadarus Global map: a country and province only, never a name
+  const mapEntry = useCallback((c) => setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", updatedAt: serverTimestamp() }), [uid]);
+  const touch = useCallback(() => {
+    if (!uid || !learner) return null;
+    updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {});
+    // a map entry lost (e.g. the teacher was restored from the bin) comes back by itself
+    if (learner.country) mapEntry(learner).catch(() => {});
+    return null;
+  }, [uid, learner, mapEntry]);
+
+  /** Name, country, province and city, asked once after joining. */
+  const saveProfile = useCallback(
+    async (p) => {
+      const place = { name: p.name.trim().slice(0, 120), country: p.country, province: p.country === "ID" ? p.province : "", city: p.city.trim().slice(0, 120) };
+      await updateDoc(doc(db, LEARNERS, uid), { ...place, updatedAt: serverTimestamp() });
+      await mapEntry(place).catch(() => {});
+    },
+    [uid, mapEntry]
+  );
 
   const value = useMemo(() => {
     const surahs = lessonIds.map((id) => lessons[id]).filter(Boolean);
@@ -208,10 +227,11 @@ export function LearnerProvider({ children }) {
       next: next ? { lesson: next.lesson, step: next.next } : null,
       loading: learner === undefined || (classIds.length > 0 && (classIds.some((id) => classes[id] === undefined) || sections === null || progressList === null || lessonIds.some((id) => lessons[id] === undefined))),
       join,
+      saveProfile,
       saveProgress,
       touch,
     };
-  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, join, saveProgress, touch]);
+  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, join, saveProgress, touch, saveProfile]);
 
   return <LearnerContext.Provider value={value}>{children}</LearnerContext.Provider>;
 }

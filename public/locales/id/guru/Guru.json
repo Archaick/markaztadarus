@@ -134,5 +134,19 @@
     "ios1": "Ketuk tombol Bagikan di bawah layar Safari",
     "ios2": "Pilih \"Tambah ke Layar Utama\"",
     "ios3": "Ketuk \"Tambah\". Tadarus Guru muncul di layar HP Anda."
+  },
+  "profile": {
+    "eyebrow": "Satu langkah lagi",
+    "title": "Tentang Anda",
+    "text": "Nama Anda untuk sertifikat, dan tempat Anda mengajar.",
+    "name": "Nama lengkap",
+    "country": "Negara",
+    "province": "Provinsi",
+    "pick": "Pilih provinsi",
+    "city": "Kota / kabupaten",
+    "cityHint": "mis. Kota Bekasi",
+    "privacy": "Peta Tadarus Global hanya menampilkan jumlah guru per provinsi atau negara, tanpa nama.",
+    "save": "Simpan dan mulai",
+    "failed": "Gagal menyimpan. Coba lagi."
   }
 }

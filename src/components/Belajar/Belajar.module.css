@@ -959,3 +959,28 @@ a.row:hover {
 .pblockDropAfter {
   box-shadow: 0 3px 0 #c9a227;
 }
+
+/* what each section has, at a glance */
+.stat {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-end: 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: #5d6b7d;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.statOn {
+  background: #e8f8f1;
+  color: #0f7a55;
+}
+.rowNo.rowNoDone {
+  display: inline-grid;
+  place-items: center;
+  height: 30px;
+  border-radius: 50%;
+  background: #0f9f6e;
+  color: #fff;
+}

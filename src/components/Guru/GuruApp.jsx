@@ -13,6 +13,7 @@ import SectionView from "./SectionView";
 import { InstallProvider, useInstall } from "./install";
 import { IosSteps } from "./InstallCard";
 import DawnScene from "./DawnScene";
+import { PROVINCES, countryOptions } from "./places";
 import styles from "./Guru.module.css";
 
 export const NS = "guru/Guru";
@@ -58,6 +59,7 @@ function Inside() {
 
   if (loading) return <Splash />;
   if (!learner || !classes.length) return <Join first />;
+  if (!learner.country) return <Profile />;
   return (
     <Routes>
       <Route index element={<GuruHome />} />
@@ -171,6 +173,78 @@ function SignIn() {
         </button>
         {error && <p className={styles.errorText}>{t("signIn.failed")}</p>}
       </div>
+    </div>
+  );
+}
+
+/** Asked once, after joining: who they are and where, for their certificate and the Tadarus Global map. */
+function Profile() {
+  const { t, i18n } = useTranslation(NS);
+  const { user } = useAccess();
+  const { learner, saveProfile } = useLearner();
+  const lang = (i18n.language || "id").slice(0, 2);
+  const countries = countryOptions(lang);
+  const [f, setF] = useState({ name: learner?.name || user?.displayName || "", country: "ID", province: "", city: "" });
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const ready = f.name.trim() && f.city.trim() && (f.country !== "ID" || f.province);
+  const submit = async (e) => {
+    e.preventDefault();
+    if (!ready) return;
+    setBusy(true);
+    setFailed(false);
+    try {
+      await saveProfile(f);
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div className={styles.center}>
+      <form className={`${styles.glassCard} ${styles.welcome} ${styles.profileCard}`} onSubmit={submit}>
+        <img src="/MTIFavicon.png" alt="" className={styles.welcomeLogo} />
+        <span className={styles.eyebrow}>{t("profile.eyebrow")}</span>
+        <h1 className={styles.joinTitle}>{t("profile.title")}</h1>
+        <p className={styles.welcomeText}>{t("profile.text")}</p>
+        <label className={styles.field}>
+          <span>{t("profile.name")}</span>
+          <input value={f.name} onChange={(e) => setF({ ...f, name: e.currentTarget.value })} autoComplete="name" maxLength={120} />
+        </label>
+        <label className={styles.field}>
+          <span>{t("profile.country")}</span>
+          <select value={f.country} onChange={(e) => setF({ ...f, country: e.currentTarget.value, province: "" })}>
+            {countries.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {f.country === "ID" && (
+          <label className={styles.field}>
+            <span>{t("profile.province")}</span>
+            <select value={f.province} onChange={(e) => setF({ ...f, province: e.currentTarget.value })}>
+              <option value="">{t("profile.pick")}</option>
+              {PROVINCES.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        <label className={styles.field}>
+          <span>{t("profile.city")}</span>
+          <input value={f.city} onChange={(e) => setF({ ...f, city: e.currentTarget.value })} placeholder={t("profile.cityHint")} autoComplete="address-level2" maxLength={120} />
+        </label>
+        <p className={styles.profileNote}>{t("profile.privacy")}</p>
+        {failed && <p className={styles.errorText}>{t("profile.failed")}</p>}
+        <button type="submit" className={styles.primaryBig} disabled={!ready || busy}>
+          {busy ? "…" : t("profile.save")}
+        </button>
+      </form>
     </div>
   );
 }

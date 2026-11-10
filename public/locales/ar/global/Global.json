@@ -38,5 +38,7 @@
   "liveTomorrow": "غداً",
   "liveJoin": "انضم",
   "liveZoom": "زوم",
-  "liveActivity": "النشاط"
+  "liveActivity": "النشاط",
+  "teachers": "معلّمو تدارس",
+  "teachersIn": "معلّمو تدارس: {{count}}"
 }

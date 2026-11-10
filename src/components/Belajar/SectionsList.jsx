@@ -5,7 +5,7 @@ import { IconArrowDown, IconArrowUp, IconChevronRight, IconLayoutList, IconPenci
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { addTemplateSections, createSection, deleteSection, reorderSections, updateSectionMeta } from "./actions";
-import { BASE, FIVE_T, NS, SECTION_TYPES, fiveTOf, issuesOfSection, kindOf, questionsOf, sectionTitle } from "./belajarSchema";
+import { BASE, FIVE_T, NS, SECTION_TYPES, cleanReading, fiveTOf, issuesOfSection, kindOf, questionsOf, sectionTitle } from "./belajarSchema";
 import styles from "./Belajar.module.css";
 
 /**
@@ -59,14 +59,28 @@ export default function SectionsList({ lesson, sections }) {
               const kind = kindOf(section);
               const tag = fiveTOf(section);
               const issues = issuesOfSection(section);
-              const count = kind === "written" ? (section.tasks || []).length : kind === "quiz" ? questionsOf(section).length : (section.reading || []).length;
+              const count = kind === "written" ? (section.tasks || []).length : kind === "quiz" ? questionsOf(section).length : 0;
+              // what is filled in, at a glance: the reading (lines and tables) and the questions or tasks
+              const reading = cleanReading(section.reading);
+              const tables = reading.filter((b) => b.type === "table").length;
+              const lines = reading.length - tables;
+              const done = kind === "reading" ? reading.length > 0 : count > 0;
               return (
                 <div key={section.id} className={styles.row}>
-                  <span className={styles.rowNo}>{i + 1}</span>
+                  <span className={`${styles.rowNo} ${done ? styles.rowNoDone : ""}`} title={done ? t("status.done") : t("lesson.notYet")}>
+                    {i + 1}
+                  </span>
                   <Link to={`${BASE}/surat/${lesson.id}/${section.id}`} className={styles.rowMain} style={{ color: "inherit", textDecoration: "none" }}>
                     <div className={styles.rowTitle}>{sectionTitle(section, t)}</div>
                     <div className={styles.rowSub}>
-                      {count ? t(`kind.${kind}Count`, { count }) : t("lesson.notYet")} · {t(`kind.${kind}`)}
+                      <span className={`${styles.stat} ${reading.length ? styles.statOn : ""}`}>
+                        {reading.length
+                          ? `✓ ${[lines && t("status.lines", { count: lines }), tables && t("status.tables", { count: tables })].filter(Boolean).join(" · ")}`
+                          : t("status.noReading")}
+                      </span>
+                      {kind !== "reading" && (
+                        <span className={`${styles.stat} ${count ? styles.statOn : ""}`}>{count ? `✓ ${t(`kind.${kind}Count`, { count })}` : t(kind === "quiz" ? "status.noQuestions" : "status.noTasks")}</span>
+                      )}
                       {tag && (
                         <>
                           {" "}

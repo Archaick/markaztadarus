@@ -1,3 +1,6 @@
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../../../firebaseConfig";
+import { GURU_MAP } from "../Guru/places";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { IconArrowLeft, IconChevronDown, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
@@ -51,6 +54,7 @@ export default function GlobalPage() {
   const panel = useRef(null);
   const makkah = useMakkahTime(lang);
   const sessions = useLiveSessions(provinces, programs);
+  const teachers = useGuruMap();
 
   useEffect(() => {
     document.title = `${t("title")} · Markaz Tadarus`;
@@ -184,6 +188,12 @@ export default function GlobalPage() {
                 <b>{total}</b>
                 <span>{t("programs")}</span>
               </div>
+              {teachers.total > 0 && (
+                <div>
+                  <b>{teachers.total}</b>
+                  <span>{t("teachers")}</span>
+                </div>
+              )}
             </div>
             <LivePanel live={sessions.live} next={sessions.next} onPick={pickSession} />
             <button type="button" className={styles.originCard} onClick={() => pick(ORIGIN)}>
@@ -220,6 +230,7 @@ export default function GlobalPage() {
               <div>
                 <h2 className={styles.panelTitle}>{sel.name}</h2>
                 {sel.code === ORIGIN && <span className={styles.badgeOrigin}>{t("origin.badge")}</span>}
+                {teachers.byCountry[sel.code] > 0 && <span className={styles.badge}>{t("teachersIn", { count: teachers.byCountry[sel.code] })}</span>}
                 {sel.program ? (
                   <span className={styles.badge}>{t("hasPrograms")}</span>
                 ) : sel.code !== ORIGIN ? (
@@ -257,6 +268,7 @@ export default function GlobalPage() {
                   <p className={styles.provinceLine}>
                     <b>{getDisplayName(province, provinces)}</b>
                     <span>{provinces[province] ? `${programCount(provinces[province])} ${t("programs")}` : t("noPrograms")}</span>
+                    {teachers.byProvince[province] > 0 && <span>{t("teachersIn", { count: teachers.byProvince[province] })}</span>}
                   </p>
                 )}
                 {sel.data?.note?.[lang] || sel.data?.note?.id ? <p className={styles.note}>{sel.data.note[lang] || sel.data.note.id}</p> : null}
@@ -299,4 +311,28 @@ export default function GlobalPage() {
       </aside>
     </div>
   );
+}
+
+/** Teachers on Tadarus Guru, counted by country and province (no names are stored on the map). */
+function useGuruMap() {
+  const [list, setList] = useState([]);
+  useEffect(
+    () =>
+      onSnapshot(
+        collection(db, GURU_MAP),
+        (snap) => setList(snap.docs.map((d) => d.data())),
+        () => setList([])
+      ),
+    []
+  );
+  return useMemo(() => {
+    const byCountry = {};
+    const byProvince = {};
+    list.forEach((x) => {
+      if (!x.country) return;
+      byCountry[x.country] = (byCountry[x.country] || 0) + 1;
+      if (x.province) byProvince[x.province] = (byProvince[x.province] || 0) + 1;
+    });
+    return { total: list.filter((x) => x.country).length, byCountry, byProvince };
+  }, [list]);
 }

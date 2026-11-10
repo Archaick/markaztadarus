@@ -649,10 +649,22 @@ service cloud.firestore {
       return added.hasOnly(viaCode.concat(viaInvite));
     }
 
+    // Tadarus Global: where each teacher is (a country, and a province inside Indonesia), counted
+    // on the public map. No names; a teacher writes only their own, and only while they are a learner.
+    match /guru_map/{uid} {
+      allow read: if true;
+      allow create, update: if hasVerifiedEmail() && request.auth.uid == uid && exists(learnerPath(uid))
+        && request.resource.data.keys().hasOnly(["country", "province", "updatedAt"])
+        && request.resource.data.country is string && request.resource.data.country.size() == 2
+        && request.resource.data.province is string && request.resource.data.province.size() <= 60
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if (isSignedIn() && request.auth.uid == uid) || isSuperAdmin();
+    }
+
     match /belajar_learners/{uid} {
       allow read: if (isSignedIn() && request.auth.uid == uid) || hasFeature("belajar");
       allow create, update: if hasVerifiedEmail() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(["uid", "email", "name", "photoURL", "classIds", "joinCode", "joinedAt", "lastSeenAt", "auditId", "updatedAt"])
+        && request.resource.data.keys().hasOnly(["uid", "email", "name", "photoURL", "classIds", "joinCode", "joinedAt", "lastSeenAt", "country", "province", "city", "auditId", "updatedAt"])
         && request.resource.data.uid == uid
         && request.resource.data.email == signedInEmail()
         && request.resource.data.classIds is list && request.resource.data.classIds.size() <= 50

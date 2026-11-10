@@ -134,5 +134,19 @@
     "ios1": "Tap the Share button at the bottom of Safari",
     "ios2": "Choose \"Add to Home Screen\"",
     "ios3": "Tap \"Add\". Tadarus Guru appears on your home screen."
+  },
+  "profile": {
+    "eyebrow": "One more step",
+    "title": "About you",
+    "text": "Your name for your certificate, and where you teach.",
+    "name": "Full name",
+    "country": "Country",
+    "province": "Province",
+    "pick": "Choose a province",
+    "city": "City / regency",
+    "cityHint": "e.g. Bekasi",
+    "privacy": "The Tadarus Global map only shows how many teachers there are in each province or country, never names.",
+    "save": "Save and start",
+    "failed": "Could not save. Try again."
   }
 }

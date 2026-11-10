@@ -38,5 +38,7 @@
   "liveTomorrow": "Besok",
   "liveJoin": "Gabung",
   "liveZoom": "Zoom",
-  "liveActivity": "Kegiatan"
+  "liveActivity": "Kegiatan",
+  "teachers": "guru Tadarus",
+  "teachersIn": "{{count}} guru Tadarus"
 }

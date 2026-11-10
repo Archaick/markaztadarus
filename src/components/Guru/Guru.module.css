@@ -1977,3 +1977,45 @@
 .rtable tbody tr:first-child td {
   border-top: 0;
 }
+
+/* asked once after joining: name and place */
+.profileCard {
+  text-align: start;
+  align-items: stretch;
+}
+.profileCard .welcomeLogo,
+.profileCard .eyebrow,
+.profileCard .joinTitle,
+.profileCard .welcomeText {
+  align-self: center;
+  text-align: center;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.field input,
+.field select {
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(26, 73, 112, 0.18);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+}
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--navy-2);
+}
+.profileNote {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
