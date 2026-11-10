@@ -1888,3 +1888,92 @@
   justify-content: center;
   padding: 0 16px;
 }
+
+/* the admin's preview: a badge, and the answer key marked before answering */
+.previewBadge {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 120;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #c9a227;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 16px -8px rgba(2, 8, 24, 0.6);
+}
+.previewChip {
+  margin-inline-start: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #c9a227;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.skyOn .optionKey {
+  border-style: dashed;
+  border-color: var(--ok);
+}
+.keyTag {
+  display: inline-block;
+  margin-inline-start: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e8f8f1;
+  color: #0f7a55;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 800;
+  vertical-align: middle;
+}
+.keyList {
+  margin: 10px 0 0;
+  color: var(--glass-soft, #55657a);
+  font-size: 0.92rem;
+  white-space: pre-line;
+}
+
+/* a table in a reading: navy header with a gold rule, soft gold stripes */
+.rtableWrap {
+  overflow-x: auto;
+  margin: 6px 0 14px;
+}
+.rtable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #d9e1ec;
+  border-radius: 14px;
+  overflow: hidden;
+  font-size: 0.95rem;
+}
+.rtable th {
+  padding: 9px 12px;
+  background: #0f2a4a;
+  border-bottom: 3px solid #c9a227;
+  color: #fff;
+  font-weight: 700;
+  text-align: start;
+  vertical-align: top;
+}
+.rtable td {
+  padding: 9px 12px;
+  border-top: 1px solid #e6ebf2;
+  color: #12233d;
+  vertical-align: top;
+}
+.rtable tbody tr:nth-child(even) td {
+  background: #faf6e8;
+}
+.rtable tbody tr:first-child td {
+  border-top: 0;
+}

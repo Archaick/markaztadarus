@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { fiveTOf, learnerSections, sectionTitle } from "../Belajar/belajarSchema";
 import Player from "./Player";
 import SectionScreen from "./SectionScreen";
+import { useScrollLock } from "./scrollLock";
 import styles from "./Guru.module.css";
 
 /**
@@ -17,15 +18,7 @@ export default function TeacherWalk({ lesson, sections, onClose }) {
   const [playing, setPlaying] = useState(false);
   const finished = useRef(false);
 
-  useEffect(() => {
-    const { documentElement: html, body } = document;
-    const before = [html.style.overflow, body.style.overflow];
-    html.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    return () => {
-      [html.style.overflow, body.style.overflow] = before;
-    };
-  }, []);
+  useScrollLock();
 
   const box = useRef(null);
   useEffect(() => {
@@ -54,9 +47,11 @@ export default function TeacherWalk({ lesson, sections, onClose }) {
             finished.current = true;
           }}
           onExit={() => (finished.current ? next() : setPlaying(false))}
+          preview
         />
       ) : (
         <main className={styles.page}>
+          <span className={styles.previewBadge}>{t("player.preview")}</span>
           <SectionScreen
             key={section.id}
             section={section}

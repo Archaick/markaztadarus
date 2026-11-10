@@ -3,6 +3,7 @@ import { IconCheck, IconClock, IconRefresh, IconStarFilled, IconTarget, IconVolu
 import { useTranslation } from "react-i18next";
 import { isArabic, questionsOf, textDir } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
+import { useScrollLock } from "./scrollLock";
 import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
 import ArabicText from "./ArabicText";
 import styles from "./Guru.module.css";
@@ -34,7 +35,7 @@ const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x))
  * little later until it is right; the score counts first tries. The end
  * shows stars, accuracy and time. `onFinish({ score, max })` saves it.
  */
-export default function Player({ section, title, guide, onFinish, onExit }) {
+export default function Player({ section, title, guide, onFinish, onExit, preview = false }) {
   const { t } = useTranslation(NS);
   const questions = useMemo(() => questionsOf(section), [section]);
   const [queue, setQueue] = useState(() => questions.map((_, i) => i));
@@ -163,15 +164,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
   });
 
   // the player is the whole screen: only it scrolls, not the page behind it
-  useEffect(() => {
-    const { documentElement: html, body } = document;
-    const before = [html.style.overflow, body.style.overflow];
-    html.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    return () => {
-      [html.style.overflow, body.style.overflow] = before;
-    };
-  }, []);
+  useScrollLock();
 
   // in match questions, start with the first row ready
   useEffect(() => {
@@ -261,6 +254,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
     if (isArabic(q.options[k])) c.push(styles.optionArabic);
     if (!verdict) {
       if (picked.includes(k)) c.push(styles.optionPicked);
+      else if (preview && (q.correct || []).includes(k)) c.push(styles.optionKey);
     } else if ((q.correct || []).includes(k)) c.push(styles.optionRight);
     else if (picked.includes(k)) c.push(styles.optionWrong);
     else c.push(styles.optionDim);
@@ -304,6 +298,8 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
               {t(`fiveT.${q.fiveT || guide.tag}`)}
             </span>
           )}
+          {/* the admin trying it out; teachers never see this, nor the answer key marked below */}
+          {preview && <span className={styles.previewChip}>{t("player.preview")}</span>}
         </div>
         <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
           <ArabicText text={q.stem} />
@@ -315,6 +311,11 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
           <>
             <MatchBoard q={q} order={order} pairs={pairs} leftOn={leftOn} verdict={verdict} onLeft={tapLeft} onRight={tapRight} />
             {!verdict && Object.keys(pairs).length > 0 && <p className={styles.matchHint}>{t("player.matchUndo")}</p>}
+            {preview && !verdict && (
+              <p className={styles.keyList} dir={textDir(rightText)}>
+                <em className={styles.keyTag}>{t("player.key")}</em> <ArabicText text={rightText} />
+              </p>
+            )}
           </>
         ) : (
           <div className={q.type === "truefalse" ? styles.twoUp : styles.options}>
@@ -323,6 +324,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
                 {q.type !== "truefalse" && <span className={`${styles.letter} ${q.type === "multi" ? styles.letterBox : ""}`}>{q.type === "multi" ? (picked.includes(k) || (verdict && q.correct.includes(k)) ? "✓" : "") : String.fromCharCode(65 + k)}</span>}
                 <span>
                   <ArabicText text={opt} />
+                  {preview && !verdict && (q.correct || []).includes(k) && <em className={styles.keyTag}>{t("player.key")}</em>}
                 </span>
               </button>
             ))}

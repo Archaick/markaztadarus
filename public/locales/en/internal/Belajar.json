@@ -57,7 +57,8 @@
   "block": {
     "heading": "Heading",
     "text": "Text",
-    "arabic": "Arabic"
+    "arabic": "Arabic",
+    "table": "Table"
   },
   "issue": {
     "noStem": "Empty question",
@@ -127,6 +128,7 @@
     "lines": "Answer lines",
     "addTask": "Add task",
     "modeEdit": "Questions",
+    "livePreview": "Live preview · as teachers see it",
     "modePreview": "Teacher view",
     "previewNote": "This is how teachers will see this section. Unsaved changes are shown too."
   },
@@ -316,5 +318,19 @@
         "ex": "Write one habit you want to improve"
       }
     }
+  },
+  "pageEditor": {
+    "hint": "This is the teacher's page. Type straight onto it: what you type appears exactly here for teachers.",
+    "text": "Write a paragraph…",
+    "heading": "Heading",
+    "column": "Column title",
+    "add": "Add:",
+    "addRow": "Add a row",
+    "removeRow": "Remove the last row",
+    "addColumn": "Add a column",
+    "removeColumn": "Remove the last column",
+    "headerRow": "First row is the header",
+    "task": "Write the task…",
+    "drag": "Drag to move"
   }
 }

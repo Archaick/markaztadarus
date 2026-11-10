@@ -765,3 +765,197 @@ a.row:hover {
   font-size: 0.9rem;
   font-weight: 600;
 }
+
+/* the section editor with the teacher's screen live beside it (wide screens only) */
+.editLive {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.editCol {
+  min-width: 0;
+}
+.livePane {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .editLive {
+    grid-template-columns: minmax(0, 1fr) 380px;
+  }
+  .livePane {
+    position: sticky;
+    top: 16px;
+    display: block;
+  }
+}
+.liveLabel {
+  margin: 0 0 8px;
+  color: #5d6b7d;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+.livePhone {
+  height: min(720px, calc(100vh - 200px));
+  overflow-y: auto;
+  border: 8px solid #0f2a4a;
+  border-radius: 34px;
+  background: linear-gradient(170deg, #f7f9fc 0%, #eef3f8 45%, #e5ecf5 100%);
+  box-shadow: 0 30px 60px -34px rgba(15, 42, 74, 0.6);
+}
+.liveApp {
+  min-height: 100%;
+  pointer-events: none;
+}
+
+/* the opening reading, edited on the page as teachers will see it */
+.pageHint {
+  margin: -6px 0 12px;
+  color: #5d6b7d;
+  font-size: 0.85rem;
+}
+.pageEditApp {
+  min-height: 0;
+}
+.pageSheet {
+  max-width: 720px;
+  margin: 0 auto;
+  background: #fff;
+}
+.pageEmpty {
+  color: #8a97a8;
+  font-style: italic;
+}
+.pblock {
+  position: relative;
+  margin: 0 -10px 4px;
+  padding: 2px 10px;
+  border: 1px dashed transparent;
+  border-radius: 12px;
+}
+.pblock:hover,
+.pblock:focus-within {
+  border-color: rgba(26, 73, 112, 0.25);
+  background: rgba(239, 244, 250, 0.6);
+}
+.pblockTools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.pblock:hover .pblockTools,
+.pblock:focus-within .pblockTools {
+  opacity: 1;
+}
+.kindPill {
+  padding: 2px 9px;
+  border: 1px solid #d9e1ec;
+  border-radius: 999px;
+  background: #fff;
+  color: #3c5a80;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.kindPillOn {
+  border-color: #0f2a4a;
+  background: #0f2a4a;
+  color: #fff;
+}
+.tableTools {
+  margin-bottom: 8px;
+}
+
+/* editing on the teacher's own page */
+.canvasLabel {
+  margin: 0 0 8px;
+  color: #5d6b7d;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.canvas {
+  min-height: 0;
+  margin-bottom: 24px;
+  border: 2px dashed rgba(26, 73, 112, 0.22);
+  border-radius: 28px;
+  background: linear-gradient(170deg, #f7f9fc 0%, #eef3f8 45%, #e5ecf5 100%);
+}
+.canvasStill {
+  pointer-events: none;
+}
+.canvasLine {
+  border-radius: 10px;
+}
+.canvasLine:focus-within,
+.canvasLine:hover {
+  outline: 1px dashed rgba(26, 73, 112, 0.3);
+  outline-offset: 4px;
+}
+.canvasTask textarea:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.canvasQuestions {
+  margin: 8px 0 12px;
+  color: #0f2a4a;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.pageBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pageSheetEmpty {
+  border: 1px dashed rgba(26, 73, 112, 0.25);
+}
+
+/* the controls float over a line, so the page keeps the teacher's own spacing */
+.pblock {
+  margin: 0 -10px 0;
+  padding: 0 10px;
+}
+.pblockTools {
+  position: absolute;
+  top: -15px;
+  left: 8px;
+  right: 8px;
+  z-index: 3;
+  min-height: 0;
+  pointer-events: none;
+}
+.pblock:hover .pblockTools,
+.pblock:focus-within .pblockTools {
+  pointer-events: auto;
+}
+.pblockTools > * {
+  padding: 2px 4px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 4px 12px -6px rgba(15, 42, 74, 0.45);
+}
+.grip {
+  display: inline-grid;
+  place-items: center;
+  color: #5d6b7d;
+  cursor: grab;
+}
+.grip:active {
+  cursor: grabbing;
+}
+.pblockDragging {
+  opacity: 0.4;
+}
+.pblockDropBefore {
+  box-shadow: 0 -3px 0 #c9a227;
+}
+.pblockDropAfter {
+  box-shadow: 0 3px 0 #c9a227;
+}

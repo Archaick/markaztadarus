@@ -3,6 +3,7 @@ import { IconCheck, IconMessageCircle, IconPlayerPlayFilled } from "@tabler/icon
 import { useTranslation } from "react-i18next";
 import { isArabic, kindOf, questionsOf, sectionTitle, textDir } from "../Belajar/belajarSchema";
 import ArabicText from "./ArabicText";
+import ReadingTable from "./ReadingTable";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -54,7 +55,9 @@ function Reading({ blocks }) {
   return (
     <div className={`${styles.glassCard} ${styles.reading}`}>
       {blocks.map((b, i) =>
-        b.type === "heading" ? (
+        b.type === "table" ? (
+          <ReadingTable key={i} block={b} />
+        ) : b.type === "heading" ? (
           <h3 key={i}>{b.text}</h3>
         ) : (
           <p key={i} className={b.type === "arabic" || isArabic(b.text) ? styles.arabic : undefined} dir={b.type === "arabic" ? "rtl" : textDir(b.text)}>

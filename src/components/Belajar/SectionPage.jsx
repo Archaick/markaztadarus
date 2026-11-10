@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Alert, Button, Group, Loader, Modal, NumberInput, SegmentedControl, Select, Text, Textarea, Tooltip } from "@mantine/core";
-import { IconAlertTriangle, IconArrowLeft, IconArrowUp, IconPlus, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Alert, Button, Group, Loader, Modal, Text, Textarea, Tooltip } from "@mantine/core";
+import { IconAlertTriangle, IconArrowLeft, IconCheck, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteSection, saveSectionContent } from "./actions";
-import { BASE, NS, QUESTION_TYPES, blankQuestion, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
-import TeacherCards from "./TeacherCards";
+import { BASE, NS, QUESTION_TYPES, blankQuestion, cleanReading, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
+import PageEditor from "./PageEditor";
+import { bare } from "./bareInput";
+import Player from "../Guru/Player";
+import guru from "../Guru/Guru.module.css";
 import QuestionEditor from "./QuestionEditor";
 import styles from "./Belajar.module.css";
 
@@ -26,12 +29,14 @@ export default function SectionPage() {
   const { lessonId, sectionId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(NS);
+  // the teacher's own words, for the parts of their page shown while editing
+  const { t: tg } = useTranslation("guru/Guru");
   const { user, isSuperAdmin } = useAccess();
   const { loading, lessonById, sectionsOf } = useBelajar();
   const [draft, setDraft] = useState(null);
   const [busy, setBusy] = useState(false);
   const [removing, setRemoving] = useState(false);
-  const [mode, setMode] = useState("edit");
+  const [playing, setPlaying] = useState(false);
 
   if (loading) return <Loader />;
   const lesson = lessonById.get(lessonId);
@@ -47,6 +52,7 @@ export default function SectionPage() {
   const value = draft || stored;
   const set = (patch) => setDraft({ ...value, ...patch });
   const bad = (value.parts || []).flatMap((p) => p.questions).filter((q) => questionIssues(q).length).length;
+  const questionCount = (value.parts || []).reduce((n, p) => n + (p.questions || []).length, 0);
 
   const save = async () => {
     setBusy(true);
@@ -54,7 +60,7 @@ export default function SectionPage() {
       const { reading, parts, tasks, instructions } = value;
       await saveSectionContent(user, lesson, section, {
         instructions,
-        reading: reading.filter((b) => b.text.trim()),
+        reading: cleanReading(reading),
         parts,
         tasks: tasks.filter((x) => x.prompt.trim()),
       });
@@ -83,15 +89,6 @@ export default function SectionPage() {
           </p>
         </div>
         <Group>
-          <SegmentedControl
-            color="#003366"
-            value={mode}
-            onChange={setMode}
-            data={[
-              { value: "edit", label: t("sectionPage.modeEdit") },
-              { value: "preview", label: t("sectionPage.modePreview") },
-            ]}
-          />
           {section && isSuperAdmin && (
             <Tooltip label={t("sectionPage.delete")}>
               <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
@@ -102,81 +99,106 @@ export default function SectionPage() {
         </Group>
       </div>
 
-      {mode === "preview" ? (
-        <>
-          <Alert color="blue" mb="lg">
-            {t("sectionPage.previewNote")}
-          </Alert>
-          <TeacherCards key={JSON.stringify(value).length} section={value} title={`${lesson.title} · ${name}`} />
-        </>
-      ) : (
-        <>
+      <>
           {bad > 0 && (
             <Alert color="orange" icon={<IconAlertTriangle size={18} />} mb="md">
               {t("sectionPage.bad", { count: bad })}
             </Alert>
           )}
 
-          <ReadingEditor value={value.reading} onChange={(reading) => set({ reading })} />
+          {/* the teacher's own page, and the place to write it: what is typed here is what they will see */}
+          <p className={styles.canvasLabel}>{t("pageEditor.hint")}</p>
+          <div className={`${guru.app} ${styles.canvas}`}>
+            <main className={guru.page}>
+              <span className={guru.helloSmall}>{lesson.title}</span>
+              <h1 className={guru.helloTitle}>{sectionTitle(section, tg)}</h1>
 
-          {kind === "quiz" &&
-            value.parts.map((part, p) => (
-              <div key={p} className={styles.panel}>
-                {part.questions.map((q, i) => (
-                  <QuestionEditor
-                    key={q.id}
-                    n={i + 1}
-                    q={q}
-                    onChange={(nq) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.map((y, k) => (k === i ? nq : y)) } : x)) })}
-                    onMove={(d) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: move(x.questions, i, d) } : x)) })}
-                    onRemove={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.filter((_, k) => k !== i) } : x)) })}
-                  />
-                ))}
-                <Group mt="md" gap="xs">
-                  {QUESTION_TYPES.map((qt) => (
-                    <Button
-                      key={qt}
-                      size="xs"
-                      variant="light"
-                      color="#003366"
-                      leftSection={<IconPlus size={14} />}
-                      onClick={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: [...x.questions, blankQuestion(qt)] } : x)) })}
-                    >
-                      {t(`qtype.${qt}`)}
-                    </Button>
+              <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
+
+              {kind === "quiz" && questionCount > 0 && (
+                <div className={`${guru.glassCard} ${guru.startCard}`}>
+                  <div>
+                    <b>{tg("view.ready", { count: questionCount })}</b>
+                    <span>{tg("view.readyHint")}</span>
+                  </div>
+                  <button type="button" className={guru.primaryBig} onClick={() => setPlaying(true)}>
+                    <IconPlayerPlayFilled size={18} /> {tg("view.start")}
+                  </button>
+                </div>
+              )}
+              {(kind === "reading" || (kind === "quiz" && !questionCount)) && (
+                <button type="button" className={`${guru.primaryBig} ${styles.canvasStill}`} tabIndex={-1}>
+                  <IconCheck size={18} /> {tg("view.haveRead")}
+                </button>
+              )}
+
+              {kind === "written" && (
+                <>
+                  <p className={`${guru.instructions} ${styles.canvasLine}`}>
+                    <Textarea variant="unstyled" autosize minRows={1} styles={bare} placeholder={t("sectionPage.instructions")} value={value.instructions} onChange={(e) => set({ instructions: e.currentTarget.value })} />
+                  </p>
+                  {value.tasks.map((task, i) => (
+                    <div key={task.id} className={`${guru.glassCard} ${guru.task} ${styles.canvasTask}`}>
+                      <Group justify="space-between" wrap="nowrap">
+                        <span className={guru.kicker}>{tg("view.task", { n: i + 1 })}</span>
+                        <ActionIcon size="sm" variant="subtle" color="red" onClick={() => set({ tasks: value.tasks.filter((_, j) => j !== i) })} aria-label={t("delete")}>
+                          <IconTrash size={14} />
+                        </ActionIcon>
+                      </Group>
+                      <div className={`${guru.taskPrompt} ${styles.canvasLine}`}>
+                        <Textarea variant="unstyled" autosize minRows={1} styles={bare} placeholder={t("pageEditor.task")} value={task.prompt} onChange={(e) => set({ tasks: value.tasks.map((x, j) => (j === i ? { ...x, prompt: e.currentTarget.value } : x)) })} />
+                      </div>
+                      <textarea className={guru.textarea} rows={Math.max(3, task.lines || 3)} placeholder={tg("view.writeHere")} disabled />
+                    </div>
                   ))}
-                </Group>
-              </div>
-            ))}
-          {kind === "written" && (
-            <div className={styles.panel}>
-              <Textarea mb="md" label={t("sectionPage.instructions")} autosize minRows={1} value={value.instructions} onChange={(e) => set({ instructions: e.currentTarget.value })} />
-              {value.tasks.map((task, i) => (
-                <div key={task.id} className={styles.question}>
-                  <Group justify="space-between" mb={6}>
-                    <Text fw={700}>{t("sectionPage.task", { n: i + 1 })}</Text>
-                    <ActionIcon variant="subtle" color="red" onClick={() => set({ tasks: value.tasks.filter((_, j) => j !== i) })}>
-                      <IconTrash size={16} />
-                    </ActionIcon>
+                  <Button variant="light" color="#003366" leftSection={<IconPlus size={14} />} onClick={() => set({ tasks: [...value.tasks, { id: newId(), prompt: "", lines: 3 }] })}>
+                    {t("sectionPage.addTask")}
+                  </Button>
+                </>
+              )}
+            </main>
+          </div>
+
+          {kind === "quiz" && (
+            <>
+              <h3 className={styles.canvasQuestions}>{t("lesson.tabQuestions", { count: questionCount })}</h3>
+              {value.parts.map((part, p) => (
+                <div key={p} className={styles.panel}>
+                  {part.questions.map((q, i) => (
+                    <QuestionEditor
+                      key={q.id}
+                      n={i + 1}
+                      q={q}
+                      onChange={(nq) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.map((y, k) => (k === i ? nq : y)) } : x)) })}
+                      onMove={(d) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: move(x.questions, i, d) } : x)) })}
+                      onRemove={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.filter((_, k) => k !== i) } : x)) })}
+                    />
+                  ))}
+                  <Group mt="md" gap="xs">
+                    {QUESTION_TYPES.map((qt) => (
+                      <Button
+                        key={qt}
+                        size="xs"
+                        variant="light"
+                        color="#003366"
+                        leftSection={<IconPlus size={14} />}
+                        onClick={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: [...x.questions, blankQuestion(qt)] } : x)) })}
+                      >
+                        {t(`qtype.${qt}`)}
+                      </Button>
+                    ))}
                   </Group>
-                  <Textarea autosize minRows={2} value={task.prompt} onChange={(e) => set({ tasks: value.tasks.map((x, j) => (j === i ? { ...x, prompt: e.currentTarget.value } : x)) })} />
-                  <NumberInput
-                    mt="xs"
-                    w={200}
-                    label={t("sectionPage.lines")}
-                    min={1}
-                    max={20}
-                    value={task.lines}
-                    onChange={(v) => set({ tasks: value.tasks.map((x, j) => (j === i ? { ...x, lines: Number(v) || 3 } : x)) })}
-                  />
                 </div>
               ))}
-              <Button mt="md" size="xs" variant="light" color="#003366" leftSection={<IconPlus size={14} />} onClick={() => set({ tasks: [...value.tasks, { id: newId(), prompt: "", lines: 3 }] })}>
-                {t("sectionPage.addTask")}
-              </Button>
-            </div>
+            </>
           )}
         </>
+
+      {/* the questions, played as the teacher plays them, with the answer key marked for the admin */}
+      {playing && (
+        <div className={guru.app} style={{ display: "contents" }}>
+          <Player section={value} title={`${lesson.title} · ${name}`} onFinish={() => {}} onExit={() => setPlaying(false)} preview />
+        </div>
       )}
 
       {draft && (
@@ -214,43 +236,5 @@ export default function SectionPage() {
         </Group>
       </Modal>
     </>
-  );
-}
-
-/** The text a section opens with (doa, hadis, goals): one block per line, Arabic set right to left. */
-function ReadingEditor({ value, onChange }) {
-  const { t } = useTranslation(NS);
-  const types = ["heading", "text", "arabic"].map((v) => ({ value: v, label: t(`block.${v}`) }));
-  return (
-    <div className={styles.panel}>
-      <h3 className={styles.panelTitle}>{t("sectionPage.reading")}</h3>
-      {value.length === 0 && (
-        <Text size="sm" c="dimmed" mb="sm">
-          {t("sectionPage.noReading")}
-        </Text>
-      )}
-      {value.map((b, i) => (
-        <Group key={i} align="flex-start" mb={8} wrap="nowrap">
-          <Select w={120} data={types} value={b.type} allowDeselect={false} onChange={(v) => onChange(value.map((x, j) => (j === i ? { ...x, type: v } : x)))} />
-          <Textarea
-            style={{ flex: 1 }}
-            className={b.type === "arabic" ? styles.arabicInput : undefined}
-            autosize
-            minRows={1}
-            value={b.text}
-            onChange={(e) => onChange(value.map((x, j) => (j === i ? { ...x, text: e.currentTarget.value } : x)))}
-          />
-          <ActionIcon variant="subtle" onClick={() => onChange(move(value, i, -1))}>
-            <IconArrowUp size={16} />
-          </ActionIcon>
-          <ActionIcon variant="subtle" color="red" onClick={() => onChange(value.filter((_, j) => j !== i))}>
-            <IconTrash size={16} />
-          </ActionIcon>
-        </Group>
-      ))}
-      <Button size="xs" variant="subtle" leftSection={<IconPlus size={14} />} onClick={() => onChange([...value, { type: "text", text: "" }])}>
-        {t("sectionPage.addBlock")}
-      </Button>
-    </div>
   );
 }

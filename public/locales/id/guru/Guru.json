@@ -73,6 +73,8 @@
     "task": "Tugas tertulis"
   },
   "player": {
+    "preview": "Pratinjau admin",
+    "key": "Kunci jawaban",
     "exit": "Keluar",
     "check": "Periksa",
     "continue": "Lanjut",

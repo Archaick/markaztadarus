@@ -73,6 +73,8 @@
     "task": "Written task"
   },
   "player": {
+    "preview": "Admin preview",
+    "key": "Answer key",
     "exit": "Leave",
     "check": "Check",
     "continue": "Continue",

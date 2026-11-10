@@ -55,7 +55,8 @@
   "block": {
     "heading": "Judul",
     "text": "Teks",
-    "arabic": "Arab"
+    "arabic": "Arab",
+    "table": "Tabel"
   },
   "issue": {
     "noStem": "Soal kosong",
@@ -121,6 +122,7 @@
     "lines": "Baris jawaban",
     "addTask": "Tambah tugas",
     "modeEdit": "Isi soal",
+    "livePreview": "Pratinjau langsung · seperti dilihat guru",
     "modePreview": "Tampilan guru",
     "previewNote": "Beginilah guru akan melihat bagian ini. Perubahan yang belum disimpan juga ikut tampil."
   },
@@ -305,5 +307,19 @@
         "ex": "Tuliskan satu kebiasaan yang ingin diperbaiki"
       }
     }
+  },
+  "pageEditor": {
+    "hint": "Ini halaman guru. Tulis langsung di sini: yang Anda ketik muncul persis di tempat ini untuk guru.",
+    "text": "Tulis paragraf…",
+    "heading": "Judul",
+    "column": "Judul kolom",
+    "add": "Tambah:",
+    "addRow": "Tambah baris",
+    "removeRow": "Hapus baris terakhir",
+    "addColumn": "Tambah kolom",
+    "removeColumn": "Hapus kolom terakhir",
+    "headerRow": "Baris pertama sebagai judul",
+    "task": "Tulis tugas…",
+    "drag": "Seret untuk memindahkan"
   }
 }

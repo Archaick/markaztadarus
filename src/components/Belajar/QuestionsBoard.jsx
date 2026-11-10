@@ -311,7 +311,7 @@ export default function QuestionsBoard({ lesson, sections }) {
 
       {playing && (
         <div className={guru.app} style={{ display: "contents" }}>
-          <Player section={playing.section} title={playing.title} onFinish={() => {}} onExit={() => setPlaying(null)} />
+          <Player section={playing.section} title={playing.title} onFinish={() => {}} onExit={() => setPlaying(null)} preview />
         </div>
       )}
     </>

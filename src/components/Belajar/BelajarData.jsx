@@ -3,7 +3,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, SECTIONS, byOrder, bySectionOrder } from "./belajarSchema";
 
-const DataContext = createContext(null);
+export const DataContext = createContext(null);
 
 export const useBelajar = () => useContext(DataContext);
 

@@ -126,7 +126,11 @@ export const issuesOfSection = (section) => questionsOf(section).filter((q) => q
 export const byOrder = (a, b) => (a.order ?? 999) - (b.order ?? 999) || (a.title || "").localeCompare(b.title || "");
 
 /** A section has something for a learner (questions, text or tasks). */
-export const hasContent = (s) => questionsOf(s).length > 0 || (s?.reading || []).some((b) => (b.text || "").trim()) || (s?.tasks || []).length > 0;
+/** A line of reading with something in it: text, or a table with at least one filled cell. */
+export const blockFilled = (b) => (b?.type === "table" ? (b.rows || []).some((r) => (r.cells || []).some((c) => (c || "").trim())) : !!(b?.text || "").trim());
+export const cleanReading = (blocks) => (blocks || []).filter(blockFilled);
+
+export const hasContent = (s) => questionsOf(s).length > 0 || (s?.reading || []).some(blockFilled) || (s?.tasks || []).length > 0;
 
 /** The sections a learner works through in one surah, in the order the admin set. */
 export const learnerSections = (sections, lessonId) => sections.filter((s) => s.lessonId === lessonId && hasContent(s)).sort(bySectionOrder);
