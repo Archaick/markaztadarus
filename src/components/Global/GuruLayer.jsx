@@ -3,16 +3,16 @@ import { CENTROIDS, SHOW_PINS } from "./ProvinceLayer";
 import styles from "./WorldGlobe.module.css";
 
 /**
- * Tadarus Guru teachers on the globe, never by name: a green bubble with how
- * many teachers are in a province (up close) or a country (far out). Where
- * some have the app open right now, it pulses and says so.
+ * Tadarus Guru teachers studying right now, never by name: a pulsing green
+ * bubble with how many, per province (up close) or country (far out).
  */
 export default function GuruLayer({ teachers, projection, scale, visible, words }) {
   if (!teachers?.length) return null;
   // per province only once the province pins show; before that, one bubble for the whole country
   const close = scale >= SHOW_PINS;
   const groups = new Map();
-  teachers.forEach((x) => {
+  // only where someone is studying right now; the totals are in the side panel
+  teachers.filter((x) => x.active).forEach((x) => {
     const byProvince = close && x.country === "ID" && x.province && CENTROIDS[x.province];
     const key = byProvince ? `ID-${x.province}` : x.country;
     const at = byProvince ? CENTROIDS[x.province] : countryByCode.get(x.country)?.centre;
@@ -30,8 +30,8 @@ export default function GuruLayer({ teachers, projection, scale, visible, words 
       {bubbles.map((b) => {
         if (!visible(b.at)) return null;
         const [x, y] = projection(b.at);
-        const text = b.active ? `${words.guru} ${b.count} · ${words.studying(b.active)}` : `${words.guru} ${b.count}`;
-        const w = text.length * 6.2 + 24;
+        const text = words.studying(b.active);
+        const w = text.length * 6.4 + 24;
         return (
           // beside the place, so it does not hide the program pin there
           <g key={b.key} transform={`translate(${x} ${y})`}>

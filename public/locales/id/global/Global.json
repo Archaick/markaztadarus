@@ -42,7 +42,7 @@
   "teachers": "guru Tadarus",
   "teachersIn": "{{count}} guru Tadarus",
   "guruPin": "Guru",
-  "studyingPin": "{{count}} belajar",
+  "studyingPin": "{{count}} sedang belajar",
   "studyingNow": "{{count}} sedang belajar sekarang",
   "mapClose": "Tutup daftar provinsi"
 }
