@@ -4,7 +4,7 @@
   "productBy": "من منتجات مركز تدارس إندونيسيا",
   "superAdmin": "المشرف العام",
   "signOut": "تسجيل الخروج",
-  "backToHub": "الدخول الداخلي",
+  "backToHub": "دخول الموظفين",
   "google": {
     "continue": "المتابعة باستخدام Google",
     "opening": "جارٍ فتح Google…",
@@ -16,7 +16,7 @@
     }
   },
   "gate": {
-    "title": "الدخول الداخلي",
+    "title": "دخول الموظفين",
     "subtitle": "سجّل الدخول بحساب Google الذي تمت دعوتك به.",
     "featureSubtitle": "سجّل الدخول لفتح {{title}}.",
     "inviteOnly": "الدخول بالدعوة فقط.",

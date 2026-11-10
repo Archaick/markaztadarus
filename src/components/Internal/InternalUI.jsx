@@ -1,6 +1,8 @@
+import DawnScene from "../Guru/DawnScene";
+import guru from "../Guru/Guru.module.css";
 import { useState } from "react";
 import { Avatar, Button, Card, Loader, Text, Title } from "@mantine/core";
-import { IconAlertCircle, IconHome2, IconLogout, IconShieldLock } from "@tabler/icons-react";
+import { IconAlertCircle, IconHome2, IconLogout } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { LANGUAGES, changeLanguage, savedLanguage, useLanguageDirection } from "./language";
@@ -183,51 +185,54 @@ export function AccountBar() {
 
 // Shown in place of a dashboard when nobody is signed in, or the signed-in
 // account has not been given that dashboard.
-export function AccessGate({ title, subtitle, icon: Icon = IconShieldLock, color }) {
+export function AccessGate({ title, subtitle }) {
   const { t } = useTranslation(NS);
   const { user, email, signOutUser } = useAccess();
 
   return (
-    <Card className={`${styles.card} ${styles.gateCard}`}>
-      <div className={styles.iconWrap} style={color ? { background: color } : undefined}>
-        <Icon size={34} />
+    <>
+      <DawnScene />
+      <div className={guru.dawnSlot}>
+        <Card className={`${styles.card} ${styles.gateCard} ${styles.gateDawn}`}>
+          <img src="/MTIFavicon.png" alt="" className={styles.gateLogo} />
+          <Title order={1} className={styles.title}>
+            {title || t("gate.title")}
+          </Title>
+
+          {!user ? (
+            <>
+              <Text className={styles.subtitle}>{subtitle || t("gate.subtitle")}</Text>
+              <div className={styles.gateActions}>
+                <GoogleButton />
+              </div>
+              <Text className={styles.finePrint}>{t("gate.inviteOnly")}</Text>
+            </>
+          ) : (
+            <>
+              <div className={styles.noAccess}>
+                <IconAlertCircle size={20} />
+                <div>
+                  <p className={styles.noAccessTitle}>{t("gate.noAccessTitle")}</p>
+                  <p className={styles.noAccessText}>
+                    {email ? (
+                      <Trans t={t} i18nKey="gate.noAccessText" values={{ email }} components={{ b: <strong dir="ltr" /> }} />
+                    ) : (
+                      t("gate.noEmail")
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className={styles.gateActions}>
+                <Button variant="default" leftSection={<IconLogout size={16} />} onClick={signOutUser}>
+                  {t("gate.switchAccount")}
+                </Button>
+              </div>
+            </>
+          )}
+
+          <Text className={styles.footerText}>{t("productBy")}</Text>
+        </Card>
       </div>
-      <Title order={1} className={styles.title}>
-        {title || t("gate.title")}
-      </Title>
-
-      {!user ? (
-        <>
-          <Text className={styles.subtitle}>{subtitle || t("gate.subtitle")}</Text>
-          <div className={styles.gateActions}>
-            <GoogleButton />
-          </div>
-          <Text className={styles.finePrint}>{t("gate.inviteOnly")}</Text>
-        </>
-      ) : (
-        <>
-          <div className={styles.noAccess}>
-            <IconAlertCircle size={20} />
-            <div>
-              <p className={styles.noAccessTitle}>{t("gate.noAccessTitle")}</p>
-              <p className={styles.noAccessText}>
-                {email ? (
-                  <Trans t={t} i18nKey="gate.noAccessText" values={{ email }} components={{ b: <strong dir="ltr" /> }} />
-                ) : (
-                  t("gate.noEmail")
-                )}
-              </p>
-            </div>
-          </div>
-          <div className={styles.gateActions}>
-            <Button variant="default" leftSection={<IconLogout size={16} />} onClick={signOutUser}>
-              {t("gate.switchAccount")}
-            </Button>
-          </div>
-        </>
-      )}
-
-      <Text className={styles.footerText}>{t("productBy")}</Text>
-    </Card>
+    </>
   );
 }

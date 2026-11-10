@@ -12,6 +12,7 @@ import SurahPage from "./SurahPage";
 import SectionView from "./SectionView";
 import { InstallProvider, useInstall } from "./install";
 import { IosSteps } from "./InstallCard";
+import DawnScene from "./DawnScene";
 import styles from "./Guru.module.css";
 
 export const NS = "guru/Guru";
@@ -141,21 +142,15 @@ function SignIn() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
   return (
-    <div className={styles.center}>
-      <div className={`${styles.glassCard} ${styles.welcome}`}>
+    <div className={styles.dawnStage}>
+      <DawnScene />
+      <div className={`${styles.glassCard} ${styles.welcome} ${styles.dawnCard}`}>
         <img src="/MTIFavicon.png" alt="" className={styles.welcomeLogo} />
         <span className={styles.eyebrow}>{t("signIn.eyebrow")}</span>
         <h1 className={styles.welcomeTitle}>
           Tadarus <span>Guru</span>
         </h1>
         <p className={styles.welcomeText}>{t("signIn.text")}</p>
-        <div className={styles.fiveT}>
-          {["Tamhid", "Tilawah", "Tafsir", "Tadabbur", "Tazkiyah"].map((w, i) => (
-            <span key={w} style={{ "--i": i }}>
-              {w}
-            </span>
-          ))}
-        </div>
         <button
           type="button"
           className={styles.googleButton}

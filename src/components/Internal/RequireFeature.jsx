@@ -10,12 +10,7 @@ function FeatureGate({ feature }) {
   const title = meta ? t(`features.${meta.key}.title`) : undefined;
   return (
     <InternalLayout>
-      <AccessGate
-        title={title}
-        subtitle={meta ? t("gate.featureSubtitle", { title }) : undefined}
-        icon={meta?.icon}
-        color={meta?.color}
-      />
+      <AccessGate title={title} subtitle={meta ? t("gate.featureSubtitle", { title }) : undefined} />
     </InternalLayout>
   );
 }
