@@ -16,7 +16,8 @@
     "trash": "Recently deleted",
     "backup": "Backup",
     "classes": "Classes",
-    "teachers": "Teachers"
+    "teachers": "Teachers",
+    "progress": "Progress"
   },
   "fiveT": {
     "tamhid": "Tamhid",
@@ -342,5 +343,42 @@
     "noReading": "No reading yet",
     "noQuestions": "No questions yet",
     "noTasks": "No tasks yet"
+  },
+  "progressPage": {
+    "title": "Teacher progress",
+    "sub": "Who has started, how far each is, their scores, and who needs a nudge.",
+    "allClasses": "All classes",
+    "tile": {
+      "teachers": "Teachers",
+      "started": "Started",
+      "finished": "Finished",
+      "average": "Average score",
+      "quiet": "Quiet 7+ days"
+    },
+    "none": "No teachers in this class yet.",
+    "attention": "Needs attention",
+    "attentionSub": "Not started yet, or haven't opened the app for {{days}} days or more. Reach out to them.",
+    "quietFor_one": "Quiet for {{count}} day",
+    "quietFor_other": "Quiet for {{count}} days",
+    "everyone": "All teachers",
+    "neverSeen": "Never opened",
+    "status": {
+      "finished": "Finished",
+      "going": "Studying",
+      "quiet": "Quiet",
+      "notStarted": "Not started"
+    },
+    "sort": {
+      "behind": "Furthest behind first",
+      "ahead": "Furthest ahead first",
+      "recent": "Last active",
+      "name": "Name"
+    },
+    "hardest": "Hardest sections",
+    "hardestSub": "Lowest average scores. Check the questions, or go over these sections together.",
+    "triedBy_one": "done by {{count}} teacher",
+    "triedBy_other": "done by {{count}} teachers",
+    "attempts": "average {{count}}× tries",
+    "scoreNote": "Score = each teacher's best score in each section with questions."
   }
 }

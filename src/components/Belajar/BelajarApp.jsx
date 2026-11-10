@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Loader } from "@mantine/core";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { IconBook2, IconDatabaseExport, IconHistory, IconSchool, IconTrash, IconUsers, IconUsersGroup } from "@tabler/icons-react";
+import { IconBook2, IconChartBar, IconDatabaseExport, IconHistory, IconSchool, IconTrash, IconUsers, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import RequireFeature from "../Internal/RequireFeature";
 import AppShell from "../Internal/AppShell";
@@ -15,6 +15,7 @@ import SectionPage from "./SectionPage";
 import ClassesPage from "./ClassesPage";
 import ClassPage from "./ClassPage";
 import TeachersPage from "./TeachersPage";
+import ProgressPage from "./ProgressPage";
 import { BASE, NS } from "./belajarSchema";
 
 // the super admin's pages, the same as the site's, for this platform's records only
@@ -36,6 +37,7 @@ function Shell({ children }) {
         { to: BASE, end: true, icon: IconBook2, label: t("nav.lessons"), count: lessons?.length ?? null },
         { to: `${BASE}/kelas`, icon: IconSchool, label: t("nav.classes"), count: classes?.length ?? null },
         { to: `${BASE}/guru`, icon: IconUsers, label: t("nav.teachers"), count: learners?.length ?? null },
+        { to: `${BASE}/kemajuan`, icon: IconChartBar, label: t("nav.progress") },
       ],
     },
     ...(isSuperAdmin
@@ -91,6 +93,7 @@ export default function BelajarApp() {
                 <Route path="kelas" element={<ClassesPage />} />
                 <Route path="kelas/:classId" element={<ClassPage />} />
                 <Route path="guru" element={<TeachersPage />} />
+                <Route path="kemajuan" element={<ProgressPage />} />
                 <Route path="akses" element={<SuperOnly><AccessPage /></SuperOnly>} />
                 <Route path="riwayat" element={<SuperOnly><History /></SuperOnly>} />
                 <Route path="sampah" element={<SuperOnly><RecentlyDeleted /></SuperOnly>} />

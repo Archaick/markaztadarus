@@ -984,3 +984,67 @@ a.row:hover {
   background: #0f9f6e;
   color: #fff;
 }
+
+/* Kemajuan: all teachers at a glance */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 8px 0 24px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 18px rgba(0, 51, 102, 0.06);
+}
+.tile b {
+  font-size: 1.9rem;
+  line-height: 1.1;
+  color: #003366;
+}
+.tile span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.tileWarn {
+  border-color: #f5c28b;
+  background: #fff7ee;
+}
+.tileWarn b {
+  color: #c2410c;
+}
+.block {
+  margin-top: 28px;
+}
+.blockHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.blockTitle {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #003366;
+}
+.block > .rows,
+.blockHead + .rows {
+  margin-top: 10px;
+}
+.statusBadge {
+  flex: none;
+}
+@media (max-width: 640px) {
+  .statusBadge {
+    display: none;
+  }
+}

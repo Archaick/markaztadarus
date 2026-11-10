@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ActionIcon, Avatar, Badge, Button, CopyButton, Drawer, Group, Loader, Modal, Progress, Switch, Tabs, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
 import { IconArrowLeft, IconBrandWhatsapp, IconCheck, IconCopy, IconLock, IconPencil, IconRefresh, IconTrash, IconUserMinus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
@@ -57,6 +57,12 @@ export default function ClassPage() {
   const [renaming, setRenaming] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [viewing, setViewing] = useState(null);
+  // ?guru=<uid> (from Kemajuan): that teacher's details open once their progress is in
+  const [search, setSearch] = useSearchParams();
+  const [openUid, setOpenUid] = useState(() => search.get("guru"));
+  useEffect(() => {
+    if (search.get("guru")) setSearch({}, { replace: true });
+  }, [search, setSearch]);
   const klass = classById.get(classId);
   const learners = klass ? learnersOf(klass.id) : [];
   const progressRows = useProgressOf(learners.map((l) => l.id));
@@ -209,7 +215,14 @@ export default function ClassPage() {
         </Tabs.Panel>
       </Tabs>
 
-      <LearnerDrawer row={viewing} klass={klass} onClose={() => setViewing(null)} />
+      <LearnerDrawer
+        row={viewing || (openUid && progressRows !== null ? report.find((r) => r.learner.id === openUid) || null : null)}
+        klass={klass}
+        onClose={() => {
+          setViewing(null);
+          setOpenUid(null);
+        }}
+      />
 
       <RenameModal opened={renaming} klass={klass} onClose={() => setRenaming(false)} />
       <Modal opened={removing} onClose={() => setRemoving(false)} title={t("classes.delete")} centered>

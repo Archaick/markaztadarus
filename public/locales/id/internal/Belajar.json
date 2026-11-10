@@ -16,7 +16,8 @@
     "trash": "Baru dihapus",
     "backup": "Cadangan",
     "classes": "Kelas",
-    "teachers": "Guru"
+    "teachers": "Guru",
+    "progress": "Kemajuan"
   },
   "fiveT": {
     "tamhid": "Tamhid",
@@ -329,5 +330,40 @@
     "noReading": "Belum ada bacaan",
     "noQuestions": "Belum ada soal",
     "noTasks": "Belum ada tugas"
+  },
+  "progressPage": {
+    "title": "Kemajuan guru",
+    "sub": "Siapa yang sudah mulai, sejauh mana, nilai mereka, dan siapa yang perlu disapa.",
+    "allClasses": "Semua kelas",
+    "tile": {
+      "teachers": "Guru",
+      "started": "Sudah mulai",
+      "finished": "Selesai",
+      "average": "Rata-rata nilai",
+      "quiet": "Tidak aktif 7+ hari"
+    },
+    "none": "Belum ada guru di kelas ini.",
+    "attention": "Perlu perhatian",
+    "attentionSub": "Belum mulai, atau tidak membuka aplikasi selama {{days}} hari atau lebih. Sapa mereka.",
+    "quietFor": "Tidak aktif {{count}} hari",
+    "everyone": "Semua guru",
+    "neverSeen": "Belum pernah membuka",
+    "status": {
+      "finished": "Selesai",
+      "going": "Sedang belajar",
+      "quiet": "Tidak aktif",
+      "notStarted": "Belum mulai"
+    },
+    "sort": {
+      "behind": "Paling tertinggal dulu",
+      "ahead": "Paling jauh dulu",
+      "recent": "Terakhir aktif",
+      "name": "Nama"
+    },
+    "hardest": "Bagian tersulit",
+    "hardestSub": "Nilai rata-rata terendah. Periksa soalnya, atau bahas bagian ini bersama.",
+    "triedBy": "dikerjakan {{count}} guru",
+    "attempts": "rata-rata {{count}}× mencoba",
+    "scoreNote": "Nilai = nilai terbaik setiap guru di setiap bagian bersoal."
   }
 }
