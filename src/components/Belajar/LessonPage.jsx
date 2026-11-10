@@ -19,7 +19,7 @@ const unlines = (s) => s.split("\n").map((x) => x.trim()).filter(Boolean);
 export default function LessonPage() {
   const { lessonId } = useParams();
   const { t } = useTranslation(NS);
-  const { user } = useAccess();
+  const { user, isSuperAdmin } = useAccess();
   const navigate = useNavigate();
   const { loading, lessonById, sectionsOf } = useBelajar();
   const [editing, setEditing] = useState(false);
@@ -61,11 +61,13 @@ export default function LessonPage() {
               <IconPencil size={18} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label={t("lesson.delete")}>
-            <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
-              <IconTrash size={18} />
-            </ActionIcon>
-          </Tooltip>
+          {isSuperAdmin && (
+            <Tooltip label={t("lesson.delete")}>
+              <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
+                <IconTrash size={18} />
+              </ActionIcon>
+            </Tooltip>
+          )}
         </Group>
       </div>
 

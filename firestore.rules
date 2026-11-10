@@ -576,7 +576,7 @@ service cloud.firestore {
         && request.resource.data.get("program", "guru") in ["guru", "anak"]
         && request.resource.data.get("published", false) is bool
         && request.resource.data.get("ayat", []) is list && request.resource.data.get("ayat", []).size() <= 300;
-      allow delete: if hasFeature("belajar") && marked("belajar_lessons~" + lessonId);
+      allow delete: if isSuperAdmin() && marked("belajar_lessons~" + lessonId); // whole items: the super admin only
     }
 
     match /belajar_sections/{sectionId} {
@@ -588,7 +588,7 @@ service cloud.firestore {
         && request.resource.data.get("parts", []) is list && request.resource.data.get("parts", []).size() <= 10
         && request.resource.data.get("tasks", []) is list && request.resource.data.get("tasks", []).size() <= 30
         && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80;
-      allow delete: if hasFeature("belajar") && marked("belajar_sections~" + sectionId);
+      allow delete: if isSuperAdmin() && marked("belajar_sections~" + sectionId); // whole items: the super admin only
     }
 
     // ---------- Belajar 5T: classes and learners (/guru, later /anak) ----------
@@ -613,7 +613,7 @@ service cloud.firestore {
         && request.resource.data.name is string && request.resource.data.name.size() <= 120
         && request.resource.data.lessonIds is list && request.resource.data.lessonIds.size() <= 120
         && request.resource.data.code is string && request.resource.data.code.size() <= 12;
-      allow delete: if hasFeature("belajar") && marked("belajar_classes~" + classId);
+      allow delete: if isSuperAdmin() && marked("belajar_classes~" + classId); // whole items: the super admin only
     }
 
     // CODE -> class; a signed-in learner looks one up to join
@@ -624,7 +624,7 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(["classId", "active", "auditId", "createdAt", "updatedAt"])
         && request.resource.data.classId is string
         && request.resource.data.active is bool;
-      allow delete: if hasFeature("belajar") && marked("belajar_codes~" + code);
+      allow delete: if isSuperAdmin() && marked("belajar_codes~" + code); // whole items: the super admin only
     }
 
     // classes an email was invited to, claimed when that account signs in
@@ -664,7 +664,7 @@ service cloud.firestore {
       // a deleted teacher put back from the recycle bin
       allow create: if hasFeature("belajar") && audited()
         && request.resource.data.uid == uid && request.resource.data.classIds is list;
-      allow delete: if hasFeature("belajar") && marked("belajar_learners~" + uid);
+      allow delete: if isSuperAdmin() && marked("belajar_learners~" + uid); // whole items: the super admin only
     }
 
     function validProgress() {
@@ -698,7 +698,7 @@ service cloud.firestore {
       // the admin's note on a written answer
       allow update: if hasFeature("belajar") && audited()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["note", "noteBy", "noteAt", "auditId"]);
-      allow delete: if hasFeature("belajar") && marked("belajar_progress~" + progressId);
+      allow delete: if isSuperAdmin() && marked("belajar_progress~" + progressId); // whole items: the super admin only
     }
 
     match /{document=**} {

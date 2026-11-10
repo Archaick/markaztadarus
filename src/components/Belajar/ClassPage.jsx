@@ -50,7 +50,7 @@ function useProgressOf(uids) {
 export default function ClassPage() {
   const { classId } = useParams();
   const { t } = useTranslation(NS);
-  const { user } = useAccess();
+  const { user, isSuperAdmin } = useAccess();
   const navigate = useNavigate();
   const { loading, classById, codeById, lessonById, sections, learnersOf, invitedTo, inviteByEmail } = useBelajar();
   const [busy, setBusy] = useState(false);
@@ -114,11 +114,13 @@ export default function ClassPage() {
               <IconPencil size={18} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label={t("classes.delete")}>
-            <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
-              <IconTrash size={18} />
-            </ActionIcon>
-          </Tooltip>
+          {isSuperAdmin && (
+            <Tooltip label={t("classes.delete")}>
+              <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
+                <IconTrash size={18} />
+              </ActionIcon>
+            </Tooltip>
+          )}
         </Group>
       </div>
 
@@ -366,7 +368,7 @@ function Invites({ klass, invited, learners, inviteByEmail }) {
 /** One learner: where they are in each surah, their scores and their written answers. */
 function LearnerDrawer({ row, klass, onClose }) {
   const { t } = useTranslation(NS);
-  const { user } = useAccess();
+  const { user, isSuperAdmin } = useAccess();
   const [confirm, setConfirm] = useState(false);
   const [deleting, setDeleting] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -404,9 +406,11 @@ function LearnerDrawer({ row, klass, onClose }) {
         <Button variant="subtle" color="red" leftSection={<IconUserMinus size={16} />} onClick={() => setConfirm(true)}>
           {t("classes.removeLearner")}
         </Button>
-        <Button variant="light" color="red" leftSection={<IconTrash size={16} />} onClick={() => setDeleting(l)}>
-          {t("teachers.delete")}
-        </Button>
+        {isSuperAdmin && (
+          <Button variant="light" color="red" leftSection={<IconTrash size={16} />} onClick={() => setDeleting(l)}>
+            {t("teachers.delete")}
+          </Button>
+        )}
       </Group>
       <DeleteTeacher learner={deleting} onClose={() => setDeleting(null)} onDone={onClose} />
       <Modal opened={confirm} onClose={() => setConfirm(false)} title={t("classes.removeLearner")} centered>

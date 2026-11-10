@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { isArabic, questionsOf, textDir } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
 import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
+import ArabicText from "./ArabicText";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -189,7 +190,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
       label={title}
       names={fiveNames(t)}
       shares={guide ? quizShares(steps, guide.sectionId, frac) : sharesOf(questions.map((x, i) => ({ t: x.fiveT, done: solved.has(i) })))}
-      progress={steps.length ? steps.reduce((n, x) => n + (x.state === "done" ? 1 : x.section.id === guide.sectionId ? frac : 0), 0) / steps.length : frac}
+      progress={0.5 + 0.3 * (steps.length ? steps.reduce((n, x) => n + (x.state === "done" ? 1 : x.section.id === guide.sectionId ? frac : 0), 0) / steps.length : frac)}
       fireKey={fired}
       fireT={firedQuestion ? firedQuestion.fiveT || guide?.tag : undefined}
       celebrate={!!ended}
@@ -305,7 +306,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
           )}
         </div>
         <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
-          {q.stem}
+          <ArabicText text={q.stem} />
         </p>
 
         {q.type === "task" ? (
@@ -320,7 +321,9 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
             {q.options.map((opt, k) => (
               <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} dir={textDir(opt)}>
                 {q.type !== "truefalse" && <span className={`${styles.letter} ${q.type === "multi" ? styles.letterBox : ""}`}>{q.type === "multi" ? (picked.includes(k) || (verdict && q.correct.includes(k)) ? "✓" : "") : String.fromCharCode(65 + k)}</span>}
-                <span>{opt}</span>
+                <span>
+                  <ArabicText text={opt} />
+                </span>
               </button>
             ))}
           </div>
@@ -362,7 +365,7 @@ export default function Player({ section, title, guide, onFinish, onExit }) {
             <div className={styles.sheetBody}>
               <span>{t("player.correctIs")}</span>
               <p className={isArabic(rightText) ? styles.arabicSmall : undefined} dir={textDir(rightText)}>
-                {rightText}
+                <ArabicText text={rightText} />
               </p>
             </div>
           )}
@@ -447,7 +450,7 @@ function MatchBoard({ q, order, pairs, leftOn, verdict, onLeft, onRight }) {
               onClick={() => onLeft(k)}
             >
               <span className={styles.pairNo}>{k + 1}</span>
-              {l}
+              <ArabicText text={l} />
             </button>
           );
         })}
@@ -467,7 +470,7 @@ function MatchBoard({ q, order, pairs, leftOn, verdict, onLeft, onRight }) {
               onClick={() => onRight(j)}
             >
               <span className={`${styles.pairNo} ${k === null ? styles.pairNoEmpty : ""}`}>{k === null ? "" : k + 1}</span>
-              {q.right[j]}
+              <ArabicText text={q.right[j]} />
             </button>
           );
         })}

@@ -9,7 +9,7 @@ const STEP_MS = 620;
  * The sign-in scene: the five stars of the 5T light one by one while night
  * turns to dawn, above still water, with light rising from an open mushaf.
  */
-export default function DawnScene() {
+export default function DawnScene({ className = styles.skyFull }) {
   const { t } = useTranslation("guru/Guru");
   const [step, setStep] = useState(() => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? FIVE.length : 0));
 
@@ -21,5 +21,5 @@ export default function DawnScene() {
 
   const shares = useMemo(() => Object.fromEntries(FIVE.map((k, i) => [k, i < step ? 1 : 0])), [step]);
 
-  return <Sky mode="hero" className={styles.skyFull} shares={shares} progress={0.1 + step * 0.14} fireKey={step || null} fireT={FIVE[step - 1]} names={fiveNames(t)} />;
+  return <Sky mode="hero" className={className} shares={shares} progress={0.1 + step * 0.14} fireKey={step || null} fireT={FIVE[step - 1]} names={fiveNames(t)} />;
 }

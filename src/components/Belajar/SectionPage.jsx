@@ -26,7 +26,7 @@ export default function SectionPage() {
   const { lessonId, sectionId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation(NS);
-  const { user } = useAccess();
+  const { user, isSuperAdmin } = useAccess();
   const { loading, lessonById, sectionsOf } = useBelajar();
   const [draft, setDraft] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -92,7 +92,7 @@ export default function SectionPage() {
               { value: "preview", label: t("sectionPage.modePreview") },
             ]}
           />
-          {section && (
+          {section && isSuperAdmin && (
             <Tooltip label={t("sectionPage.delete")}>
               <ActionIcon variant="light" color="red" size="lg" onClick={() => setRemoving(true)}>
                 <IconTrash size={18} />

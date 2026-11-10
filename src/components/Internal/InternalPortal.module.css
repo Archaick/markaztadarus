@@ -804,3 +804,11 @@
   width: 54px;
   margin: 0 auto 0.4rem;
 }
+
+/* the dawn sky sits behind everything in the internal pages */
+.container {
+  isolation: isolate;
+}
+.skyBehind {
+  z-index: -1;
+}

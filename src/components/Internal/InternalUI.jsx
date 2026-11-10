@@ -10,22 +10,6 @@ import styles from "./InternalPortal.module.css";
 
 const NS = "internal/Internal";
 
-const particles = [
-  { left: "4%", top: "78%", size: 8, delay: "0s", duration: "16s" },
-  { left: "11%", top: "90%", size: 4, delay: "1.8s", duration: "14s" },
-  { left: "19%", top: "84%", size: 6, delay: "3.2s", duration: "17s" },
-  { left: "27%", top: "88%", size: 5, delay: "0.5s", duration: "15s" },
-  { left: "35%", top: "94%", size: 7, delay: "2.6s", duration: "18s" },
-  { left: "43%", top: "82%", size: 4, delay: "4.1s", duration: "13s" },
-  { left: "52%", top: "89%", size: 8, delay: "1.2s", duration: "20s" },
-  { left: "60%", top: "86%", size: 5, delay: "2.2s", duration: "14s" },
-  { left: "68%", top: "92%", size: 6, delay: "0.8s", duration: "17s" },
-  { left: "75%", top: "84%", size: 4, delay: "3.8s", duration: "12s" },
-  { left: "82%", top: "90%", size: 7, delay: "1.6s", duration: "19s" },
-  { left: "90%", top: "87%", size: 5, delay: "2.9s", duration: "16s" },
-  { left: "96%", top: "93%", size: 6, delay: "4.5s", duration: "18s" },
-];
-
 // ID · EN · AR pill. `remember` stores the choice for the internal pages;
 // public forms switch for the visit only.
 export function LanguageSwitcher({ language, remember = true, className = "" }) {
@@ -56,23 +40,8 @@ export function InternalLayout({ children, align = "center" }) {
 
   return (
     <div className={`${styles.container} ${align === "top" ? styles.containerTop : ""}`}>
-      <div className={styles.backgroundPattern} />
-      <div className={styles.particles} aria-hidden="true">
-        {particles.map((particle, index) => (
-          <span
-            key={`particle-${index}`}
-            className={styles.particle}
-            style={{
-              left: particle.left,
-              top: particle.top,
-              width: `${particle.size}px`,
-              height: `${particle.size}px`,
-              animationDelay: particle.delay,
-              animationDuration: particle.duration,
-            }}
-          />
-        ))}
-      </div>
+      {/* the same dawn sky as every sign-in: the five 5T stars over still water */}
+      <DawnScene className={`${guru.skyFull} ${styles.skyBehind}`} />
       <a href="/" className={styles.homeButton}>
         <IconHome2 size={16} />
         <span>{t("home")}</span>
@@ -191,7 +160,6 @@ export function AccessGate({ title, subtitle }) {
 
   return (
     <>
-      <DawnScene />
       <div className={guru.dawnSlot}>
         <Card className={`${styles.card} ${styles.gateCard} ${styles.gateDawn}`}>
           <img src="/MTIFavicon.png" alt="" className={styles.gateLogo} />

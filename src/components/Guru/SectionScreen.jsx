@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IconCheck, IconMessageCircle, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { isArabic, kindOf, questionsOf, sectionTitle, textDir } from "../Belajar/belajarSchema";
+import ArabicText from "./ArabicText";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -57,7 +58,7 @@ function Reading({ blocks }) {
           <h3 key={i}>{b.text}</h3>
         ) : (
           <p key={i} className={b.type === "arabic" || isArabic(b.text) ? styles.arabic : undefined} dir={b.type === "arabic" ? "rtl" : textDir(b.text)}>
-            {b.text}
+            {b.type === "arabic" ? b.text : <ArabicText text={b.text} />}
           </p>
         )
       )}
@@ -88,7 +89,7 @@ function Written({ section, mine, onSubmit }) {
         <div key={task.id} className={`${styles.glassCard} ${styles.task}`}>
           <span className={styles.kicker}>{t("view.task", { n: i + 1 })}</span>
           <p className={styles.taskPrompt} dir={textDir(task.prompt)}>
-            {task.prompt}
+            <ArabicText text={task.prompt} />
           </p>
           <textarea
             className={styles.textarea}

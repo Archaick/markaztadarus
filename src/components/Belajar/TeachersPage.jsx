@@ -12,6 +12,7 @@ import styles from "./Belajar.module.css";
 
 /** Every teacher who joined, in any class: find them, see their classes, delete them. */
 export default function TeachersPage() {
+  const { isSuperAdmin } = useAccess();
   const { t } = useTranslation(NS);
   const { learners, classById, loading } = useBelajar();
   const [search, setSearch] = useState("");
@@ -68,11 +69,13 @@ export default function TeachersPage() {
                     )}
                   </Group>
                 </div>
-                <Tooltip label={t("teachers.delete")}>
-                  <ActionIcon variant="subtle" color="red" onClick={() => setRemoving(l)}>
-                    <IconTrash size={18} />
-                  </ActionIcon>
-                </Tooltip>
+                {isSuperAdmin && (
+                  <Tooltip label={t("teachers.delete")}>
+                    <ActionIcon variant="subtle" color="red" onClick={() => setRemoving(l)}>
+                      <IconTrash size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
               </div>
             ))}
           </div>

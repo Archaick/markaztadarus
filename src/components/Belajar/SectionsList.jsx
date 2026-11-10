@@ -14,7 +14,7 @@ import styles from "./Belajar.module.css";
  */
 export default function SectionsList({ lesson, sections }) {
   const { t } = useTranslation(NS);
-  const { user } = useAccess();
+  const { user, isSuperAdmin } = useAccess();
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(null);
   const [removing, setRemoving] = useState(null);
@@ -88,11 +88,13 @@ export default function SectionsList({ lesson, sections }) {
                         <IconPencil size={16} />
                       </ActionIcon>
                     </Tooltip>
-                    <Tooltip label={t("sectionPage.delete")}>
-                      <ActionIcon variant="subtle" color="red" onClick={() => setRemoving(section)}>
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Tooltip>
+                    {isSuperAdmin && (
+                      <Tooltip label={t("sectionPage.delete")}>
+                        <ActionIcon variant="subtle" color="red" onClick={() => setRemoving(section)}>
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Tooltip>
+                    )}
                     <Link to={`${BASE}/surat/${lesson.id}/${section.id}`} className={styles.rowGo} aria-label={t("sections.open")}>
                       <IconChevronRight size={18} />
                     </Link>

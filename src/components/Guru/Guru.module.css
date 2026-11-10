@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap");
 
 /* Tadarus Guru: calm frosted glass on a cool backdrop, phone first,
    big tap targets, gentle motion. MTI navy and gold. */
@@ -688,14 +688,14 @@
   line-height: 1.65;
 }
 .arabic {
-  font-family: "Amiri", "Traditional Arabic", serif;
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
   font-size: 1.6rem;
   line-height: 2.1;
   direction: rtl;
   text-align: right;
 }
 .arabicSmall {
-  font-family: "Amiri", "Traditional Arabic", serif;
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
   font-size: 1.3rem;
   line-height: 1.9;
 }
@@ -881,7 +881,7 @@
   font-weight: 800;
 }
 .optionArabic span:last-child {
-  font-family: "Amiri", serif;
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
   font-size: 1.45rem;
   line-height: 1.8;
 }
@@ -1436,27 +1436,25 @@
 .skyOn .bar {
   background: rgba(255, 255, 255, 0.22);
 }
-/* the question sits on night glass: part of the sky, and it reads the same at night and at dawn */
+/* the question sits on a white card over the dawn sky: dark text, large and calm, easy for every reader */
 .skyOn {
-  --ok: #34d399;
-  --bad: #fb7185;
-  --glow: #ffd98a;
-  --glass-text: #eef3ff;
-  --glass-soft: rgba(214, 226, 255, 0.72);
-  --glass-edge: rgba(255, 255, 255, 0.14);
-  --glass-fill: rgba(255, 255, 255, 0.06);
-  --night-glass: linear-gradient(160deg, rgba(24, 42, 84, 0.8), rgba(9, 20, 46, 0.88));
+  --ok: #0f9f6e;
+  --bad: #d63c4a;
+  --glow: #c9a227;
+  --glass-text: #12233d;
+  --glass-soft: #55657a;
+  --glass-edge: rgba(26, 73, 112, 0.14);
+  --glass-fill: #f6f8fb;
+  --card: rgba(255, 255, 255, 0.97);
 }
 .skyOn .stage,
 .skyOn .endWrap {
   position: relative;
   flex: none;
-  border: 1px solid var(--glass-edge);
-  background: var(--night-glass);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 30px 60px -30px rgba(2, 8, 24, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: var(--card);
+  box-shadow: 0 30px 60px -30px rgba(2, 8, 24, 0.6);
   color: var(--glass-text);
-  backdrop-filter: blur(16px) saturate(130%);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
 }
 .skyOn .stage {
   width: min(720px, calc(100% - 24px));
@@ -1593,15 +1591,19 @@
   outline-offset: 2px;
 }
 
-/* everything inside the night glass */
+/* everything inside the card */
 .skyOn .bar {
   height: 8px;
 }
 .skyOn .bar span {
-  background: linear-gradient(90deg, #ffe7b0, var(--glow));
+  background: linear-gradient(90deg, #ffe7b0, #f5c563);
   box-shadow: 0 0 14px rgba(255, 217, 138, 0.75);
 }
-.skyOn .stem,
+.skyOn .stem {
+  color: var(--glass-text);
+  font-size: clamp(1.25rem, 3.8vw, 1.55rem);
+  line-height: 1.55;
+}
 .skyOn .endTitle {
   color: var(--glass-text);
 }
@@ -1610,38 +1612,39 @@
   color: var(--glass-soft);
 }
 .skyOn .kicker {
-  background: rgba(255, 255, 255, 0.1);
-  color: #d6e2ff;
+  background: #eef2f8;
+  color: #3c5a80;
 }
 .skyOn .kickerFive {
-  border-color: color-mix(in srgb, var(--c) 60%, transparent);
-  background: color-mix(in srgb, var(--c) 16%, transparent);
-  color: color-mix(in srgb, var(--c) 45%, #fff);
+  border-color: color-mix(in srgb, var(--c) 70%, transparent);
+  background: color-mix(in srgb, var(--c) 14%, #fff);
+  color: color-mix(in srgb, var(--c) 55%, #3a2405);
 }
 
 .skyOn .option,
 .skyOn .chip {
-  border: 1px solid var(--glass-edge);
+  border: 1.5px solid var(--glass-edge);
   background: var(--glass-fill);
   color: var(--glass-text);
+  font-size: 1.08rem;
   backdrop-filter: none;
   transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.12s, opacity 0.18s;
 }
 .skyOn .option:hover,
 .skyOn .chip:hover {
-  border-color: rgba(255, 255, 255, 0.34);
-  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(26, 73, 112, 0.38);
+  background: #eef3f9;
 }
 .skyOn .option:active,
 .skyOn .chip:active {
-  border-bottom-width: 1px;
+  border-bottom-width: 1.5px;
   transform: scale(0.985);
 }
 .skyOn .letter {
-  border: 1px solid var(--glass-edge);
+  border: 1.5px solid var(--glass-edge);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.07);
-  color: #d6e2ff;
+  background: #fff;
+  color: #1a4970;
 }
 /* "choose all that apply" gets square tick boxes; one-answer questions keep circles */
 .skyOn .letterBox {
@@ -1649,56 +1652,53 @@
 }
 .skyOn .optionPicked {
   border-color: var(--glow);
-  background: rgba(255, 217, 138, 0.12);
-  box-shadow: 0 0 22px -6px rgba(255, 217, 138, 0.6);
+  background: #fdf6e3;
 }
 .skyOn .optionPicked .letter {
   border-color: var(--glow);
   background: var(--glow);
-  color: #2a1e05;
+  color: #fff;
 }
 .skyOn .optionRight {
   border-color: var(--ok);
-  background: rgba(52, 211, 153, 0.16);
-  box-shadow: 0 0 26px -6px rgba(52, 211, 153, 0.7);
+  background: #e8f8f1;
 }
 .skyOn .optionRight .letter {
   border-color: var(--ok);
   background: var(--ok);
-  color: #04291d;
+  color: #fff;
 }
 .skyOn .optionWrong {
   border-color: var(--bad);
-  background: rgba(251, 113, 133, 0.15);
-  box-shadow: 0 0 26px -8px rgba(251, 113, 133, 0.7);
+  background: #fdecee;
 }
 .skyOn .optionWrong .letter {
   border-color: var(--bad);
   background: var(--bad);
-  color: #3a0612;
+  color: #fff;
 }
 
 .skyOn .matchHalo {
-  stroke: rgba(9, 20, 46, 0.7);
+  stroke: #fff;
 }
 .skyOn .chip.chipColored {
   border-color: color-mix(in srgb, var(--pc) 55%, transparent);
 }
 .skyOn .chip.chipFilled {
   border-color: var(--pc);
-  background: color-mix(in srgb, var(--pc) 24%, transparent);
-  color: #fff;
+  background: color-mix(in srgb, var(--pc) 14%, #fff);
+  color: color-mix(in srgb, var(--pc) 55%, #0f1f33);
 }
 .skyOn .chip.chipColored.chipOn {
-  box-shadow: 0 0 22px -4px var(--pc);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pc) 22%, transparent);
 }
 .skyOn .pairNoEmpty {
-  border-color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(26, 73, 112, 0.3);
 }
 
 .skyOn .taskBox {
-  border: 1px solid var(--glass-edge);
-  background: var(--glass-fill);
+  border: 1.5px solid var(--glass-edge);
+  background: #fff;
   color: var(--glass-text);
 }
 .skyOn .taskBox::placeholder {
@@ -1714,13 +1714,13 @@
   box-shadow: 0 14px 34px -14px rgba(255, 217, 138, 0.8);
 }
 .skyOn .primaryBig:disabled {
-  background: rgba(255, 255, 255, 0.14);
-  color: #fff;
-  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.7);
+  color: #3c5a80;
+  opacity: 1;
 }
 .skyOn .ghostBig {
   border-color: var(--glass-edge);
-  background: var(--glass-fill);
+  background: #fff;
   color: var(--glass-text);
 }
 .skyOn .checkBar {
@@ -1728,24 +1728,21 @@
 }
 
 .skyOn .sheet {
-  border-top: 1px solid;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  border-top: 2px solid;
+  box-shadow: 0 -20px 40px -24px rgba(2, 8, 24, 0.55);
 }
 .skyOn .sheetRight {
-  border-color: rgba(52, 211, 153, 0.45);
-  background: linear-gradient(180deg, rgba(14, 70, 62, 0.95), rgba(7, 30, 42, 0.97));
-  box-shadow: 0 -24px 60px -24px rgba(52, 211, 153, 0.5);
-  color: #d9fff0;
+  border-color: #a7e9cb;
+  background: #ecfbf4;
+  color: #065f46;
 }
 .skyOn .sheetWrong {
-  border-color: rgba(251, 113, 133, 0.45);
-  background: linear-gradient(180deg, rgba(84, 24, 50, 0.95), rgba(32, 13, 36, 0.97));
-  box-shadow: 0 -24px 60px -24px rgba(251, 113, 133, 0.45);
-  color: #ffe4e9;
+  border-color: #f7b8c0;
+  background: #fff1f3;
+  color: #9f1239;
 }
 .skyOn .sheetIcon {
-  background: rgba(255, 255, 255, 0.12);
+  background: #fff;
 }
 .skyOn .sheetRight .sheetIcon {
   color: var(--ok);
@@ -1754,14 +1751,14 @@
   color: var(--bad);
 }
 .skyOn .sheetRight .sheetButton {
-  background: linear-gradient(135deg, #6ee7b7, #34d399);
-  box-shadow: 0 12px 30px -14px rgba(52, 211, 153, 0.9);
-  color: #04291d;
+  background: var(--ok);
+  box-shadow: 0 10px 24px -12px rgba(15, 159, 110, 0.8);
+  color: #fff;
 }
 .skyOn .sheetWrong .sheetButton {
-  background: linear-gradient(135deg, #fda4af, #fb7185);
-  box-shadow: 0 12px 30px -14px rgba(251, 113, 133, 0.9);
-  color: #3a0612;
+  background: var(--bad);
+  box-shadow: 0 10px 24px -12px rgba(214, 60, 74, 0.8);
+  color: #fff;
 }
 .skyOn .sheetButton:active {
   transform: scale(0.985);
@@ -1771,7 +1768,7 @@
   border-color: var(--glass-edge);
   background: var(--glass-fill);
   box-shadow: none;
-  color: var(--glow);
+  color: #b8860b;
 }
 .skyOn .tile b {
   color: var(--glass-text);
@@ -1780,11 +1777,20 @@
   color: var(--glass-soft);
 }
 .skyOn .starOn {
-  color: var(--glow);
-  filter: drop-shadow(0 0 10px rgba(255, 217, 138, 0.7));
+  color: #f5b301;
+  filter: drop-shadow(0 4px 8px rgba(245, 179, 1, 0.35));
 }
 .skyOn .starOff {
-  color: rgba(255, 255, 255, 0.16);
+  color: #d7dee8;
+}
+
+/* Arabic words inside an Indonesian sentence: larger, in a typeface made for harakat */
+.ar {
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
+  font-size: 1.32em;
+  font-weight: 400;
+  line-height: 1.5;
+  unicode-bidi: isolate;
 }
 
 /* short phones: a tighter card, so the whole question fits on one screen */
@@ -1805,6 +1811,8 @@
   .skyOn .option {
     min-height: 50px;
     padding: 9px 14px;
+    font-size: 1rem;
+    line-height: 1.4;
   }
   .skyOn .twoUp .option {
     min-height: 66px;
