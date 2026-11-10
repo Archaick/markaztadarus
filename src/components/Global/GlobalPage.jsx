@@ -50,6 +50,7 @@ export default function GlobalPage() {
   const [selected, setSelected] = useState(null);
   const [litCity, setLitCity] = useState(null);
   const [province, setProvince] = useState(null);
+  const [provinceList, setProvinceList] = useState(false);
   const globe = useRef(null);
   const panel = useRef(null);
   const makkah = useMakkahTime(lang);
@@ -83,6 +84,7 @@ export default function GlobalPage() {
   const total = list.reduce((sum, c) => sum + c.programs, 0);
 
   const pick = (code) => {
+    setProvinceList(false);
     setSelected(code);
     setLitCity(null);
     setProvince(null);
@@ -148,6 +150,8 @@ export default function GlobalPage() {
           selectedProvince={province}
           onProvince={pickProvince}
           highlightCity={litCity}
+          teachers={teachers.list}
+          teacherWords={{ guru: t("guruPin"), studying: (count) => t("studyingPin", { count }) }}
           labels={{ makkah: t("holy.makkah"), madinah: t("holy.madinah"), quds: t("holy.quds") }}
         />
 
@@ -230,7 +234,8 @@ export default function GlobalPage() {
               <div>
                 <h2 className={styles.panelTitle}>{sel.name}</h2>
                 {sel.code === ORIGIN && <span className={styles.badgeOrigin}>{t("origin.badge")}</span>}
-                {teachers.byCountry[sel.code] > 0 && <span className={styles.badge}>{t("teachersIn", { count: teachers.byCountry[sel.code] })}</span>}
+                {teachers.byCountry[sel.code] > 0 && <span className={styles.badgeGuru}>{t("teachersIn", { count: teachers.byCountry[sel.code] })}</span>}
+                {teachers.activeByCountry[sel.code] > 0 && <span className={styles.badgeStudying}>{t("studyingNow", { count: teachers.activeByCountry[sel.code] })}</span>}
                 {sel.program ? (
                   <span className={styles.badge}>{t("hasPrograms")}</span>
                 ) : sel.code !== ORIGIN ? (
@@ -268,7 +273,8 @@ export default function GlobalPage() {
                   <p className={styles.provinceLine}>
                     <b>{getDisplayName(province, provinces)}</b>
                     <span>{provinces[province] ? `${programCount(provinces[province])} ${t("programs")}` : t("noPrograms")}</span>
-                    {teachers.byProvince[province] > 0 && <span>{t("teachersIn", { count: teachers.byProvince[province] })}</span>}
+                    {teachers.byProvince[province] > 0 && <span className={styles.guruText}>{t("teachersIn", { count: teachers.byProvince[province] })}</span>}
+                    {teachers.activeByProvince[province] > 0 && <span className={styles.guruText}>{t("studyingNow", { count: teachers.activeByProvince[province] })}</span>}
                   </p>
                 )}
                 {sel.data?.note?.[lang] || sel.data?.note?.id ? <p className={styles.note}>{sel.data.note[lang] || sel.data.note.id}</p> : null}
@@ -296,9 +302,34 @@ export default function GlobalPage() {
                   </div>
                 )}
                 {sel.code === "ID" && (
-                  <Link to="/#map" className={styles.mapLink}>
-                    <IconMap2 size={17} /> {t("mapLink")}
-                  </Link>
+                  <button
+                    type="button"
+                    className={styles.mapLink}
+                    onClick={() => {
+                      setProvinceList((v) => !v);
+                      globe.current?.flyTo("ID");
+                    }}
+                  >
+                    <IconMap2 size={17} /> {t(provinceList ? "mapClose" : "mapLink")}
+                  </button>
+                )}
+                {sel.code === "ID" && provinceList && (
+                  <ul className={styles.provinceList}>
+                    {[...new Set([...Object.keys(provinces), ...Object.keys(teachers.byProvince)])]
+                      .map((name) => ({ name, programs: provinces[name] ? programCount(provinces[name]) : 0, guru: teachers.byProvince[name] || 0, active: teachers.activeByProvince[name] || 0 }))
+                      .sort((a, b) => b.active - a.active || b.programs - a.programs || b.guru - a.guru || a.name.localeCompare(b.name))
+                      .map((p) => (
+                        <li key={p.name}>
+                          <button type="button" className={province === p.name ? styles.provinceOn : ""} onClick={() => pickProvince(p.name)}>
+                            <span className={styles.listName}>{getDisplayName(p.name, provinces)}</span>
+                            {p.active > 0 && <span className={styles.studyingDot} title={t("studyingNow", { count: p.active })} />}
+                            <span className={styles.listCount}>
+                              {[p.programs && `${p.programs} ${t("programs")}`, p.guru && `${p.guru} ${t("guruPin")}`].filter(Boolean).join(" · ")}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
                 )}
               </>
             ) : sel.code === ORIGIN ? (
@@ -314,8 +345,16 @@ export default function GlobalPage() {
 }
 
 /** Teachers on Tadarus Guru, counted by country and province (no names are stored on the map). */
+const ACTIVE_MS = 10 * 60 * 1000;
+
 function useGuruMap() {
   const [list, setList] = useState([]);
+  // "studying now" is a teacher whose app touched the map in the last ten minutes
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
   useEffect(
     () =>
       onSnapshot(
@@ -328,11 +367,20 @@ function useGuruMap() {
   return useMemo(() => {
     const byCountry = {};
     const byProvince = {};
-    list.forEach((x) => {
-      if (!x.country) return;
-      byCountry[x.country] = (byCountry[x.country] || 0) + 1;
-      if (x.province) byProvince[x.province] = (byProvince[x.province] || 0) + 1;
+    const activeByCountry = {};
+    const activeByProvince = {};
+    const add = (o, k) => (o[k] = (o[k] || 0) + 1);
+    const places = list
+      .filter((x) => x.country)
+      .map((x) => ({ country: x.country, province: x.province || "", active: x.online !== false && now - (x.updatedAt?.toMillis?.() || 0) < ACTIVE_MS }));
+    places.forEach((x) => {
+      add(byCountry, x.country);
+      if (x.province) add(byProvince, x.province);
+      if (x.active) {
+        add(activeByCountry, x.country);
+        if (x.province) add(activeByProvince, x.province);
+      }
     });
-    return { total: list.filter((x) => x.country).length, byCountry, byProvince };
-  }, [list]);
+    return { total: places.length, list: places, byCountry, byProvince, activeByCountry, activeByProvince };
+  }, [list, now]);
 }

@@ -3,7 +3,8 @@
     "account": "Akun",
     "join": "Gabung kelas lain",
     "language": "Bahasa",
-    "signOut": "Keluar"
+    "signOut": "Keluar",
+    "profile": "Profil saya"
   },
   "signIn": {
     "eyebrow": "Platform belajar guru",
@@ -147,6 +148,8 @@
     "cityHint": "mis. Kota Bekasi",
     "privacy": "Peta Tadarus Global hanya menampilkan jumlah guru per provinsi atau negara, tanpa nama.",
     "save": "Simpan dan mulai",
-    "failed": "Gagal menyimpan. Coba lagi."
+    "failed": "Gagal menyimpan. Coba lagi.",
+    "update": "Simpan perubahan",
+    "saved": "Tersimpan."
   }
 }

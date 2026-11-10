@@ -41,5 +41,9 @@
   "liveActivity": "Activity",
   "teachers": "Tadarus teachers",
   "teachersIn_one": "{{count}} Tadarus teacher",
-  "teachersIn_other": "{{count}} Tadarus teachers"
+  "teachersIn_other": "{{count}} Tadarus teachers",
+  "guruPin": "Teachers",
+  "studyingPin": "{{count}} studying",
+  "studyingNow": "{{count}} studying now",
+  "mapClose": "Close the province list"
 }

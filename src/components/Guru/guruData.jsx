@@ -191,7 +191,12 @@ export function LearnerProvider({ children }) {
   );
 
   // their place on the Tadarus Global map: a country and province only, never a name
-  const mapEntry = useCallback((c) => setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", updatedAt: serverTimestamp() }), [uid]);
+  const mapEntry = useCallback(
+    (c, online = true) => setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", online, updatedAt: serverTimestamp() }),
+    [uid]
+  );
+  // left the app (tab hidden, closed or signed out): no longer "studying now" on Tadarus Global
+  const offline = useCallback(() => (uid && learner?.country ? mapEntry(learner, false).catch(() => {}) : Promise.resolve()), [uid, learner, mapEntry]);
   const touch = useCallback(() => {
     if (!uid || !learner) return null;
     updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {});
@@ -230,8 +235,9 @@ export function LearnerProvider({ children }) {
       saveProfile,
       saveProgress,
       touch,
+      offline,
     };
-  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, join, saveProgress, touch, saveProfile]);
+  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, join, saveProgress, touch, offline, saveProfile]);
 
   return <LearnerContext.Provider value={value}>{children}</LearnerContext.Provider>;
 }

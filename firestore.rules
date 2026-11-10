@@ -654,7 +654,8 @@ service cloud.firestore {
     match /guru_map/{uid} {
       allow read: if true;
       allow create, update: if hasVerifiedEmail() && request.auth.uid == uid && exists(learnerPath(uid))
-        && request.resource.data.keys().hasOnly(["country", "province", "updatedAt"])
+        && request.resource.data.keys().hasOnly(["country", "province", "online", "updatedAt"])
+        && (!("online" in request.resource.data) || request.resource.data.online is bool)
         && request.resource.data.country is string && request.resource.data.country.size() == 2
         && request.resource.data.province is string && request.resource.data.province.size() <= 60
         && request.resource.data.updatedAt == request.time;

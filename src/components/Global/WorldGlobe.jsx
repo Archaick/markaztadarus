@@ -6,6 +6,7 @@ import { provinceList, provinceTotals } from "../../data/mtiProvinceData";
 import { COUNTRIES, ORIGIN, anchorOf, countryByCode, moonNow, subsolarPoint } from "./globalData";
 import { CENTROIDS, ProvinceMarks, ProvinceShapes, SHOW_PINS, SHOW_PROVINCES, provinceAt, provinceMarks } from "./ProvinceLayer";
 import LiveLayer from "./LiveLayer";
+import GuruLayer from "./GuruLayer";
 import { useLiveSessions } from "./liveSessions";
 import styles from "./WorldGlobe.module.css";
 
@@ -70,6 +71,8 @@ const WorldGlobe = forwardRef(function WorldGlobe(
     autoSpin = true,
     initialView,
     sky = true,
+    teachers,
+    teacherWords,
   },
   ref
 ) {
@@ -525,6 +528,9 @@ const WorldGlobe = forwardRef(function WorldGlobe(
 
         {/* the program pins, above the line's landing at Jakarta */}
         {showProvinces && <ProvinceMarks projection={projection} scale={scale} marks={marks} selected={selectedProvince} visible={visible} />}
+
+        {/* Tadarus Guru teachers, counted per province or country */}
+        {teacherWords && <GuruLayer teachers={teachers} projection={projection} scale={scale} visible={visible} words={teacherWords} />}
 
         {/* online sessions on top of everything: LIVE where one runs now */}
         <LiveLayer sessions={sessions} projection={projection} scale={scale} visible={visible} />

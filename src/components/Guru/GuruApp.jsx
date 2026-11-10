@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { Menu } from "@mantine/core";
-import { IconBrandGoogle, IconDeviceMobileDown, IconLanguage, IconLogout, IconPlus } from "@tabler/icons-react";
+import { IconBrandGoogle, IconDeviceMobileDown, IconLanguage, IconLogout, IconPlus, IconUserCircle } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { changeLanguage } from "../Internal/language";
@@ -48,7 +48,7 @@ function Gate() {
 }
 
 function Inside() {
-  const { loading, learner, classes, touch } = useLearner();
+  const { loading, learner, classes, touch, offline } = useLearner();
   const touched = useRef(false);
   useEffect(() => {
     if (learner && !touched.current) {
@@ -56,6 +56,19 @@ function Inside() {
       touch();
     }
   }, [learner, touch]);
+  // while the app is open and in view, say so every few minutes (Tadarus Global shows "studying now", never who)
+  useEffect(() => {
+    if (!learner) return undefined;
+    const beat = () => (document.visibilityState === "visible" ? touch() : offline());
+    const id = setInterval(() => document.visibilityState === "visible" && touch(), 4 * 60 * 1000);
+    document.addEventListener("visibilitychange", beat);
+    window.addEventListener("pagehide", offline);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", beat);
+      window.removeEventListener("pagehide", offline);
+    };
+  }, [learner, touch, offline]);
 
   if (loading) return <Splash />;
   if (!learner || !classes.length) return <Join first />;
@@ -64,6 +77,7 @@ function Inside() {
     <Routes>
       <Route index element={<GuruHome />} />
       <Route path="gabung" element={<Join />} />
+      <Route path="profil" element={<Profile editing />} />
       <Route path="surat/:lessonId" element={<SurahPage />} />
       <Route path="bagian/:sectionId" element={<SectionView />} />
       <Route path="*" element={<GuruHome />} />
@@ -94,6 +108,12 @@ export function Brand() {
 export function TopBar() {
   const { t } = useTranslation(NS);
   const { user, signOutUser } = useAccess();
+  const offline = useLearner()?.offline;
+  // off the "studying now" count first, while still signed in to say so
+  const signOut = async () => {
+    await offline?.();
+    signOutUser();
+  };
   const { canInstall, ios, install } = useInstall();
   const [steps, setSteps] = useState(false);
   return (
@@ -108,6 +128,9 @@ export function TopBar() {
         </Menu.Target>
         <Menu.Dropdown>
           <Menu.Label>{user?.email}</Menu.Label>
+          <Menu.Item component={Link} to={`${GURU}/profil`} leftSection={<IconUserCircle size={16} />}>
+            {t("menu.profile")}
+          </Menu.Item>
           <Menu.Item component={Link} to={`${GURU}/gabung`} leftSection={<IconPlus size={16} />}>
             {t("menu.join")}
           </Menu.Item>
@@ -129,7 +152,7 @@ export function TopBar() {
             </Menu.Item>
           ))}
           <Menu.Divider />
-          <Menu.Item color="red" leftSection={<IconLogout size={16} />} onClick={signOutUser}>
+          <Menu.Item color="red" leftSection={<IconLogout size={16} />} onClick={signOut}>
             {t("menu.signOut")}
           </Menu.Item>
         </Menu.Dropdown>
@@ -178,13 +201,15 @@ function SignIn() {
 }
 
 /** Asked once, after joining: who they are and where, for their certificate and the Tadarus Global map. */
-function Profile() {
+function Profile({ editing = false }) {
   const { t, i18n } = useTranslation(NS);
   const { user } = useAccess();
   const { learner, saveProfile } = useLearner();
+  const navigate = useNavigate();
   const lang = (i18n.language || "id").slice(0, 2);
   const countries = countryOptions(lang);
-  const [f, setF] = useState({ name: learner?.name || user?.displayName || "", country: "ID", province: "", city: "" });
+  const [f, setF] = useState({ name: learner?.name || user?.displayName || "", country: learner?.country || "ID", province: learner?.province || "", city: learner?.city || "" });
+  const [saved, setSaved] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const ready = f.name.trim() && f.city.trim() && (f.country !== "ID" || f.province);
@@ -195,6 +220,10 @@ function Profile() {
     setFailed(false);
     try {
       await saveProfile(f);
+      if (editing) {
+        setSaved(true);
+        setTimeout(() => navigate(GURU), 900);
+      }
     } catch {
       setFailed(true);
     } finally {
@@ -202,10 +231,12 @@ function Profile() {
     }
   };
   return (
+    <>
+      {editing && <TopBar />}
     <div className={styles.center}>
       <form className={`${styles.glassCard} ${styles.welcome} ${styles.profileCard}`} onSubmit={submit}>
-        <img src="/MTIFavicon.png" alt="" className={styles.welcomeLogo} />
-        <span className={styles.eyebrow}>{t("profile.eyebrow")}</span>
+        {!editing && <img src="/MTIFavicon.png" alt="" className={styles.welcomeLogo} />}
+        <span className={styles.eyebrow}>{t(editing ? "menu.profile" : "profile.eyebrow")}</span>
         <h1 className={styles.joinTitle}>{t("profile.title")}</h1>
         <p className={styles.welcomeText}>{t("profile.text")}</p>
         <label className={styles.field}>
@@ -241,11 +272,18 @@ function Profile() {
         </label>
         <p className={styles.profileNote}>{t("profile.privacy")}</p>
         {failed && <p className={styles.errorText}>{t("profile.failed")}</p>}
+        {saved && <p className={styles.okText}>{t("profile.saved")}</p>}
         <button type="submit" className={styles.primaryBig} disabled={!ready || busy}>
-          {busy ? "…" : t("profile.save")}
+          {busy ? "…" : t(editing ? "profile.update" : "profile.save")}
         </button>
+        {editing && (
+          <Link to={GURU} className={styles.linkButton}>
+            {t("join.back")}
+          </Link>
+        )}
       </form>
     </div>
+    </>
   );
 }
 

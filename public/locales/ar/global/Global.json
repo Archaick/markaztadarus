@@ -40,5 +40,9 @@
   "liveZoom": "زوم",
   "liveActivity": "النشاط",
   "teachers": "معلّمو تدارس",
-  "teachersIn": "معلّمو تدارس: {{count}}"
+  "teachersIn": "معلّمو تدارس: {{count}}",
+  "guruPin": "معلّمون",
+  "studyingPin": "{{count}} يتعلّم",
+  "studyingNow": "يتعلّمون الآن: {{count}}",
+  "mapClose": "أغلق قائمة المحافظات"
 }

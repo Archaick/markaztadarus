@@ -3,7 +3,8 @@
     "account": "Account",
     "join": "Join another class",
     "language": "Language",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "profile": "My profile"
   },
   "signIn": {
     "eyebrow": "Teacher learning platform",
@@ -147,6 +148,8 @@
     "cityHint": "e.g. Bekasi",
     "privacy": "The Tadarus Global map only shows how many teachers there are in each province or country, never names.",
     "save": "Save and start",
-    "failed": "Could not save. Try again."
+    "failed": "Could not save. Try again.",
+    "update": "Save changes",
+    "saved": "Saved."
   }
 }

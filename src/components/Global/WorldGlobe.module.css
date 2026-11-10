@@ -307,3 +307,49 @@
     animation: none;
   }
 }
+
+/* Tadarus Guru teachers: green, apart from the gold programs and the red LIVE */
+.guruCore {
+  fill: #10b981;
+  stroke: #fff;
+  stroke-width: 1.8;
+}
+.guruRing {
+  fill: rgba(16, 185, 129, 0.35);
+  stroke: #34d399;
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guruPulse 1.8s ease-out infinite;
+}
+.guruPill {
+  fill: #0b5e46;
+  stroke: #6ee7b7;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+.guruPillOn {
+  fill: #0f9f6e;
+  stroke: #fff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 2px 6px rgba(16, 185, 129, 0.55));
+}
+.guruPillDot {
+  fill: #d1fae5;
+}
+.guruPillText {
+  fill: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+@keyframes guruPulse {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
