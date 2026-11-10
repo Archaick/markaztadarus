@@ -169,6 +169,8 @@ export function LearnerProvider({ children }) {
   /** Saves a finished section: best score kept, attempts counted, done once and for good. */
   const saveProgress = useCallback(
     async (section, result) => {
+      // a teacher deleted while answering keeps nothing: they start over if invited again
+      if (!learner) return;
       const old = progress.get(section.id);
       const data = {
         uid,
@@ -184,7 +186,7 @@ export function LearnerProvider({ children }) {
       if (result.answers) Object.assign(data, { answers: result.answers, submittedAt: serverTimestamp() });
       await setDoc(doc(db, PROGRESS, `${uid}_${section.id}`), data, { merge: true });
     },
-    [uid, progress]
+    [uid, learner, progress]
   );
 
   const touch = useCallback(() => (uid && learner ? updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {}) : null), [uid, learner]);

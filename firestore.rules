@@ -677,12 +677,15 @@ service cloud.firestore {
 
     match /belajar_progress/{progressId} {
       allow read: if (isSignedIn() && resource.data.uid == request.auth.uid) || hasFeature("belajar");
+      // only while the teacher still has a learner record: a deleted teacher saves nothing more
       allow create: if isSignedIn()
+        && exists(learnerPath(request.auth.uid))
         && request.resource.data.uid == request.auth.uid
         && progressId == request.auth.uid + "_" + request.resource.data.sectionId
         && validProgress()
         && !request.resource.data.keys().hasAny(["note", "noteBy", "noteAt", "auditId"]);
       allow update: if isSignedIn()
+        && exists(learnerPath(request.auth.uid))
         && resource.data.uid == request.auth.uid
         && request.resource.data.uid == resource.data.uid
         && request.resource.data.sectionId == resource.data.sectionId
