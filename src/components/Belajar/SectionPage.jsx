@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Alert, Button, Group, Loader, Modal, NumberInput, SegmentedControl, Select, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
+import { ActionIcon, Alert, Button, Group, Loader, Modal, NumberInput, SegmentedControl, Select, Text, Textarea, Tooltip } from "@mantine/core";
 import { IconAlertTriangle, IconArrowLeft, IconArrowUp, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
@@ -41,7 +41,10 @@ export default function SectionPage() {
   const kind = kindOf(section);
   const tag = fiveTOf(section);
   const name = sectionTitle(section, t);
-  const value = draft || { ...blankOf(kind), ...section };
+  const stored = { ...blankOf(kind), ...section };
+  // always at least one group, or a question section would have nowhere to add to
+  if (kind === "quiz" && !stored.parts?.length) stored.parts = [{ heading: "", instructions: "", questions: [] }];
+  const value = draft || stored;
   const set = (patch) => setDraft({ ...value, ...patch });
   const bad = (value.parts || []).flatMap((p) => p.questions).filter((q) => questionIssues(q).length).length;
 
@@ -119,25 +122,6 @@ export default function SectionPage() {
           {kind === "quiz" &&
             value.parts.map((part, p) => (
               <div key={p} className={styles.panel}>
-                <Group align="flex-end" mb="sm" wrap="nowrap">
-                  <TextInput
-                    style={{ flex: 1 }}
-                    label={t("sectionPage.partHeading")}
-                    value={part.heading}
-                    onChange={(e) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, heading: e.currentTarget.value } : x)) })}
-                  />
-                  <ActionIcon variant="subtle" color="red" size="lg" onClick={() => set({ parts: value.parts.filter((_, j) => j !== p) })}>
-                    <IconTrash size={16} />
-                  </ActionIcon>
-                </Group>
-                <Textarea
-                  mb="md"
-                  label={t("sectionPage.instructions")}
-                  autosize
-                  minRows={1}
-                  value={part.instructions}
-                  onChange={(e) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, instructions: e.currentTarget.value } : x)) })}
-                />
                 {part.questions.map((q, i) => (
                   <QuestionEditor
                     key={q.id}
@@ -164,12 +148,6 @@ export default function SectionPage() {
                 </Group>
               </div>
             ))}
-          {kind === "quiz" && (
-            <Button mt="md" variant="subtle" color="#003366" leftSection={<IconPlus size={16} />} onClick={() => set({ parts: [...value.parts, { heading: "", instructions: "", questions: [] }] })}>
-              {t("sectionPage.addPart")}
-            </Button>
-          )}
-
           {kind === "written" && (
             <div className={styles.panel}>
               <Textarea mb="md" label={t("sectionPage.instructions")} autosize minRows={1} value={value.instructions} onChange={(e) => set({ instructions: e.currentTarget.value })} />
