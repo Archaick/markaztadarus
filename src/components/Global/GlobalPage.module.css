@@ -780,3 +780,48 @@ button.mapLink {
 .fiveStarsHidden {
   opacity: 0;
 }
+
+/* on the home page, in place of the light map: the same globe, in a framed section */
+.embedded {
+  min-height: 0;
+  height: min(860px, 92vh);
+  margin: 40px auto;
+  width: min(100% - 32px, 1400px);
+  border-radius: 32px;
+  box-shadow: 0 40px 90px -40px rgba(2, 8, 23, 0.7);
+  isolation: isolate;
+}
+.embedded .panel {
+  max-height: calc(min(860px, 92vh) - 120px);
+}
+.embedded [hidden] {
+  display: none !important;
+}
+.fullLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 201, 76, 0.45);
+  background: rgba(10, 25, 60, 0.55);
+  color: #f2c94c;
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+.fullLink:hover {
+  background: rgba(242, 201, 76, 0.16);
+}
+@media (max-width: 900px) {
+  .embedded {
+    height: auto;
+    margin: 24px auto;
+    width: min(100% - 20px, 1400px);
+    border-radius: 24px;
+  }
+  .embedded .panel {
+    max-height: none;
+  }
+}

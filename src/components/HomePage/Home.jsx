@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import Hero from "./Hero/Hero";
 import About from "./About/About";
-import Map from "./Map/Map";
+// owner: the home page shows Tadarus Global (the dark globe) in place of the light map
+const GlobalPage = lazy(() => import("../Global/GlobalPage"));
 import Stats from "./Stats/Stats";
 import LatestNews from "../Blog/LatestNews";
 import MarqueeComponent from "./Marquee/Marquee";
@@ -28,7 +29,11 @@ const Home = () => {
       </div>
       <Hero />
       <About />
-      <Map />
+      <section id="map" style={{ scrollMarginTop: 90 }}>
+        <Suspense fallback={<div style={{ minHeight: 600 }} />}>
+          <GlobalPage embedded />
+        </Suspense>
+      </section>
       <Programs />
       <Stats />
       <LatestNews />

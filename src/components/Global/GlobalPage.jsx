@@ -39,7 +39,7 @@ function useMakkahTime(lang) {
  * it is night now) with every country that has Tadarus programs lit up and
  * joined to Makkah; tap any country to fly to it and read about it.
  */
-export default function GlobalPage() {
+export default function GlobalPage({ embedded = false }) {
   const { t, i18n } = useTranslation(NS);
   const lang = (i18n.language || "id").slice(0, 2);
   const rtl = lang === "ar";
@@ -59,18 +59,19 @@ export default function GlobalPage() {
   const teachers = useGuruMap();
 
   useEffect(() => {
-    document.title = `${t("title")} · Markaz Tadarus`;
-  }, [t]);
+    if (!embedded) document.title = `${t("title")} · Markaz Tadarus`;
+  }, [t, embedded]);
 
   // the page's night sky also behind it, so no white shows when a phone
   // scrolls or bounces past the ends
   useEffect(() => {
+    if (embedded) return undefined;
     const before = document.body.style.background;
     document.body.style.background = "#020817";
     return () => {
       document.body.style.background = before;
     };
-  }, []);
+  }, [embedded]);
 
   // Indonesia's figures follow the home page map
   const figures = (code) => {
@@ -114,14 +115,21 @@ export default function GlobalPage() {
   const sel = selected ? { code: selected, name: countryName(selected, lang), program: !!programs[selected], ...figures(selected), data: programs[selected] } : null;
 
   return (
-    <div className={styles.page} dir={rtl ? "rtl" : "ltr"}>
+    <div className={`${styles.page} ${embedded ? styles.embedded : ""}`} dir={rtl ? "rtl" : "ltr"}>
       <div className={styles.stars} aria-hidden="true" />
 
       <header className={styles.top}>
-        <Link to="/" className={styles.home}>
-          <IconArrowLeft size={18} className={styles.flip} />
-          <img src={whiteLogo} alt="Markaz Tadarus" />
-        </Link>
+        {/* on the home page: a way to the full screen, in place of the way home */}
+        {embedded ? (
+          <Link to="/global" className={styles.fullLink}>
+            <IconWorld size={16} /> {t("openFull")}
+          </Link>
+        ) : (
+          <Link to="/" className={styles.home}>
+            <IconArrowLeft size={18} className={styles.flip} />
+            <img src={whiteLogo} alt="Markaz Tadarus" />
+          </Link>
+        )}
         <div className={styles.titleBox}>
           <h1>{t("title")}</h1>
           <p>{t("subtitle")}</p>
@@ -131,7 +139,8 @@ export default function GlobalPage() {
             <i />
             {t("live")} · {t("makkahTime", { time: makkah })}
           </span>
-          <div className={styles.langs} role="group" aria-label={t("language")}>
+          {/* on the home page the site's own language menu is used */}
+          <div className={styles.langs} role="group" aria-label={t("language")} hidden={embedded}>
             {LANGS.map((l) => (
               <button key={l.code} type="button" lang={l.code} aria-pressed={lang === l.code} className={lang === l.code ? styles.langOn : ""} onClick={() => i18n.changeLanguage(l.code)}>
                 {l.label}
