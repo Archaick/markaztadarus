@@ -45,5 +45,12 @@
   "guruPin": "Teachers",
   "studyingPin": "{{count}} studying",
   "studyingNow": "{{count}} studying now",
-  "mapClose": "Close the province list"
+  "mapClose": "Close the province list",
+  "fiveT": {
+    "tamhid": "Tamhid",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir",
+    "tadabbur": "Tadabbur",
+    "tazkiyah": "Tazkiyah"
+  }
 }

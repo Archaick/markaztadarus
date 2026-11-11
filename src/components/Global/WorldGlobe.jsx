@@ -474,7 +474,7 @@ const WorldGlobe = forwardRef(function WorldGlobe(
         </defs>
 
         {/* the real Sun and Moon, far off in the direction they truly are */}
-        {sky && !day && <Sky view={view.current} size={size} sun={sun} moon={moon} globe={base} />}
+        {sky && !day && <Sky view={view.current} size={size} sun={sun} moon={moon} globe={base} redraw={redraw} />}
 
         {/* the thin glowing air around the Earth */}
         {!day && <circle cx={size.w / 2} cy={size.h / 2} r={scale * 1.16} fill="url(#wg-air)" />}
@@ -549,9 +549,23 @@ function skyDirection([lon, lat], view) {
   const x = Math.cos(p * RAD) * Math.sin(l * RAD);
   const y = -Math.sin(p * RAD);
   const z = Math.cos(p * RAD) * Math.cos(l * RAD);
-  const len = Math.hypot(x, y);
-  // straight behind or in front of the camera: put it up and to the side
-  return len < 0.12 ? { x: 0.7, y: -0.7, z } : { x: x / len, y: y / len, z };
+  // len: how clearly it lies to one side (near 0 when straight behind or in front of the camera)
+  return { angle: Math.atan2(y, x), len: Math.hypot(x, y), z };
+}
+
+/**
+ * Follows a direction around the view smoothly: it glides towards where it
+ * should be, and hardly moves while that direction is unclear (straight behind
+ * or in front, where a small turn of the globe would swing it right round).
+ */
+function useGlide(target) {
+  const at = useRef(null);
+  if (at.current === null) at.current = target.len < 0.12 ? -Math.PI / 4 : target.angle;
+  let d = target.angle - at.current;
+  d = Math.atan2(Math.sin(d), Math.cos(d));
+  const pull = 0.14 * clamp((target.len - 0.05) * 3, 0, 1);
+  at.current += d * pull;
+  return { x: Math.cos(at.current), y: Math.sin(at.current), z: target.z, settling: pull > 0 && Math.abs(d) > 0.004 };
 }
 
 /**
@@ -560,7 +574,7 @@ function skyDirection([lon, lat], view) {
  * is in daylight), the Moon in its true phase with its lit edge towards the
  * Sun. Small and soft, behind the globe, so they never get in the way.
  */
-function Sky({ view, size, sun, moon, globe }) {
+function Sky({ view, size, sun, moon, globe, redraw }) {
   // smaller on phones; the glow scales with it
   const r = clamp(Math.min(size.w, size.h) / 55, 5, 11);
   const margin = r * 3.2;
@@ -584,8 +598,15 @@ function Sky({ view, size, sun, moon, globe }) {
     }
     return [x, y];
   };
-  const sunDir = skyDirection(sun, view);
-  const moonDir = skyDirection(moon.at, view);
+  const sunDir = useGlide(skyDirection(sun, view));
+  const moonDir = useGlide(skyDirection(moon.at, view));
+  // still gliding after the globe stopped: draw again until they settle
+  const settling = sunDir.settling || moonDir.settling;
+  useEffect(() => {
+    if (!settling) return undefined;
+    const id = requestAnimationFrame(redraw);
+    return () => cancelAnimationFrame(id);
+  });
   const [sx, sy] = place(sunDir);
   const [mx, my] = place(moonDir);
   // behind the camera they are only a soft hint

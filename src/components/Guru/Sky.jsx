@@ -3,7 +3,7 @@ import { fiveTOf } from "../Belajar/belajarSchema";
 
 export const FIVE = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 export const FIVE_COLOR = { tamhid: "#f08a3c", tilawah: "#f4ad3a", tafsir: "#fbc94f", tadabbur: "#f2725b", tazkiyah: "#e8577e" };
-const TINT = ["#bcd4ff", "#aef0e6", "#b8f5c4", "#ffe0a0", "#ffc4b8"];
+export const TINT = ["#bcd4ff", "#aef0e6", "#b8f5c4", "#ffe0a0", "#ffc4b8"];
 
 /** The 5T names written faintly under the stars, in the reader's language. */
 export const fiveNames = (t) => FIVE.map((k) => t(`fiveT.${k}`));
@@ -78,7 +78,7 @@ function spike(c, x, y, angle, len, width, color, alpha) {
 }
 
 /** One star: a soft halo, long cross-shaped glints and a white-hot centre. */
-function star(c, x, y, s, color, twinkle) {
+export function star(c, x, y, s, color, twinkle) {
   const R = 46 * s;
   const halo = c.createRadialGradient(x, y, 0, x, y, R);
   halo.addColorStop(0, rgba(color, 0.75));

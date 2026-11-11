@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { IconArrowLeft, IconChevronDown, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import WorldGlobe from "./WorldGlobe";
+import FiveStars from "./FiveStars";
 import { ORIGIN, countryName, useGlobalContent } from "./globalData";
 import Flag from "./Flag";
 import LivePanel from "./LivePanel";
@@ -46,7 +47,7 @@ export default function GlobalPage() {
   const siteMap = useSiteContent(SITE_DOCS.map);
   const provinces = siteMap?.provinces && Object.keys(siteMap.provinces).length ? siteMap.provinces : mtiProvinces;
   const indonesia = useMemo(() => provinceTotals(provinces), [provinces]);
-  const programs = content?.countries || {};
+  const programs = useMemo(() => content?.countries || {}, [content]);
   const [selected, setSelected] = useState(null);
   const [litCity, setLitCity] = useState(null);
   const [province, setProvince] = useState(null);
@@ -141,6 +142,7 @@ export default function GlobalPage() {
       </header>
 
       <main className={styles.stage}>
+        <FiveStars hidden={!!selected} />
         <WorldGlobe
           ref={globe}
           programs={programs}

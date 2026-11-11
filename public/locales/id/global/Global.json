@@ -44,5 +44,12 @@
   "guruPin": "Guru",
   "studyingPin": "{{count}} sedang belajar",
   "studyingNow": "{{count}} sedang belajar sekarang",
-  "mapClose": "Tutup daftar provinsi"
+  "mapClose": "Tutup daftar provinsi",
+  "fiveT": {
+    "tamhid": "Tamhid",
+    "tilawah": "Tilawah",
+    "tafsir": "Tafsir",
+    "tadabbur": "Tadabbur",
+    "tazkiyah": "Tazkiyah"
+  }
 }

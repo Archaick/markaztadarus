@@ -44,5 +44,12 @@
   "guruPin": "معلّمون",
   "studyingPin": "{{count}} يتعلّم",
   "studyingNow": "يتعلّمون الآن: {{count}}",
-  "mapClose": "أغلق قائمة المحافظات"
+  "mapClose": "أغلق قائمة المحافظات",
+  "fiveT": {
+    "tamhid": "التمهيد",
+    "tilawah": "التلاوة",
+    "tafsir": "التفسير",
+    "tadabbur": "التدبّر",
+    "tazkiyah": "التزكية"
+  }
 }
