@@ -1048,3 +1048,162 @@ a.row:hover {
     display: none;
   }
 }
+
+/* a section's PDF slot, and the surah's one list */
+.pdfSlot {
+  margin-bottom: 18px;
+}
+.pdfDrop {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 28px 18px;
+  border: 2px dashed rgba(0, 51, 102, 0.25);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #003366;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.pdfDrop:hover {
+  border-color: #cc9933;
+  background: #fffaf0;
+}
+.pdfDrop span {
+  color: #5d6b7d;
+  font-size: 0.85rem;
+}
+.pdfDrop .pdfDropBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #003366;
+  color: #fff;
+  font-weight: 700;
+}
+.listHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+.listTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #003366;
+}
+
+/* schools: each card with its drawn cover (the Supervisi scenes) */
+.schoolCard {
+  padding-top: 0;
+  overflow: hidden;
+}
+.schoolCover {
+  position: relative;
+  display: block;
+  height: 118px;
+  margin: 0 -20px 14px;
+  overflow: hidden;
+}
+.schoolHead {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.schoolThumb {
+  position: relative;
+  flex: none;
+  width: 120px;
+  height: 78px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px -14px rgba(0, 31, 63, 0.6);
+}
+.scenePick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.sceneChoice {
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: #f4f7fb;
+  font: inherit;
+  cursor: pointer;
+}
+.sceneChoiceOn {
+  border-color: #cc9933;
+  background: #fffaf0;
+}
+.sceneChoiceArt {
+  position: relative;
+  display: block;
+  height: 66px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sceneChoiceName {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1a3350;
+}
+/* one switch per surah */
+.surahSwitches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+.surahSwitch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid #e3e9f1;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.surahSwitchOn {
+  border-color: rgba(15, 159, 110, 0.45);
+  background: #f0fbf6;
+}
+.surahNo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #003366;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.surahSwitchOn .surahNo {
+  background: #0f9f6e;
+}
+.surahText {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.surahText b {
+  color: #12233d;
+}
+.surahDraft {
+  color: #c2410c;
+  font-weight: 700;
+}

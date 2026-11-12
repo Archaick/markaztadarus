@@ -275,7 +275,8 @@
         "section": {
           "create": "Added a section",
           "update": "Changed a section",
-          "delete": "Deleted a section"
+          "delete": "Deleted a section",
+          "pdf": "Set a section PDF"
         },
         "import": "Imported from Word",
         "backup": {

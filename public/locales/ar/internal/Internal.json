@@ -275,7 +275,8 @@
         "section": {
           "create": "أضاف قسمًا",
           "update": "عدّل قسمًا",
-          "delete": "حذف قسمًا"
+          "delete": "حذف قسمًا",
+          "pdf": "ضبط ملف PDF للقسم"
         },
         "import": "استورد من Word",
         "backup": {

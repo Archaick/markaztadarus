@@ -11,8 +11,9 @@ import { timeAgo } from "../Internal/timeAgo";
 import { useBelajar } from "./BelajarData";
 import { deleteClass, inviteEmails, removeLearner, renewCode, saveNote, updateClass } from "./actions";
 import { BASE, NS, PROGRESS, sectionTitle, surahState } from "./belajarSchema";
-import { SurahPicker } from "./ClassesPage";
+
 import { DeleteTeacher } from "./TeachersPage";
+import SchoolScene, { SCENES } from "../Supervisi/SchoolScene";
 import styles from "./Belajar.module.css";
 
 /** Every progress record of these learners, live (in groups of 30, Firestore's limit for "in"). */
@@ -110,9 +111,14 @@ export default function ClassPage() {
         <IconArrowLeft size={16} /> {t("nav.classes")}
       </Link>
       <div className={styles.pageHead}>
-        <div>
+        <div className={styles.schoolHead}>
+          <span className={styles.schoolThumb} aria-hidden="true">
+            <SchoolScene id={klass.id} scene={klass.scene} />
+          </span>
+          <div>
           <h1 className={styles.pageTitle}>{klass.name}</h1>
           <p className={styles.pageSub}>{t("classes.summary", { learners: learners.length, started, finished })}</p>
+          </div>
         </div>
         <Group>
           <Tooltip label={t("classes.rename")}>
@@ -253,10 +259,24 @@ function RenameModal({ opened, klass, onClose }) {
   const { t } = useTranslation(NS);
   const { user } = useAccess();
   const [name, setName] = useState(klass.name);
+  const [scene, setScene] = useState(klass.scene || "");
   const [busy, setBusy] = useState(false);
   return (
-    <Modal opened={opened} onClose={onClose} title={t("classes.rename")} centered>
-      <TextInput value={name} onChange={(e) => setName(e.currentTarget.value)} mb="md" />
+    <Modal opened={opened} onClose={onClose} title={t("classes.rename")} centered size="lg">
+      <TextInput label={t("classes.nameLabel")} value={name} onChange={(e) => setName(e.currentTarget.value)} mb="md" />
+      <Text size="sm" fw={600} mb={6}>
+        {t("classes.design")}
+      </Text>
+      <div className={styles.scenePick}>
+        {["", ...SCENES].map((key) => (
+          <button key={key || "auto"} type="button" className={`${styles.sceneChoice} ${scene === key ? styles.sceneChoiceOn : ""}`} onClick={() => setScene(key)} aria-pressed={scene === key}>
+            <span className={styles.sceneChoiceArt}>
+              <SchoolScene id={klass.id} scene={key} />
+            </span>
+            <span className={styles.sceneChoiceName}>{t(`classes.scenes.${key || "auto"}`)}</span>
+          </button>
+        ))}
+      </div>
       <Button
         fullWidth
         color="#003366"
@@ -265,7 +285,7 @@ function RenameModal({ opened, klass, onClose }) {
         onClick={async () => {
           setBusy(true);
           try {
-            await updateClass(user, klass, { name: name.trim().slice(0, 120) });
+            await updateClass(user, klass, { name: name.trim().slice(0, 120), scene: SCENES.includes(scene) ? scene : "" });
             onClose();
           } finally {
             setBusy(false);
@@ -281,38 +301,37 @@ function RenameModal({ opened, klass, onClose }) {
 function SurahsEditor({ klass }) {
   const { t } = useTranslation(NS);
   const { user } = useAccess();
-  const [draft, setDraft] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const value = draft || klass.lessonIds || [];
+  const { lessons } = useBelajar();
+  const [busy, setBusy] = useState(null);
+  const open = new Set(klass.lessonIds || []);
+  // a surah switched on is open to this school's teachers (once it is published); saved at once
+  const flip = async (lesson) => {
+    setBusy(lesson.id);
+    try {
+      const next = open.has(lesson.id) ? lessons.filter((l) => open.has(l.id) && l.id !== lesson.id) : lessons.filter((l) => open.has(l.id) || l.id === lesson.id);
+      await updateClass(user, klass, { lessonIds: next.map((l) => l.id) }, { lessons: next.length, surah: lesson.title, open: !open.has(lesson.id) });
+    } finally {
+      setBusy(null);
+    }
+  };
   return (
     <div className={styles.panel}>
       <Text size="sm" c="dimmed" mb="sm">
         {t("classes.surahsHint")}
       </Text>
-      <SurahPicker value={value} onChange={setDraft} />
-      {draft && (
-        <Group justify="flex-end" mt="md">
-          <Button variant="default" onClick={() => setDraft(null)}>
-            {t("cancel")}
-          </Button>
-          <Button
-            color="#003366"
-            loading={busy}
-            disabled={!draft.length}
-            onClick={async () => {
-              setBusy(true);
-              try {
-                await updateClass(user, klass, { lessonIds: draft }, { lessons: draft.length });
-                setDraft(null);
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            {t("save")}
-          </Button>
-        </Group>
-      )}
+      <div className={styles.surahSwitches}>
+        {lessons.map((l, i) => (
+          <label key={l.id} className={`${styles.surahSwitch} ${open.has(l.id) ? styles.surahSwitchOn : ""}`}>
+            <span className={styles.surahNo}>{l.number || i + 1}</span>
+            <span className={styles.surahText}>
+              <b>{l.title}</b>
+              {l.titleAr && <span className={styles.pickAr}>{l.titleAr}</span>}
+              {!l.published && <small className={styles.surahDraft}>{t("classes.notPublished")}</small>}
+            </span>
+            <Switch color="teal" size="md" checked={open.has(l.id)} disabled={busy === l.id} onChange={() => flip(l)} aria-label={l.title} />
+          </label>
+        ))}
+      </div>
     </div>
   );
 }

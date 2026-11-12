@@ -1,7 +1,7 @@
 {
   "menu": {
     "account": "Akun",
-    "join": "Gabung kelas lain",
+    "join": "Gabung sekolah lain",
     "language": "Bahasa",
     "signOut": "Keluar",
     "profile": "Profil saya"
@@ -14,13 +14,13 @@
   },
   "join": {
     "hello": "Assalamu'alaikum, {{name}}",
-    "title": "Masukkan kode kelas",
+    "title": "Masukkan kode sekolah",
     "text": "Kode 6 huruf dari admin Markaz Tadarus.",
-    "code": "Kode kelas",
+    "code": "Kode sekolah",
     "button": "Gabung",
     "unknown": "Kode tidak ditemukan. Periksa lagi hurufnya.",
-    "closed": "Kelas ini sedang tidak menerima peserta baru.",
-    "already": "Anda sudah ada di kelas ini.",
+    "closed": "Sekolah ini sedang tidak menerima peserta baru.",
+    "already": "Anda sudah ada di sekolah ini.",
     "ok": "Berhasil bergabung!",
     "failed": "Gagal bergabung. Periksa koneksi Anda.",
     "otherAccount": "Bukan {{email}}? Ganti akun",
@@ -37,13 +37,13 @@
     "surah": "Surat {{name}}",
     "allDone": "Semua selesai, masya Allah!",
     "allDoneText": "Anda telah menyelesaikan semua bagian. Ulangi kapan saja untuk menambah bintang.",
-    "nothingYet": "Belum ada surat untuk kelas Anda. Admin akan segera menambahkannya.",
+    "nothingYet": "Belum ada surat untuk sekolah Anda. Admin akan segera menambahkannya.",
     "yourSurahs": "Surat Anda",
     "steps": "{{done}} dari {{total}} bagian"
   },
   "surah": {
     "back": "Beranda",
-    "missing": "Surat ini tidak tersedia untuk kelas Anda.",
+    "missing": "Surat ini tidak tersedia untuk sekolah Anda.",
     "meta": "{{ayat}} ayat · {{done}}/{{total}} bagian",
     "locked": "Selesaikan bagian sebelumnya dulu",
     "best": "Nilai terbaik {{best}}/{{max}}",
@@ -151,5 +151,11 @@
     "failed": "Gagal menyimpan. Coba lagi.",
     "update": "Simpan perubahan",
     "saved": "Tersimpan."
+  },
+  "pdf": {
+    "download": "Unduh",
+    "loading": "Memuat PDF…",
+    "failed": "PDF tidak bisa ditampilkan. Coba muat ulang halaman.",
+    "page": "Halaman {{n}} dari {{total}}"
   }
 }

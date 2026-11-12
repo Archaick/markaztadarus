@@ -34,6 +34,21 @@ service firebase.storage {
       allow delete: if isSuperAdmin();
     }
 
+    // A section's written material (Belajar): one PDF per section, under the
+    // surah and the section. Admins with Belajar add and remove them; teachers
+    // open them through the link kept on the section. Mirrored in
+    // src/components/Belajar/pdfFiles.js.
+    match /belajar/{lessonId}/{sectionId}/{fileName} {
+      allow get: if hasFeature("belajar")
+        || (request.auth != null && firestore.exists(/databases/(default)/documents/belajar_learners/$(request.auth.uid)));
+      allow list: if false;
+      allow create: if hasFeature("belajar")
+        && request.resource.contentType == "application/pdf"
+        && request.resource.size < 30 * 1024 * 1024;
+      allow update: if false;
+      allow delete: if hasFeature("belajar");
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

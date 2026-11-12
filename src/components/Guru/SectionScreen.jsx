@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { isArabic, kindOf, questionsOf, sectionTitle, textDir } from "../Belajar/belajarSchema";
 import ArabicText from "./ArabicText";
 import ReadingTable from "./ReadingTable";
+import PdfView from "./PdfView";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -26,7 +27,7 @@ export default function SectionScreen({ section, surahTitle, back, mine, onStart
       <span className={styles.helloSmall}>{surahTitle}</span>
       <h1 className={styles.helloTitle}>{sectionTitle(section, t)}</h1>
 
-      {(section.reading || []).length > 0 && <Reading blocks={section.reading} />}
+      {section.pdf?.url ? <PdfView pdf={section.pdf} /> : (section.reading || []).length > 0 && <Reading blocks={section.reading} />}
 
       {kind === "quiz" && questions.length > 0 && (
         <div className={`${styles.glassCard} ${styles.startCard}`}>

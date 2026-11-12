@@ -106,6 +106,13 @@ export async function saveSectionContent(user, lesson, section, data) {
   );
 }
 
+/** A section's PDF set (or taken away, with null). The file itself is uploaded first (pdfFiles.js). */
+export async function setSectionPdf(user, lesson, section, pdf) {
+  await auditedWrite(user, entry("bel.section.pdf", `${lesson.title} · ${section.title || section.key}`, { pdf: pdf?.name || "" }, section.id), (batch, auditId) =>
+    batch.update(doc(db, SECTIONS, section.id), { pdf: pdf || null, auditId, updatedAt: serverTimestamp() })
+  );
+}
+
 export async function deleteSection(user, lesson, section) {
   await auditedWrite(user, entry("bel.section.delete", `${lesson.title} · ${section.title || section.key}`, {}, section.id), (batch, _a, markDelete) => {
     batch.delete(doc(db, SECTIONS, section.id));

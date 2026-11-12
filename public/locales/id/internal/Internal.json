@@ -275,7 +275,8 @@
         "section": {
           "create": "Menambah bagian",
           "update": "Mengubah bagian",
-          "delete": "Menghapus bagian"
+          "delete": "Menghapus bagian",
+          "pdf": "Mengatur PDF bagian"
         },
         "import": "Mengimpor dari Word",
         "backup": {

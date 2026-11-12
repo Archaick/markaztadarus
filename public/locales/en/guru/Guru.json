@@ -1,7 +1,7 @@
 {
   "menu": {
     "account": "Account",
-    "join": "Join another class",
+    "join": "Join another school",
     "language": "Language",
     "signOut": "Sign out",
     "profile": "My profile"
@@ -14,13 +14,13 @@
   },
   "join": {
     "hello": "Assalamu'alaikum, {{name}}",
-    "title": "Enter your class code",
+    "title": "Enter your school code",
     "text": "The 6-letter code from the Markaz Tadarus admin.",
-    "code": "Class code",
+    "code": "School code",
     "button": "Join",
     "unknown": "That code was not found. Check the letters.",
-    "closed": "This class is not taking new learners right now.",
-    "already": "You are already in this class.",
+    "closed": "This school is not taking new learners right now.",
+    "already": "You are already in this school.",
     "ok": "You joined!",
     "failed": "Could not join. Check your connection.",
     "otherAccount": "Not {{email}}? Switch account",
@@ -37,13 +37,13 @@
     "surah": "Surah {{name}}",
     "allDone": "All done, masha'Allah!",
     "allDoneText": "You have finished every section. Practise again any time to earn more stars.",
-    "nothingYet": "No surahs for your class yet. The admin will add them soon.",
+    "nothingYet": "No surahs for your school yet. The admin will add them soon.",
     "yourSurahs": "Your surahs",
     "steps": "{{done}} of {{total}} sections"
   },
   "surah": {
     "back": "Home",
-    "missing": "This surah is not available for your class.",
+    "missing": "This surah is not available for your school.",
     "meta": "{{ayat}} ayat · {{done}}/{{total}} sections",
     "locked": "Finish the section before it first",
     "best": "Best score {{best}}/{{max}}",
@@ -151,5 +151,11 @@
     "failed": "Could not save. Try again.",
     "update": "Save changes",
     "saved": "Saved."
+  },
+  "pdf": {
+    "download": "Download",
+    "loading": "Loading the PDF…",
+    "failed": "The PDF could not be shown. Try reloading the page.",
+    "page": "Page {{n}} of {{total}}"
   }
 }

@@ -8,6 +8,7 @@ import { useBelajar } from "./BelajarData";
 import { deleteSection, saveSectionContent } from "./actions";
 import { BASE, NS, QUESTION_TYPES, blankQuestion, cleanReading, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
 import PageEditor from "./PageEditor";
+import PdfSlot from "./PdfSlot";
 import { bare } from "./bareInput";
 import Player from "../Guru/Player";
 import guru from "../Guru/Guru.module.css";
@@ -113,7 +114,14 @@ export default function SectionPage() {
               <span className={guru.helloSmall}>{lesson.title}</span>
               <h1 className={guru.helloTitle}>{sectionTitle(section, tg)}</h1>
 
-              <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
+              {/* the written material is a PDF; text typed before a PDF was added stays, editable, until one is */}
+              <PdfSlot lesson={lesson} section={section} />
+              {!section.pdf?.url && cleanReading(value.reading).length > 0 && (
+                <>
+                  <p className={styles.canvasLabel}>{t("pdf.oldText")}</p>
+                  <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
+                </>
+              )}
 
               {kind === "quiz" && questionCount > 0 && (
                 <div className={`${guru.glassCard} ${guru.startCard}`}>

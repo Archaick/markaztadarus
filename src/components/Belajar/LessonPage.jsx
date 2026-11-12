@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Button, Group, Loader, Modal, Switch, Tabs, Text, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconPencil, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Button, Group, Loader, Modal, Switch, Text, Tooltip } from "@mantine/core";
+import { IconArrowLeft, IconEye, IconPencil, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteLesson, saveLesson } from "./actions";
-import { BASE, NS, kindOf, questionsOf } from "./belajarSchema";
+import { BASE, NS, kindOf, learnerSections, questionsOf } from "./belajarSchema";
 import SectionsList from "./SectionsList";
-import QuestionsBoard from "./QuestionsBoard";
+import TeacherWalk from "../Guru/TeacherWalk";
 import { LessonForm } from "./LessonsPage";
 import styles from "./Belajar.module.css";
 
@@ -22,6 +22,7 @@ export default function LessonPage() {
   const [editing, setEditing] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [walking, setWalking] = useState(false); // the whole surah, on the teachers' own screens
 
   if (loading) return <Loader />;
   const lesson = lessonById.get(lessonId);
@@ -68,18 +69,20 @@ export default function LessonPage() {
         </Group>
       </div>
 
-      <Tabs defaultValue="questions" keepMounted={false}>
-        <Tabs.List mb="lg">
-          <Tabs.Tab value="questions">{t("lesson.tabQuestions", { count: sections.reduce((n, s) => n + (kindOf(s) === "written" ? (s.tasks || []).length : questionsOf(s).length), 0) })}</Tabs.Tab>
-          <Tabs.Tab value="sections">{t("lesson.tabSections")}</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="questions">
-          <QuestionsBoard lesson={lesson} sections={sections} />
-        </Tabs.Panel>
-        <Tabs.Panel value="sections">
-          <SectionsList lesson={lesson} sections={sections} />
-        </Tabs.Panel>
-      </Tabs>
+      {/* owner: one list, Daftar Pembelajaran; each item holds its PDF and then its questions */}
+      <div className={styles.listHead}>
+        <h2 className={styles.listTitle}>{t("lesson.tabSections")}</h2>
+        <Group gap="sm">
+          <Text size="sm" c="dimmed">
+            {t("lesson.questionCount", { count: sections.reduce((n, s) => n + (kindOf(s) === "written" ? (s.tasks || []).length : questionsOf(s).length), 0) })}
+          </Text>
+          <Button variant="light" color="violet" radius="xl" leftSection={<IconEye size={16} />} disabled={!learnerSections(sections, lesson.id).length} onClick={() => setWalking(true)}>
+            {t("board.tryAll")}
+          </Button>
+        </Group>
+      </div>
+      <SectionsList lesson={lesson} sections={sections} />
+      {walking && <TeacherWalk lesson={lesson} sections={sections} onClose={() => setWalking(false)} />}
 
       <LessonForm opened={editing} onClose={() => setEditing(false)} lesson={lesson} />
       <Modal opened={removing} onClose={() => setRemoving(false)} title={t("lesson.delete")} centered>

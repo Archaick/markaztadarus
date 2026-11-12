@@ -587,7 +587,8 @@ service cloud.firestore {
         && request.resource.data.kind in ["quiz", "reading", "written"]
         && request.resource.data.get("parts", []) is list && request.resource.data.get("parts", []).size() <= 10
         && request.resource.data.get("tasks", []) is list && request.resource.data.get("tasks", []).size() <= 30
-        && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80;
+        && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80
+        && (request.resource.data.get("pdf", null) == null || request.resource.data.pdf is map);
       allow delete: if isSuperAdmin() && marked("belajar_sections~" + sectionId); // whole items: the super admin only
     }
 
@@ -612,7 +613,8 @@ service cloud.firestore {
       allow create, update: if hasFeature("belajar") && audited()
         && request.resource.data.name is string && request.resource.data.name.size() <= 120
         && request.resource.data.lessonIds is list && request.resource.data.lessonIds.size() <= 120
-        && request.resource.data.code is string && request.resource.data.code.size() <= 12;
+        && request.resource.data.code is string && request.resource.data.code.size() <= 12
+        && request.resource.data.get("scene", "") is string && request.resource.data.get("scene", "").size() <= 30;
       allow delete: if isSuperAdmin() && marked("belajar_classes~" + classId); // whole items: the super admin only
     }
 

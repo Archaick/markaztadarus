@@ -7,6 +7,7 @@ import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { createClass } from "./actions";
 import { BASE, NS } from "./belajarSchema";
+import SchoolScene from "../Supervisi/SchoolScene";
 import styles from "./Belajar.module.css";
 
 /** The classes (Kelas): who learns which surahs. */
@@ -42,8 +43,10 @@ export default function ClassesPage() {
       ) : (
         <div className={styles.grid}>
           {classes.map((c) => (
-            <Link key={c.id} to={`${BASE}/kelas/${c.id}`} className={`${styles.lessonCard} ${styles.classCard}`}>
-              <span className={styles.classGlow} />
+            <Link key={c.id} to={`${BASE}/kelas/${c.id}`} className={`${styles.lessonCard} ${styles.classCard} ${styles.schoolCard}`}>
+              <span className={styles.schoolCover} aria-hidden="true">
+                <SchoolScene id={c.id} scene={c.scene} />
+              </span>
               <div className={styles.lessonTop}>
                 <span className={styles.codePill}>{c.code}</span>
                 {c.active === false ? <Badge color="gray">{t("classes.closed")}</Badge> : <Badge color="teal">{t("classes.open")}</Badge>}

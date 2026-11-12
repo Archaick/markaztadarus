@@ -64,7 +64,8 @@ export default function SectionsList({ lesson, sections }) {
               const reading = cleanReading(section.reading);
               const tables = reading.filter((b) => b.type === "table").length;
               const lines = reading.length - tables;
-              const done = kind === "reading" ? reading.length > 0 : count > 0;
+              const hasPdf = !!section.pdf?.url;
+              const done = kind === "reading" ? hasPdf || reading.length > 0 : count > 0;
               return (
                 <div key={section.id} className={styles.row}>
                   <span className={`${styles.rowNo} ${done ? styles.rowNoDone : ""}`} title={done ? t("status.done") : t("lesson.notYet")}>
@@ -73,8 +74,10 @@ export default function SectionsList({ lesson, sections }) {
                   <Link to={`${BASE}/surat/${lesson.id}/${section.id}`} className={styles.rowMain} style={{ color: "inherit", textDecoration: "none" }}>
                     <div className={styles.rowTitle}>{sectionTitle(section, t)}</div>
                     <div className={styles.rowSub}>
-                      <span className={`${styles.stat} ${reading.length ? styles.statOn : ""}`}>
-                        {reading.length
+                      <span className={`${styles.stat} ${hasPdf || reading.length ? styles.statOn : ""}`}>
+                        {hasPdf
+                          ? `✓ PDF`
+                          : reading.length
                           ? `✓ ${[lines && t("status.lines", { count: lines }), tables && t("status.tables", { count: tables })].filter(Boolean).join(" · ")}`
                           : t("status.noReading")}
                       </span>
