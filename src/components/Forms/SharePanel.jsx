@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { Trans, useTranslation } from "react-i18next";
 import QRCode from "qrcode";
+import { useAccess } from "../Internal/accessContext";
 import DeleteFormModal from "./DeleteFormModal";
 import styles from "./Forms.module.css";
 import { formLink } from "./formSchema";
