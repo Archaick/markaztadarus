@@ -29,6 +29,7 @@ import { useTranslation } from "react-i18next";
 import {
   arrayUnion,
   collection,
+  deleteField,
   doc,
   getDocs,
   onSnapshot,
@@ -40,7 +41,22 @@ import { useAccess } from "../Internal/accessContext";
 import { auditedWrite } from "../Internal/audit";
 import { stableKey } from "../Internal/stableKey";
 import { photoFile, photoOf, storePhoto } from "../Blog/photoFiles";
-import { CATEGORIES, IMAGES, MAX_IMAGES, POSTS, THUMBS, hasLargeCard, makeGridThumb, makeImage, makeThumb } from "../Blog/blogSchema";
+import {
+  CATEGORIES,
+  IMAGES,
+  MAX_IMAGES,
+  POSTS,
+  THUMBS,
+  TRANSLATION_LANGUAGES,
+  TRANSLATION_LIMITS,
+  cleanTranslations,
+  hasLargeCard,
+  hasTranslation,
+  makeGridThumb,
+  makeImage,
+  makeThumb,
+  translationOf,
+} from "../Blog/blogSchema";
 import { buildPostThumbs } from "./postThumbs";
 import SaveBar from "./SaveBar";
 import PostPreview from "./PostPreview";
@@ -53,7 +69,17 @@ const PROVINCES = topoData.objects["indonesia-38-prov-topo"].geometries
   .sort((a, b) => a.localeCompare(b));
 
 const TEXT_FIELDS = ["title", "excerpt", "body", "category", "province", "date"];
-const textOf = (post) => Object.fromEntries(TEXT_FIELDS.map((f) => [f, post[f] || ""]));
+// The editor's copy: the Indonesian fields, and every translation as
+// { title, excerpt, body } strings (empty when the post has none).
+const textOf = (post) => ({
+  ...Object.fromEntries(TEXT_FIELDS.map((f) => [f, post[f] || ""])),
+  translations: Object.fromEntries(TRANSLATION_LANGUAGES.map((lang) => [lang, translationOf(post, lang)])),
+});
+
+// Content tabs: Indonesian (main) first, then the optional translations.
+const CONTENT_LANGUAGES = ["id", ...TRANSLATION_LANGUAGES];
+// History names for a changed translation, e.g. "translationEn".
+const translationKey = (lang) => `translation${lang[0].toUpperCase()}${lang.slice(1)}`;
 
 // Photos (with their small copies) removed per request when a whole post goes.
 const PHOTOS_PER_DELETE = 5;
@@ -189,14 +215,27 @@ export default function PostEditor() {
       province: draft.province,
       date: draft.date,
     };
+    // Only languages with some text are stored; with none, the field goes.
+    const translations = cleanTranslations(draft.translations);
+    const hadTranslations = post?.translations !== undefined;
+    const translationPatch = Object.keys(translations).length
+      ? { translations }
+      : hadTranslations
+        ? { translations: deleteField() }
+        : {};
     setSaving(true);
     try {
-      const changed = ["title", "excerpt", "body", "category", "province", "date"].filter((k) => (post?.[k] ?? "") !== clean[k]);
-      await writePost(extra.status ? "post.status" : "post.update", { ...clean, ...extra }, {
+      const changed = [
+        ...TEXT_FIELDS.filter((k) => (post?.[k] ?? "") !== clean[k]),
+        ...TRANSLATION_LANGUAGES.filter(
+          (lang) => stableKey(translationOf(post, lang)) !== stableKey(translationOf({ translations }, lang))
+        ).map(translationKey),
+      ];
+      await writePost(extra.status ? "post.status" : "post.update", { ...clean, ...translationPatch, ...extra }, {
         changed,
         ...(extra.status && { from: post?.status || "draft", to: extra.status }),
       });
-      setDraft(clean);
+      setDraft(textOf({ ...clean, translations }));
       setMessage({ color: "teal", text: t("saved") });
       return true;
     } catch (err) {
@@ -355,6 +394,22 @@ export default function PostEditor() {
   };
 
   const set = (field) => (value) => setDraft((d) => ({ ...d, [field]: value }));
+
+  // Title, summary and text of the language being edited.
+  const [contentLang, setContentLang] = useState("id");
+  const translating = contentLang !== "id";
+  const rtl = contentLang === "ar";
+  const content = !draft ? null : translating ? draft.translations[contentLang] : draft;
+  const setContent = (field) => (value) =>
+    translating
+      ? setDraft((d) => ({
+          ...d,
+          translations: { ...d.translations, [contentLang]: { ...d.translations[contentLang], [field]: value } },
+        }))
+      : set(field)(value);
+  const filled = (lang) => (lang === "id" ? hasTranslation(draft) : hasTranslation(draft?.translations?.[lang]));
+  const limits = translating ? TRANSLATION_LIMITS : { title: TRANSLATION_LIMITS.title, excerpt: 300, body: 40000 };
+  const fieldProps = translating ? { dir: rtl ? "rtl" : "ltr", lang: contentLang } : {};
 
   return (
     <WebsiteShell>
@@ -519,7 +574,6 @@ export default function PostEditor() {
               </section>
 
               {/* ── text ── */}
-              <TextInput label={t("blog.editor.title")} value={draft.title} onChange={(e) => set("title")(e.target.value)} />
               <div className={styles.fieldGrid}>
                 <Select
                   label={t("blog.editor.category")}
@@ -546,24 +600,65 @@ export default function PostEditor() {
                   comboboxProps={{ withinPortal: true }}
                 />
               </div>
+
+              <div className={styles.languageBox}>
+                <Text size="sm" fw={600}>
+                  {t("blog.editor.languageLabel")}
+                </Text>
+                <SegmentedControl
+                  value={contentLang}
+                  onChange={setContentLang}
+                  color="yellow"
+                  data={CONTENT_LANGUAGES.map((lang) => ({
+                    value: lang,
+                    label: (
+                      <span className={styles.languageTab}>
+                        <span lang={lang}>{t(`blog.editor.languages.${lang}`)}</span>
+                        <span className={filled(lang) ? styles.languageFilled : styles.languageEmpty}>
+                          {filled(lang) ? "✓" : t("blog.editor.languageEmpty")}
+                        </span>
+                      </span>
+                    ),
+                  }))}
+                />
+                <Text size="xs" c="dimmed">
+                  {t(translating ? "blog.editor.languageHintTranslation" : "blog.editor.languageHintMain")}
+                </Text>
+              </div>
+
+              <TextInput
+                key={`title-${contentLang}`}
+                label={t("blog.editor.title")}
+                value={content.title}
+                maxLength={limits.title}
+                placeholder={translating ? draft.title : undefined}
+                onChange={(e) => setContent("title")(e.target.value)}
+                {...fieldProps}
+              />
               <Textarea
+                key={`excerpt-${contentLang}`}
                 label={t("blog.editor.excerpt")}
                 description={t("blog.editor.excerptHint")}
                 autosize
                 minRows={2}
-                maxLength={300}
-                value={draft.excerpt}
-                onChange={(e) => set("excerpt")(e.target.value)}
+                maxLength={limits.excerpt}
+                value={content.excerpt}
+                placeholder={translating ? draft.excerpt : undefined}
+                onChange={(e) => setContent("excerpt")(e.target.value)}
+                {...fieldProps}
               />
               <Textarea
+                key={`body-${contentLang}`}
                 label={t("blog.editor.body")}
                 description={t("blog.editor.bodyHint")}
                 autosize
                 minRows={8}
-                maxLength={40000}
-                value={draft.body}
-                onChange={(e) => set("body")(e.target.value)}
+                maxLength={limits.body}
+                value={content.body}
+                placeholder={translating ? draft.body : undefined}
+                onChange={(e) => setContent("body")(e.target.value)}
                 classNames={{ input: styles.bodyInput }}
+                {...fieldProps}
               />
 
               <div className={styles.dangerRow}>
@@ -595,6 +690,7 @@ export default function PostEditor() {
           post={{ ...post, ...draft }}
           images={images}
           unsaved={dirty}
+          contentLanguage={contentLang}
         />
       )}
 

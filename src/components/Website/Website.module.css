@@ -376,6 +376,41 @@
   line-height: 1.7;
 }
 
+/* the post's language switch: Indonesian (main), English, Arabic */
+.languageBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  max-width: 100%;
+}
+
+.languageBox > :global(.mantine-SegmentedControl-root) {
+  max-width: 100%;
+}
+
+.languageTab {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.languageFilled,
+.languageEmpty {
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.languageFilled {
+  color: var(--mantine-color-teal-6);
+}
+
+.languageEmpty {
+  opacity: 0.6;
+  font-weight: 500;
+}
+
 .dangerRow {
   display: flex;
   justify-content: flex-end;

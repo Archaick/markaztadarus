@@ -8,12 +8,12 @@ import BlogShell from "./BlogShell";
 import PostCard from "./PostCard";
 import ArticleView from "./ArticleView";
 import styles from "./Blog.module.css";
-import { IMAGES, POSTS, THUMBS, fetchPublished } from "./blogSchema";
+import { IMAGES, POSTS, THUMBS, fetchPublished, localized } from "./blogSchema";
 import { photoOf } from "./photoFiles";
 
 export default function BlogPost() {
   const { slug } = useParams();
-  const { t } = useTranslation("blog/Blog");
+  const { t, i18n } = useTranslation("blog/Blog");
   const [post, setPost] = useState(undefined); // undefined = loading, null = not found
   const [images, setImages] = useState({}); // full photos loaded so far: id → { dataUrl, width, height }
   const [thumbs, setThumbs] = useState(null); // gallery copies, for posts that have them
@@ -77,9 +77,10 @@ export default function BlogPost() {
     };
   }, [postId, thumbsReady, coverId, loadImage]);
 
+  const pageTitle = post ? localized(post, i18n.language).title : "";
   useEffect(() => {
-    if (post?.title) document.title = `${post.title} · Markaz Tadarus Indonesia`;
-  }, [post?.title]);
+    if (pageTitle) document.title = `${pageTitle} · Markaz Tadarus Indonesia`;
+  }, [pageTitle]);
 
   if (post === undefined) {
     return (

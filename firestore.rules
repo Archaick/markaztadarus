@@ -400,7 +400,24 @@ service cloud.firestore {
         && data.body is string && data.body.size() <= 50000
         && data.date is string && data.date.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")
         && data.images is list && data.images.size() <= 30
-        && data.coverThumb is string && data.coverThumb.size() <= 120000;
+        && data.coverThumb is string && data.coverThumb.size() <= 120000
+        && validTranslations(data);
+    }
+
+    // Optional English and Arabic versions of a post; Indonesian stays the main text.
+    function validTranslation(t) {
+      return t is map
+        && t.keys().hasOnly(["title", "excerpt", "body"])
+        && t.get("title", "") is string && t.get("title", "").size() <= 200
+        && t.get("excerpt", "") is string && t.get("excerpt", "").size() <= 400
+        && t.get("body", "") is string && t.get("body", "").size() <= 50000;
+    }
+    function validTranslations(data) {
+      let tr = data.get("translations", {});
+      return tr is map
+        && tr.keys().hasOnly(["en", "ar"])
+        && (!("en" in tr) || validTranslation(tr.en))
+        && (!("ar" in tr) || validTranslation(tr.ar));
     }
 
     // A photo in Cloud Storage: its document holds the link and where the file is.

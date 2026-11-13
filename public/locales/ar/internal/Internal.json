@@ -337,6 +337,8 @@
       "valid": "سارية",
       "revoked": "ملغاة",
       "excerpt": "الملخص",
+      "translationEn": "الترجمة الإنجليزية",
+      "translationAr": "الترجمة العربية",
       "category": "التصنيف",
       "province": "المحافظة",
       "photo": "الصورة",

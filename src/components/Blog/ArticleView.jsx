@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import FadeImage from "./FadeImage";
 import Lightbox from "./Lightbox";
 import styles from "./Blog.module.css";
-import { formatPostDate, paragraphs, postLink } from "./blogSchema";
+import { formatPostDate, localized, paragraphs, postLink } from "./blogSchema";
 
 /**
  * One news post as visitors see it: meta, title, cover, text, gallery and
@@ -25,9 +25,13 @@ import { formatPostDate, paragraphs, postLink } from "./blogSchema";
  * loaded so far. `thumbs`, when given, holds the small gallery copies; then a
  * full photo is asked for with `onNeedImage(id)` only when it is opened (and
  * for the neighbours, so swiping is instant).
+ *
+ * The title and text follow the site's language when the post has that
+ * translation; `language` overrides it (the editor's preview).
  */
-export default function ArticleView({ post, images, thumbs, onNeedImage, showDraftBanner = true, children }) {
+export default function ArticleView({ post, images, thumbs, onNeedImage, showDraftBanner = true, language, children }) {
   const { t, i18n } = useTranslation("blog/Blog");
+  const text = localized(post, language || i18n.language);
   const [viewer, setViewer] = useState(-1);
 
   // one tile per photo, in order; `src` is empty until its copy arrives
@@ -62,7 +66,7 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
 
   const cover = images[post.coverId]?.dataUrl || post.coverThumb;
   const link = postLink(post.id);
-  const shareText = `${post.title}\n${link}`;
+  const shareText = `${text.title}\n${link}`;
 
   return (
     <>
@@ -89,8 +93,8 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
               </span>
             )}
           </div>
-          <h1 className={styles.articleTitle} dir="auto">
-            {post.title}
+          <h1 className={styles.articleTitle} dir={text.dir.title}>
+            {text.title}
           </h1>
         </div>
 
@@ -110,8 +114,8 @@ export default function ArticleView({ post, images, thumbs, onNeedImage, showDra
         )}
 
         <div className={`${styles.container} ${styles.narrow}`}>
-          <div className={styles.body} dir="auto">
-            {paragraphs(post.body).map((p, i) => (
+          <div className={styles.body} dir={text.dir.body}>
+            {paragraphs(text.body).map((p, i) => (
               <p key={i}>{p}</p>
             ))}
           </div>

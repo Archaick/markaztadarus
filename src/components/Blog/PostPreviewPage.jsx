@@ -16,7 +16,9 @@ export const PREVIEW_MESSAGE = "mt-post-preview";
  */
 export default function PostPreviewPage() {
   const { i18n } = useTranslation("blog/Blog");
-  const [data, setData] = useState(null); // { post, images, language }
+  // { post, images, language, contentLanguage }: `language` is the editor's
+  // interface, `contentLanguage` the version of the post being edited.
+  const [data, setData] = useState(null);
   const view = new URLSearchParams(window.location.search).get("view") === "card" ? "card" : "article";
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function PostPreviewPage() {
       <main className={styles.page} dir={i18n.language === "ar" ? "rtl" : "ltr"} style={{ paddingTop: 32, minHeight: "100vh" }}>
         <div className={styles.container}>
           <div className={styles.grid} style={{ maxWidth: 380 }}>
-            <PostCard post={data.post} preview />
+            <PostCard post={data.post} preview language={data.contentLanguage} />
           </div>
         </div>
       </main>
@@ -56,7 +58,7 @@ export default function PostPreviewPage() {
 
   return (
     <BlogShell>
-      <ArticleView post={data.post} images={data.images} showDraftBanner={false} />
+      <ArticleView post={data.post} images={data.images} showDraftBanner={false} language={data.contentLanguage} />
     </BlogShell>
   );
 }

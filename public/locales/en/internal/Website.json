@@ -135,6 +135,15 @@
       "excerptHint": "Shown on the news card. When empty, the start of the text is used.",
       "body": "Text",
       "bodyHint": "Separate paragraphs with an empty line.",
+      "languageLabel": "Content language",
+      "languages": {
+        "id": "Indonesian (main)",
+        "en": "English",
+        "ar": "العربية"
+      },
+      "languageEmpty": "empty",
+      "languageHintMain": "Indonesian is required. The English and Arabic translations are optional.",
+      "languageHintTranslation": "Optional. Empty fields show the Indonesian text. The grey text inside each field is the Indonesian text to translate.",
       "photos": "Photos",
       "photosHint": "Photos are shrunk automatically. Star = cover photo. Up to {{max}} photos.",
       "addPhotos": "Add photos",

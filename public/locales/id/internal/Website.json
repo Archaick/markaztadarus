@@ -134,6 +134,15 @@
       "excerptHint": "Tampil di kartu berita. Jika kosong, diambil dari awal isi.",
       "body": "Isi berita",
       "bodyHint": "Pisahkan paragraf dengan baris kosong.",
+      "languageLabel": "Bahasa isi",
+      "languages": {
+        "id": "Indonesia (utama)",
+        "en": "English",
+        "ar": "العربية"
+      },
+      "languageEmpty": "kosong",
+      "languageHintMain": "Bahasa Indonesia wajib diisi. Terjemahan Inggris dan Arab opsional.",
+      "languageHintTranslation": "Opsional. Kolom yang kosong menampilkan teks Indonesia. Teks abu-abu di dalam kolom adalah teks Indonesia yang diterjemahkan.",
       "photos": "Foto",
       "photosHint": "Foto otomatis diperkecil. Bintang = foto sampul. Maks. {{max}} foto.",
       "addPhotos": "Tambah foto",

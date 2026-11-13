@@ -337,6 +337,8 @@
       "valid": "Valid",
       "revoked": "Revoked",
       "excerpt": "Summary",
+      "translationEn": "English translation",
+      "translationAr": "Arabic translation",
       "category": "Category",
       "province": "Province",
       "photo": "Photo",

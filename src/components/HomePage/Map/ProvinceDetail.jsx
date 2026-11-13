@@ -14,7 +14,7 @@ import styles from "./Map.module.css";
 import { getDisplayName } from "../../../data/mtiProvinceData";
 import { embedLink, hasCoords, mapsLink } from "../../../data/coords";
 import { useProvinceNews } from "../../Blog/useProvinceNews";
-import { formatPostDate } from "../../Blog/blogSchema";
+import { formatPostDate, localized } from "../../Blog/blogSchema";
 
 // The newest news tagged with this province, linking to each post.
 function ProvinceNews({ province }) {
@@ -28,20 +28,23 @@ function ProvinceNews({ province }) {
         <IconNews size={14} className={styles.inlineIcon} /> {t("news_title")}
       </p>
       <ul className={styles.newsList}>
-        {posts.map((post) => (
-          <li key={post.id}>
-            <Link to={`/berita/${post.id}`} className={styles.newsItem}>
-              {post.coverThumb && <img src={post.coverThumb} alt="" loading="lazy" />}
-              <span className={styles.newsText}>
-                <span className={styles.newsTitle} dir="auto">
-                  {post.title}
+        {posts.map((post) => {
+          const text = localized(post, i18n.language);
+          return (
+            <li key={post.id}>
+              <Link to={`/berita/${post.id}`} className={styles.newsItem}>
+                {post.coverThumb && <img src={post.coverThumb} alt="" loading="lazy" />}
+                <span className={styles.newsText}>
+                  <span className={styles.newsTitle} dir={text.dir.title}>
+                    {text.title}
+                  </span>
+                  <span className={styles.newsDate}>{formatPostDate(post.date, i18n.language)}</span>
                 </span>
-                <span className={styles.newsDate}>{formatPostDate(post.date, i18n.language)}</span>
-              </span>
-              <IconArrowRight size={15} className={styles.newsArrow} />
-            </Link>
-          </li>
-        ))}
+                <IconArrowRight size={15} className={styles.newsArrow} />
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
