@@ -190,11 +190,22 @@ export function LearnerProvider({ children }) {
     [uid, learner, progress]
   );
 
-  // their place on the Tadarus Global map: a country and province only, never a name
+  // the school they are counted at on Tadarus Global: the one they joined last that is still there
+  const schoolId = myClasses.length ? myClasses[myClasses.length - 1].id : "";
+  // their place on the Tadarus Global map: a country, province and school only, never a name
   const mapEntry = useCallback(
-    (c, online = true) => setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", online, updatedAt: serverTimestamp() }),
-    [uid]
+    (c, online = true) =>
+      setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", schoolId, online, updatedAt: serverTimestamp() }),
+    [uid, schoolId]
   );
+  // their school known (or changed) while they study: the map follows at once, not at the next heartbeat
+  const mappedSchool = useRef(null);
+  useEffect(() => {
+    if (!uid || !learner?.country || !schoolId || mappedSchool.current === schoolId) return;
+    mappedSchool.current = schoolId;
+    if (typeof document !== "undefined" && document.visibilityState === "visible") mapEntry(learner).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uid, schoolId]);
   // left the app (tab hidden, closed or signed out): no longer "studying now" on Tadarus Global
   const offline = useCallback(() => (uid && learner?.country ? mapEntry(learner, false).catch(() => {}) : Promise.resolve()), [uid, learner, mapEntry]);
   const touch = useCallback(() => {

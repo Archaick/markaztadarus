@@ -1,6 +1,7 @@
-import { collection, doc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, serverTimestamp, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { auditedWrite } from "../Internal/audit";
+import { SCHOOL_MAP, cleanLocation, schoolProjection } from "../Global/schoolMap";
 import { CLASSES, CODES, INVITES, LEARNERS, LESSONS, PROGRESS, SECTIONS, SECTION_TYPES, newCode, templateSections } from "./belajarSchema";
 
 // Every write of the learning platform's admin, each recorded in the
@@ -126,18 +127,34 @@ export async function deleteSection(user, lesson, section) {
 export async function createClass(user, data) {
   const ref = doc(collection(db, CLASSES));
   const code = newCode();
-  await auditedWrite(user, entry("bel.class.create", data.name, { lessons: data.lessonIds.length, code }, ref.id), (batch, auditId) => {
-    batch.set(ref, { ...plain(data), code, active: true, program: "guru", auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+  const location = cleanLocation(data.location);
+  await auditedWrite(user, entry("bel.class.create", data.name, { lessons: data.lessonIds.length, code, ...(location && { province: location.province || location.country }) }, ref.id), (batch, auditId) => {
+    batch.set(ref, { ...plain(data), location, code, active: true, program: "guru", auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
     batch.set(doc(db, CODES, code), { classId: ref.id, active: true, auditId, createdAt: serverTimestamp() });
+    // its public copy for Tadarus Global, once it has a pin (never the code)
+    if (location) batch.set(doc(db, SCHOOL_MAP, ref.id), { ...schoolProjection(data, location), auditId, updatedAt: serverTimestamp() });
   });
   return ref.id;
 }
 
 export async function updateClass(user, klass, changes, details = {}) {
-  await auditedWrite(user, entry("bel.class.update", klass.name, details, klass.id), (batch, auditId) => {
-    batch.update(doc(db, CLASSES, klass.id), { ...plain(changes), auditId, updatedAt: serverTimestamp() });
+  const clean = plain(changes);
+  if ("location" in clean) clean.location = cleanLocation(clean.location);
+  // what Tadarus Global shows of it changes with its name, cover or pin
+  const shown = ["name", "scene", "location"].some((k) => k in clean);
+  const location = "location" in clean ? clean.location : cleanLocation(klass.location);
+  const unpinned = shown && !location && "location" in clean;
+  // the public copy's version, to delete it (it may be older than the school's own)
+  const copy = unpinned ? await getDoc(doc(db, SCHOOL_MAP, klass.id)) : null;
+  await auditedWrite(user, entry("bel.class.update", klass.name, details, klass.id), (batch, auditId, markDelete) => {
+    batch.update(doc(db, CLASSES, klass.id), { ...clean, auditId, updatedAt: serverTimestamp() });
     // the code follows the class being open or closed
     if ("active" in changes) batch.update(doc(db, CODES, klass.code), { active: !!changes.active, auditId, updatedAt: serverTimestamp() });
+    if (shown && location) batch.set(doc(db, SCHOOL_MAP, klass.id), { ...schoolProjection({ ...klass, ...clean }, location), auditId, updatedAt: serverTimestamp() });
+    if (copy?.exists()) {
+      batch.delete(doc(db, SCHOOL_MAP, klass.id));
+      markDelete(`${SCHOOL_MAP}~${klass.id}`, copy.data().auditId);
+    }
   });
 }
 
@@ -154,7 +171,13 @@ export async function renewCode(user, klass, oldCodeDoc) {
 }
 
 export async function deleteClass(user, klass, codeDoc) {
+  // its public copy goes too, into the same bin entry (and comes back with it)
+  const copy = await getDoc(doc(db, SCHOOL_MAP, klass.id));
   await auditedWrite(user, entry("bel.class.delete", klass.name, {}, klass.id), (batch, _a, markDelete) => {
+    if (copy.exists()) {
+      batch.delete(doc(db, SCHOOL_MAP, klass.id));
+      markDelete(`${SCHOOL_MAP}~${klass.id}`, copy.data().auditId);
+    }
     batch.delete(doc(db, CODES, klass.code));
     markDelete(`${CODES}~${klass.code}`, codeDoc?.auditId);
     batch.delete(doc(db, CLASSES, klass.id));

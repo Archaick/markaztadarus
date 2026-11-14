@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { Alert, Button, FileButton, Group } from "@mantine/core";
-import { IconFileTypePdf, IconReplace, IconTrash, IconUpload } from "@tabler/icons-react";
+import { IconExternalLink, IconFileTypePdf, IconReplace, IconTrash, IconUpload } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { setSectionPdf } from "./actions";
 import { NS } from "./belajarSchema";
 import { PDF_MAX_BYTES, removePdf, storePdf } from "./pdfFiles";
-import PdfView from "../Guru/PdfView";
 import styles from "./Belajar.module.css";
 
 /**
- * A section's written material as a PDF: upload one, see it exactly as
- * teachers will, replace or remove it. Saved at once (not with the page's Save).
+ * A section's written material as a PDF: upload one, replace or remove it.
+ * Here it is a small file card, so the questions stay close at hand; the whole
+ * PDF is read as teachers read it in "Try them all as a teacher".
+ * Saved at once (not with the page's Save).
  */
 export default function PdfSlot({ lesson, section }) {
   const { t } = useTranslation(NS);
@@ -54,7 +55,13 @@ export default function PdfSlot({ lesson, section }) {
       )}
       {pdf ? (
         <>
-          <PdfView pdf={pdf} />
+          <div className={styles.pdfFile}>
+            <IconFileTypePdf size={30} className={styles.pdfFileIcon} />
+            <b className={styles.pdfFileName}>{pdf.name || "PDF"}</b>
+            <a href={pdf.url} target="_blank" rel="noreferrer" className={styles.pdfFileOpen}>
+              <IconExternalLink size={14} /> {t("pdf.open")}
+            </a>
+          </div>
           <Group gap="xs" mt="xs">
             <FileButton onChange={upload} accept="application/pdf">
               {(props) => (

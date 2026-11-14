@@ -1,0 +1,5 @@
+{
+  "mustRead": "Read the PDF to its last page first",
+  "pages": "Page {{seen}} of {{total}}",
+  "done": "Material read"
+}

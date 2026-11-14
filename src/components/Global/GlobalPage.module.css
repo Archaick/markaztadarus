@@ -825,3 +825,68 @@ button.mapLink {
     max-height: none;
   }
 }
+
+/* Tadarus Guru's schools: green like the teachers' bubbles on the globe */
+.schoolPanel {
+  margin: 4px 0 14px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: linear-gradient(160deg, rgba(16, 185, 129, 0.14), rgba(15, 46, 102, 0.12));
+}
+.schoolHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: #fff;
+}
+.schoolHeadCount {
+  margin-inline-start: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.3);
+  color: #d1fae5;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.schoolItem,
+.schoolItemOn {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+.schoolItemOn {
+  border-color: rgba(52, 211, 153, 0.5);
+  background: rgba(16, 185, 129, 0.12);
+}
+.schoolIcon {
+  flex: none;
+  color: rgba(255, 255, 255, 0.55);
+}
+.schoolNames {
+  margin: 0;
+  padding: 0 12px 10px 32px;
+  color: #d1fae5;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+[dir="rtl"] .schoolNames {
+  padding: 0 32px 10px 12px;
+}
+.schoolNames span {
+  color: rgba(255, 255, 255, 0.6);
+}
+.schoolMore {
+  margin-top: 8px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: #6ee7b7;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}

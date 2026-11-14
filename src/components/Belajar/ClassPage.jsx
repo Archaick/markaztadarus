@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ActionIcon, Avatar, Badge, Button, CopyButton, Drawer, Group, Loader, Modal, Progress, Switch, Tabs, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconBrandWhatsapp, IconCheck, IconCopy, IconLock, IconPencil, IconRefresh, IconTrash, IconUserMinus } from "@tabler/icons-react";
+import { IconArrowLeft, IconBrandWhatsapp, IconCheck, IconCopy, IconLock, IconMapPin, IconPencil, IconRefresh, IconTrash, IconUserMinus } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -15,6 +15,9 @@ import { BASE, NS, PROGRESS, sectionTitle, surahState } from "./belajarSchema";
 import { DeleteTeacher } from "./TeachersPage";
 import SchoolScene, { SCENES } from "../Supervisi/SchoolScene";
 import styles from "./Belajar.module.css";
+
+// the school's pin on Tadarus Global (loaded only when the form opens: the globe is heavy)
+const SchoolLocation = lazy(() => import("./SchoolLocation"));
 
 /** Every progress record of these learners, live (in groups of 30, Firestore's limit for "in"). */
 function useProgressOf(uids) {
@@ -118,6 +121,10 @@ export default function ClassPage() {
           <div>
           <h1 className={styles.pageTitle}>{klass.name}</h1>
           <p className={styles.pageSub}>{t("classes.summary", { learners: learners.length, started, finished })}</p>
+          <button type="button" className={styles.schoolPlace} onClick={() => setRenaming(true)}>
+            <IconMapPin size={14} />
+            {klass.location ? t("schoolLocation.onMap", { place: [klass.location.city, klass.location.province].filter(Boolean).join(", ") || klass.location.country }) : t("schoolLocation.offMap")}
+          </button>
           </div>
         </div>
         <Group>
@@ -260,7 +267,16 @@ function RenameModal({ opened, klass, onClose }) {
   const { user } = useAccess();
   const [name, setName] = useState(klass.name);
   const [scene, setScene] = useState(klass.scene || "");
+  const [location, setLocation] = useState(klass.location || null);
   const [busy, setBusy] = useState(false);
+  // open again on what is saved now
+  useEffect(() => {
+    if (!opened) return;
+    setName(klass.name);
+    setScene(klass.scene || "");
+    setLocation(klass.location || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [opened]);
   return (
     <Modal opened={opened} onClose={onClose} title={t("classes.rename")} centered size="lg">
       <TextInput label={t("classes.nameLabel")} value={name} onChange={(e) => setName(e.currentTarget.value)} mb="md" />
@@ -277,6 +293,13 @@ function RenameModal({ opened, klass, onClose }) {
           </button>
         ))}
       </div>
+      {opened && (
+        <Suspense fallback={<Loader size="sm" />}>
+          <div style={{ marginBottom: 16 }}>
+            <SchoolLocation value={location} onChange={setLocation} />
+          </div>
+        </Suspense>
+      )}
       <Button
         fullWidth
         color="#003366"
@@ -285,7 +308,14 @@ function RenameModal({ opened, klass, onClose }) {
         onClick={async () => {
           setBusy(true);
           try {
-            await updateClass(user, klass, { name: name.trim().slice(0, 120), scene: SCENES.includes(scene) ? scene : "" });
+            const pinned = location && Number.isFinite(location.lat) && Number.isFinite(location.lng) ? location : null;
+            const moved = JSON.stringify(pinned) !== JSON.stringify(klass.location || null);
+            await updateClass(
+              user,
+              klass,
+              { name: name.trim().slice(0, 120), scene: SCENES.includes(scene) ? scene : "", ...(moved && { location: pinned }) },
+              moved ? { location: pinned ? [pinned.city, pinned.province, pinned.country].filter(Boolean).join(", ") : "-" } : {}
+            );
             onClose();
           } finally {
             setBusy(false);

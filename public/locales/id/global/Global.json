@@ -44,6 +44,12 @@
   "guruPin": "Guru",
   "studyingPin": "{{count}} sedang belajar",
   "studyingNow": "{{count}} sedang belajar sekarang",
+  "schoolsTitle": "Sekolah Tadarus Guru",
+  "schoolStudying": "{{count}} guru sedang belajar",
+  "schoolQuiet": "Belum ada yang belajar saat ini",
+  "schoolNames": "Sedang belajar:",
+  "schoolsMore": "Tampilkan {{count}} sekolah lagi",
+  "schoolsLess": "Tampilkan lebih sedikit",
   "mapClose": "Tutup daftar provinsi",
   "fiveT": {
     "tamhid": "Tamhid",

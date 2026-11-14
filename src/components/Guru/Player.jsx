@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconCheck, IconClock, IconRefresh, IconStarFilled, IconTarget, IconVolume, IconVolumeOff, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { isArabic, questionsOf, textDir } from "../Belajar/belajarSchema";
+import { STEM_OPTIONAL, isArabic, keyOf, questionsOf, stripMarks, textDir } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
 import { useScrollLock } from "./scrollLock";
 import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
 import ArabicText from "./ArabicText";
+import { CircleRows, WordBank } from "./WordQuestions";
+import { rowsRight, shuffle, wordsAnswer, wordsRight } from "./wordLogic";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -13,18 +15,9 @@ const RETRY_GAP = 2; // a missed question comes back this many questions later
 // how long the sheet stays before going on by itself (ms); an explanation adds time to read it
 const AUTO_NEXT = { right: 1600, wrong: 4500, note: 2500 };
 
-// the same shuffle for one question every time it shows
-const shuffle = (n, seed) => {
-  const out = Array.from({ length: n }, (_, i) => i);
-  let h = 7;
-  for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  for (let i = n - 1; i > 0; i--) {
-    h = (h * 1103515245 + 12345) >>> 0;
-    const j = h % (i + 1);
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-};
+const WORD_TYPES = ["fillblank", "order"];
+// the types answered with a Check button (the others are marked on the first tap)
+const CHECKED = ["multi", "match", "fillblank", "order", "circle"];
 
 const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
 
@@ -45,6 +38,8 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
   const [picked, setPicked] = useState([]);
   const [pairs, setPairs] = useState({}); // left index → right index
   const [leftOn, setLeftOn] = useState(null);
+  const [slots, setSlots] = useState([]); // fill in / order: one bank index (or null) per place
+  const [rowPicks, setRowPicks] = useState({}); // circle: row -> word index
   const [verdict, setVerdict] = useState(null); // null | { ok, praise }
   const [ended, setEnded] = useState(null);
   const [sound, setSound] = useState(soundOn);
@@ -55,6 +50,20 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
 
   const qi = queue[pos];
   const q = questions[qi];
+  // a word question starts with all its places empty
+  const places = q && WORD_TYPES.includes(q.type) && slots.length !== keyOf(q).length ? keyOf(q).map(() => null) : slots;
+  // every place filled, every row answered: the Check button wakes
+  const ready = !q
+    ? false
+    : q.type === "multi"
+      ? picked.length > 0
+      : q.type === "match"
+        ? q.left.every((_, k) => pairs[k] !== undefined)
+        : WORD_TYPES.includes(q.type)
+          ? places.length > 0 && places.every((x) => x !== null && x !== undefined)
+          : q.type === "circle"
+            ? (q.rows || []).every((_, i) => rowPicks[i] !== undefined)
+            : false;
   const order = useMemo(() => (q?.type === "match" ? shuffle(q.right.length, q.id) : []), [q]);
   const praises = t("player.praise", { returnObjects: true });
 
@@ -62,6 +71,8 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
     setPicked([]);
     setPairs({});
     setLeftOn(null);
+    setSlots([]);
+    setRowPicks({});
     setVerdict(null);
     setHold(false);
   };
@@ -109,6 +120,8 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
 
   const checkNow = () => {
     if (q.type === "match") mark(q.left.every((_, k) => pairs[k] === q.answer[k]));
+    else if (WORD_TYPES.includes(q.type)) mark(wordsRight(q, places));
+    else if (q.type === "circle") mark(rowsRight(q, rowPicks));
     else mark(sameSet(picked, q.correct || []));
   };
 
@@ -154,10 +167,10 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
       if (e.key === "Escape") onExit?.();
       if (e.key === "Enter") {
         if (verdict) next();
-        else if (q?.type === "multi" && picked.length) checkNow();
+        else if (q && CHECKED.includes(q.type) && ready) checkNow();
       }
       const n = Number(e.key);
-      if (!verdict && n >= 1 && n <= 6 && q && q.type !== "match" && q.type !== "task" && n <= q.options.length) tap(n - 1);
+      if (!verdict && n >= 1 && n <= 6 && q?.options && q.type !== "match" && q.type !== "task" && n <= q.options.length) tap(n - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -260,8 +273,8 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
     else c.push(styles.optionDim);
     return c.join(" ");
   };
-  const ready = q.type === "multi" ? picked.length > 0 : q.type === "match" ? q.left.every((_, k) => pairs[k] !== undefined) : false;
-  const rightText = q.type === "match" ? q.left.map((l, k) => `${l} → ${q.right[q.answer[k]] ?? "?"}`).join("\n") : (q.correct || []).map((k) => q.options[k]).join("\n");
+  const rightText =
+    q.type === "match" ? q.left.map((l, k) => `${l} → ${q.right[q.answer[k]] ?? "?"}`).join("\n") : q.options ? (q.correct || []).map((k) => q.options[k]).join("\n") : stripMarks(wordsAnswer(q));
 
   return (
     <div className={`${styles.player} ${styles.skyOn}`}>
@@ -290,7 +303,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
         </button>
       </div>
 
-      <div className={`${styles.stage} ${["task", "multi", "match"].includes(q.type) ? styles.stageBar : ""}`} key={`${pos}-${qi}`}>
+      <ScrollCard className={`${styles.stage} ${q.type === "task" || CHECKED.includes(q.type) ? styles.stageBar : ""}`} key={`${pos}-${qi}`}>
         <div className={styles.kickerRow}>
           <span className={styles.kicker}>{!verdict && first[qi] === false ? t("player.tryAgain") : t(`qtype.${q.type}`)}</span>
           {(q.fiveT || guide?.tag) && (
@@ -302,7 +315,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
           {preview && <span className={styles.previewChip}>{t("player.preview")}</span>}
         </div>
         <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
-          <ArabicText text={q.stem} />
+          <ArabicText text={q.stem || (STEM_OPTIONAL.includes(q.type) ? t(`player.do.${q.type}${q.type === "circle" && q.mode === "underline" ? "Line" : ""}`) : "")} />
         </p>
 
         {q.type === "task" ? (
@@ -317,6 +330,17 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
               </p>
             )}
           </>
+        ) : WORD_TYPES.includes(q.type) ? (
+          <>
+            <WordBank q={q} slots={places} onChange={setSlots} verdict={verdict} preview={preview} t={t} />
+            {preview && !verdict && (
+              <p className={styles.keyList} dir={textDir(rightText)}>
+                <em className={styles.keyTag}>{t("player.key")}</em> <ArabicText text={rightText} />
+              </p>
+            )}
+          </>
+        ) : q.type === "circle" ? (
+          <CircleRows q={q} picks={rowPicks} onPick={(row, k) => setRowPicks((p) => ({ ...p, [row]: p[row] === k ? undefined : k }))} verdict={verdict} preview={preview} t={t} />
         ) : (
           <div className={q.type === "truefalse" ? styles.twoUp : styles.options}>
             {q.options.map((opt, k) => (
@@ -330,7 +354,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
             ))}
           </div>
         )}
-      </div>
+      </ScrollCard>
 
       {q.type === "task" && (
         <div className={styles.checkBar}>
@@ -349,7 +373,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
         </div>
       )}
 
-      {!verdict && (q.type === "multi" || q.type === "match") && (
+      {!verdict && CHECKED.includes(q.type) && (
         <div className={styles.checkBar}>
           <button type="button" className={styles.primaryBig} disabled={!ready} onClick={checkNow}>
             {t("player.check")}
@@ -380,6 +404,38 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
           {!hold && <p className={styles.sheetHint}>{t("player.tapToStay")}</p>}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * The question card: on a small screen only its inside scrolls, so the bar
+ * and the five stars above it stay in view. A soft fade at the bottom edge
+ * says there is more below.
+ */
+function ScrollCard({ className, children }) {
+  const body = useRef(null);
+  const [more, setMore] = useState(false);
+  const measure = useCallback(() => {
+    const el = body.current;
+    if (el) setMore(el.scrollHeight - el.scrollTop - el.clientHeight > 4);
+  }, []);
+  // after every change of the question (a word placed, the answer shown)
+  useLayoutEffect(measure);
+  useLayoutEffect(() => {
+    const el = body.current;
+    if (!el) return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    [...el.children].forEach((c) => ro.observe(c));
+    return () => ro.disconnect();
+  }, [measure]);
+  return (
+    <div className={className}>
+      <div className={styles.stageBody} ref={body} onScroll={measure}>
+        {children}
+      </div>
+      <span className={`${styles.stageFade} ${more ? styles.stageFadeOn : ""}`} aria-hidden="true" />
     </div>
   );
 }

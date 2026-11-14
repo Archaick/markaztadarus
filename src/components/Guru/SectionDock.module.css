@@ -1,0 +1,92 @@
+/* The way on (Start, or "I have read this") stays at the bottom of the screen
+   while a long PDF is read, instead of waiting below its last page. */
+.dock {
+  position: sticky;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 6;
+}
+.dock::before {
+  /* a soft fade so the PDF slides under the bar rather than being cut */
+  content: "";
+  position: absolute;
+  inset: -28px -8px auto;
+  height: 28px;
+  background: linear-gradient(to bottom, transparent, rgba(238, 243, 249, 0.85));
+  pointer-events: none;
+}
+.dock > * {
+  position: relative;
+  box-shadow: 0 18px 40px -18px rgba(15, 42, 71, 0.55);
+}
+
+/* the slim bar: how far the PDF has been read, and the way on once it has */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px 10px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.info b {
+  font-size: 0.92rem;
+  line-height: 1.25;
+  color: #12233d;
+}
+.info > span:last-child {
+  font-size: 0.78rem;
+  color: #5b6b80;
+}
+.track {
+  display: block;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(18, 48, 94, 0.12);
+  overflow: hidden;
+}
+.track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #c9a227, #e2b93b);
+  transition: width 0.4s ease;
+}
+.go {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 14px;
+  background: #12305e;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+.go:disabled {
+  background: #9aa8bb;
+  cursor: not-allowed;
+}
+.go:not(:disabled) {
+  animation: goReady 0.5s ease;
+}
+@keyframes goReady {
+  50% { transform: scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .go:not(:disabled) { animation: none; }
+  .track span { transition: none; }
+}

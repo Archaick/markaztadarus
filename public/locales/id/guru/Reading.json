@@ -1,0 +1,5 @@
+{
+  "mustRead": "Baca PDF sampai halaman terakhir dulu",
+  "pages": "Halaman {{seen}} dari {{total}}",
+  "done": "Materi sudah dibaca"
+}

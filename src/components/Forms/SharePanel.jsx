@@ -20,7 +20,7 @@ import { formLink } from "./formSchema";
 export default function SharePanel({ form, onOpen }) {
   const { t } = useTranslation("internal/Forms");
   const navigate = useNavigate();
-  const { hasFeature, user } = useAccess();
+  const { hasFeature } = useAccess();
   const link = formLink(form.id);
   const [qr, setQr] = useState("");
   // The invitation is read by respondents, so it is written in the form's language.

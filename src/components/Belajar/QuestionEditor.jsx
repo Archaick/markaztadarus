@@ -1,7 +1,9 @@
 import { ActionIcon, Badge, Button, Checkbox, Group, Radio, Select, Text, TextInput, Textarea } from "@mantine/core";
-import { IconArrowDown, IconArrowUp, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp, IconCheck, IconChevronDown, IconChevronUp, IconCircleDot, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { NS, QUESTION_TYPES, blankQuestion, questionIssues } from "./belajarSchema";
+import { NS, QUESTION_TYPES, STEM_OPTIONAL, blankQuestion, questionIssues } from "./belajarSchema";
+import { CircleEditor, FillBlankEditor, OrderEditor } from "./WordEditors";
+import { ICON } from "./questionTypeList";
 import styles from "./Belajar.module.css";
 
 /** One question with its answer: the correct options are ticked (green). */
@@ -13,7 +15,16 @@ const nextOnEnter = (e) => {
   all[all.indexOf(e.currentTarget) + 1]?.focus();
 };
 
-export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoFocus, bare }) {
+// the first words of a question, for its folded one-line view
+const firstWords = (q) => {
+  const text = q.stem || (q.type === "fillblank" ? q.sentence : q.type === "order" ? (q.words || []).join(" ") : q.type === "circle" ? q.rows?.[0]?.sentence : "") || "";
+  const words = text.replace(/\*/g, "").trim().split(/\s+/);
+  return words.length > 12 ? `${words.slice(0, 12).join(" ")}…` : words.join(" ");
+};
+// the issues that mean the answer key is not set yet
+const NO_KEY = ["noAnswer", "fewWords", "noBlanks", "noRows"];
+
+export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoFocus, bare, collapsed, onToggle }) {
   const { t } = useTranslation(NS);
   const issues = questionIssues(q);
   const set = (patch) => onChange({ ...q, ...patch });
@@ -24,12 +35,36 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
   };
   const changeType = (type) => {
     if (type === q.type) return;
-    if (type === "match" || q.type === "match" || type === "truefalse") return onChange({ ...blankQuestion(type), id: q.id, stem: q.stem, explanation: q.explanation });
+    const own = (x) => x === "match" || STEM_OPTIONAL.includes(x);
+    if (own(type) || own(q.type) || type === "truefalse") return onChange({ ...blankQuestion(type), id: q.id, stem: q.stem, explanation: q.explanation });
     set({ type, correct: type === "single" ? (q.correct || []).slice(0, 1) : q.correct });
   };
 
+  const TypeIcon = ICON[q.type] || IconCircleDot;
+
+  if (collapsed) {
+    const keySet = !issues.some((x) => NO_KEY.includes(x));
+    return (
+      <div data-qeditor data-qid={q.id} className={`${styles.question} ${styles.questionFolded} ${issues.length ? styles.questionBad : ""}`}>
+        <button type="button" className={styles.foldRow} onClick={onToggle} aria-expanded="false" title={t("question.expand")}>
+          <Badge variant="filled" color="#003366">
+            {n}
+          </Badge>
+          <span className={styles.foldType}>
+            <TypeIcon size={14} /> {t(`qtype.${q.type}`)}
+          </span>
+          <span className={styles.foldText} dir="auto">
+            {firstWords(q) || <i>{t("issue.noStem")}</i>}
+          </span>
+          {keySet ? <IconCheck size={16} className={styles.foldKey} aria-label={t("question.keySet")} /> : <span className={styles.foldNoKey}>{t("issue.noAnswer")}</span>}
+          <IconChevronDown size={16} />
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div data-qeditor className={bare ? undefined : `${styles.question} ${issues.length ? styles.questionBad : ""}`}>
+    <div data-qeditor data-qid={q.id} className={bare ? undefined : `${styles.question} ${issues.length ? styles.questionBad : ""}`}>
       <Group justify="space-between" mb="xs" wrap="nowrap">
         <Group gap="xs">
           {n && (
@@ -37,7 +72,7 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
               {n}
             </Badge>
           )}
-          <Select size="xs" w={170} allowDeselect={false} data={QUESTION_TYPES.map((v) => ({ value: v, label: t(`qtype.${v}`) }))} value={q.type} onChange={changeType} />
+          <Select size="xs" w={190} allowDeselect={false} data={QUESTION_TYPES.map((v) => ({ value: v, label: t(`qtype.${v}`) }))} value={q.type} onChange={changeType} />
           {!bare && issues.map((x) => (
             <Badge key={x} color="orange" variant="light">
               {t(`issue.${x}`)}
@@ -45,6 +80,11 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
           ))}
         </Group>
         {onMove && <Group gap={2} wrap="nowrap">
+          {onToggle && (
+            <ActionIcon variant="subtle" color="gray" onClick={onToggle} aria-expanded="true" aria-label={t("question.collapse")} title={t("question.collapse")}>
+              <IconChevronUp size={16} />
+            </ActionIcon>
+          )}
           <ActionIcon variant="subtle" onClick={() => onMove(-1)}>
             <IconArrowUp size={16} />
           </ActionIcon>
@@ -56,9 +96,17 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
           </ActionIcon>
         </Group>}
       </Group>
-      <Textarea autosize minRows={bare ? 2 : 1} data-autofocus={autoFocus || undefined} size={bare ? "md" : "sm"} placeholder={t("question.stem")} value={q.stem} onChange={(e) => set({ stem: e.currentTarget.value })} mb="sm" />
+      {!STEM_OPTIONAL.includes(q.type) && (
+        <Textarea autosize minRows={bare ? 2 : 1} data-autofocus={autoFocus || undefined} size={bare ? "md" : "sm"} placeholder={t("question.stem")} value={q.stem} onChange={(e) => set({ stem: e.currentTarget.value })} mb="sm" />
+      )}
 
-      {q.type === "match" ? (
+      {q.type === "fillblank" ? (
+        <FillBlankEditor q={q} set={set} autoFocus={autoFocus} />
+      ) : q.type === "order" ? (
+        <OrderEditor q={q} set={set} autoFocus={autoFocus} />
+      ) : q.type === "circle" ? (
+        <CircleEditor q={q} set={set} autoFocus={autoFocus} />
+      ) : q.type === "match" ? (
         <>
           <Text size="xs" c="dimmed" mb={6}>
             {t("question.matchHint")}

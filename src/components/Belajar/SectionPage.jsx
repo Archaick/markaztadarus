@@ -1,18 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionIcon, Alert, Button, Group, Loader, Modal, Text, Textarea, Tooltip } from "@mantine/core";
-import { IconAlertTriangle, IconArrowLeft, IconCheck, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconChevronsDown, IconChevronsUp, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteSection, saveSectionContent } from "./actions";
-import { BASE, NS, QUESTION_TYPES, blankQuestion, cleanReading, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
+import { BASE, NS, blankQuestion, cleanReading, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
 import PageEditor from "./PageEditor";
 import PdfSlot from "./PdfSlot";
 import { bare } from "./bareInput";
 import Player from "../Guru/Player";
 import guru from "../Guru/Guru.module.css";
 import QuestionEditor from "./QuestionEditor";
+import { TypeCards } from "./QuestionTypes";
 import styles from "./Belajar.module.css";
 
 const blankOf = (kind) => ({ kind, reading: [], parts: kind === "quiz" ? [{ heading: "", instructions: "", questions: [] }] : [], tasks: [], instructions: "" });
@@ -38,6 +39,23 @@ export default function SectionPage() {
   const [busy, setBusy] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [adding, setAdding] = useState(null); // { part, at: "top" | "end" }: where a new question goes, while its type is picked
+  const [folded, setFolded] = useState(() => new Set()); // questions shown as one line
+  const [fresh, setFresh] = useState(null); // the question just added: brought into view and focused
+
+  // a new question: scroll to it and put the cursor in its first field
+  useEffect(() => {
+    if (!fresh) return undefined;
+    const id = requestAnimationFrame(() => {
+      const box = document.querySelector(`[data-qid="${fresh}"]`);
+      if (!box) return;
+      const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+      box.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "start" });
+      box.querySelector("textarea, input:not([readonly]):not([type=hidden])")?.focus({ preventScroll: true });
+      setFresh(null);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [fresh]);
 
   if (loading) return <Loader />;
   const lesson = lessonById.get(lessonId);
@@ -107,40 +125,19 @@ export default function SectionPage() {
             </Alert>
           )}
 
-          {/* the teacher's own page, and the place to write it: what is typed here is what they will see */}
-          <p className={styles.canvasLabel}>{t("pageEditor.hint")}</p>
-          <div className={`${guru.app} ${styles.canvas}`}>
-            <main className={guru.page}>
-              <span className={guru.helloSmall}>{lesson.title}</span>
-              <h1 className={guru.helloTitle}>{sectionTitle(section, tg)}</h1>
+          {/* the material: just the PDF here; teachers read it in "Try them all as a teacher" */}
+          <h3 className={styles.canvasQuestions}>{t("pdf.heading")}</h3>
+          <PdfSlot lesson={lesson} section={section} />
+          {!section.pdf?.url && cleanReading(value.reading).length > 0 && (
+            <>
+              <p className={styles.canvasLabel}>{t("pdf.oldText")}</p>
+              <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
+            </>
+          )}
 
-              {/* the written material is a PDF; text typed before a PDF was added stays, editable, until one is */}
-              <PdfSlot lesson={lesson} section={section} />
-              {!section.pdf?.url && cleanReading(value.reading).length > 0 && (
-                <>
-                  <p className={styles.canvasLabel}>{t("pdf.oldText")}</p>
-                  <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
-                </>
-              )}
-
-              {kind === "quiz" && questionCount > 0 && (
-                <div className={`${guru.glassCard} ${guru.startCard}`}>
-                  <div>
-                    <b>{tg("view.ready", { count: questionCount })}</b>
-                    <span>{tg("view.readyHint")}</span>
-                  </div>
-                  <button type="button" className={guru.primaryBig} onClick={() => setPlaying(true)}>
-                    <IconPlayerPlayFilled size={18} /> {tg("view.start")}
-                  </button>
-                </div>
-              )}
-              {(kind === "reading" || (kind === "quiz" && !questionCount)) && (
-                <button type="button" className={`${guru.primaryBig} ${styles.canvasStill}`} tabIndex={-1}>
-                  <IconCheck size={18} /> {tg("view.haveRead")}
-                </button>
-              )}
-
-              {kind === "written" && (
+          {kind === "written" && (
+            <div className={`${guru.app} ${styles.canvas}`}>
+              <main className={guru.page}>
                 <>
                   <p className={`${guru.instructions} ${styles.canvasLine}`}>
                     <Textarea variant="unstyled" autosize minRows={1} styles={bare} placeholder={t("sectionPage.instructions")} value={value.instructions} onChange={(e) => set({ instructions: e.currentTarget.value })} />
@@ -163,13 +160,36 @@ export default function SectionPage() {
                     {t("sectionPage.addTask")}
                   </Button>
                 </>
-              )}
-            </main>
-          </div>
+              </main>
+            </div>
+          )}
 
           {kind === "quiz" && (
             <>
-              <h3 className={styles.canvasQuestions}>{t("lesson.tabQuestions", { count: questionCount })}</h3>
+              {/* stays at the top while the questions scroll, so adding one never means scrolling to the end */}
+              <div className={styles.qHead}>
+                <h3 className={styles.canvasQuestions}>{t("lesson.tabQuestions", { count: questionCount })}</h3>
+                <Group gap={6} wrap="wrap" justify="flex-end">
+                  {questionCount > 1 &&
+                    (value.parts.some((x) => x.questions.some((q) => !folded.has(q.id))) ? (
+                      <Button variant="subtle" color="gray" size="xs" leftSection={<IconChevronsUp size={14} />} onClick={() => setFolded(new Set(value.parts.flatMap((x) => x.questions.map((q) => q.id))))}>
+                        {t("sectionPage.collapseAll")}
+                      </Button>
+                    ) : (
+                      <Button variant="subtle" color="gray" size="xs" leftSection={<IconChevronsDown size={14} />} onClick={() => setFolded(new Set())}>
+                        {t("sectionPage.expandAll")}
+                      </Button>
+                    ))}
+                  <Button color="#003366" size="xs" leftSection={<IconPlus size={14} />} onClick={() => setAdding({ part: 0, at: "top" })}>
+                    {t("board.add")}
+                  </Button>
+                  {questionCount > 0 && (
+                    <Button variant="light" color="#003366" size="xs" leftSection={<IconPlayerPlayFilled size={14} />} onClick={() => setPlaying(true)}>
+                      {t("board.trySection")}
+                    </Button>
+                  )}
+                </Group>
+              </div>
               {value.parts.map((part, p) => (
                 <div key={p} className={styles.panel}>
                   {part.questions.map((q, i) => (
@@ -177,24 +197,24 @@ export default function SectionPage() {
                       key={q.id}
                       n={i + 1}
                       q={q}
+                      collapsed={folded.has(q.id)}
+                      onToggle={() =>
+                        setFolded((f) => {
+                          const next = new Set(f);
+                          if (next.has(q.id)) next.delete(q.id);
+                          else next.add(q.id);
+                          return next;
+                        })
+                      }
                       onChange={(nq) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.map((y, k) => (k === i ? nq : y)) } : x)) })}
                       onMove={(d) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: move(x.questions, i, d) } : x)) })}
                       onRemove={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.filter((_, k) => k !== i) } : x)) })}
                     />
                   ))}
                   <Group mt="md" gap="xs">
-                    {QUESTION_TYPES.map((qt) => (
-                      <Button
-                        key={qt}
-                        size="xs"
-                        variant="light"
-                        color="#003366"
-                        leftSection={<IconPlus size={14} />}
-                        onClick={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: [...x.questions, blankQuestion(qt)] } : x)) })}
-                      >
-                        {t(`qtype.${qt}`)}
-                      </Button>
-                    ))}
+                    <Button size="xs" variant="light" color="#003366" leftSection={<IconPlus size={14} />} onClick={() => setAdding({ part: p, at: "end" })}>
+                      {t("board.add")}
+                    </Button>
                   </Group>
                 </div>
               ))}
@@ -219,6 +239,18 @@ export default function SectionPage() {
           </Button>
         </div>
       )}
+
+      {/* a new question: its type picked from the same cards as on the questions board */}
+      <Modal opened={adding !== null} onClose={() => setAdding(null)} title={<b className={styles.modalTitle}>{t("board.pickTitle")}</b>} size="xl" centered>
+        <TypeCards
+          onPick={(qt) => {
+            const nq = blankQuestion(qt);
+            set({ parts: value.parts.map((x, j) => (j === adding.part ? { ...x, questions: adding.at === "top" ? [nq, ...x.questions] : [...x.questions, nq] } : x)) });
+            setAdding(null);
+            setFresh(nq.id);
+          }}
+        />
+      </Modal>
 
       <Modal opened={removing} onClose={() => setRemoving(false)} title={t("sectionPage.delete")} centered>
         <Text mb="md">{t("sectionPage.deleteBody")}</Text>

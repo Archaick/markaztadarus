@@ -77,10 +77,33 @@ export const templateSections = (lessonId) =>
 
 export const FIVE_T = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 
-export const QUESTION_TYPES = ["single", "truefalse", "multi", "match"];
+// fillblank: a sentence with gaps, filled from a bank of words;
+// order: words put back in the order of the sentence; circle: rows of a
+// sentence and its words, the right one circled (or underlined), as in the book.
+export const QUESTION_TYPES = ["single", "truefalse", "multi", "match", "fillblank", "order", "circle"];
 
-// limits mirrored in firestore.rules
-export const LIMITS = { title: 200, text: 4000, parts: 10, questions: 60, tasks: 30, reading: 80, ayat: 300 };
+// limits mirrored in firestore.rules (the per-question ones are kept by the editor)
+export const LIMITS = { title: 200, text: 4000, parts: 10, questions: 60, tasks: 30, reading: 80, ayat: 300, blanks: 10, words: 20, decoys: 10, rows: 12, rowWords: 4 };
+
+// two or more underscores mark a gap ("لا __ إلا __"); in Circle the Word a row
+// of dots works too, as the book prints it
+export const BLANK_RE = /_{2,}/;
+export const GAP_RE = /_{2,}|\.{3,}|…+/;
+export const blankCount = (sentence) => (sentence || "").split(BLANK_RE).length - 1;
+
+/** "*word*" is shown bold: [{ text, bold }]. */
+export const markedParts = (text) =>
+  String(text || "")
+    .split(/(\*[^*\n]+\*)/)
+    .filter(Boolean)
+    .map((p) => (/^\*[^*]+\*$/.test(p) ? { text: p.slice(1, -1), bold: true } : { text: p, bold: false }));
+export const stripMarks = (text) => String(text || "").replace(/\*([^*\n]+)\*/g, "$1");
+
+const filled = (list) => (list || []).map((x) => (x || "").trim()).filter(Boolean);
+/** The words a teacher picks from: the right ones and the decoys, empty rows left out. */
+export const bankOf = (q) => (q.type === "order" ? [...filled(q.words), ...filled(q.decoys)] : q.type === "fillblank" ? [...filled(q.answers), ...filled(q.decoys)] : []);
+/** The words that belong in the slots, in their order. */
+export const keyOf = (q) => (q.type === "order" ? filled(q.words) : q.type === "fillblank" ? filled(q.answers) : []);
 
 /** Text written only in Arabic. A sentence mixing Arabic with Latin words is not: it reads left to right. */
 export const isArabic = (s) => {
@@ -96,15 +119,45 @@ export const blankQuestion = (type = "single") => {
   const base = { id: newId(), type, stem: "", explanation: "" };
   if (type === "truefalse") return { ...base, options: ["Benar", "Salah"], correct: [] };
   if (type === "match") return { ...base, left: ["", ""], right: ["", ""], answer: [null, null] };
+  if (type === "fillblank") return { ...base, sentence: "", answers: [], decoys: [] };
+  if (type === "order") return { ...base, words: ["", "", ""], decoys: [], dir: "rtl" };
+  if (type === "circle") return { ...base, mode: "circle", rows: [{ sentence: "", options: ["", ""], correct: null }] };
   return { ...base, options: ["", "", "", ""], correct: [] };
 };
+
+/** The three word types say what to do on their own, so their question line may stay empty. */
+export const STEM_OPTIONAL = ["fillblank", "order", "circle"];
 
 export const blankAyah = (no = 1) => ({ no, arabic: "", tema: "", tafsir: [], tadabbur: [], tazkiyah: [] });
 
 /** What is wrong with a question, for the review list (empty when it is ready). */
 export function questionIssues(q) {
   const issues = [];
-  if (!(q.stem || "").trim()) issues.push("noStem");
+  if (!(q.stem || "").trim() && !STEM_OPTIONAL.includes(q.type)) issues.push("noStem");
+  if (q.type === "fillblank") {
+    const n = blankCount(q.sentence);
+    if (!(q.sentence || "").trim()) issues.push("noSentence");
+    else if (n === 0) issues.push("noBlanks");
+    const answers = q.answers || [];
+    if (n > 0 && answers.slice(0, n).filter((x) => (x || "").trim()).length < n) issues.push("noAnswer");
+    if (n > LIMITS.blanks) issues.push("tooManyBlanks");
+    return issues;
+  }
+  if (q.type === "order") {
+    const words = q.words || [];
+    if (keyOf(q).length < 2) issues.push("fewWords");
+    // an empty row between two words would make a gap in the sentence
+    else if (words.slice(0, words.map((w) => !!(w || "").trim()).lastIndexOf(true)).some((w) => !(w || "").trim())) issues.push("emptyOption");
+    return issues;
+  }
+  if (q.type === "circle") {
+    const rows = q.rows || [];
+    if (!rows.length) issues.push("noRows");
+    if (rows.some((r) => !(r.sentence || "").trim())) issues.push("noSentence");
+    if (rows.some((r) => (r.options || []).length < 2 || (r.options || []).some((x) => !(x || "").trim()))) issues.push("emptyOption");
+    if (rows.some((r) => r.correct === null || r.correct === undefined || !(r.options || [])[r.correct])) issues.push("noAnswer");
+    return issues;
+  }
   if (q.type === "match") {
     if ((q.left || []).some((x) => !x.trim()) || (q.right || []).some((x) => !x.trim())) issues.push("emptyOption");
     if ((q.answer || []).some((a) => a === null || a === undefined)) issues.push("noAnswer");

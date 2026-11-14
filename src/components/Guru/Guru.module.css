@@ -1444,8 +1444,13 @@
   --glass-text: #12233d;
   --glass-soft: #55657a;
   --glass-edge: rgba(26, 73, 112, 0.14);
-  --glass-fill: #f6f8fb;
-  --card: rgba(255, 255, 255, 0.97);
+  --glass-fill: rgba(246, 248, 251, 0.72);
+  /* frosted glass: the sky shows through a little; text on it stays dark and large */
+  --card: rgba(255, 255, 255, 0.82);
+  /* the whole screen and no more, even with the phone's browser bars showing */
+  bottom: auto;
+  height: 100vh;
+  height: 100dvh;
 }
 .skyOn .stage,
 .skyOn .endWrap {
@@ -1457,14 +1462,46 @@
   color: var(--glass-text);
 }
 .skyOn .stage {
+  /* the card takes what is left under the stars and scrolls inside itself */
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
   width: min(720px, calc(100% - 24px));
   margin: 84px auto 16px;
-  padding: 22px 20px;
+  padding: 0;
   border-radius: 28px;
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+}
+.stageBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 22px 20px;
+}
+.stageFade {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 48px;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.92));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.stageFadeOn {
+  opacity: 1;
 }
 /* room for the Check button only when the question has one, so a question that fits never scrolls */
 .skyOn .stageBar {
-  margin-bottom: 96px;
+  margin-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
 .skyOn .endWrap {
   margin: 150px auto 30px;
@@ -1796,8 +1833,10 @@
 /* short phones: a tighter card, so the whole question fits on one screen */
 @media (max-height: 740px) {
   .skyOn .stage {
-    gap: 10px;
     margin-top: 66px;
+  }
+  .stageBody {
+    gap: 10px;
     padding: 16px;
   }
   .skyOn .stem {
@@ -2057,11 +2096,11 @@
 .pdfDownload:disabled {
   opacity: 0.6;
 }
+/* the pages flow with the page itself: one scroll, no box inside the page to
+   catch the mouse wheel */
 .pdfPages {
   display: grid;
   gap: 10px;
-  max-height: 72vh;
-  overflow-y: auto;
   border-radius: 12px;
 }
 .pdfPage {
@@ -2085,5 +2124,318 @@
 @keyframes pdfSpin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* ── Fill in the Blanks and Word Ordering: words that fly ── */
+.words {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.word {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 6px 16px;
+  border: 1.5px solid rgba(26, 73, 112, 0.22);
+  border-bottom-width: 3px;
+  border-radius: 14px;
+  background: #fff;
+  color: #12233d;
+  font: inherit;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.word:hover:not(:disabled) {
+  border-color: #1a4970;
+}
+.word:disabled {
+  cursor: default;
+}
+.wordArabic {
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  padding-block: 2px;
+}
+/* where a word was: its outline stays, so the bank does not jump */
+.wordGap {
+  border-style: dashed;
+  border-bottom-width: 1.5px;
+  border-color: rgba(26, 73, 112, 0.22);
+  background: rgba(26, 73, 112, 0.04);
+  color: transparent;
+}
+.wordKey {
+  border-style: dashed;
+  border-color: var(--ok, #0f9f6e);
+}
+/* the copy in flight: lifted above everything, not tappable */
+.wordGhost {
+  z-index: 300;
+  pointer-events: none;
+  border-color: var(--glow, #c9a227) !important;
+  box-shadow: 0 14px 30px -10px rgba(2, 8, 24, 0.45);
+  will-change: transform;
+}
+.bankLabel {
+  margin-top: 4px;
+  color: var(--glass-soft, #55657a);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.wordSentence {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1.5px solid var(--glass-edge, rgba(26, 73, 112, 0.14));
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #12233d;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 2.6;
+}
+.wordSentenceArabic {
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
+  font-size: 1.6rem;
+  line-height: 2.4;
+}
+.wordSentence .word,
+.wordSentence .slot {
+  margin: 0 4px;
+  vertical-align: middle;
+}
+.slotRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-height: 76px;
+  padding: 12px;
+  border: 1.5px solid var(--glass-edge, rgba(26, 73, 112, 0.14));
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+}
+.slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.5rem;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 2px dashed rgba(26, 73, 112, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  font: inherit;
+  cursor: default;
+}
+.slotNo {
+  color: #55657a;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.slotFilled {
+  border-color: #1a4970;
+  background: #eef4fb;
+  color: #0f2a4a;
+}
+.slotFilled:hover:not(:disabled) {
+  border-color: var(--bad, #d63c4a);
+}
+.slotRight {
+  border-color: var(--ok, #0f9f6e);
+  background: #e8f8f1;
+  color: #065f46;
+}
+.slotWrong {
+  border-color: var(--bad, #d63c4a);
+  background: #fdecee;
+  color: #9f1239;
+}
+
+/* ── Circle the Word: numbered rows, as in the book ── */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.crow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.55);
+}
+.crow:nth-child(odd) {
+  background: rgba(253, 246, 227, 0.75);
+}
+.crowWrong {
+  box-shadow: inset 0 0 0 1.5px rgba(214, 60, 74, 0.45);
+}
+.crowNo {
+  flex: none;
+  width: 22px;
+  color: #55657a;
+  font-weight: 800;
+  text-align: center;
+}
+.crowText {
+  flex: 1 1 55%;
+  min-width: 0;
+  margin: 0;
+  color: #12233d;
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 2;
+}
+.crowArabic {
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
+  font-size: 1.5rem;
+}
+.crowWords {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-inline-start: auto;
+}
+.marked {
+  padding: 0 2px;
+  border-radius: 4px;
+  background: rgba(254, 214, 91, 0.45);
+  color: #0b3366;
+  font-weight: 900;
+}
+.gapDots {
+  margin: 0 4px;
+  color: #6b7d93;
+  letter-spacing: 0.15em;
+}
+.gapRight {
+  margin: 0 4px;
+  padding: 0 4px;
+  border-radius: 6px;
+  background: #e8f8f1;
+  color: #065f46;
+  font-weight: 800;
+}
+.cword,
+.uword {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #12233d;
+  font: inherit;
+  font-size: 1.08rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.cword:hover:not(:disabled),
+.uword:hover:not(:disabled) {
+  background: rgba(26, 73, 112, 0.07);
+}
+.cword:disabled,
+.uword:disabled {
+  cursor: default;
+}
+.cwordArabic {
+  font-family: "Scheherazade New", "Amiri", "Traditional Arabic", serif;
+  font-size: 1.5rem;
+}
+.pen {
+  position: absolute;
+  inset: -6px -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 12px);
+  overflow: visible;
+  pointer-events: none;
+}
+.pen path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.penDraw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: penCircle 0.32s ease-out;
+}
+.penDashed {
+  stroke-dasharray: 0.03 0.025;
+}
+@keyframes penCircle {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.c_on {
+  color: #1a4970;
+}
+.c_right,
+.c_missed {
+  color: #0b7a52;
+}
+.c_wrong {
+  color: #b4232f;
+}
+.cword.c_wrong {
+  text-decoration: line-through;
+  text-decoration-color: rgba(214, 60, 74, 0.6);
+}
+.uword {
+  padding: 0 4px;
+  border-radius: 6px;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 9px;
+}
+.uword.c_on,
+.uword.c_right,
+.uword.c_wrong {
+  text-decoration-line: underline;
+}
+.uword.c_missed {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+}
+.inlineChoices {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 2px;
+  margin: 0 4px;
+  color: #55657a;
+  vertical-align: middle;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .penDraw {
+    animation: none;
+  }
+  .stageFade {
+    transition: none;
   }
 }

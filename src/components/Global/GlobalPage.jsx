@@ -1,6 +1,3 @@
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../../../firebaseConfig";
-import { GURU_MAP } from "../Guru/places";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { IconArrowLeft, IconChevronDown, IconMap2, IconMinus, IconPlus, IconWorld } from "@tabler/icons-react";
@@ -10,6 +7,8 @@ import FiveStars from "./FiveStars";
 import { ORIGIN, countryName, useGlobalContent } from "./globalData";
 import Flag from "./Flag";
 import LivePanel from "./LivePanel";
+import SchoolsPanel from "./SchoolsPanel";
+import { schoolGroups, useGuruMap, useSchoolMap } from "./schoolMap";
 import { useLiveSessions } from "./liveSessions";
 import { SITE_DOCS, useSiteContent } from "../HomePage/siteContent";
 import { getDisplayName, mtiProvinces, programCount, provinceTotals } from "../../data/mtiProvinceData";
@@ -57,6 +56,8 @@ export default function GlobalPage({ embedded = false }) {
   const makkah = useMakkahTime(lang);
   const sessions = useLiveSessions(provinces, programs);
   const teachers = useGuruMap();
+  const schoolMap = useSchoolMap();
+  const bySchool = useMemo(() => schoolGroups(teachers.list, schoolMap), [teachers.list, schoolMap]);
 
   useEffect(() => {
     if (!embedded) document.title = `${t("title")} · Markaz Tadarus`;
@@ -104,6 +105,13 @@ export default function GlobalPage({ embedded = false }) {
     setProvince(p.province || null);
     const at = p.at;
     if (at) setTimeout(() => globe.current?.flyToPoint(at, 7), 60);
+  };
+  // a tap on a school in the panel: close enough to its pin for its bubble to show
+  const pickSchool = (s) => {
+    setSelected(s.country);
+    setLitCity(null);
+    setProvince(s.country === "ID" ? s.province || null : null);
+    setTimeout(() => globe.current?.flyToPoint(s.at, 8), 60);
   };
   const backToWorld = () => {
     setSelected(null);
@@ -161,8 +169,9 @@ export default function GlobalPage({ embedded = false }) {
           selectedProvince={province}
           onProvince={pickProvince}
           highlightCity={litCity}
-          teachers={teachers.list}
-          teacherWords={{ guru: t("guruPin"), studying: (count) => t("studyingPin", { count }) }}
+          teachers={bySchool.rest}
+          teacherSchools={bySchool.schools}
+          teacherWords={{ guru: t("guruPin"), studying: (count) => t("studyingPin", { count }), school: (count) => t("schoolStudying", { count }) }}
           labels={{ makkah: t("holy.makkah"), madinah: t("holy.madinah"), quds: t("holy.quds") }}
         />
 
@@ -211,6 +220,7 @@ export default function GlobalPage({ embedded = false }) {
               )}
             </div>
             <LivePanel live={sessions.live} next={sessions.next} onPick={pickSession} />
+            <SchoolsPanel schools={bySchool.schools} onPick={pickSchool} />
             <button type="button" className={styles.originCard} onClick={() => pick(ORIGIN)}>
               <Flag code={ORIGIN} size={22} />
               <span>
@@ -295,6 +305,7 @@ export default function GlobalPage({ embedded = false }) {
                   onPick={pickSession}
                   showCountry={false}
                 />
+                <SchoolsPanel schools={bySchool.schools.filter((s) => s.country === sel.code)} onPick={pickSchool} />
                 {(sel.data?.cities || []).length > 0 && (
                   <div className={styles.cities}>
                     {sel.data.cities.map((city, i) => (
@@ -353,45 +364,4 @@ export default function GlobalPage({ embedded = false }) {
       </aside>
     </div>
   );
-}
-
-/** Teachers on Tadarus Guru, counted by country and province (no names are stored on the map). */
-const ACTIVE_MS = 10 * 60 * 1000;
-
-function useGuruMap() {
-  const [list, setList] = useState([]);
-  // "studying now" is a teacher whose app touched the map in the last ten minutes
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
-  useEffect(
-    () =>
-      onSnapshot(
-        collection(db, GURU_MAP),
-        (snap) => setList(snap.docs.map((d) => d.data())),
-        () => setList([])
-      ),
-    []
-  );
-  return useMemo(() => {
-    const byCountry = {};
-    const byProvince = {};
-    const activeByCountry = {};
-    const activeByProvince = {};
-    const add = (o, k) => (o[k] = (o[k] || 0) + 1);
-    const places = list
-      .filter((x) => x.country)
-      .map((x) => ({ country: x.country, province: x.province || "", active: x.online !== false && now - (x.updatedAt?.toMillis?.() || 0) < ACTIVE_MS }));
-    places.forEach((x) => {
-      add(byCountry, x.country);
-      if (x.province) add(byProvince, x.province);
-      if (x.active) {
-        add(activeByCountry, x.country);
-        if (x.province) add(activeByProvince, x.province);
-      }
-    });
-    return { total: places.length, list: places, byCountry, byProvince, activeByCountry, activeByProvince };
-  }, [list, now]);
 }

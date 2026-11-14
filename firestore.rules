@@ -625,14 +625,46 @@ service cloud.firestore {
         && get(learnerPath(request.auth.uid)).data.classIds.hasAny([classId]);
     }
 
+    // a school's pin on Tadarus Global: { country, province, city, lat, lng }
+    function validSchoolLocation(loc) {
+      return loc is map
+        && loc.keys().hasOnly(["country", "province", "city", "lat", "lng"])
+        && loc.keys().hasAll(["country", "lat", "lng"])
+        && loc.country is string && loc.country.size() == 2
+        && loc.get("province", "") is string && loc.get("province", "").size() <= 60
+        && loc.get("city", "") is string && loc.get("city", "").size() <= 120
+        && loc.lat is number && loc.lat >= -90 && loc.lat <= 90
+        && loc.lng is number && loc.lng >= -180 && loc.lng <= 180;
+    }
+
     match /belajar_classes/{classId} {
       allow read: if hasFeature("belajar") || inClass(classId);
       allow create, update: if hasFeature("belajar") && audited()
         && request.resource.data.name is string && request.resource.data.name.size() <= 120
         && request.resource.data.lessonIds is list && request.resource.data.lessonIds.size() <= 120
         && request.resource.data.code is string && request.resource.data.code.size() <= 12
-        && request.resource.data.get("scene", "") is string && request.resource.data.get("scene", "").size() <= 30;
+        && request.resource.data.get("scene", "") is string && request.resource.data.get("scene", "").size() <= 30
+        && (request.resource.data.get("location", null) == null || validSchoolLocation(request.resource.data.location));
       allow delete: if isSuperAdmin() && marked("belajar_classes~" + classId); // whole items: the super admin only
+    }
+
+    // Tadarus Global: each pinned school's name and place, public. Never its join code.
+    match /school_map/{schoolId} {
+      allow read: if true;
+      allow create, update: if hasFeature("belajar") && audited()
+        // existsAfter: a new pinned school and its copy are written in one batch
+        && existsAfter(/databases/$(database)/documents/belajar_classes/$(schoolId))
+        && request.resource.data.keys().hasOnly(["name", "country", "province", "city", "lat", "lng", "scene", "auditId", "updatedAt"])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 120
+        && request.resource.data.get("scene", "") is string && request.resource.data.get("scene", "").size() <= 30
+        && validSchoolLocation({
+             "country": request.resource.data.country,
+             "province": request.resource.data.get("province", ""),
+             "city": request.resource.data.get("city", ""),
+             "lat": request.resource.data.lat,
+             "lng": request.resource.data.lng
+           });
+      allow delete: if hasFeature("belajar") && marked("school_map~" + schoolId);
     }
 
     // CODE -> class; a signed-in learner looks one up to join
@@ -673,10 +705,14 @@ service cloud.firestore {
     match /guru_map/{uid} {
       allow read: if true;
       allow create, update: if hasVerifiedEmail() && request.auth.uid == uid && exists(learnerPath(uid))
-        && request.resource.data.keys().hasOnly(["country", "province", "online", "updatedAt"])
+        && request.resource.data.keys().hasOnly(["country", "province", "schoolId", "online", "updatedAt"])
         && (!("online" in request.resource.data) || request.resource.data.online is bool)
         && request.resource.data.country is string && request.resource.data.country.size() == 2
         && request.resource.data.province is string && request.resource.data.province.size() <= 60
+        && (request.resource.data.get("schoolId", "") == ""
+          || (request.resource.data.schoolId is string
+            && request.resource.data.schoolId.size() <= 64
+            && get(learnerPath(uid)).data.get("classIds", []).hasAny([request.resource.data.schoolId])))
         && request.resource.data.updatedAt == request.time;
       allow delete: if (isSignedIn() && request.auth.uid == uid) || isSuperAdmin();
     }

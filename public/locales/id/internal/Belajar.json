@@ -51,7 +51,10 @@
     "single": "Pilihan ganda",
     "multi": "Pilih semua yang benar",
     "truefalse": "Benar / Salah",
-    "match": "Mencocokkan"
+    "match": "Mencocokkan",
+    "fillblank": "Lengkapi kalimat",
+    "order": "Susun kata",
+    "circle": "Lingkari kata"
   },
   "block": {
     "heading": "Judul",
@@ -64,7 +67,12 @@
     "emptyOption": "Pilihan kosong",
     "noAnswer": "Belum ada kunci",
     "tooMany": "Lebih dari satu kunci",
-    "onlyOne": "Hanya satu kunci"
+    "onlyOne": "Hanya satu kunci",
+    "noSentence": "Kalimat kosong",
+    "noBlanks": "Belum ada kotak (__)",
+    "fewWords": "Minimal 2 kata",
+    "noRows": "Belum ada baris",
+    "tooManyBlanks": "Terlalu banyak kotak (maks. 10)"
   },
   "lessons": {
     "title": "Buku Guru",
@@ -126,7 +134,9 @@
     "modeEdit": "Isi soal",
     "livePreview": "Pratinjau langsung · seperti dilihat guru",
     "modePreview": "Tampilan guru",
-    "previewNote": "Beginilah guru akan melihat bagian ini. Perubahan yang belum disimpan juga ikut tampil."
+    "previewNote": "Beginilah guru akan melihat bagian ini. Perubahan yang belum disimpan juga ikut tampil.",
+    "collapseAll": "Ciutkan semua",
+    "expandAll": "Buka semua"
   },
   "question": {
     "stem": "Tulis soalnya…",
@@ -138,7 +148,10 @@
     "addPair": "Tambah pasangan",
     "explanation": "Penjelasan (opsional)",
     "explanationHint": "Ditampilkan kepada guru setelah menjawab.",
-    "option": "Pilihan {{l}}"
+    "option": "Pilihan {{l}}",
+    "collapse": "Ciutkan",
+    "expand": "Buka soal ini",
+    "keySet": "Kunci jawaban sudah diisi"
   },
   "cards": {
     "start": "Mulai menjawab",
@@ -236,6 +249,20 @@
       "school-night": "Sekolah · malam"
     }
   },
+  "schoolLocation": {
+    "title": "Lokasi sekolah",
+    "hint": "Untuk peta Tadarus Global: pengunjung melihat nama sekolah dan berapa guru yang sedang belajar. Kode sekolah tidak pernah ditampilkan.",
+    "country": "Negara",
+    "province": "Provinsi",
+    "pick": "Pilih provinsi",
+    "city": "Kota/kabupaten (opsional)",
+    "tapHint": "Ketuk peta untuk memasang pin tepat di sekolah. Gulir atau cubit untuk memperbesar.",
+    "pinned": "Pin: {{lat}}, {{lng}}",
+    "notPinned": "Belum ada pin: sekolah ini tidak tampil di peta.",
+    "clear": "Hapus lokasi",
+    "onMap": "Di peta: {{place}}",
+    "offMap": "Belum ada di peta Tadarus Global"
+  },
   "sections": {
     "empty": "Surat ini belum punya bagian. Pakai susunan Buku Guru, atau buat bagian sendiri.",
     "useTemplate": "Pakai susunan Buku Guru ({{count}} bagian)",
@@ -319,8 +346,24 @@
         "name": "Tugas tertulis",
         "desc": "Guru menjawab dengan kata-katanya sendiri; Anda membaca dan memberi catatan.",
         "ex": "Tuliskan satu kebiasaan yang ingin diperbaiki"
+      },
+      "fillblank": {
+        "name": "Lengkapi kalimat",
+        "desc": "Kalimat dengan kotak kosong; guru mengisinya dari pilihan kata.",
+        "ex": "لا __ إلا __ → إله · الله"
+      },
+      "order": {
+        "name": "Susun kata",
+        "desc": "Kata-kata diacak; guru menyusunnya menjadi kalimat yang benar.",
+        "ex": "اللَّهِ · بِسْمِ → بِسْمِ اللَّهِ"
+      },
+      "circle": {
+        "name": "Lingkari kata",
+        "desc": "Baris-baris kalimat; guru melingkari kata yang benar di tiap baris, seperti di buku.",
+        "ex": "هٰذَا …… صَغِيرٌ   بَيْتٌ · مَدْرَسَةٌ"
       }
-    }
+    },
+    "pickNamed": "Jenis soal"
   },
   "pageEditor": {
     "hint": "Ini halaman guru. Tulis langsung di sini: yang Anda ketik muncul persis di tempat ini untuk guru.",
@@ -389,6 +432,50 @@
     "tooLarge": "PDF terlalu besar (paling besar {{mb}} MB).",
     "notPdf": "Pilih file PDF.",
     "failed": "PDF tidak bisa ditambahkan. Coba lagi.",
-    "oldText": "Teks yang diketik sebelumnya (tampil untuk guru sampai diganti PDF):"
+    "oldText": "Teks yang diketik sebelumnya (tampil untuk guru sampai diganti PDF):",
+    "open": "Buka PDF",
+    "heading": "Materi (PDF)"
+  },
+  "words": {
+    "how": "Cara mengisi",
+    "example": "Contoh",
+    "stem": "Petunjuk (opsional)",
+    "stemHint": "Kosongkan saja: guru akan melihat \"{{fallback}}\"",
+    "preview": "Pratinjau (seperti yang dilihat guru)",
+    "decoys": "Kata pengecoh (opsional)",
+    "decoysHint": "Kata yang bukan jawaban. Ikut muncul di pilihan kata agar lebih menantang.",
+    "decoyPh": "Kata pengecoh…",
+    "addDecoy": "Tambah kata pengecoh",
+    "bankCount": "Pilihan kata berisi {{count}} kata; guru mengisi {{places}} tempat.",
+    "remove": "Hapus",
+    "fillHow1": "Tulis kalimatnya. Ganti setiap kata yang hilang dengan dua garis bawah atau lebih: __",
+    "fillHow2": "Di bawahnya, tulis jawaban setiap kotak, urut dari kotak pertama.",
+    "fillHow3": "Tambahkan kata pengecoh bila ingin lebih menantang.",
+    "fillSentence": "Kalimat dengan kotak kosong",
+    "fillNone": "Belum ada kotak kosong. Ketik __ (dua garis bawah) di tempat kata yang hilang.",
+    "fillAnswers": "Jawaban, urut sesuai kotak",
+    "blankN": "Kotak {{n}}",
+    "orderHow1": "Tulis kata-katanya satu per baris, sesuai urutan kalimat yang benar.",
+    "orderHow2": "Guru melihatnya diacak, lalu menyusunnya kembali.",
+    "orderHow3": "Tekan Enter untuk pindah ke baris berikutnya.",
+    "orderDir": "Arah kalimat",
+    "rtl": "Arab (kanan ke kiri)",
+    "ltr": "Latin (kiri ke kanan)",
+    "orderWords": "Kata-kata, urut yang benar",
+    "wordPh": "Kata…",
+    "addWord": "Tambah kata",
+    "circleHow1": "Tulis kalimatnya. Taruh __ atau ...... di tempat kata yang hilang.",
+    "circleHow2": "Untuk menebalkan kata, beri bintang:",
+    "circleHow3": "Tulis kata-kata pilihannya, lalu ketuk ○ di samping kata yang benar.",
+    "modeCircle": "Lingkari",
+    "modeCircleNote": "Pilihan di samping kalimat",
+    "modeUnderline": "Garis bawah",
+    "modeUnderlineNote": "Pilihan di dalam kalimat: (a / b)",
+    "rowN": "Baris {{n}}",
+    "rowPh": "Kalimat, mis. هٰذَا ...... صَغِيرٌ",
+    "addRow": "Tambah baris",
+    "addChoice": "Kata",
+    "markRight": "Tandai sebagai jawaban benar",
+    "choicePh": "Kata…"
   }
 }

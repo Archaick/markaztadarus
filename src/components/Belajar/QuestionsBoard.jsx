@@ -4,11 +4,8 @@ import { Badge, Button, Group, Modal, NumberInput, Select, Text, Textarea } from
 import {
   IconArrowDown,
   IconArrowUp,
-  IconChecklist,
-  IconCircleCheck,
   IconCircleDot,
   IconEye,
-  IconLink,
   IconPencil,
   IconPlayerPlayFilled,
   IconPlus,
@@ -20,19 +17,12 @@ import Player from "../Guru/Player";
 import TeacherWalk from "../Guru/TeacherWalk";
 import guru from "../Guru/Guru.module.css";
 import { saveSectionContent } from "./actions";
-import { BASE, NS, blankQuestion, fiveTOf, kindOf, learnerSections, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
+import { BASE, NS, blankCount, blankQuestion, fiveTOf, kindOf, learnerSections, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
 import QuestionEditor from "./QuestionEditor";
+import { TypeCards } from "./QuestionTypes";
+import { ICON } from "./questionTypeList";
 import styles from "./Belajar.module.css";
 
-// the cards in "Pilih jenis soal": four with an answer key, one written task
-const TYPES = [
-  { type: "single", icon: IconCircleDot, group: "quiz" },
-  { type: "truefalse", icon: IconCircleCheck, group: "quiz" },
-  { type: "multi", icon: IconChecklist, group: "quiz" },
-  { type: "match", icon: IconLink, group: "quiz" },
-  { type: "task", icon: IconPencil, group: "written" },
-];
-const ICON = Object.fromEntries(TYPES.map((x) => [x.type, x.icon]));
 const LETTER = (i) => String.fromCharCode(65 + i);
 
 const countOf = (s) => (kindOf(s) === "written" ? (s.tasks || []).length : questionsOf(s).length);
@@ -354,10 +344,43 @@ function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
         </div>
       </div>
       <p className={styles.qstem} dir="auto">
-        {q.stem || <i className={styles.qempty}>{t("issue.noStem")}</i>}
+        {q.stem || (["fillblank", "order", "circle"].includes(q.type) ? <i className={styles.qempty}>{t(`board.types.${q.type}.name`)}</i> : <i className={styles.qempty}>{t("issue.noStem")}</i>)}
       </p>
       <div className={styles.qopts}>
-        {q.type === "match"
+        {q.type === "fillblank" ? (
+          <>
+            <span className={styles.qopt} dir="auto">
+              {q.sentence || "…"}
+            </span>
+            {(q.answers || []).slice(0, blankCount(q.sentence)).map((a, k) => (
+              <span key={k} className={`${styles.qopt} ${styles.qoptRight}`} dir="auto">
+                {k + 1}. {a || "…"}
+              </span>
+            ))}
+            {(q.decoys || []).filter((x) => (x || "").trim()).map((d, k) => (
+              <span key={`d${k}`} className={styles.qopt} dir="auto">
+                {d}
+              </span>
+            ))}
+          </>
+        ) : q.type === "order" ? (
+          <>
+            <span className={`${styles.qopt} ${styles.qoptRight}`} dir={q.dir === "ltr" ? "ltr" : "rtl"}>
+              ✓ {(q.words || []).filter((x) => (x || "").trim()).join(" ") || "…"}
+            </span>
+            {(q.decoys || []).filter((x) => (x || "").trim()).map((d, k) => (
+              <span key={k} className={styles.qopt} dir="auto">
+                {d}
+              </span>
+            ))}
+          </>
+        ) : q.type === "circle" ? (
+          (q.rows || []).map((r, k) => (
+            <span key={k} className={styles.qopt} dir="auto">
+              {k + 1}. {(r.sentence || "…").replace(/\*/g, "")} <b>→</b> {(r.options || [])[r.correct] ?? "?"}
+            </span>
+          ))
+        ) : q.type === "match"
           ? (q.left || []).map((l, k) => (
               <span key={k} className={styles.qopt} dir="auto">
                 {l || "…"} <b>→</b> {q.right?.[q.answer?.[k]] ?? "?"}
@@ -398,21 +421,7 @@ function TypePicker({ targets, sectionId, onSection, onPick }) {
       <div className={styles.typeGroup}>
         <b>{t(group === "written" ? "board.groupWritten" : "board.groupQuiz")}</b>
       </div>
-      <div className={styles.typeGrid}>
-        {TYPES.filter((x) => x.group === group).map(({ type, icon: Icon }, i) => (
-          <button key={type} type="button" className={styles.typeCard} onClick={() => onPick(type)}>
-            <span className={styles.typeNo}>{i + 1}</span>
-            <span className={styles.typeIcon}>
-              <Icon size={26} />
-            </span>
-            <b className={styles.typeName}>{t(`board.types.${type}.name`)}</b>
-            <span className={styles.typeDesc}>{t(`board.types.${type}.desc`)}</span>
-            <span className={styles.typeEx} dir="auto">
-              {t(`board.types.${type}.ex`)}
-            </span>
-          </button>
-        ))}
-      </div>
+      <TypeCards group={group} onPick={onPick} />
     </>
   );
 }

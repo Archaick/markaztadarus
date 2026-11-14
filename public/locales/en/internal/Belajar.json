@@ -53,7 +53,10 @@
     "single": "Multiple choice",
     "multi": "Choose all correct",
     "truefalse": "True / False",
-    "match": "Matching"
+    "match": "Matching",
+    "fillblank": "Fill in the blanks",
+    "order": "Word ordering",
+    "circle": "Circle the word"
   },
   "block": {
     "heading": "Heading",
@@ -66,7 +69,12 @@
     "emptyOption": "Empty option",
     "noAnswer": "No answer yet",
     "tooMany": "More than one answer",
-    "onlyOne": "Only one answer"
+    "onlyOne": "Only one answer",
+    "noSentence": "Empty sentence",
+    "noBlanks": "No blanks (__) yet",
+    "fewWords": "At least 2 words",
+    "noRows": "No rows yet",
+    "tooManyBlanks": "Too many blanks (max. 10)"
   },
   "lessons": {
     "title": "Teacher's Book",
@@ -133,7 +141,9 @@
     "modeEdit": "Questions",
     "livePreview": "Live preview · as teachers see it",
     "modePreview": "Teacher view",
-    "previewNote": "This is how teachers will see this section. Unsaved changes are shown too."
+    "previewNote": "This is how teachers will see this section. Unsaved changes are shown too.",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all"
   },
   "question": {
     "stem": "Write the question…",
@@ -145,7 +155,10 @@
     "addPair": "Add pair",
     "explanation": "Explanation (optional)",
     "explanationHint": "Shown to the teacher after answering.",
-    "option": "Option {{l}}"
+    "option": "Option {{l}}",
+    "collapse": "Collapse",
+    "expand": "Open this question",
+    "keySet": "Answer key set"
   },
   "cards": {
     "start": "Start answering",
@@ -248,6 +261,20 @@
       "school-night": "School · night"
     }
   },
+  "schoolLocation": {
+    "title": "School location",
+    "hint": "For the Tadarus Global map: visitors see the school's name and how many teachers are studying now. The school code is never shown.",
+    "country": "Country",
+    "province": "Province",
+    "pick": "Pick a province",
+    "city": "City or regency (optional)",
+    "tapHint": "Tap the map to put the pin right on the school. Scroll or pinch to zoom.",
+    "pinned": "Pin: {{lat}}, {{lng}}",
+    "notPinned": "No pin yet: this school does not show on the map.",
+    "clear": "Remove location",
+    "onMap": "On the map: {{place}}",
+    "offMap": "Not on the Tadarus Global map yet"
+  },
   "sections": {
     "empty": "This surah has no sections yet. Use the Teacher's Book layout, or make your own.",
     "useTemplate": "Use the Teacher's Book layout ({{count}} sections)",
@@ -331,8 +358,24 @@
         "name": "Written task",
         "desc": "The teacher answers in their own words; you read it and leave a note.",
         "ex": "Write one habit you want to improve"
+      },
+      "fillblank": {
+        "name": "Fill in the blanks",
+        "desc": "A sentence with gaps; the teacher fills them from a bank of words.",
+        "ex": "لا __ إلا __ → إله · الله"
+      },
+      "order": {
+        "name": "Word ordering",
+        "desc": "The words are shuffled; the teacher puts them back in order.",
+        "ex": "اللَّهِ · بِسْمِ → بِسْمِ اللَّهِ"
+      },
+      "circle": {
+        "name": "Circle the word",
+        "desc": "Rows of sentences; the teacher circles the right word in each row, as in the book.",
+        "ex": "هٰذَا …… صَغِيرٌ   بَيْتٌ · مَدْرَسَةٌ"
       }
-    }
+    },
+    "pickNamed": "Question type"
   },
   "pageEditor": {
     "hint": "This is the teacher's page. Type straight onto it: what you type appears exactly here for teachers.",
@@ -405,6 +448,50 @@
     "tooLarge": "The PDF is too large (up to {{mb}} MB).",
     "notPdf": "Choose a PDF file.",
     "failed": "The PDF could not be added. Try again.",
-    "oldText": "Text typed before (teachers see it until a PDF replaces it):"
+    "oldText": "Text typed before (teachers see it until a PDF replaces it):",
+    "open": "Open PDF",
+    "heading": "Material (PDF)"
+  },
+  "words": {
+    "how": "How to fill it in",
+    "example": "Example",
+    "stem": "Instruction (optional)",
+    "stemHint": "Leave it empty and the teacher sees \"{{fallback}}\"",
+    "preview": "Preview (as the teacher sees it)",
+    "decoys": "Decoy words (optional)",
+    "decoysHint": "Words that are not answers. They appear in the word bank to make it harder.",
+    "decoyPh": "Decoy word…",
+    "addDecoy": "Add decoy",
+    "bankCount": "The word bank holds {{count}} words; the teacher fills {{places}} places.",
+    "remove": "Remove",
+    "fillHow1": "Type the sentence. Put two or more underscores where each word is missing: __",
+    "fillHow2": "Below it, type the answer for each blank, in order from the first.",
+    "fillHow3": "Add decoy words if you want it harder.",
+    "fillSentence": "Sentence with blanks",
+    "fillNone": "No blanks yet. Type __ (two underscores) where a word is missing.",
+    "fillAnswers": "Answers, in blank order",
+    "blankN": "Blank {{n}}",
+    "orderHow1": "Type the words one per row, in the correct order of the sentence.",
+    "orderHow2": "The teacher sees them shuffled and puts them back in order.",
+    "orderHow3": "Press Enter to go to the next row.",
+    "orderDir": "Sentence direction",
+    "rtl": "Arabic (right to left)",
+    "ltr": "Latin (left to right)",
+    "orderWords": "Words, in the correct order",
+    "wordPh": "Word…",
+    "addWord": "Add word",
+    "circleHow1": "Type the sentence. Put __ or ...... where the word is missing.",
+    "circleHow2": "To make a word bold, put stars round it:",
+    "circleHow3": "Type the choices, then tap ○ beside the right one.",
+    "modeCircle": "Circle",
+    "modeCircleNote": "Choices beside the sentence",
+    "modeUnderline": "Underline",
+    "modeUnderlineNote": "Choices inside the sentence: (a / b)",
+    "rowN": "Row {{n}}",
+    "rowPh": "Sentence, e.g. هٰذَا ...... صَغِيرٌ",
+    "addRow": "Add row",
+    "addChoice": "Word",
+    "markRight": "Mark as the right word",
+    "choicePh": "Word…"
   }
 }

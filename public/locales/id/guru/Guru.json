@@ -71,7 +71,10 @@
     "multi": "Pilih semua yang benar",
     "truefalse": "Benar atau salah?",
     "match": "Pasangkan",
-    "task": "Tugas tertulis"
+    "task": "Tugas tertulis",
+    "fillblank": "Lengkapi kalimat",
+    "order": "Susun kata",
+    "circle": "Lingkari kata yang benar"
   },
   "player": {
     "preview": "Pratinjau admin",
@@ -102,7 +105,19 @@
     "soundOff": "Matikan suara",
     "tapToStay": "Ketuk di sini untuk berhenti sejenak",
     "writeHere": "Tulis jawaban Anda di sini…",
-    "matchUndo": "Salah pasang? Ketuk pasangannya untuk melepas."
+    "matchUndo": "Salah pasang? Ketuk pasangannya untuk melepas.",
+    "do": {
+      "fillblank": "Lengkapi kalimat berikut dengan kata yang tepat.",
+      "order": "Susun kata-kata berikut menjadi kalimat yang benar.",
+      "circle": "Lingkari kata yang benar di setiap baris.",
+      "circleLine": "Garis bawahi kata yang benar di setiap baris."
+    },
+    "bank": "Pilihan kata",
+    "wordUndo": "Salah pilih? Ketuk katanya untuk mengembalikan.",
+    "slotFilled": "Tempat {{n}}: {{word}} (ketuk untuk melepas)",
+    "slotEmpty": "Tempat {{n}}: kosong",
+    "circleHint": "Ketuk kata yang benar untuk melingkarinya.",
+    "underlineHint": "Ketuk kata yang benar untuk menggarisbawahinya."
   },
   "section": {
     "tadarus": "Tadarus Surat",

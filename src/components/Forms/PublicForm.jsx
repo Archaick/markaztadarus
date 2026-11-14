@@ -12,6 +12,7 @@ import { useLanguageDirection } from "../Internal/language";
 import logo from "../../assets/imgs/MT-logo-white.svg";
 import styles from "./PublicForm.module.css";
 import OwnCopy from "./OwnCopy";
+import FormIntro from "./FormIntro";
 import { RichText } from "./richText";
 import TraceCanvas from "./TraceCanvas";
 import { FILE, acceptOf, fileProblem, fileSettings, fileSizeText, sizeText, uploadAnswerFiles } from "./fileUpload";
@@ -348,6 +349,9 @@ function QuizResult({ form, result }) {
   );
 }
 
+// long enough for the globe to land on Indonesia, as a short link's redirect does
+const INTRO_MS = 4200;
+
 export default function PublicForm() {
   const { t } = useTranslation(NS);
   const { formId } = useParams();
@@ -369,6 +373,29 @@ export default function PublicForm() {
   const [path, setPath] = useState(START);
   const questionRefs = useRef({});
   const language = useLanguageDirection(form?.language);
+  // the globe opening plays once per visit to a form (not again on every reload)
+  const introKey = `form-intro:${formId}`;
+  const [intro, setIntro] = useState(() => {
+    try {
+      return !sessionStorage.getItem(introKey);
+    } catch {
+      return true;
+    }
+  });
+  useEffect(() => {
+    if (!intro) return undefined;
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const id = setTimeout(() => setIntro(false), still ? 1200 : INTRO_MS);
+    return () => clearTimeout(id);
+  }, [intro]);
+  useEffect(() => {
+    if (intro) return;
+    try {
+      sessionStorage.setItem(introKey, "1");
+    } catch {
+      /* private mode: it simply plays again next time */
+    }
+  }, [intro, introKey]);
 
   useEffect(() => {
     if (accessLoading) return;
@@ -405,6 +432,10 @@ export default function PublicForm() {
     cover,
     coverPosition: form?.coverPosition,
   };
+
+  if (intro && form !== null) {
+    return <FormIntro title={form?.title} rtl={form?.language === "ar"} onSkip={() => form && setIntro(false)} />;
+  }
 
   if (form === undefined) {
     return (

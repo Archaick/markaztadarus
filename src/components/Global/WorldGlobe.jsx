@@ -49,6 +49,9 @@ const wrapDelta = (a, b) => ((((b - a) % 360) + 540) % 360) - 180;
  * the night side. The parent can call `ref.current.home()`, `.world()`,
  * `.zoomBy(factor)`, `.flyTo(code)`, `.flyToPoint([lon, lat], zoom)` and
  * `.focusProvince(name)`.
+ *
+ * `teachers` / `teacherSchools` / `teacherWords` draw Tadarus Guru's teachers
+ * studying now (see GuruLayer); `pin` ([lon, lat]) marks a place being pinned.
  */
 const WorldGlobe = forwardRef(function WorldGlobe(
   {
@@ -72,7 +75,9 @@ const WorldGlobe = forwardRef(function WorldGlobe(
     initialView,
     sky = true,
     teachers,
+    teacherSchools,
     teacherWords,
+    pin = null,
   },
   ref
 ) {
@@ -530,7 +535,15 @@ const WorldGlobe = forwardRef(function WorldGlobe(
         {showProvinces && <ProvinceMarks projection={projection} scale={scale} marks={marks} selected={selectedProvince} visible={visible} />}
 
         {/* Tadarus Guru teachers, counted per province or country */}
-        {teacherWords && <GuruLayer teachers={teachers} projection={projection} scale={scale} visible={visible} words={teacherWords} />}
+        {teacherWords && <GuruLayer teachers={teachers} schools={teacherSchools} projection={projection} scale={scale} visible={visible} words={teacherWords} />}
+
+        {/* a place being pinned ([lon, lat]) */}
+        {pin && visible(pin) && (
+          <g transform={`translate(${projection(pin)[0]} ${projection(pin)[1]})`} pointerEvents="none">
+            <circle r={11} className={styles.pickPinRing} />
+            <circle r={5.5} className={styles.pickPin} />
+          </g>
+        )}
 
         {/* online sessions on top of everything: LIVE where one runs now */}
         <LiveLayer sessions={sessions} projection={projection} scale={scale} visible={visible} />

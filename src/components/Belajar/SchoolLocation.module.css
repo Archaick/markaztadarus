@@ -1,0 +1,14 @@
+.box {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid #dbe4ee;
+  background: #f7fafc;
+}
+.globe {
+  position: relative;
+  height: 260px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #020817;
+  touch-action: none;
+}

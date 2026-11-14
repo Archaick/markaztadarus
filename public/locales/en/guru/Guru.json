@@ -71,7 +71,10 @@
     "multi": "Choose all that are correct",
     "truefalse": "True or false?",
     "match": "Match the pairs",
-    "task": "Written task"
+    "task": "Written task",
+    "fillblank": "Fill in the blanks",
+    "order": "Put the words in order",
+    "circle": "Circle the right word"
   },
   "player": {
     "preview": "Admin preview",
@@ -102,7 +105,19 @@
     "soundOff": "Turn sound off",
     "tapToStay": "Tap here to pause",
     "writeHere": "Write your answer here…",
-    "matchUndo": "Made a mistake? Tap a pair to undo it."
+    "matchUndo": "Made a mistake? Tap a pair to undo it.",
+    "do": {
+      "fillblank": "Complete the sentence with the right words.",
+      "order": "Put the words in the right order.",
+      "circle": "Circle the right word in each row.",
+      "circleLine": "Underline the right word in each row."
+    },
+    "bank": "Word bank",
+    "wordUndo": "Picked the wrong one? Tap the word to send it back.",
+    "slotFilled": "Place {{n}}: {{word}} (tap to remove)",
+    "slotEmpty": "Place {{n}}: empty",
+    "circleHint": "Tap the right word to circle it.",
+    "underlineHint": "Tap the right word to underline it."
   },
   "section": {
     "tadarus": "Surah Tadarus",

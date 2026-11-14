@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Badge, Button, Checkbox, Loader, Modal, Stack, Text, TextInput } from "@mantine/core";
 import { IconPlus, IconUsers } from "@tabler/icons-react";
@@ -9,6 +9,9 @@ import { createClass } from "./actions";
 import { BASE, NS } from "./belajarSchema";
 import SchoolScene from "../Supervisi/SchoolScene";
 import styles from "./Belajar.module.css";
+
+// the school's pin on Tadarus Global (loaded only when the form opens: the globe is heavy)
+const SchoolLocation = lazy(() => import("./SchoolLocation"));
 
 /** The classes (Kelas): who learns which surahs. */
 export default function ClassesPage() {
@@ -102,17 +105,19 @@ function ClassForm({ opened, onClose }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [lessonIds, setLessonIds] = useState([]);
+  const [location, setLocation] = useState(null);
   const [busy, setBusy] = useState(false);
 
   const close = () => {
     setName("");
     setLessonIds([]);
+    setLocation(null);
     onClose();
   };
   const save = async () => {
     setBusy(true);
     try {
-      const id = await createClass(user, { name: name.trim().slice(0, 120), lessonIds });
+      const id = await createClass(user, { name: name.trim().slice(0, 120), lessonIds, location });
       close();
       navigate(`${BASE}/kelas/${id}`);
     } finally {
@@ -133,6 +138,11 @@ function ClassForm({ opened, onClose }) {
             {t("classes.unpublishedHint")}
           </Text>
         </div>
+        {opened && (
+          <Suspense fallback={<Loader size="sm" />}>
+            <SchoolLocation value={location} onChange={setLocation} />
+          </Suspense>
+        )}
         <Button color="#003366" onClick={save} loading={busy} disabled={!name.trim() || !lessonIds.length}>
           {t("classes.create")}
         </Button>
