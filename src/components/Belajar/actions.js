@@ -53,14 +53,39 @@ export async function createLessonWithSections(user, data) {
   return ref.id;
 }
 
-/** Adds the standard sections a surah does not have yet, after the ones it has. */
+/**
+ * Adds the standard sections a surah does not have yet, each in its place in
+ * the book's order (the admin's own sections keep their places after the
+ * standard one before them). A new material item takes over a PDF that the
+ * Tadarus questions item still holds, as surahs made before it had theirs there.
+ */
 export async function addTemplateSections(user, lesson, existing) {
   const have = new Set(existing.map((s) => s.key));
-  const last = existing.reduce((n, s) => Math.max(n, s.order || 0), 0);
   const missing = templateSections(lesson.id).filter((s) => !have.has(s.key));
   if (!missing.length) return;
+  const rank = (key) => SECTION_TYPES.findIndex((x) => x.key === key);
+  const list = [...existing].sort((a, b) => (a.order || 0) - (b.order || 0)).map((s) => ({ old: s }));
+  missing.forEach((section) => {
+    const r = rank(section.key);
+    // before the first standard section that comes later in the book
+    const at = list.findIndex((x) => x.old && rank(x.old.key) > r);
+    list.splice(at < 0 ? list.length : at, 0, { add: section });
+  });
+  const tadarus = existing.find((s) => s.key === "tadarus" && s.pdf?.url);
+  const movePdf = !have.has("materi") && tadarus;
   await auditedWrite(user, entry("bel.section.create", lesson.title, { sections: missing.length }, lesson.id), (batch, auditId) =>
-    missing.forEach((section, i) => batch.set(doc(collection(db, SECTIONS)), { ...section, order: last + i + 1, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() }))
+    list.forEach((x, i) => {
+      const order = i + 1;
+      if (x.add) {
+        const pdf = x.add.key === "materi" && movePdf ? { pdf: tadarus.pdf } : {};
+        batch.set(doc(collection(db, SECTIONS)), { ...x.add, ...pdf, order, auditId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() });
+      } else {
+        const changes = {};
+        if (x.old.order !== order) changes.order = order;
+        if (movePdf && x.old.id === tadarus.id) changes.pdf = null;
+        if (Object.keys(changes).length) batch.update(doc(db, SECTIONS, x.old.id), { ...changes, auditId, updatedAt: serverTimestamp() });
+      }
+    })
   );
 }
 

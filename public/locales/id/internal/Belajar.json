@@ -37,7 +37,8 @@
     "rasulku": "Rasulku Mengajariku",
     "akhlakku": "Al-Qur'an Akhlakku",
     "keterampilan": "Keterampilanku",
-    "amalku": "Amalku"
+    "amalku": "Amalku",
+    "materi": "Materi Tadarus Surat"
   },
   "kind": {
     "quiz": "Soal dengan kunci jawaban",
@@ -282,7 +283,9 @@
     "kind": "Jenis",
     "tag": "Langkah 5T",
     "noTag": "Tanpa label 5T",
-    "kindWarning": "Bagian ini sudah berisi soal atau tugas. Mengubah jenisnya bisa menyembunyikan isi itu dari guru."
+    "kindWarning": "Bagian ini sudah berisi soal atau tugas. Mengubah jenisnya bisa menyembunyikan isi itu dari guru.",
+    "missingStandard": "Item baku yang belum ada: {{names}}. Ditambahkan di tempatnya; PDF dari Tadarus Surat ikut pindah ke item materi.",
+    "addMissing": "Tambahkan"
   },
   "teachers": {
     "title": "Guru",
@@ -434,7 +437,8 @@
     "failed": "PDF tidak bisa ditambahkan. Coba lagi.",
     "oldText": "Teks yang diketik sebelumnya (tampil untuk guru sampai diganti PDF):",
     "open": "Buka PDF",
-    "heading": "Materi (PDF)"
+    "heading": "Materi (PDF)",
+    "notHere": "Item soal tidak memakai PDF. PDF ini sebaiknya dipindahkan ke item materi surat ini, lalu dihapus dari sini."
   },
   "words": {
     "how": "Cara mengisi",

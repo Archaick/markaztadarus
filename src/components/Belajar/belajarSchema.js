@@ -32,9 +32,12 @@ export const normalizeCode = (value) => (value || "").toUpperCase().replace(/[^A
 export const PROGRAMS = ["guru", "anak"];
 
 // The sections every surah of Buku Guru Jilid 1 has, in the book's order.
-// `kind`: quiz = questions with answers (may open with a text to read),
-// reading = text only, written = tasks the teacher answers in their own words.
+// `kind`: reading = the material, as a PDF (no questions); quiz = questions
+// with answers; written = tasks the teacher answers in their own words.
+// Only reading items carry a PDF (owner, 14 Nov 2026): the surah's Tadarus
+// material comes first, then its questions.
 export const SECTION_TYPES = [
+  { key: "materi", kind: "reading", t: "" },
   { key: "tadarus", kind: "quiz", t: "tamhid" },
   { key: "tujuan", kind: "reading" },
   { key: "pendahuluan", kind: "quiz", t: "tamhid" },

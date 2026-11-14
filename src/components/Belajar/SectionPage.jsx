@@ -126,8 +126,15 @@ export default function SectionPage() {
           )}
 
           {/* the material: just the PDF here; teachers read it in "Try them all as a teacher" */}
-          <h3 className={styles.canvasQuestions}>{t("pdf.heading")}</h3>
-          <PdfSlot lesson={lesson} section={section} />
+          {/* only material (reading) items carry a PDF; a question item that still holds one from
+              before can only have it removed (it belongs in the surah's material item) */}
+          {(kind === "reading" || section.pdf?.url) && (
+            <>
+              <h3 className={styles.canvasQuestions}>{t("pdf.heading")}</h3>
+              {kind !== "reading" && <Alert color="orange" mb="sm">{t("pdf.notHere")}</Alert>}
+              <PdfSlot lesson={lesson} section={section} />
+            </>
+          )}
           {!section.pdf?.url && cleanReading(value.reading).length > 0 && (
             <>
               <p className={styles.canvasLabel}>{t("pdf.oldText")}</p>

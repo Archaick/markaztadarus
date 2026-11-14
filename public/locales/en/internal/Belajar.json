@@ -37,7 +37,8 @@
     "rasulku": "My Prophet Teaches Me",
     "akhlakku": "The Qur'an, My Character",
     "keterampilan": "My Skills",
-    "amalku": "My Deeds"
+    "amalku": "My Deeds",
+    "materi": "Surah Tadarus Material"
   },
   "kind": {
     "quiz": "Questions with answers",
@@ -294,7 +295,9 @@
     "kind": "Type",
     "tag": "5T step",
     "noTag": "No 5T tag",
-    "kindWarning": "This section already has questions or tasks. Changing its type may hide them from teachers."
+    "kindWarning": "This section already has questions or tasks. Changing its type may hide them from teachers.",
+    "missingStandard": "Standard items not here yet: {{names}}. They are added in their place; a PDF on Surah Tadarus moves to the material item.",
+    "addMissing": "Add"
   },
   "teachers": {
     "title": "Teachers",
@@ -450,7 +453,8 @@
     "failed": "The PDF could not be added. Try again.",
     "oldText": "Text typed before (teachers see it until a PDF replaces it):",
     "open": "Open PDF",
-    "heading": "Material (PDF)"
+    "heading": "Material (PDF)",
+    "notHere": "Question items don’t use a PDF. Move this PDF to the surah’s material item, then remove it here."
   },
   "words": {
     "how": "How to fill it in",

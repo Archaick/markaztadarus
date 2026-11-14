@@ -54,6 +54,16 @@ export default function SectionsList({ lesson, sections }) {
         </div>
       ) : (
         <>
+          {missing.length > 0 && (
+            <Alert color="blue" mb="md" icon={<IconLayoutList size={18} />}>
+              <Group justify="space-between" gap="sm">
+                <span>{t("sections.missingStandard", { names: missing.map((m) => t(`section.${m.key}`)).join(", ") })}</span>
+                <Button size="xs" color="#003366" loading={busy} onClick={() => run(() => addTemplateSections(user, lesson, sections))}>
+                  {t("sections.addMissing")}
+                </Button>
+              </Group>
+            </Alert>
+          )}
           <div className={styles.rows}>
             {sections.map((section, i) => {
               const kind = kindOf(section);
