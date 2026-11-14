@@ -59,9 +59,10 @@ function Inside() {
   // while the app is open and in view, say so every few minutes (Tadarus Global shows "studying now", never who)
   useEffect(() => {
     if (!learner) return undefined;
-    // back in view: say so at once; out of view (another tab or app) the beats simply stop and the
-    // "studying" mark fades within ten minutes; closing the page or signing out ends it at once
-    const beat = () => document.visibilityState === "visible" && touch();
+    // as JISR does (owner, 14 Nov 2026): in view, "studying" at once; out of view (another app,
+    // the PWA closed or the phone locked) off Tadarus Global at once, back on when they return.
+    // Going out of view is the moment a phone still lets the page say so; closing often is not.
+    const beat = () => (document.visibilityState === "visible" ? touch() : offline());
     const id = setInterval(() => document.visibilityState === "visible" && touch(), 4 * 60 * 1000);
     document.addEventListener("visibilitychange", beat);
     window.addEventListener("pagehide", offline);
