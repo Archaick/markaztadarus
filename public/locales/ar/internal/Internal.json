@@ -284,13 +284,13 @@
           "restore": "استعاد نسخة احتياطية لمنصة التعلّم"
         },
         "class": {
-          "create": "أنشأ فصلًا",
-          "update": "عدّل فصلًا",
-          "delete": "حذف فصلًا"
+          "create": "أنشأ مدرسة",
+          "update": "عدّل مدرسة",
+          "delete": "حذف مدرسة"
         },
         "invite": "دعا متعلّمين",
         "learner": {
-          "remove": "أخرج متعلّمًا من فصل",
+          "remove": "أخرج متعلّمًا من مدرسة",
           "delete": "حذف معلّمًا"
         },
         "note": "كتب ملاحظة على إجابة"
@@ -356,7 +356,8 @@
       "observing": "قيد الملاحظة",
       "countries": "الدول",
       "keepDays": "مدة الحفظ (أيام)",
-      "before": "أقدم من"
+      "before": "أقدم من",
+      "location": "موقع المدرسة"
     },
     "allAreas": "كل الأقسام",
     "clear": "مسح التصفية",
@@ -470,11 +471,12 @@
       "internal_admins": "مشرفون: {{count}}",
       "belajar_lessons": "{{count}} سورة",
       "belajar_sections": "{{count}} قسم",
-      "belajar_classes": "{{count}} فصل",
-      "belajar_codes": "{{count}} رمز فصل",
+      "belajar_classes": "{{count}} مدرسة",
+      "belajar_codes": "{{count}} رمز مدرسة",
       "belajar_invites": "{{count}} دعوة",
       "belajar_learners": "{{count}} متعلّم",
-      "belajar_progress": "{{count}} سجل تقدّم"
+      "belajar_progress": "{{count}} سجل تقدّم",
+      "school_map": "{{count}} موقع مدرسة في تدارس العالمي"
     }
   },
   "backup": {

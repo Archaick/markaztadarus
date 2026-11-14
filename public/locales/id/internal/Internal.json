@@ -284,13 +284,13 @@
           "restore": "Memulihkan cadangan platform belajar"
         },
         "class": {
-          "create": "Membuat kelas",
-          "update": "Mengubah kelas",
-          "delete": "Menghapus kelas"
+          "create": "Membuat sekolah",
+          "update": "Mengubah sekolah",
+          "delete": "Menghapus sekolah"
         },
         "invite": "Mengundang peserta",
         "learner": {
-          "remove": "Mengeluarkan peserta dari kelas",
+          "remove": "Mengeluarkan peserta dari sekolah",
           "delete": "Menghapus guru"
         },
         "note": "Memberi catatan pada jawaban"
@@ -356,7 +356,8 @@
       "observing": "Sedang observasi",
       "countries": "Negara",
       "keepDays": "Disimpan (hari)",
-      "before": "Lebih lama dari"
+      "before": "Lebih lama dari",
+      "location": "Lokasi sekolah"
     },
     "allAreas": "Semua bagian",
     "clear": "Hapus filter",
@@ -470,11 +471,12 @@
       "internal_admins": "{{count}} admin",
       "belajar_lessons": "{{count}} surat",
       "belajar_sections": "{{count}} bagian",
-      "belajar_classes": "{{count}} kelas",
-      "belajar_codes": "{{count}} kode kelas",
+      "belajar_classes": "{{count}} sekolah",
+      "belajar_codes": "{{count}} kode sekolah",
       "belajar_invites": "{{count}} undangan",
       "belajar_learners": "{{count}} peserta",
-      "belajar_progress": "{{count}} catatan kemajuan"
+      "belajar_progress": "{{count}} catatan kemajuan",
+      "school_map": "{{count}} lokasi sekolah di Tadarus Global"
     }
   },
   "backup": {

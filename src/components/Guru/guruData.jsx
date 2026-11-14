@@ -19,9 +19,16 @@ const chunks = (list, size) => {
   return out;
 };
 
+// A teacher who has started signing out: nothing may mark them "studying" again on
+// Tadarus Global until the sign-out has finished (the app re-renders, and even
+// re-mounts, while it happens, with the account still there for a moment).
+let leaving = null;
+
 export function LearnerProvider({ children }) {
   const { user } = useAccess();
   const uid = user?.uid;
+  // signed out at last: the next sign-in may be counted again
+  if (!uid) leaving = null;
   const email = (user?.email || "").toLowerCase();
   const [learner, setLearner] = useState(undefined); // undefined loading · null none yet
   const [classes, setClasses] = useState({});
@@ -195,7 +202,9 @@ export function LearnerProvider({ children }) {
   // their place on the Tadarus Global map: a country, province and school only, never a name
   const mapEntry = useCallback(
     (c, online = true) =>
-      setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", schoolId, online, updatedAt: serverTimestamp() }),
+      online && leaving === uid
+        ? Promise.resolve()
+        : setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", schoolId, online, updatedAt: serverTimestamp() }),
     [uid, schoolId]
   );
   // their school known (or changed) while they study: the map follows at once, not at the next heartbeat
@@ -207,7 +216,14 @@ export function LearnerProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uid, schoolId]);
   // left the app (tab hidden, closed or signed out): no longer "studying now" on Tadarus Global
-  const offline = useCallback(() => (uid && learner?.country ? mapEntry(learner, false).catch(() => {}) : Promise.resolve()), [uid, learner, mapEntry]);
+  // `signingOut`: the account is leaving for good, so nothing marks it online again before it has gone
+  const offline = useCallback(
+    (signingOut = false) => {
+      if (signingOut === true && uid) leaving = uid;
+      return uid && learner?.country ? mapEntry(learner, false).catch(() => {}) : Promise.resolve();
+    },
+    [uid, learner, mapEntry]
+  );
   const touch = useCallback(() => {
     if (!uid || !learner) return null;
     updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {});

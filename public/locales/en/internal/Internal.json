@@ -284,13 +284,13 @@
           "restore": "Restored a learning platform backup"
         },
         "class": {
-          "create": "Created a class",
-          "update": "Changed a class",
-          "delete": "Deleted a class"
+          "create": "Created a school",
+          "update": "Changed a school",
+          "delete": "Deleted a school"
         },
         "invite": "Invited learners",
         "learner": {
-          "remove": "Removed a learner from a class",
+          "remove": "Removed a learner from a school",
           "delete": "Deleted a teacher"
         },
         "note": "Left a note on an answer"
@@ -356,7 +356,8 @@
       "observing": "Observing",
       "countries": "Countries",
       "keepDays": "Kept (days)",
-      "before": "Older than"
+      "before": "Older than",
+      "location": "School location"
     },
     "allAreas": "Every area",
     "clear": "Clear filters",
@@ -488,11 +489,12 @@
       "internal_admins_other": "{{count}} admins",
       "belajar_lessons": "{{count}} surahs",
       "belajar_sections": "{{count}} sections",
-      "belajar_classes": "{{count}} classes",
-      "belajar_codes": "{{count}} class codes",
+      "belajar_classes": "{{count}} schools",
+      "belajar_codes": "{{count}} school codes",
       "belajar_invites": "{{count}} invites",
       "belajar_learners": "{{count}} learners",
-      "belajar_progress": "{{count}} progress records"
+      "belajar_progress": "{{count}} progress records",
+      "school_map": "{{count}} school pins on Tadarus Global"
     }
   },
   "backup": {

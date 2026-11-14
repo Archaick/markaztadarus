@@ -48,7 +48,10 @@
 
 .center {
   display: grid;
-  place-items: center;
+  /* one column no wider than the screen: a long province name or note must not push the card off the edges */
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  align-items: center;
   min-height: calc(100svh - 70px);
   padding: 24px 16px;
 }
@@ -123,7 +126,9 @@
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  box-sizing: border-box;
   width: min(440px, 100%);
+  min-width: 0;
   padding: 34px 26px 28px;
   text-align: center;
   animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -2032,12 +2037,16 @@
 .field {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   gap: 6px;
   font-weight: 700;
   color: var(--navy);
 }
 .field input,
 .field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   min-height: 48px;
   padding: 10px 14px;
   border: 1.5px solid rgba(26, 73, 112, 0.18);

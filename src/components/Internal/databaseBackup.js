@@ -30,7 +30,7 @@ export const TREE = [
 ];
 
 // The learning platform (/belajar) is backed up apart, from its own page.
-export const BELAJAR_TREE = [["belajar_lessons"], ["belajar_sections"], ["belajar_classes"], ["belajar_codes"], ["belajar_invites"], ["belajar_learners"], ["belajar_progress"]];
+export const BELAJAR_TREE = [["belajar_lessons"], ["belajar_sections"], ["belajar_classes"], ["school_map"], ["belajar_codes"], ["belajar_invites"], ["belajar_learners"], ["belajar_progress"]];
 
 // documents whose inner collections are read at once
 const PARALLEL = 8;
@@ -53,7 +53,7 @@ export const areaOfPath = (path) => {
   if (top === "forms") return "forms";
   if (top === "posts") return "news";
   if (top.startsWith("supervisi")) return "supervision";
-  if (top.startsWith("belajar")) return "learning";
+  if (top.startsWith("belajar") || top === "school_map") return "learning";
   if (top.startsWith("redirect")) return "links";
   if (top.startsWith("site_")) return "site";
   if (top === "internal_admins" || top === "internal_settings") return "admins";

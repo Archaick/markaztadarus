@@ -113,7 +113,7 @@ export function TopBar() {
   const offline = useLearner()?.offline;
   // off the "studying now" count first, while still signed in to say so
   const signOut = async () => {
-    await offline?.();
+    await offline?.(true);
     signOutUser();
   };
   const { canInstall, ios, install } = useInstall();
@@ -292,8 +292,13 @@ function Profile({ editing = false }) {
 /** Joining a class with the code the admin shared. `first` when it is the only way in. */
 function Join({ first = false }) {
   const { t } = useTranslation(NS);
-  const { join } = useLearner();
+  const { join, offline } = useLearner();
   const { user, signOutUser } = useAccess();
+  // another account: off the map first, as the menu's sign-out does
+  const leave = async () => {
+    await offline?.(true);
+    signOutUser();
+  };
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
@@ -348,7 +353,7 @@ function Join({ first = false }) {
             {busy ? "…" : t("join.button")}
           </button>
           {first ? (
-            <button type="button" className={styles.linkButton} onClick={signOutUser}>
+            <button type="button" className={styles.linkButton} onClick={leave}>
               {t("join.otherAccount", { email: user?.email })}
             </button>
           ) : (
