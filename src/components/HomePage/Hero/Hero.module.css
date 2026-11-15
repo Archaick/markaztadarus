@@ -335,14 +335,10 @@
 /* A · the whole hero is the night sky; the words in white beside the mushaf */
 .heroWide {
   background: #0b1f3f;
-  /* the night ends in a clean curve over the light page, not a fog */
-  border-radius: 0 0 44px 44px;
-  box-shadow: 0 30px 60px -40px rgba(11, 31, 63, 0.55);
 }
 .wideSky {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   overflow: hidden;
 }
 .heroWide .inner {

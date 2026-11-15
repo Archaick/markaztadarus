@@ -66,10 +66,6 @@ const Hero = () => {
 
       <div className={styles.inner} dir={rtl ? "rtl" : "ltr"}>
         <div className={styles.content}>
-          <span className={styles.eyebrow}>
-            <span className={styles.eyebrowDot} />
-            {t("tagline")}
-          </span>
           <Title order={1} className={styles.title}>
             {t("title")}
           </Title>
