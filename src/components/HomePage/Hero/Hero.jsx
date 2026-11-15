@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button, Text, Title } from "@mantine/core";
 import { useTranslation } from "react-i18next";
+import Sky, { FIVE, fiveNames } from "../../Guru/Sky";
 import styles from "./Hero.module.css";
 
 // The 5T steps around the logo; descriptions live in homepage/Methods.
 const PILLARS = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 const STEP_MS = 4200; // each step stays lit this long
-// The orbit path as an SVG circle (viewBox 0 0 100 100), for the gold trail.
-const RADIUS = 49.5;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
 const Hero = () => {
   const { t, i18n } = useTranslation("homepage/Hero");
   const { t: tMethods } = useTranslation("homepage/Methods");
+  const { t: tGuru } = useTranslation("guru/Guru");
   const [displayedSubtitle, setDisplayedSubtitle] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const subtitle = t("subtitle");
@@ -47,8 +45,6 @@ const Hero = () => {
     }
   }, [currentIndex, subtitle, i18n.language]);
 
-  // The trail runs from step 1 to the active step (each step is a fifth of the orbit).
-  const trail = (CIRCUMFERENCE * active) / PILLARS.length;
   const key = PILLARS[active];
   const rtl = i18n.language === "ar";
 
@@ -57,51 +53,16 @@ const Hero = () => {
     setHeld(true);
   };
 
-  const steps = (
-    <div className={styles.stage}>
-      <div className={styles.disk} />
-      <div className={styles.stageGlow} />
-      <img src="/MTIFavicon.png" alt="" className={styles.centerMark} />
-
-      {/* 5T Methodology Sacred Orbit */}
-      <div className={`${styles.orbitContainer} ${held ? styles.orbitHeld : ""}`}>
-        <div className={styles.orbitPath}></div>
-        <svg className={styles.trail} viewBox="0 0 100 100" aria-hidden="true">
-          <circle
-            cx="50"
-            cy="50"
-            r={RADIUS}
-            pathLength={CIRCUMFERENCE}
-            strokeDasharray={`${trail} ${CIRCUMFERENCE}`}
-          />
-        </svg>
-
-        {PILLARS.map((pillar, index) => (
-          <div key={pillar} className={`${styles.nodeWrapper} ${styles[`wrapper${index + 1}`]}`}>
-            <button
-              type="button"
-              className={`${styles.node} ${index === active ? styles.nodeActive : ""} ${index < active ? styles.nodeDone : ""}`}
-              aria-pressed={index === active}
-              aria-label={t(`pillars.t${index + 1}`)}
-              onMouseEnter={() => point(index)}
-              onMouseLeave={() => setHeld(false)}
-              onFocus={() => point(index)}
-              onBlur={() => setHeld(false)}
-              onClick={() => point(index)}
-            >
-              <span className={styles.number}>{index + 1}</span>
-              <span className={styles.label} data-lang={i18n.language}>
-                {t(`pillars.t${index + 1}`)}
-              </span>
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
+  // The 5T steps in the /guru sign-in sky: the same five real stars over the open mushaf;
+  // each step lights its star (with its wave of light), and the sky turns from night
+  // towards dawn as the steps go on.
+  const shares = Object.fromEntries(FIVE.map((k, i) => [k, i <= active ? 1 : 0.32]));
   return (
-    <div id="home" className={styles.hero}>
+    <div id="home" className={`${styles.hero} ${styles.heroWide}`}>
+      {/* the /guru sign-in sky behind the whole hero: the five stars over the mushaf, beside the words */}
+      <div className={styles.wideSky} dir={rtl ? "rtl" : "ltr"} aria-hidden="true">
+        <Sky mode="wide" className={styles.dawnCanvas} shares={shares} progress={0.16 + active * 0.16} fireKey={active + 1} fireT={FIVE[active]} names={fiveNames(tGuru)} />
+      </div>
 
       <div className={styles.inner} dir={rtl ? "rtl" : "ltr"}>
         <div className={styles.content}>
@@ -133,7 +94,7 @@ const Hero = () => {
                   key={pillar}
                   className={index === active ? styles.dotOn : ""}
                   aria-label={t(`pillars.t${index + 1}`)}
-                  onClick={() => setActive(index)}
+                  onClick={() => point(index)}
                 />
               ))}
             </div>
@@ -149,7 +110,6 @@ const Hero = () => {
           </div>
         </div>
 
-        {steps}
       </div>
     </div>
   );

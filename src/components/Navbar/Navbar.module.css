@@ -192,3 +192,80 @@ a:hover > .beaconArrow {
     animation: none;
   }
 }
+
+/* ── live indicator for Tadarus Global (15 Nov 2026): a small globe with a pinging green dot ── */
+.live {
+  position: relative;
+  display: inline-flex;
+  margin-inline-end: 7px;
+  vertical-align: -3px;
+  color: #ab8b2b;
+}
+.liveDot {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 1.5px #ffffff;
+}
+.liveDot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: livePing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes livePing {
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .liveDot::after {
+    animation: none;
+  }
+}
+
+/* ── over the home page's night sky: dark glass, white words (15 Nov 2026) ── */
+.navbar.night {
+  background: rgba(9, 24, 50, 0.38);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+.night .logoImage {
+  filter: brightness(0) invert(1);
+}
+.night .navLink {
+  color: rgba(255, 255, 255, 0.9);
+}
+.night .navLink:hover {
+  color: #f3d27a;
+}
+.night .live,
+.night .beaconArrow {
+  color: #f3d27a;
+}
+.night .liveDot {
+  box-shadow: 0 0 0 1.5px #0b1f3f;
+}
+.night .languageToggle {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+.night .languageToggle:hover {
+  background: #ffffff;
+  color: #0b1f3f;
+}
+.night .languageToggleMobile {
+  color: #ffffff;
+}
+.night .burger {
+  color: #ffffff !important;
+}

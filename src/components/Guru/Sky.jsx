@@ -53,14 +53,20 @@ const SHAPES = {
     const hz = horizonOf(W, H);
     const top = Math.max(96, hz * 0.2);
     const drop = Math.min(hz * 0.3, 64);
-    return { scale: W < 600 ? 0.66 : 0.86, words: W < 600 ? 10 : 11.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * span, top + [1, 0.45, 0, 0.45, 1][i] * drop]) };
+    return { hz, scale: W < 600 ? 0.66 : 0.86, words: W < 600 ? 10 : 11.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * span, top + [1, 0.45, 0, 0.45, 1][i] * drop]) };
   },
-  full: (W) => {
-    const span = Math.min(W * 0.9, 860);
-    const scale = W < 600 ? 0.72 : 1;
-    return { scale, words: W < 600 ? 10 : 11.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * span, [96, 86, 80, 86, 96][i]]) };
+  // the home page with the sky behind the whole hero: the mushaf and the stars to the
+  // side of the words (right, or left in Arabic, see paint), the horizon low
+  wide: (W, H) => {
+    const narrow = W < 900;
+    const cx = narrow ? W / 2 : W * 0.68;
+    const span = narrow ? W * 0.84 : Math.min(W * 0.46, 640);
+    // on a phone: the stars clear of the menu bar, the mushaf just above the words
+    const hz = narrow ? Math.min(H * 0.42, 320) : H * 0.7;
+    const top = narrow ? 124 : H * 0.3;
+    const drop = narrow ? 70 : H * 0.14;
+    return { cx, hz, scale: narrow ? 0.58 : 0.8, words: narrow ? 10.5 : 11, at: STAR_X.map((f, i) => [cx + (f - 0.5) * span, top + [1, 0.45, 0, 0.45, 1][i] * drop]) };
   },
-  card: (W, H) => ({ scale: 0.72, words: 10.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * Math.min(W * 0.92, 420), H * [0.5, 0.36, 0.28, 0.36, 0.5][i]]) }),
   thumb: (W, H) => ({ scale: 0.2, words: 0, at: STAR_X.map((f, i) => [W * f, H * [0.62, 0.42, 0.3, 0.42, 0.62][i]]) }),
 };
 
@@ -172,8 +178,8 @@ function mushaf(c, x, y, u, light) {
 
 function scene(c, W, H, state, shape, t) {
   const p = state.progress;
-  const hz = horizonOf(W, H);
-  const cx = W / 2;
+  const hz = shape.hz ?? horizonOf(W, H);
+  const cx = shape.cx ?? W / 2;
   const u = Math.max(0.72, Math.min(1.1, W / 820));
   const light = clamp(0.2 + p * 1.05);
   const breath = 0.9 + 0.1 * Math.sin(t * 1.1);
@@ -238,7 +244,10 @@ function scene(c, W, H, state, shape, t) {
 function paint(c, W, H, mode, state, names, t, now) {
   const layout = SHAPES[mode](W, H);
   // in Arabic the 5T read from the right, so Tamhid lights first on that side
-  const shape = getComputedStyle(c.canvas).direction === "rtl" ? { ...layout, at: layout.at.map(([x, y]) => [W - x, y]) } : layout;
+  const shape =
+    getComputedStyle(c.canvas).direction === "rtl"
+      ? { ...layout, at: layout.at.map(([x, y]) => [W - x, y]), ...(layout.cx != null && { cx: W - layout.cx }) }
+      : layout;
   const p = state.progress;
   const night = p < 0.6 ? p / 0.6 : 1;
   const day = p < 0.6 ? 0 : (p - 0.6) / 0.4;
@@ -292,7 +301,7 @@ function paint(c, W, H, mode, state, names, t, now) {
     });
   }
 
-  if (mode === "hero") scene(c, W, H, state, shape, t);
+  if (mode === "hero" || mode === "wide") scene(c, W, H, state, shape, t);
 }
 
 /**
@@ -327,7 +336,7 @@ export default function Sky({ shares, progress, fireKey, fireT, names, celebrate
       const W = el.clientWidth;
       const H = el.clientHeight;
       if (!W || !H) return;
-      const ratio = Math.min(mode === "full" || mode === "hero" ? 1.5 : 2, window.devicePixelRatio || 1);
+      const ratio = Math.min(mode === "full" || mode === "hero" || mode === "wide" ? 1.5 : 2, window.devicePixelRatio || 1);
       if (el.width !== Math.round(W * ratio) || el.height !== Math.round(H * ratio)) {
         el.width = Math.round(W * ratio);
         el.height = Math.round(H * ratio);

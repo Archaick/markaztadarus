@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Group, Burger, Drawer, ActionIcon, Menu, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconX, IconLanguage, IconChevronDown, IconArrowUpRight } from "@tabler/icons-react";
+import { IconX, IconLanguage, IconChevronDown, IconArrowUpRight, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./Navbar.module.css";
 import logo from "../../assets/imgs/MT-logo.svg";
@@ -9,7 +9,9 @@ import whiteLogo from "../../assets/imgs/MT-logo-white.svg";
 
 // Home Page (MAIN PAGE)
 
-export default function NavbarHome() {
+// `night`: the home page, where the hero is the night sky; the bar is dark glass over it
+// and turns light once the page has scrolled past the hero.
+export default function NavbarHome({ night = false }) {
   const { t, i18n } = useTranslation();
   const [opened, { toggle, close }] = useDisclosure(false);
   const [scrolled, setScrolled] = useState(false);
@@ -65,7 +67,7 @@ export default function NavbarHome() {
   };
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > window.innerHeight);
+    const handleScroll = () => setScrolled(window.scrollY > window.innerHeight - 90);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -77,7 +79,7 @@ export default function NavbarHome() {
   ];
 
   return (
-    <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""}`}>
+    <header className={`${styles.navbar} ${scrolled ? styles.scrolled : ""} ${night && !scrolled ? styles.night : ""}`}>
       <div className={styles.container}>
         <a href="/" aria-label="Markaz Tadarus">
           <img
@@ -100,7 +102,13 @@ export default function NavbarHome() {
                 aria-disabled={isHidayahLink && isClosed ? "true" : undefined}
                 onClick={isHidayahLink && isClosed ? (e) => e.preventDefault() : undefined}
               >
-                {item.beacon && <span className={styles.beacon} aria-hidden="true" />}
+                {item.beacon && (
+                  // live: a small globe with a green dot that pings, as on Tadarus Global itself
+                  <span className={styles.live} aria-hidden="true">
+                    <IconWorld size={16} stroke={1.8} />
+                    <span className={styles.liveDot} />
+                  </span>
+                )}
                 {t(item.key)}
                 {item.beacon && <IconArrowUpRight size={15} className={styles.beaconArrow} aria-hidden="true" />}
                 {item.id === "hidayah" && (
@@ -204,7 +212,13 @@ export default function NavbarHome() {
                   className={linkClass}
                   aria-disabled={isHidayahLink && isClosed ? "true" : undefined}
                 >
-                  {item.beacon && <span className={styles.beacon} aria-hidden="true" />}
+                  {item.beacon && (
+                  // live: a small globe with a green dot that pings, as on Tadarus Global itself
+                  <span className={styles.live} aria-hidden="true">
+                    <IconWorld size={16} stroke={1.8} />
+                    <span className={styles.liveDot} />
+                  </span>
+                )}
                   {t(item.key)}
                   {item.beacon && <IconArrowUpRight size={15} className={styles.beaconArrow} aria-hidden="true" />}
                   {item.id === "hidayah" && (

@@ -62,7 +62,7 @@ const App = () => {
                 path="/"
                 element={
                   <>
-                    <NavbarHome />
+                    <NavbarHome night />
                     <Home />
                     <Footer />
                   </>
