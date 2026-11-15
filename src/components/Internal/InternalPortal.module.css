@@ -886,3 +886,57 @@
   background: #f4e6bd;
   color: #6b5214;
 }
+
+/* ── platforms (15 Nov 2026): Belajar 5T and Supervisi first, same size as the rest ── */
+.tileCover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.tile:focus-within {
+  border-color: #c7d2fe;
+}
+.tilePlatform {
+  border-color: rgba(201, 162, 39, 0.45);
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgba(201, 162, 39, 0.12), transparent 55%),
+    #ffffff;
+}
+.platformBadge {
+  align-self: flex-start;
+  justify-self: start;
+  width: max-content;
+  margin-bottom: 4px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: #12305e;
+  color: #f3d27a;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.platformTools {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+.platformTool {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid #e5e9f0;
+  background: #f7f9fc;
+  color: #1a4970;
+  text-decoration: none;
+}
+.platformTool:hover {
+  border-color: #c9a227;
+  background: #fffaf0;
+}

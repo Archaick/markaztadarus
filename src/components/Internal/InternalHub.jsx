@@ -2,12 +2,24 @@ import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { Avatar, Card, TextInput } from "@mantine/core";
-import { IconArrowRight, IconEye, IconHistory, IconSearch, IconShieldLock, IconUsersGroup, IconX } from "@tabler/icons-react";
+import { IconArrowRight, IconDatabase, IconEye, IconHistory, IconSearch, IconShieldLock, IconTrash, IconUserCog, IconUsersGroup, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "./accessContext";
 import { ADMINS_COLLECTION, FEATURES, normalizeEmail } from "./access";
 import { AccessGate, AccountBar, FullPageLoader, InternalLayout } from "./InternalUI";
 import styles from "./InternalPortal.module.css";
+
+// The platforms (owner, 15 Nov 2026): whole apps rather than single dashboards, shown first
+// with a tag; Belajar keeps its own history, recycle bin, backup and access.
+const PLATFORMS = ["belajar", "supervisi"];
+const PLATFORM_TOOLS = {
+  belajar: [
+    { key: "history", href: "/belajar/riwayat", icon: IconHistory },
+    { key: "trash", href: "/belajar/sampah", icon: IconTrash },
+    { key: "backup", href: "/belajar/cadangan", icon: IconDatabase },
+    { key: "access", href: "/belajar/akses", icon: IconUserCog },
+  ],
+};
 
 // the Tadarus Global globe behind the tiles, loaded after the portal itself
 const HubGlobe = lazy(() => import("../Global/HubGlobe"));
@@ -179,19 +191,35 @@ export default function InternalHub() {
           )}
 
           <div className={styles.tiles}>
-            {shown.map((f) => (
-              <a key={f.key} href={f.href} className={styles.tile} onClick={() => remember(f.key)}>
-                <span className={styles.tileIcon} style={{ background: f.color }}>
-                  <f.icon size={24} />
-                </span>
-                <span className={styles.tileText}>
-                  <span className={styles.tileTitle}>{t(`features.${f.key}.title`)}</span>
-                  <span className={styles.tileDesc}>{t(`features.${f.key}.description`)}</span>
-                </span>
-                {recent[0] === f.key && !q && <span className={styles.tileRecent}>{t("hub.recent")}</span>}
-                <IconArrowRight size={18} className={`${styles.tileArrow} ${styles.flipRtl}`} />
-              </a>
-            ))}
+            {[...shown.filter((f) => PLATFORMS.includes(f.key)), ...shown.filter((f) => !PLATFORMS.includes(f.key))].map((f) => {
+              const platform = PLATFORMS.includes(f.key);
+              const tools = platform && isSuperAdmin ? PLATFORM_TOOLS[f.key] || [] : [];
+              return (
+                <div key={f.key} className={`${styles.tile} ${platform ? styles.tilePlatform : ""}`}>
+                  {/* the whole card opens the dashboard; the tool links sit above it */}
+                  <a href={f.href} className={styles.tileCover} onClick={() => remember(f.key)} aria-label={t(`features.${f.key}.title`)} />
+                  <span className={styles.tileIcon} style={{ background: f.color }}>
+                    <f.icon size={24} />
+                  </span>
+                  <span className={styles.tileText}>
+                    {platform && <span className={styles.platformBadge}>{t("hub.platform")}</span>}
+                    <span className={styles.tileTitle}>{t(`features.${f.key}.title`)}</span>
+                    <span className={styles.tileDesc}>{t(`features.${f.key}.description`)}</span>
+                  </span>
+                  {tools.length > 0 && (
+                    <span className={styles.platformTools}>
+                      {tools.map((tool) => (
+                        <a key={tool.key} href={tool.href} className={styles.platformTool} title={t(`hub.tools.${tool.key}`)} aria-label={t(`hub.tools.${tool.key}`)}>
+                          <tool.icon size={16} />
+                        </a>
+                      ))}
+                    </span>
+                  )}
+                  {recent[0] === f.key && !q && <span className={styles.tileRecent}>{t("hub.recent")}</span>}
+                  <IconArrowRight size={18} className={`${styles.tileArrow} ${styles.flipRtl}`} />
+                </div>
+              );
+            })}
             {shown.length === 0 && <p className={styles.hubEmpty}>{t("hub.noMatch")}</p>}
           </div>
         </Card>

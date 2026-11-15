@@ -1,7 +1,7 @@
 import { arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, limit, query, serverTimestamp, where, writeBatch } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
 import { AUDIT_CHUNK, TRASH_COLLECTION, TRASH_ITEMS, auditedWrite, kindOf } from "./audit";
-import { normalizeEmail } from "./access";
+import { ADMINS_COLLECTION, SUPER_ADMIN_EMAIL, normalizeEmail } from "./access";
 import { IMAGES, POSTS, makeThumb } from "../Blog/blogSchema";
 import { photoOf, removePhoto } from "../Blog/photoFiles";
 import { PATH_PATTERN, REDIRECT_COLLECTION, REDIRECT_PUBLIC, publicId, publicLink } from "../Redirects/redirectSchema";
@@ -91,12 +91,60 @@ async function galleryUpdates(items) {
   return updates;
 }
 
+
+/*
+ * Before anything is put back, a bin entry must hold only what its own kind of
+ * delete could have put there (security review, 15 Nov 2026). Any invited
+ * admin can write to the bin, so without this an entry could be planted that
+ * makes the super admin's Restore write somewhere else, such as an admin's
+ * access. Restore therefore refuses an entry when:
+ *  - a copy points outside the collections of the entry's own area;
+ *  - it would restore an admin's access, unless the super admin removed them;
+ *  - its author may not use that area (no longer has that dashboard);
+ *  - a copy would land on a document that exists now (Restore only brings back
+ *    what is gone, never overwrites).
+ */
+const AREA_COLLECTIONS = {
+  belajar: ["belajar_lessons", "belajar_sections", "belajar_classes", "belajar_codes", "belajar_invites", "belajar_learners", "belajar_progress", "school_map"],
+  supervisi: ["supervisi_schools", "supervisi_teachers", "supervisi_instruments", "supervisi_sessions"],
+  forms: ["forms"],
+  certificates: ["certificates", "certificate_public", "certificate_meta", "certificate_designs", "certificate_design_public", "certificate_signers"],
+  redirects: ["redirect_manager_links"],
+  site: ["posts"],
+  access: [ADMINS_COLLECTION],
+};
+
+export async function checkRestore(group, items) {
+  const allowed = AREA_COLLECTIONS[group.area] || [];
+  const author = normalizeEmail(group.actor);
+  const bySuper = author === SUPER_ADMIN_EMAIL;
+  for (const item of items) {
+    const top = String(item.path || "").split("/")[0];
+    if (!allowed.includes(top)) return { reason: "outside", path: item.path };
+    if (top === ADMINS_COLLECTION && !bySuper) return { reason: "access", path: item.path };
+  }
+  if (!bySuper) {
+    const admin = await getDoc(doc(db, ADMINS_COLLECTION, author));
+    if (!admin.exists() || !(admin.data().features || []).includes(group.area)) return { reason: "author", path: author };
+  }
+  for (const item of items) {
+    if ((await getDoc(doc(db, item.path))).exists()) return { reason: "exists", path: item.path };
+  }
+  return null;
+}
+
 /**
  * Puts every document of a bin entry back where it was, under its own id
  * (so printed QR codes and shared links work again), and marks the entry
  * restored. Each batch is a history entry of its own.
  */
 export async function restoreGroup(user, group, items, onProgress) {
+  const problem = await checkRestore(group, items);
+  if (problem) {
+    const err = new Error(`restore refused: ${problem.reason} (${problem.path})`);
+    err.problem = problem;
+    throw err;
+  }
   const parts = chunks(items);
   const galleries = await galleryUpdates(items);
   let done = 0;
@@ -135,11 +183,25 @@ export async function restoreGroup(user, group, items, onProgress) {
   }
 }
 
-// Copies that are going for good take their file in Cloud Storage with them.
-const removeFiles = (items) =>
-  Promise.all(
-    items.filter((item) => item.data?.file).map((item) => removePhoto(item.data.file).catch((err) => console.error("Could not remove a photo file:", err)))
-  );
+// Copies that are going for good take their file in Cloud Storage with them, but
+// only a news photo's own file, and only when its document is truly gone: a
+// planted copy must not delete a live post's photo (security review, 15 Nov 2026).
+async function removable(item) {
+  const path = String(item.path || "");
+  const file = String(item.data?.file || "");
+  const [top, postId] = path.split("/");
+  if (top !== POSTS || !postId || !file.startsWith(`${POSTS}/${postId}/`)) return false;
+  return !(await getDoc(doc(db, path))).exists();
+}
+const removeFiles = async (items) => {
+  for (const item of items.filter((x) => x.data?.file)) {
+    try {
+      if (await removable(item)) await removePhoto(item.data.file);
+    } catch (err) {
+      console.error("Could not remove a photo file:", err);
+    }
+  }
+};
 
 /**
  * Removes the entries whose 30 days are up, copies and all (no history

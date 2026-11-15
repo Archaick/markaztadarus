@@ -72,7 +72,14 @@
     "previewing": "Preview: this is the portal exactly as {{name}} sees it.",
     "previewMissing": "No admin {{email}} was found.",
     "exitPreview": "Exit preview",
-    "previewNone": "This admin has no dashboards ticked, so they see the \"no access\" page."
+    "previewNone": "This admin has no dashboards ticked, so they see the \"no access\" page.",
+    "platform": "Platform",
+    "tools": {
+      "history": "History",
+      "trash": "Recently deleted",
+      "backup": "Backup",
+      "access": "Access"
+    }
   },
   "access": {
     "intro": "Invite a Google account and choose the dashboards it can open. Changes apply instantly — no password is ever shared.",
@@ -445,7 +452,10 @@
     "conflictTitle": "Something new is in its place",
     "conflict": {
       "exists": "a document already exists here",
-      "taken": "another link now uses this path"
+      "taken": "another link now uses this path",
+      "outside": "this entry holds something its kind of delete could not — not restored",
+      "access": "an admin's access can only be restored when the super admin removed it",
+      "author": "whoever made this entry no longer has that dashboard"
     },
     "nothingLeft": "This entry holds nothing to restore.",
     "failed": "That did not work. Check your connection and try again.",

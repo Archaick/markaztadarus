@@ -3,6 +3,14 @@ import { Button, Text, Title } from "@mantine/core";
 import { useTranslation } from "react-i18next";
 import Sky, { FIVE, fiveNames } from "../../Guru/Sky";
 import styles from "./Hero.module.css";
+import majelis1 from "../../../assets/imgs/homepage/gallery/majelis/majelis1.jpg";
+import majelis2 from "../../../assets/imgs/homepage/gallery/majelis/majelis2.jpg";
+import kaderisasi3 from "../../../assets/imgs/homepage/gallery/kaderisasi/kaderisasi3.jpg";
+import seminar2 from "../../../assets/imgs/homepage/gallery/seminar/seminar2.jpg";
+import majelis3 from "../../../assets/imgs/homepage/gallery/majelis/majelis3.jpg";
+
+// sample "photo": a real picture from the gallery beside each step
+const STEP_PHOTOS = [majelis1, majelis2, kaderisasi3, seminar2, majelis3];
 
 // The 5T steps around the logo; descriptions live in homepage/Methods.
 const PILLARS = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
@@ -57,11 +65,14 @@ const Hero = () => {
   // each step lights its star (with its wave of light), and the sky turns from night
   // towards dawn as the steps go on.
   const shares = Object.fromEntries(FIVE.map((k, i) => [k, i <= active ? 1 : 0.32]));
+  // Samples for the owner (15 Nov 2026), with ?hero= : night (now), dawn, center, photo
+  const sample = (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("hero")) || "night";
+
   return (
-    <div id="home" className={`${styles.hero} ${styles.heroWide}`}>
+    <div id="home" className={`${styles.hero} ${styles.heroWide} ${sample === "dawn" ? styles.heroDawn : ""} ${sample === "center" ? styles.heroCenter : ""}`}>
       {/* the /guru sign-in sky behind the whole hero: the five stars over the mushaf, beside the words */}
       <div className={styles.wideSky} dir={rtl ? "rtl" : "ltr"} aria-hidden="true">
-        <Sky mode="wide" className={styles.dawnCanvas} shares={shares} progress={0.16 + active * 0.16} fireKey={active + 1} fireT={FIVE[active]} names={fiveNames(tGuru)} />
+        <Sky mode={sample === "center" ? "hero" : "wide"} className={styles.dawnCanvas} shares={shares} progress={sample === "dawn" ? 0.88 : 0.16 + active * 0.16} names={fiveNames(tGuru)} />
       </div>
 
       <div className={styles.inner} dir={rtl ? "rtl" : "ltr"}>
@@ -74,6 +85,7 @@ const Hero = () => {
           {/* What the lit step means; re-keyed so each step animates in. */}
           <div className={styles.stepCard} aria-live="polite">
             <div key={`${key}-${i18n.language}`} className={styles.stepCardInner}>
+              {sample === "photo" && <img src={STEP_PHOTOS[active]} alt="" className={styles.stepPhoto} />}
               <span className={styles.stepBadge}>
                 {active + 1}
                 <small>/5</small>

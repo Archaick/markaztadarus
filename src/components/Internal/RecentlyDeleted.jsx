@@ -9,7 +9,7 @@ import { AREAS, areaOf } from "./areas";
 import { TRASH_DAYS } from "./audit";
 import { intlLocale } from "./language";
 import { timeAgo } from "./timeAgo";
-import { findConflicts, loadItems, purgeGroup, restoreGroup } from "./trash";
+import { checkRestore, findConflicts, loadItems, purgeGroup, restoreGroup } from "./trash";
 import a from "./AdminApp.module.css";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -278,7 +278,9 @@ function BinModal({ open, onClose, user, t, actionText, kindsText, onDone }) {
         if (!alive) return;
         setItems(list);
         if (mode === "restore") {
-          const found = await findConflicts(list);
+          // a planted or unsafe entry is refused before anything is written (security review, 15 Nov 2026)
+          const unsafe = await checkRestore(group, list);
+          const found = unsafe && unsafe.reason !== "exists" ? [unsafe] : await findConflicts(list);
           if (alive) setConflicts(found);
         }
       })

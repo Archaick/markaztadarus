@@ -133,6 +133,9 @@ service cloud.firestore {
           && request.resource.data.actor == adminEmail()
           && request.resource.data.at == request.time
           && request.resource.data.path is string
+          // only the super admin's own deletes may hold an admin's access (a planted
+          // copy could otherwise make Restore grant it; security review, 15 Nov 2026)
+          && (!request.resource.data.path.matches("internal_.*") || isSuperAdmin())
           && request.resource.data.data is map
           && binExpiry(request.resource.data.expiresAt);
         allow delete: if isSuperAdmin();

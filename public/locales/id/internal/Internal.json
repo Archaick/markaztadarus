@@ -72,7 +72,14 @@
     "previewing": "Pratinjau: beginilah portal yang dilihat {{name}}.",
     "previewMissing": "Admin {{email}} tidak ditemukan.",
     "exitPreview": "Keluar dari pratinjau",
-    "previewNone": "Admin ini belum diberi dashboard, jadi ia melihat halaman \"tidak ada akses\"."
+    "previewNone": "Admin ini belum diberi dashboard, jadi ia melihat halaman \"tidak ada akses\".",
+    "platform": "Platform",
+    "tools": {
+      "history": "Riwayat",
+      "trash": "Baru dihapus",
+      "backup": "Cadangan",
+      "access": "Akses"
+    }
   },
   "access": {
     "intro": "Undang akun Google dan pilih dasbor yang boleh dibukanya. Perubahan langsung berlaku — tanpa berbagi kata sandi.",
@@ -444,7 +451,10 @@
     "conflictTitle": "Sudah ada yang baru di tempatnya",
     "conflict": {
       "exists": "sudah ada dokumen di sini",
-      "taken": "tautan lain kini memakai alamat ini"
+      "taken": "tautan lain kini memakai alamat ini",
+      "outside": "isi entri ini tidak sesuai dengan jenis hapusannya — tidak dipulihkan",
+      "access": "memulihkan akses admin hanya bisa bila Super Admin yang menghapusnya",
+      "author": "pembuat entri ini tidak lagi memegang dasbor tersebut"
     },
     "nothingLeft": "Entri ini tidak berisi apa pun untuk dipulihkan.",
     "failed": "Gagal. Periksa koneksi Anda dan coba lagi.",

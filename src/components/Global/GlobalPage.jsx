@@ -159,7 +159,8 @@ export default function GlobalPage({ embedded = false }) {
       </header>
 
       <main className={styles.stage}>
-        <FiveStars hidden={!!selected} />
+        {/* sample for the owner (15 Nov 2026): ?globe=space leaves the five stars to the hero */}
+        {!(embedded && typeof window !== "undefined" && new URLSearchParams(window.location.search).get("globe") === "space") && <FiveStars hidden={!!selected} />}
         <WorldGlobe
           ref={globe}
           programs={programs}
