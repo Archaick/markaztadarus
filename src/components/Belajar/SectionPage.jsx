@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Alert, Button, Group, Loader, Modal, Select, Text, Textarea, Tooltip } from "@mantine/core";
+import { ActionIcon, Alert, Button, Group, Loader, Modal, SegmentedControl, Select, Text, Textarea, Tooltip } from "@mantine/core";
 import { IconAlertTriangle, IconArrowLeft, IconHeadphones, IconChevronsDown, IconChevronsUp, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
@@ -41,6 +41,7 @@ export default function SectionPage() {
   const [busy, setBusy] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [reciteView, setReciteView] = useState("editor");
   const [adding, setAdding] = useState(null); // { part, at: "top" | "end" }: where a new question goes, while its type is picked
   const [folded, setFolded] = useState(() => new Set()); // questions shown as one line
   const [fresh, setFresh] = useState(null); // the question just added: brought into view and focused
@@ -157,17 +158,35 @@ export default function SectionPage() {
               </h3>
               {surahNo ? (
                 <div className={styles.panel}>
-                  <Select
-                    label={t("recite.reciter")}
-                    description={t("recite.reciterHint")}
-                    allowDeselect={false}
-                    maw={360}
-                    data={RECITERS.map((r) => ({ value: r.id, label: tg(`recite.reciter.${r.key}`) }))}
-                    value={reciter}
-                    onChange={(v) => set({ reciter: v })}
-                    mb="sm"
-                  />
-                  <RecitationPanel key={reciter} surah={surahNo} reciter={reciter} compact />
+                  <div className={styles.reciteBar}>
+                    <Select
+                      label={t("recite.reciter")}
+                      description={t("recite.reciterHint")}
+                      allowDeselect={false}
+                      maw={360}
+                      style={{ flex: 1 }}
+                      data={RECITERS.map((r) => ({ value: r.id, label: tg(`recite.reciter.${r.key}`) }))}
+                      value={reciter}
+                      onChange={(v) => set({ reciter: v })}
+                    />
+                    {/* the editor's short box, or the whole panel exactly as a teacher sees it */}
+                    <SegmentedControl
+                      value={reciteView}
+                      onChange={setReciteView}
+                      color="#003366"
+                      data={[
+                        { value: "editor", label: t("recite.viewEditor") },
+                        { value: "teacher", label: t("recite.viewTeacher") },
+                      ]}
+                    />
+                  </div>
+                  {reciteView === "teacher" ? (
+                    <div className={`${guru.app} ${styles.teacherView}`}>
+                      <RecitationPanel key={`t-${reciter}`} surah={surahNo} itemReciter={reciter} />
+                    </div>
+                  ) : (
+                    <RecitationPanel key={reciter} surah={surahNo} reciter={reciter} compact />
+                  )}
                   <Text size="sm" c="dimmed" mt="sm">
                     {t("recite.note")}
                   </Text>

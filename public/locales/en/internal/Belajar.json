@@ -553,7 +553,9 @@
     "reciterHint": "Teachers may pick another reciter on their own device; their choice is used.",
     "note": "Teachers see the full recitation: every ayah in Uthmani script, each with its own play button, above the PDF.",
     "noSurah": "This surah has no surah number, so its recitation cannot be shown yet. Press the pencil (Edit surah) on the surah card and fill in the Surah number.",
-    "openSurah": "Open the surah card"
+    "openSurah": "Open the surah card",
+    "viewEditor": "Editor",
+    "viewTeacher": "Teacher's view"
   },
   "ayah": {
     "insert": "Insert an ayah",

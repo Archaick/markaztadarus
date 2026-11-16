@@ -533,7 +533,9 @@
     "reciterHint": "Guru bisa memilih qari lain di perangkatnya; pilihannya yang dipakai.",
     "note": "Guru melihat bacaan lengkap: semua ayat dalam rasm Utsmani, masing-masing dengan tombol putar, di atas PDF.",
     "noSurah": "Surat ini belum punya nomor surat, jadi bacaannya belum bisa ditampilkan. Tekan ikon pensil (Edit surat) di kartu surat, lalu isi Nomor surat.",
-    "openSurah": "Buka kartu surat"
+    "openSurah": "Buka kartu surat",
+    "viewEditor": "Editor",
+    "viewTeacher": "Tampilan guru"
   },
   "ayah": {
     "insert": "Ambil ayat",

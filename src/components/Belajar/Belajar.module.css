@@ -1955,3 +1955,35 @@ a.row:hover {
   font-size: 0.75rem;
   font-weight: 800;
 }
+
+/* a pinned school's place, under its name on the card */
+.cardPlace {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: -4px 0 10px;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.cardPlace svg {
+  flex: none;
+  color: #cc9933;
+}
+
+/* Tilawah in the admin: the reciter and the editor / teacher's view switch, side by side */
+.reciteBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 14px;
+}
+.teacherView {
+  min-height: 0;
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(170deg, #f7f9fc 0%, #eef3f8 45%, #e5ecf5 100%);
+  --rec-top: 0px;
+}

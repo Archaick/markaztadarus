@@ -7,12 +7,12 @@ import rec from "./Recitation.module.css";
 const NS = "guru/Guru";
 const RATES = [0.75, 1];
 
-/** The ayah-end medallion of a mushaf: ۝ with the number in Arabic-Indic digits. */
+/** The ayah-end medallion of a mushaf: a gold ring with the number in Arabic-Indic digits. */
 export function AyahMark({ n }) {
-  // Amiri Quran sets the digits that follow U+06DD inside the medallion itself
+  // drawn, not left to a font's ۝: every browser and font sets it the same, digits centred
   return (
     <span className={rec.mark} aria-label={String(n)}>
-      {"۝" + arabicDigits(n)}
+      <span>{arabicDigits(n)}</span>
     </span>
   );
 }
@@ -168,7 +168,7 @@ function Status({ error, retry, t }) {
  * repeat, speed, and the reciter. `reciter` set from outside (the admin's
  * pick for the item) hides the switcher; otherwise the teacher's own choice
  * (kept on this device) wins over the item's default `itemReciter`.
- * `compact` (the admin's preview) shows only the ayah being recited.
+ * `compact` (the admin's editor): the ayat in a short scrolling box, each still playable.
  */
 export default function RecitationPanel({ surah, itemReciter, reciter: fixed, compact = false }) {
   const { t } = useTranslation(NS);
@@ -182,10 +182,16 @@ export default function RecitationPanel({ surah, itemReciter, reciter: fixed, co
 
   // the ayah being recited stays in view
   useEffect(() => {
-    if (player.at < 0 || compact) return;
+    if (player.at < 0) return;
     const row = list.current?.querySelector(`[data-at="${player.at}"]`);
     if (!row) return;
     const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    // in the editor's box only the box scrolls, never the admin's page
+    if (compact) {
+      const box = list.current;
+      box.scrollTo({ top: row.offsetTop - box.clientHeight / 2 + row.clientHeight / 2, behavior: still ? "auto" : "smooth" });
+      return;
+    }
     row.scrollIntoView({ behavior: still ? "auto" : "smooth", block: "center" });
   }, [player.at, compact]);
 
@@ -196,23 +202,26 @@ export default function RecitationPanel({ surah, itemReciter, reciter: fixed, co
   return (
     <section className={`${rec.panel} ${compact ? rec.compact : ""}`} aria-label={t("recite.title")}>
       <div className={rec.head}>
-        <div className={rec.headText}>
-          <span className={rec.kicker}>
-            <IconVolume size={15} /> {t("recite.title")}
-          </span>
-          {data?.name && (
-            <span className={rec.surahName} dir="rtl" lang="ar">
-              {data.name}
-            </span>
-          )}
-        </div>
-        {!fixed && (
+        <span className={rec.kicker}>
+          <IconVolume size={15} /> {t("recite.title")}
+        </span>
+        {!fixed ? (
           <label className={rec.reciterPick} htmlFor={selectId}>
             <span>{t("recite.reciterLabel")}</span>
             <ReciterSelect id={selectId} value={reciter} onChange={choose} t={t} />
           </label>
+        ) : (
+          <span className={rec.reciterName}>{name}</span>
         )}
       </div>
+      {/* the surah's name as a mushaf's heading band */}
+      {data?.name && (
+        <div className={rec.titleBand}>
+          <span className={rec.surahName} dir="rtl" lang="ar">
+            {data.name}
+          </span>
+        </div>
+      )}
 
       <div className={rec.controls}>
         {!busy ? (
@@ -254,10 +263,8 @@ export default function RecitationPanel({ surah, itemReciter, reciter: fixed, co
         <ol className={rec.ayahs} ref={list}>
           {items.map((a, i) => {
             const on = player.at === i;
-            // the admin's small preview shows only the ayah being recited
-            if (compact && !on) return null;
             return (
-              <li key={a.n} data-at={i} className={`${rec.ayah} ${a.n === 0 ? rec.basmala : ""} ${on ? rec.ayahOn : ""}`} aria-current={on ? "true" : undefined}>
+              <li key={a.n} data-at={i} dir="rtl" className={`${rec.ayah} ${a.n === 0 ? rec.basmala : ""} ${on ? rec.ayahOn : ""}`} aria-current={on ? "true" : undefined}>
                 <p className={rec.text} dir="rtl" lang="ar">
                   {a.text}
                   {a.n > 0 && (

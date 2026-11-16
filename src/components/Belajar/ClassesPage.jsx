@@ -1,7 +1,7 @@
 import { Suspense, lazy, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Badge, Button, Checkbox, Group, Loader, Modal, Stack, Text, TextInput } from "@mantine/core";
-import { IconChevronRight, IconPlus, IconUsers } from "@tabler/icons-react";
+import { IconChevronRight, IconMapPin, IconPlus, IconUsers } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
@@ -13,9 +13,20 @@ import styles from "./Belajar.module.css";
 // the school's pin on Tadarus Global (loaded only when the form opens: the globe is heavy)
 const SchoolLocation = lazy(() => import("./SchoolLocation"));
 
+// a pinned school's place on its card: city and province, or the country's name
+const placeOf = (loc, lang) => {
+  const local = [loc.city, loc.province].filter(Boolean).join(", ");
+  if (local) return local;
+  try {
+    return new Intl.DisplayNames([lang], { type: "region" }).of(loc.country) || loc.country;
+  } catch {
+    return loc.country;
+  }
+};
+
 /** The classes (Kelas): who learns which surahs. */
 export default function ClassesPage() {
-  const { t } = useTranslation(NS);
+  const { t, i18n } = useTranslation(NS);
   const { classes, lessons, loading, learners, learnersOf, pendingOf } = useBelajar();
   const [creating, setCreating] = useState(false);
 
@@ -66,6 +77,7 @@ export default function ClassesPage() {
                 {c.active === false ? <Badge color="gray">{t("classes.closed")}</Badge> : <Badge color="teal">{t("classes.open")}</Badge>}
               </div>
               <h2 className={styles.lessonTitle}>{c.name}</h2>
+              {c.location && <span className={styles.cardPlace}><IconMapPin size={15} />{placeOf(c.location, i18n.language)}</span>}
               <div className={styles.stats}>
                 <Badge variant="light" color="#003366">
                   {t("classes.learners", { count: learnersOf(c.id).length })}
