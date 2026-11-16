@@ -298,7 +298,9 @@
         "invite": "Invited learners",
         "learner": {
           "remove": "Removed a learner from a school",
-          "delete": "Deleted a teacher"
+          "delete": "Deleted a teacher",
+          "accept": "Accepted a teacher into a school",
+          "decline": "Declined a teacher's request to join"
         },
         "note": "Left a note on an answer"
       }
@@ -497,14 +499,22 @@
       "supervisi_instruments_other": "{{count}} instruments",
       "internal_admins_one": "{{count}} admin",
       "internal_admins_other": "{{count}} admins",
-      "belajar_lessons": "{{count}} surahs",
-      "belajar_sections": "{{count}} sections",
-      "belajar_classes": "{{count}} schools",
-      "belajar_codes": "{{count}} school codes",
-      "belajar_invites": "{{count}} invites",
-      "belajar_learners": "{{count}} learners",
-      "belajar_progress": "{{count}} progress records",
-      "school_map": "{{count}} school pins on Tadarus Global"
+      "belajar_lessons_one": "{{count}} surah",
+      "belajar_lessons_other": "{{count}} surahs",
+      "belajar_sections_one": "{{count}} section",
+      "belajar_sections_other": "{{count}} sections",
+      "belajar_classes_one": "{{count}} school",
+      "belajar_classes_other": "{{count}} schools",
+      "belajar_codes_one": "{{count}} school code",
+      "belajar_codes_other": "{{count}} school codes",
+      "belajar_invites_one": "{{count}} invite",
+      "belajar_invites_other": "{{count}} invites",
+      "belajar_learners_one": "{{count}} learner",
+      "belajar_learners_other": "{{count}} learners",
+      "belajar_progress_one": "{{count}} progress record",
+      "belajar_progress_other": "{{count}} progress records",
+      "school_map_one": "{{count}} school pin on Tadarus Global",
+      "school_map_other": "{{count}} school pins on Tadarus Global"
     }
   },
   "backup": {

@@ -24,7 +24,8 @@
     "ok": "You joined!",
     "failed": "Could not join. Check your connection.",
     "otherAccount": "Not {{email}}? Switch account",
-    "back": "Back to home"
+    "back": "Back to home",
+    "waiting": "Request sent. Your school's admin will accept you soon; your surahs open here as soon as they do."
   },
   "home": {
     "morning": "Good morning",
@@ -204,5 +205,11 @@
     "retry": "Try again",
     "listenPlay": "Play the ayah",
     "listening": "Listening…"
+  },
+  "watch": {
+    "title": "Viewing as {{name}}.",
+    "text": "This is their page as they see it. Nothing you do here is saved.",
+    "empty": "They are not in a school with surahs yet.",
+    "stop": "Back to admin"
   }
 }

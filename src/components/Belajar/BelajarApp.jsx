@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Loader } from "@mantine/core";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { IconBook2, IconChartBar, IconDatabaseExport, IconHistory, IconSchool, IconTrash, IconUsers, IconUsersGroup } from "@tabler/icons-react";
+import { IconBook2, IconChartBar, IconDatabaseExport, IconHistory, IconSchool, IconTrash, IconUsersGroup } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import RequireFeature from "../Internal/RequireFeature";
 import AppShell from "../Internal/AppShell";
@@ -27,7 +27,8 @@ const Backup = lazy(() => import("../Internal/Backup"));
 function Shell({ children }) {
   const { t } = useTranslation(NS);
   const { isSuperAdmin } = useAccess();
-  const { lessons, classes, learners } = useBelajar();
+  const { lessons, classes, learners, pendingOf } = useBelajar();
+  const requests = learners ? pendingOf().reduce((n, l) => n + l.pendingIds.filter((id) => !(l.classIds || []).includes(id)).length, 0) : 0;
   const trash = useTrashList();
   const waiting = Array.isArray(trash) ? trash.filter((g) => !g.restoredAt && BELAJAR_SCOPE.includes(g.area)).length : null;
   const sections = [
@@ -35,8 +36,7 @@ function Shell({ children }) {
       label: t("nav.guru"),
       items: [
         { to: BASE, end: true, icon: IconBook2, label: t("nav.lessons"), count: lessons?.length ?? null },
-        { to: `${BASE}/kelas`, icon: IconSchool, label: t("nav.classes"), count: classes?.length ?? null },
-        { to: `${BASE}/guru`, icon: IconUsers, label: t("nav.teachers"), count: learners?.length ?? null },
+        { to: `${BASE}/kelas`, icon: IconSchool, label: t("nav.classes"), count: classes?.length ?? null, alert: requests || null, alertLabel: t("classes.waitingCount", { count: requests }) },
         { to: `${BASE}/kemajuan`, icon: IconChartBar, label: t("nav.progress") },
       ],
     },

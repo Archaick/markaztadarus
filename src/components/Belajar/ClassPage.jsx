@@ -1,7 +1,7 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ActionIcon, Avatar, Badge, Button, CopyButton, Drawer, Group, Loader, Modal, Progress, Switch, Tabs, Text, TextInput, Textarea, Tooltip } from "@mantine/core";
-import { IconArrowLeft, IconBrandWhatsapp, IconCheck, IconCopy, IconLock, IconMapPin, IconPencil, IconRefresh, IconTrash, IconUserMinus } from "@tabler/icons-react";
+import { IconArrowLeft, IconBook2, IconBrandWhatsapp, IconChartBar, IconCheck, IconCopy, IconEye, IconLock, IconMail, IconMapPin, IconPencil, IconRefresh, IconTrash, IconUserCheck, IconUserMinus, IconUserQuestion, IconUsers, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../firebaseConfig";
@@ -9,12 +9,13 @@ import { useAccess } from "../Internal/accessContext";
 import { isValidEmail, normalizeEmail } from "../Internal/access";
 import { timeAgo } from "../Internal/timeAgo";
 import { useBelajar } from "./BelajarData";
-import { deleteClass, inviteEmails, removeLearner, renewCode, saveNote, updateClass } from "./actions";
+import { answerRequest, deleteClass, inviteEmails, removeLearner, renewCode, saveNote, updateClass } from "./actions";
 import { BASE, NS, PROGRESS, sectionTitle, surahState } from "./belajarSchema";
 
 import { DeleteTeacher } from "./TeachersPage";
 import SchoolScene, { SCENES } from "../Supervisi/SchoolScene";
 import styles from "./Belajar.module.css";
+import { ProgressReport } from "./ProgressPage";
 
 // the school's pin on Tadarus Global (loaded only when the form opens: the globe is heavy)
 const SchoolLocation = lazy(() => import("./SchoolLocation"));
@@ -56,8 +57,9 @@ export default function ClassPage() {
   const { t } = useTranslation(NS);
   const { user, isSuperAdmin } = useAccess();
   const navigate = useNavigate();
-  const { loading, classById, codeById, lessonById, sections, learnersOf, invitedTo, inviteByEmail } = useBelajar();
+  const { loading, classById, codeById, lessonById, sections, learnersOf, pendingOf, invitedTo, inviteByEmail } = useBelajar();
   const [busy, setBusy] = useState(false);
+  const [tab, setTab] = useState(null); // null: requests first while any wait, else the teachers
   const [renaming, setRenaming] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [viewing, setViewing] = useState(null);
@@ -84,6 +86,8 @@ export default function ClassPage() {
   if (loading) return <Loader />;
   if (!klass) return <Text c="dimmed">{t("classes.missing")}</Text>;
 
+  const pending = pendingOf(klass.id);
+  const shownTab = tab === "requests" && !pending.length ? "learners" : tab || (pending.length ? "requests" : "learners");
   const link = `${window.location.origin}/guru`;
   const share = t("classes.shareText", { name: klass.name, code: klass.code, link });
   const run = async (fn) => {
@@ -179,12 +183,71 @@ export default function ClassPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="learners" keepMounted={false} mt="lg">
+      <Tabs value={shownTab} onChange={setTab} keepMounted={false} mt="lg" variant="unstyled" classNames={{ list: styles.bigTabs, tab: styles.bigTab }}>
         <Tabs.List mb="lg">
-          <Tabs.Tab value="learners">{t("classes.tabLearners", { count: learners.length })}</Tabs.Tab>
-          <Tabs.Tab value="surahs">{t("classes.tabSurahs", { count: lessonsOf.length })}</Tabs.Tab>
-          <Tabs.Tab value="invites">{t("classes.tabInvites")}</Tabs.Tab>
+          {pending.length > 0 && (
+            <Tabs.Tab value="requests" leftSection={<IconUserQuestion size={20} />} data-alert>
+              {t("classes.tabRequests")}
+              <span className={styles.bigTabAlert}>{pending.length}</span>
+            </Tabs.Tab>
+          )}
+          <Tabs.Tab value="learners" leftSection={<IconUsers size={20} />}>
+            {t("classes.tabLearners", { count: learners.length })}
+          </Tabs.Tab>
+          <Tabs.Tab value="progress" leftSection={<IconChartBar size={20} />}>
+            {t("classes.tabProgress")}
+          </Tabs.Tab>
+          <Tabs.Tab value="surahs" leftSection={<IconBook2 size={20} />}>
+            {t("classes.tabSurahs", { count: lessonsOf.length })}
+          </Tabs.Tab>
+          <Tabs.Tab value="invites" leftSection={<IconMail size={20} />}>
+            {t("classes.tabInvites")}
+          </Tabs.Tab>
         </Tabs.List>
+
+        <Tabs.Panel value="requests">
+          <p className={styles.pageSub}>{t("classes.requestsSub")}</p>
+          <div className={styles.rows}>
+            {pending.map((l) => (
+              <div key={l.id} className={styles.row}>
+                <Avatar src={l.photoURL} radius="xl" color="#003366">
+                  {(l.name || l.email || "?").charAt(0).toUpperCase()}
+                </Avatar>
+                <div className={styles.rowMain}>
+                  <div className={styles.rowTitle}>{l.name || l.email}</div>
+                  <div className={styles.rowSub}>
+                    {l.email}
+                    {l.requestedAt ? ` · ${t("classes.askedAgo", { time: timeAgo(l.requestedAt) })}` : ""}
+                  </div>
+                </div>
+                <Group gap="xs" wrap="nowrap">
+                  <Button color="teal" leftSection={<IconUserCheck size={16} />} disabled={busy} onClick={() => run(() => answerRequest(user, klass, l, true))}>
+                    {t("classes.accept")}
+                  </Button>
+                  <Button variant="light" color="red" leftSection={<IconX size={16} />} disabled={busy} onClick={() => run(() => answerRequest(user, klass, l, false))}>
+                    {t("classes.decline")}
+                  </Button>
+                </Group>
+              </div>
+            ))}
+          </div>
+          {pending.length > 1 && (
+            <Button
+              mt="md"
+              variant="light"
+              color="teal"
+              leftSection={<IconUserCheck size={16} />}
+              disabled={busy}
+              onClick={() =>
+                run(async () => {
+                  for (const l of pending) await answerRequest(user, klass, l, true);
+                })
+              }
+            >
+              {t("classes.acceptAll", { count: pending.length })}
+            </Button>
+          )}
+        </Tabs.Panel>
 
         <Tabs.Panel value="learners">
           {progressRows === null ? (
@@ -217,6 +280,10 @@ export default function ClassPage() {
               ))}
             </div>
           )}
+        </Tabs.Panel>
+
+        <Tabs.Panel value="progress">
+          <ProgressReport classId={klass.id} onOpen={(uid) => setViewing(report.find((r) => r.learner.id === uid) || null)} />
         </Tabs.Panel>
 
         <Tabs.Panel value="surahs">
@@ -434,46 +501,99 @@ function LearnerDrawer({ row, klass, onClose }) {
   const [confirm, setConfirm] = useState(false);
   const [deleting, setDeleting] = useState(null);
   const [busy, setBusy] = useState(false);
-  if (!row) return <Drawer opened={false} onClose={onClose} />;
-  const l = row.learner;
+  // the last teacher shown stays in the panel while it slides away, so it never closes empty
+  const last = useRef(null);
+  if (row) last.current = row;
+  const shown = row || last.current;
+  if (!shown) return null;
+  const l = shown.learner;
+  const scoreColor = shown.avg === null ? "" : shown.avg >= 80 ? styles.ldGood : shown.avg >= 60 ? styles.ldOk : styles.ldLow;
   return (
-    <Drawer opened={!!row} onClose={onClose} position="right" size="lg" title={l.name || l.email}>
-      <Text size="sm" c="dimmed" mb="md">
-        {l.email}
-      </Text>
-      {row.per.map(({ lesson, steps, percent }) => (
-        <div key={lesson.id} className={styles.panel}>
-          <Group justify="space-between" mb="xs">
-            <Text fw={800}>{lesson.title}</Text>
-            <Badge color={percent === 100 ? "teal" : "gray"} variant="light">
-              {percent}%
-            </Badge>
-          </Group>
-          {steps.map(({ section, progress, state }) => (
-            <div key={section.id} className={styles.stepRow}>
-              <span className={`${styles.stepDot} ${styles[`step_${state}`]}`}>{state === "done" ? <IconCheck size={12} /> : state === "locked" ? <IconLock size={11} /> : null}</span>
-              <span className={styles.stepName}>{sectionTitle(section, t)}</span>
-              {progress?.max > 0 && (
-                <span className={styles.stepScore}>
-                  {progress.best}/{progress.max}
-                </span>
-              )}
-              {progress?.attempts > 1 && <span className={styles.stepTries}>×{progress.attempts}</span>}
-              {progress?.answers && Object.keys(progress.answers).length > 0 && <WrittenAnswers section={section} progress={progress} learner={l} user={user} />}
-            </div>
-          ))}
+    <Drawer
+      opened={!!row}
+      onClose={onClose}
+      position="right"
+      size={520}
+      withCloseButton={false}
+      padding={0}
+      classNames={{ content: styles.ldContent, body: styles.ldBody }}
+      overlayProps={{ backgroundOpacity: 0.35, blur: 2 }}
+    >
+      <header className={styles.ldHead}>
+        <button type="button" className={styles.ldClose} onClick={onClose} aria-label={t("classes.close")}>
+          <IconX size={20} />
+        </button>
+        <div className={styles.ldWho}>
+          <Avatar src={l.photoURL} size={64} radius="xl" color="yellow" className={styles.ldAvatar}>
+            {(l.name || l.email || "?").charAt(0).toUpperCase()}
+          </Avatar>
+          <div className={styles.ldName}>
+            <h2>{l.name || l.email}</h2>
+            <span>{l.email}</span>
+            <span>{l.lastSeenAt ? t("classes.seen", { time: timeAgo(l.lastSeenAt) }) : t("progressPage.neverSeen")}</span>
+          </div>
         </div>
-      ))}
-      <Group mt="md" gap="xs">
-        <Button variant="subtle" color="red" leftSection={<IconUserMinus size={16} />} onClick={() => setConfirm(true)}>
-          {t("classes.removeLearner")}
+        <div className={styles.ldStats}>
+          <div>
+            <b>{shown.percent}%</b>
+            <span>{t("classes.doneOf", { done: shown.done, total: shown.total })}</span>
+          </div>
+          <div>
+            <b className={scoreColor}>{shown.avg === null ? "–" : `${shown.avg}%`}</b>
+            <span>{t("progressPage.tile.average")}</span>
+          </div>
+          <div>
+            <b>{shown.per.length}</b>
+            <span>{t("nav.lessons")}</span>
+          </div>
+        </div>
+      </header>
+
+      <div className={styles.ldScroll}>
+        {shown.per.map(({ lesson, steps, percent }) => (
+          <section key={lesson.id} className={styles.ldSurah}>
+            <div className={styles.ldSurahHead}>
+              <h3>{lesson.title}</h3>
+              <span className={percent === 100 ? styles.ldPctDone : styles.ldPct}>{percent}%</span>
+            </div>
+            <Progress value={percent} color={percent === 100 ? "teal" : "#cc9933"} radius="xl" size="sm" mb="sm" />
+            <ol className={styles.ldSteps}>
+              {steps.map(({ section, progress, state }) => (
+                <li key={section.id} className={`${styles.ldStep} ${styles[`ld_${state}`] || ""}`}>
+                  <span className={`${styles.stepDot} ${styles[`step_${state}`]}`}>{state === "done" ? <IconCheck size={12} /> : state === "locked" ? <IconLock size={11} /> : null}</span>
+                  <span className={styles.stepName}>{sectionTitle(section, t)}</span>
+                  {progress?.max > 0 && (
+                    <span className={styles.ldScore}>
+                      {progress.best}/{progress.max}
+                    </span>
+                  )}
+                  {progress?.attempts > 1 && <span className={styles.stepTries}>×{progress.attempts}</span>}
+                  {progress?.answers && Object.keys(progress.answers).length > 0 && <WrittenAnswers section={section} progress={progress} learner={l} user={user} />}
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+
+      <footer className={styles.ldFoot}>
+        {/* their /guru as they see it, in a new tab, read-only */}
+        <Button component="a" href={`/guru?lihat=${encodeURIComponent(l.id)}`} target="_blank" rel="noopener" color="#003366" size="md" leftSection={<IconEye size={18} />} className={styles.ldMain}>
+          {t("classes.viewAs")}
         </Button>
+        <Tooltip label={t("classes.removeLearner")}>
+          <ActionIcon variant="light" color="orange" size={42} radius="md" onClick={() => setConfirm(true)} aria-label={t("classes.removeLearner")}>
+            <IconUserMinus size={20} />
+          </ActionIcon>
+        </Tooltip>
         {isSuperAdmin && (
-          <Button variant="light" color="red" leftSection={<IconTrash size={16} />} onClick={() => setDeleting(l)}>
-            {t("teachers.delete")}
-          </Button>
+          <Tooltip label={t("teachers.delete")}>
+            <ActionIcon variant="light" color="red" size={42} radius="md" onClick={() => setDeleting(l)} aria-label={t("teachers.delete")}>
+              <IconTrash size={20} />
+            </ActionIcon>
+          </Tooltip>
         )}
-      </Group>
+      </footer>
       <DeleteTeacher learner={deleting} onClose={() => setDeleting(null)} onDone={onClose} />
       <Modal opened={confirm} onClose={() => setConfirm(false)} title={t("classes.removeLearner")} centered>
         <Text mb="md">{t("classes.removeLearnerBody", { name: l.name || l.email, klass: klass.name })}</Text>

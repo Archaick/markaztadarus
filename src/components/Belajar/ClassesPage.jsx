@@ -1,7 +1,7 @@
 import { Suspense, lazy, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Badge, Button, Checkbox, Loader, Modal, Stack, Text, TextInput } from "@mantine/core";
-import { IconPlus, IconUsers } from "@tabler/icons-react";
+import { Avatar, Badge, Button, Checkbox, Group, Loader, Modal, Stack, Text, TextInput } from "@mantine/core";
+import { IconChevronRight, IconPlus, IconUsers } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
@@ -16,10 +16,13 @@ const SchoolLocation = lazy(() => import("./SchoolLocation"));
 /** The classes (Kelas): who learns which surahs. */
 export default function ClassesPage() {
   const { t } = useTranslation(NS);
-  const { classes, lessons, loading, learnersOf } = useBelajar();
+  const { classes, lessons, loading, learners, learnersOf, pendingOf } = useBelajar();
   const [creating, setCreating] = useState(false);
 
   if (loading || !classes) return <Loader />;
+  // teachers in no school (taken out, or declined): only the all-teachers list shows them
+  const schoolIds = new Set(classes.map((c) => c.id));
+  const loose = (learners || []).filter((l) => !(l.classIds || []).some((id) => schoolIds.has(id)) && !pendingOf().includes(l)).length;
 
   return (
     <>
@@ -28,9 +31,15 @@ export default function ClassesPage() {
           <h1 className={styles.pageTitle}>{t("classes.title")}</h1>
           <p className={styles.pageSub}>{t("classes.intro")}</p>
         </div>
-        <Button color="#003366" leftSection={<IconPlus size={18} />} onClick={() => setCreating(true)} disabled={!lessons.length}>
-          {t("classes.new")}
-        </Button>
+        <Group gap="xs">
+          <Button component={Link} to={`${BASE}/guru`} variant="subtle" color="#003366" leftSection={<IconUsers size={18} />}>
+            {t("classes.allTeachers", { count: (learners || []).length })}
+            {loose > 0 && <span className={styles.looseCount}>{t("classes.noSchool", { count: loose })}</span>}
+          </Button>
+          <Button color="#003366" leftSection={<IconPlus size={18} />} onClick={() => setCreating(true)} disabled={!lessons.length}>
+            {t("classes.new")}
+          </Button>
+        </Group>
       </div>
 
       {classes.length === 0 ? (
@@ -45,8 +54,10 @@ export default function ClassesPage() {
         </div>
       ) : (
         <div className={styles.grid}>
-          {classes.map((c) => (
-            <Link key={c.id} to={`${BASE}/kelas/${c.id}`} className={`${styles.lessonCard} ${styles.classCard} ${styles.schoolCard}`}>
+          {classes.map((c) => {
+            const waiting = pendingOf(c.id);
+            return (
+            <Link key={c.id} to={`${BASE}/kelas/${c.id}`} className={`${styles.lessonCard} ${styles.classCard} ${styles.schoolCard} ${waiting.length ? styles.schoolCardWaiting : ""}`}>
               <span className={styles.schoolCover} aria-hidden="true">
                 <SchoolScene id={c.id} scene={c.scene} />
               </span>
@@ -63,8 +74,28 @@ export default function ClassesPage() {
                   {t("classes.surahs", { count: (c.lessonIds || []).length })}
                 </Badge>
               </div>
+              {/* teachers who entered the code and wait to be accepted: opens the school on its requests */}
+              {waiting.length > 0 && (
+                <div className={styles.waitStrip}>
+                  <Avatar.Group spacing="sm">
+                    {waiting.slice(0, 3).map((l) => (
+                      <Avatar key={l.id} src={l.photoURL} size={30} radius="xl" color="orange">
+                        {(l.name || l.email || "?").charAt(0).toUpperCase()}
+                      </Avatar>
+                    ))}
+                    {waiting.length > 3 && (
+                      <Avatar size={30} radius="xl" color="orange">
+                        +{waiting.length - 3}
+                      </Avatar>
+                    )}
+                  </Avatar.Group>
+                  <span>{t("classes.waitingCard", { count: waiting.length })}</span>
+                  <IconChevronRight size={18} />
+                </div>
+              )}
             </Link>
-          ))}
+            );
+          })}
         </div>
       )}
 

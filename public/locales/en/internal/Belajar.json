@@ -269,7 +269,24 @@
       "school-sunset": "School · sunset",
       "school-dusk": "School · dusk",
       "school-night": "School · night"
-    }
+    },
+    "tabProgress": "Progress",
+    "tabRequests": "Asking to join",
+    "requestsSub": "These teachers entered the school code. Accept the ones you know; their surahs open right away. A declined teacher can ask again with the code.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "acceptAll_one": "Accept {{count}} teacher",
+    "acceptAll_other": "Accept all {{count}}",
+    "waitingCount_one": "{{count}} waiting",
+    "waitingCount_other": "{{count}} waiting",
+    "askedAgo": "asked {{time}}",
+    "viewAs": "View as this teacher",
+    "close": "Close",
+    "allTeachers": "All teachers ({{count}})",
+    "noSchool_one": "{{count}} in no school",
+    "noSchool_other": "{{count}} in no school",
+    "waitingCard_one": "{{count}} teacher waiting for approval",
+    "waitingCard_other": "{{count}} teachers waiting for approval"
   },
   "schoolLocation": {
     "title": "School location",

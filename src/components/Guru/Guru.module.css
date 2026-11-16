@@ -2448,3 +2448,35 @@
     transition: none;
   }
 }
+
+/* an admin viewing as a teacher: always in sight, never in the way */
+.watchBar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: #fff4e6;
+  color: #7c2d12;
+  border-bottom: 2px solid #e8590c;
+  font-size: 0.95rem;
+}
+.watchBar button {
+  margin-inline-start: auto;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #e8590c;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+.watchBarAlone {
+  position: static;
+  max-width: 560px;
+  border: 2px solid #e8590c;
+  border-radius: 14px;
+}

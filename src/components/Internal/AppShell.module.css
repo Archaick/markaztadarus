@@ -312,6 +312,28 @@
 .collapsed .count {
   display: none;
 }
+.alert {
+  min-width: 24px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e8590c;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-align: center;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+.navItem {
+  position: relative;
+}
+.collapsed .alert {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  min-width: 18px;
+  padding: 0 5px;
+  font-size: 0.68rem;
+}
 
 @media (max-width: 900px) {
   .app,

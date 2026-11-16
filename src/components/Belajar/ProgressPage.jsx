@@ -39,9 +39,37 @@ const SORTS = ["behind", "ahead", "recent", "name"];
  */
 export default function ProgressPage() {
   const { t } = useTranslation(NS);
-  const { loading, learners, classes, classById, lessonById, sections } = useBelajar();
-  const rows = useAllProgress();
+  const { classes } = useBelajar();
   const [classId, setClassId] = useState("all");
+  return (
+    <>
+      <div className={styles.pageHead}>
+        <div>
+          <h1 className={styles.pageTitle}>{t("progressPage.title")}</h1>
+          <p className={styles.pageSub}>{t("progressPage.sub")}</p>
+        </div>
+        <Select
+          w={240}
+          allowDeselect={false}
+          value={classId}
+          onChange={(v) => setClassId(v || "all")}
+          data={[{ value: "all", label: t("progressPage.allClasses") }, ...(classes || []).map((c) => ({ value: c.id, label: c.name }))]}
+        />
+      </div>
+      <ProgressReport classId={classId} />
+    </>
+  );
+}
+
+/**
+ * The report itself, for every school ("all") or one. Inside a school's page
+ * (`onOpen` given) a teacher opens in that page's drawer, and the full list is
+ * left out: the school's Teachers tab already shows it.
+ */
+export function ProgressReport({ classId, onOpen }) {
+  const { t } = useTranslation(NS);
+  const { loading, learners, classById, lessonById, sections } = useBelajar();
+  const rows = useAllProgress();
   const [sort, setSort] = useState("behind");
 
   const byLearner = useMemo(() => {
@@ -120,22 +148,20 @@ export default function ProgressPage() {
     { key: "quiet", value: count("quiet"), warn: count("quiet") > 0 },
   ];
 
+  // a teacher's row: a link to their school, or (inside it) a button for its drawer
+  const Row = ({ r, children }) =>
+    onOpen ? (
+      <button type="button" className={`${styles.row} ${styles.rowButton}`} onClick={() => onOpen(r.learner.id)}>
+        {children}
+      </button>
+    ) : (
+      <Link to={openOf(r)} className={`${styles.row} ${styles.rowButton}`}>
+        {children}
+      </Link>
+    );
+
   return (
     <>
-      <div className={styles.pageHead}>
-        <div>
-          <h1 className={styles.pageTitle}>{t("progressPage.title")}</h1>
-          <p className={styles.pageSub}>{t("progressPage.sub")}</p>
-        </div>
-        <Select
-          w={240}
-          allowDeselect={false}
-          value={classId}
-          onChange={(v) => setClassId(v || "all")}
-          data={[{ value: "all", label: t("progressPage.allClasses") }, ...(classes || []).map((c) => ({ value: c.id, label: c.name }))]}
-        />
-      </div>
-
       <div className={styles.tiles}>
         {tiles.map((x) => (
           <div key={x.key} className={`${styles.tile} ${x.warn ? styles.tileWarn : ""}`}>
@@ -157,7 +183,7 @@ export default function ProgressPage() {
               <p className={styles.pageSub}>{t("progressPage.attentionSub", { days: QUIET_DAYS })}</p>
               <div className={styles.rows}>
                 {attention.map((r) => (
-                  <Link key={r.learner.id} to={openOf(r)} className={`${styles.row} ${styles.rowButton}`}>
+                  <Row key={r.learner.id} r={r}>
                     <Avatar src={r.learner.photoURL} radius="xl" color="#003366">
                       {(r.learner.name || r.learner.email || "?").charAt(0).toUpperCase()}
                     </Avatar>
@@ -170,13 +196,13 @@ export default function ProgressPage() {
                     <Badge color={r.status === "quiet" ? "orange" : "gray"} variant="light">
                       {r.status === "quiet" ? t("progressPage.quietFor", { count: r.quietDays }) : t("progressPage.status.notStarted")}
                     </Badge>
-                  </Link>
+                  </Row>
                 ))}
               </div>
             </section>
           )}
 
-          <section className={styles.block}>
+          {!onOpen && <section className={styles.block}>
             <div className={styles.blockHead}>
               <h2 className={styles.blockTitle}>{t("progressPage.everyone")}</h2>
               <Select w={210} size="xs" allowDeselect={false} value={sort} onChange={(v) => setSort(v || "behind")} data={SORTS.map((s) => ({ value: s, label: t(`progressPage.sort.${s}`) }))} />
@@ -206,7 +232,7 @@ export default function ProgressPage() {
                 </Link>
               ))}
             </div>
-          </section>
+          </section>}
 
           {hardest.length > 0 && (
             <section className={styles.block}>

@@ -257,7 +257,20 @@
       "school-sunset": "مدرسة · الغروب",
       "school-dusk": "مدرسة · المساء",
       "school-night": "مدرسة · الليل"
-    }
+    },
+    "tabProgress": "التقدّم",
+    "tabRequests": "طلبات الانضمام",
+    "requestsSub": "أدخل هؤلاء المعلمون رمز المدرسة. اقبل من تعرفهم فتُفتح سورهم فورًا، ويمكن لمن رُفض أن يطلب مرة أخرى بالرمز.",
+    "accept": "قبول",
+    "decline": "رفض",
+    "acceptAll": "قبول الجميع ({{count}})",
+    "waitingCount": "بانتظار القبول: {{count}}",
+    "askedAgo": "طلب {{time}}",
+    "viewAs": "اعرض كما يراه هذا المعلم",
+    "close": "إغلاق",
+    "allTeachers": "كل المعلمين ({{count}})",
+    "noSchool": "بلا مدرسة: {{count}}",
+    "waitingCard": "معلمون بانتظار القبول: {{count}}"
   },
   "schoolLocation": {
     "title": "موقع المدرسة",

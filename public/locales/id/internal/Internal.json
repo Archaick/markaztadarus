@@ -298,7 +298,9 @@
         "invite": "Mengundang peserta",
         "learner": {
           "remove": "Mengeluarkan peserta dari sekolah",
-          "delete": "Menghapus guru"
+          "delete": "Menghapus guru",
+          "accept": "Menerima guru ke sekolah",
+          "decline": "Menolak permintaan guru bergabung"
         },
         "note": "Memberi catatan pada jawaban"
       }

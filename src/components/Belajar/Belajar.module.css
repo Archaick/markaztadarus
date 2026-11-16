@@ -1689,3 +1689,269 @@ a.row:hover {
   border-color: var(--ok, #10b981);
   background: #ecfdf5;
 }
+
+/* a school's tabs: big, with icons, easy to tell apart */
+.bigTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.bigTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(0, 51, 102, 0.14);
+  background: rgba(255, 255, 255, 0.85);
+  color: #003366;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.bigTab:hover {
+  border-color: rgba(0, 51, 102, 0.35);
+  background: #fff;
+}
+.bigTab[data-active] {
+  background: #003366;
+  border-color: #003366;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 51, 102, 0.25);
+}
+.bigTab[data-active] svg {
+  color: #e6c36a;
+}
+.bigTab[data-alert]:not([data-active]) {
+  border-color: #e8590c;
+  background: #fff4e6;
+  color: #c2410c;
+}
+.bigTabAlert {
+  margin-inline-start: 6px;
+  min-width: 24px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e8590c;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-align: center;
+}
+@media (max-width: 600px) {
+  .bigTab {
+    flex: 1 1 calc(50% - 10px);
+    justify-content: center;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+}
+
+/* a teacher's panel on the school page */
+.ldContent {
+  display: flex;
+  flex-direction: column;
+  background: #f4f7fb;
+}
+.ldBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+.ldHead {
+  position: relative;
+  padding: 28px 24px 20px;
+  background: linear-gradient(140deg, #0b2a4a 0%, #003366 55%, #1d4f86 100%);
+  color: #fff;
+}
+.ldClose {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+}
+.ldClose:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.ldWho {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-inline-end: 40px;
+}
+.ldAvatar {
+  box-shadow: 0 0 0 3px rgba(230, 195, 106, 0.8);
+  font-size: 1.5rem;
+}
+.ldName {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ldName h2 {
+  margin: 0 0 2px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.ldName span {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  overflow-wrap: anywhere;
+}
+.ldStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+.ldStats div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.ldStats b {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #fff;
+}
+.ldStats span {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+.ldStats b.ldGood {
+  color: #6ee7b7;
+}
+.ldStats b.ldOk {
+  color: #fcd34d;
+}
+.ldStats b.ldLow {
+  color: #fdba74;
+}
+.ldScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 20px;
+}
+.ldSurah {
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(0, 51, 102, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 51, 102, 0.06);
+}
+.ldSurah + .ldSurah {
+  margin-top: 14px;
+}
+.ldSurahHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.ldSurahHead h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #003366;
+}
+.ldPct,
+.ldPctDone {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.ldPctDone {
+  background: #d1fae5;
+  color: #047857;
+}
+.ldSteps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ldStep {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+.ldStep + .ldStep {
+  margin-top: 2px;
+}
+.ld_open {
+  background: #fff8e6;
+}
+.ld_locked .stepName {
+  color: #94a3b8;
+  font-weight: 500;
+}
+.ldScore {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #e8eef6;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #003366;
+}
+.ldFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: #fff;
+  border-top: 1px solid rgba(0, 51, 102, 0.1);
+}
+.ldMain {
+  flex: 1;
+}
+
+/* a school with teachers waiting to be accepted */
+.schoolCardWaiting {
+  box-shadow: 0 0 0 2px #e8590c, 0 10px 26px rgba(232, 89, 12, 0.18);
+}
+.waitStrip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px -20px -20px;
+  padding: 12px 20px;
+  background: #fff4e6;
+  border-top: 1px solid #ffd8a8;
+  color: #c2410c;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.waitStrip span {
+  flex: 1;
+}
+.looseCount {
+  margin-inline-start: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fff4e6;
+  color: #c2410c;
+  font-size: 0.75rem;
+  font-weight: 800;
+}

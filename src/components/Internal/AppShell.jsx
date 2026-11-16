@@ -141,7 +141,7 @@ export default function AppShell({ brand, role, sections, action, collapseKey, v
           {sections.map((section, s) => (
             <div key={s} className={styles.navGroup}>
               {section.label && <span className={styles.navLabel}>{section.label}</span>}
-              {section.items.map(({ to, end, icon: Icon, label, count, active }) => (
+              {section.items.map(({ to, end, icon: Icon, label, count, active, alert, alertLabel }) => (
                 <NavLink
                   key={to}
                   to={to}
@@ -151,6 +151,12 @@ export default function AppShell({ brand, role, sections, action, collapseKey, v
                 >
                   <Icon size={20} stroke={1.7} />
                   <span className={styles.navText}>{label}</span>
+                  {/* something waiting for the admin (e.g. teachers asking to join): stays visible when collapsed */}
+                  {alert ? (
+                    <span className={styles.alert} title={alertLabel} aria-label={alertLabel}>
+                      {alert}
+                    </span>
+                  ) : null}
                   {count !== undefined && count !== null && <span className={styles.count}>{count}</span>}
                 </NavLink>
               ))}

@@ -24,7 +24,8 @@
     "ok": "Berhasil bergabung!",
     "failed": "Gagal bergabung. Periksa koneksi Anda.",
     "otherAccount": "Bukan {{email}}? Ganti akun",
-    "back": "Kembali ke beranda"
+    "back": "Kembali ke beranda",
+    "waiting": "Permintaan terkirim. Admin sekolah Anda akan segera menerima; surat-surat Anda terbuka di sini begitu diterima."
   },
   "home": {
     "morning": "Selamat pagi",
@@ -204,5 +205,11 @@
     "retry": "Coba lagi",
     "listenPlay": "Putar ayat",
     "listening": "Mendengarkan…"
+  },
+  "watch": {
+    "title": "Melihat sebagai {{name}}.",
+    "text": "Ini halaman mereka seperti yang mereka lihat. Tidak ada yang tersimpan dari sini.",
+    "empty": "Mereka belum masuk sekolah yang memiliki surat.",
+    "stop": "Kembali ke admin"
   }
 }

@@ -51,6 +51,8 @@ export function BelajarProvider({ children }) {
       inviteByEmail: new Map((invites || []).map((i) => [i.id, i])),
       sectionsOf: (lessonId) => (sections || []).filter((s) => s.lessonId === lessonId).sort(bySectionOrder),
       learnersOf: (classId) => (learners || []).filter((l) => (l.classIds || []).includes(classId)),
+      // asked to join with the code, waiting for an admin (every school when no id)
+      pendingOf: (classId) => (learners || []).filter((l) => (l.pendingIds || []).some((id) => (classId ? id === classId : true) && !(l.classIds || []).includes(id))),
       invitedTo: (classId) => (invites || []).filter((i) => (i.classIds || []).includes(classId)),
     }),
     [lessons, sections, classes, codes, learners, invites]

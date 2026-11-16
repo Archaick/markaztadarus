@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import { Menu } from "@mantine/core";
-import { IconBrandGoogle, IconDeviceMobileDown, IconLanguage, IconLogout, IconPlus, IconUserCircle } from "@tabler/icons-react";
+import { IconBrandGoogle, IconEye, IconDeviceMobileDown, IconLanguage, IconLogout, IconPlus, IconUserCircle } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { changeLanguage } from "../Internal/language";
@@ -48,7 +48,7 @@ function Gate() {
 }
 
 function Inside() {
-  const { loading, learner, classes, touch, offline } = useLearner();
+  const { loading, learner, classes, touch, offline, watching } = useLearner();
   const touched = useRef(false);
   useEffect(() => {
     if (learner && !touched.current) {
@@ -74,9 +74,12 @@ function Inside() {
   }, [learner, touch, offline]);
 
   if (loading) return <Splash />;
+  if (watching && (!learner || !classes.length)) return <WatchBar empty />;
   if (!learner || !classes.length) return <Join first />;
-  if (!learner.country) return <Profile />;
+  if (!learner.country && !watching) return <Profile />;
   return (
+    <>
+    {watching && <WatchBar />}
     <Routes>
       <Route index element={<GuruHome />} />
       <Route path="gabung" element={<Join />} />
@@ -85,6 +88,27 @@ function Inside() {
       <Route path="bagian/:sectionId" element={<SectionView />} />
       <Route path="*" element={<GuruHome />} />
     </Routes>
+    </>
+  );
+}
+
+/** An admin viewing /guru as a teacher: whose view it is, that nothing is saved, and the way back. */
+function WatchBar({ empty = false }) {
+  const { t } = useTranslation(NS);
+  const { learner, stopWatching } = useLearner();
+  const name = learner?.name || learner?.email || "";
+  return (
+    <div className={empty ? styles.center : undefined}>
+      <div className={`${styles.watchBar} ${empty ? styles.watchBarAlone : ""}`} role="status">
+        <IconEye size={18} />
+        <span>
+          <b>{t("watch.title", { name })}</b> {empty ? t("watch.empty") : t("watch.text")}
+        </span>
+        <button type="button" onClick={stopWatching}>
+          {t("watch.stop")}
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -293,7 +317,7 @@ function Profile({ editing = false }) {
 /** Joining a class with the code the admin shared. `first` when it is the only way in. */
 function Join({ first = false }) {
   const { t } = useTranslation(NS);
-  const { join, offline } = useLearner();
+  const { join, offline, pendingIds } = useLearner();
   const { user, signOutUser } = useAccess();
   // another account: off the map first, as the menu's sign-out does
   const leave = async () => {
@@ -348,8 +372,12 @@ function Join({ first = false }) {
               </span>
             ))}
           </label>
-          {result && result !== "ok" && <p className={result === "already" ? styles.okText : styles.errorText}>{t(`join.${result}`)}</p>}
-          {result === "ok" && <p className={styles.okText}>{t("join.ok")}</p>}
+          {/* asked with a code: the school's admin accepts, then the surahs open here by themselves */}
+          {pendingIds?.length > 0 || result === "requested" || result === "waiting" ? (
+            <p className={styles.okText}>{t("join.waiting")}</p>
+          ) : (
+            result && <p className={result === "already" ? styles.okText : styles.errorText}>{t(`join.${result}`)}</p>
+          )}
           <button type="submit" className={styles.primaryBig} disabled={code.length < 6 || busy}>
             {busy ? "…" : t("join.button")}
           </button>

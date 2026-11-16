@@ -226,6 +226,18 @@ export async function removeLearner(user, klass, learner) {
   );
 }
 
+/** A teacher who asked with the school's code: accepted into it, or declined. */
+export async function answerRequest(user, klass, learner, accept) {
+  await auditedWrite(user, entry(accept ? "bel.learner.accept" : "bel.learner.decline", learner.name || learner.email, { class: klass.name }, learner.id), (batch, auditId) =>
+    batch.update(doc(db, LEARNERS, learner.id), {
+      pendingIds: (learner.pendingIds || []).filter((c) => c !== klass.id),
+      ...(accept ? { classIds: [...new Set([...(learner.classIds || []), klass.id])] } : {}),
+      auditId,
+      updatedAt: serverTimestamp(),
+    })
+  );
+}
+
 /** The admin's note on a written answer, shown to the teacher. */
 export async function saveNote(user, progress, note, label) {
   await auditedWrite(user, entry("bel.note", label, {}, progress.id), (batch, auditId) =>

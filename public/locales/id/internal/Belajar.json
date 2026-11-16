@@ -257,7 +257,20 @@
       "school-sunset": "Sekolah · senja",
       "school-dusk": "Sekolah · petang",
       "school-night": "Sekolah · malam"
-    }
+    },
+    "tabProgress": "Kemajuan",
+    "tabRequests": "Minta bergabung",
+    "requestsSub": "Guru-guru ini memasukkan kode sekolah. Terima yang Anda kenal; surat-surat mereka langsung terbuka. Guru yang ditolak dapat meminta lagi dengan kode.",
+    "accept": "Terima",
+    "decline": "Tolak",
+    "acceptAll": "Terima semua ({{count}})",
+    "waitingCount": "{{count}} menunggu",
+    "askedAgo": "meminta {{time}}",
+    "viewAs": "Lihat sebagai guru ini",
+    "close": "Tutup",
+    "allTeachers": "Semua guru ({{count}})",
+    "noSchool": "{{count}} tanpa sekolah",
+    "waitingCard": "{{count}} guru menunggu persetujuan"
   },
   "schoolLocation": {
     "title": "Lokasi sekolah",

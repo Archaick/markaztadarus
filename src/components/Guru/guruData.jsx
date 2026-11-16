@@ -24,9 +24,25 @@ const chunks = (list, size) => {
 // re-mounts, while it happens, with the account still there for a moment).
 let leaving = null;
 
+// An admin looking at /guru as one teacher sees it (as JISR's "view as"): opened from a
+// school's page with ?lihat=<uid>, kept for this browser tab only, and read-only: nothing
+// is saved, nobody is marked "studying" on Tadarus Global. Honoured only for Belajar admins.
+const VIEW_AS = "mt.guruViewAs";
+const readViewAs = () => {
+  try {
+    const asked = new URLSearchParams(window.location.search).get("lihat");
+    if (asked) sessionStorage.setItem(VIEW_AS, asked);
+    return asked || sessionStorage.getItem(VIEW_AS) || "";
+  } catch {
+    return "";
+  }
+};
+
 export function LearnerProvider({ children }) {
-  const { user } = useAccess();
-  const uid = user?.uid;
+  const { user, hasFeature } = useAccess();
+  const [viewAs] = useState(readViewAs);
+  const watching = !!viewAs && hasFeature("belajar");
+  const uid = watching ? viewAs : user?.uid;
   // signed out at last: the next sign-in may be counted again
   if (!uid) leaving = null;
   const email = (user?.email || "").toLowerCase();
@@ -63,7 +79,7 @@ export function LearnerProvider({ children }) {
 
   // classes an admin invited this email to join by themselves; and "last seen"
   useEffect(() => {
-    if (!uid || learner === undefined || claimed.current) return;
+    if (!uid || learner === undefined || claimed.current || watching) return;
     claimed.current = true;
     (async () => {
       try {
@@ -80,9 +96,11 @@ export function LearnerProvider({ children }) {
         console.error("Could not check invites:", err);
       }
     })();
-  }, [uid, email, learner, base]);
+  }, [uid, email, learner, base, watching]);
 
   const classIds = useMemo(() => learner?.classIds || [], [learner]);
+  // schools asked to join with a code, until an admin accepts
+  const pendingIds = useMemo(() => (learner?.pendingIds || []).filter((id) => !(learner?.classIds || []).includes(id)), [learner]);
   const classKey = classIds.join(",");
 
   // each class (one the learner was taken out of simply stops loading)
@@ -153,23 +171,25 @@ export function LearnerProvider({ children }) {
     );
   }, [uid]);
 
-  /** Joins the class a code belongs to. Returns "ok" | "unknown" | "closed" | "already". */
+  /** Asks to join the class a code belongs to; an admin accepts. Returns "requested" | "waiting" | "unknown" | "closed" | "already". */
   const join = useCallback(
     async (raw) => {
+      if (watching) return "watching";
       const code = normalizeCode(raw);
       const snap = await getDoc(doc(db, CODES, code));
       if (!snap.exists()) return "unknown";
       if (!snap.data().active) return "closed";
       const classId = snap.data().classId;
       if (classIds.includes(classId)) return "already";
+      if (pendingIds.includes(classId)) return "waiting";
       await setDoc(
         doc(db, LEARNERS, uid),
-        { ...base(), classIds: [...classIds, classId], joinCode: code, ...(learner ? {} : { joinedAt: serverTimestamp() }) },
+        { ...base(), classIds, pendingIds: [...pendingIds, classId], requestedAt: serverTimestamp(), joinCode: code, ...(learner ? {} : { joinedAt: serverTimestamp() }) },
         { merge: true }
       );
-      return "ok";
+      return "requested";
     },
-    [uid, classIds, learner, base]
+    [uid, classIds, pendingIds, learner, base, watching]
   );
 
   const progress = useMemo(() => new Map((progressList || []).map((p) => [p.sectionId, p])), [progressList]);
@@ -178,7 +198,7 @@ export function LearnerProvider({ children }) {
   const saveProgress = useCallback(
     async (section, result) => {
       // a teacher deleted while answering keeps nothing: they start over if invited again
-      if (!learner) return;
+      if (!learner || watching) return;
       const old = progress.get(section.id);
       const data = {
         uid,
@@ -194,7 +214,7 @@ export function LearnerProvider({ children }) {
       if (result.answers) Object.assign(data, { answers: result.answers, submittedAt: serverTimestamp() });
       await setDoc(doc(db, PROGRESS, `${uid}_${section.id}`), data, { merge: true });
     },
-    [uid, learner, progress]
+    [uid, learner, progress, watching]
   );
 
   // the school they are counted at on Tadarus Global: the one they joined last that is still there
@@ -202,10 +222,10 @@ export function LearnerProvider({ children }) {
   // their place on the Tadarus Global map: a country, province and school only, never a name
   const mapEntry = useCallback(
     (c, online = true) =>
-      online && leaving === uid
+      watching || (online && leaving === uid)
         ? Promise.resolve()
         : setDoc(doc(db, GURU_MAP, uid), { country: c.country, province: c.country === "ID" ? c.province || "" : "", schoolId, online, updatedAt: serverTimestamp() }),
-    [uid, schoolId]
+    [uid, schoolId, watching]
   );
   // their school known (or changed) while they study: the map follows at once, not at the next heartbeat
   const mappedSchool = useRef(null);
@@ -225,22 +245,33 @@ export function LearnerProvider({ children }) {
     [uid, learner, mapEntry]
   );
   const touch = useCallback(() => {
-    if (!uid || !learner) return null;
+    if (!uid || !learner || watching) return null;
     updateDoc(doc(db, LEARNERS, uid), { lastSeenAt: serverTimestamp() }).catch(() => {});
     // a map entry lost (e.g. the teacher was restored from the bin) comes back by itself
     if (learner.country) mapEntry(learner).catch(() => {});
     return null;
-  }, [uid, learner, mapEntry]);
+  }, [uid, learner, mapEntry, watching]);
 
   /** Name, country, province and city, asked once after joining. */
   const saveProfile = useCallback(
     async (p) => {
+      if (watching) return;
       const place = { name: p.name.trim().slice(0, 120), country: p.country, province: p.country === "ID" ? p.province : "", city: p.city.trim().slice(0, 120) };
       await updateDoc(doc(db, LEARNERS, uid), { ...place, updatedAt: serverTimestamp() });
       await mapEntry(place).catch(() => {});
     },
-    [uid, mapEntry]
+    [uid, mapEntry, watching]
   );
+
+  // back to the admin's own view (the school page this was opened from)
+  const stopWatching = useCallback(() => {
+    try {
+      sessionStorage.removeItem(VIEW_AS);
+    } catch {
+      /* private mode: nothing kept anyway */
+    }
+    window.location.assign(learner?.classIds?.length ? `/belajar/kelas/${learner.classIds[learner.classIds.length - 1]}` : "/belajar/kelas");
+  }, [learner]);
 
   const value = useMemo(() => {
     const surahs = lessonIds.map((id) => lessons[id]).filter(Boolean);
@@ -259,12 +290,15 @@ export function LearnerProvider({ children }) {
       next: next ? { lesson: next.lesson, step: next.next } : null,
       loading: learner === undefined || (classIds.length > 0 && (classIds.some((id) => classes[id] === undefined) || sections === null || progressList === null || lessonIds.some((id) => lessons[id] === undefined))),
       join,
+      pendingIds,
+      watching,
+      stopWatching,
       saveProfile,
       saveProgress,
       touch,
       offline,
     };
-  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, join, saveProgress, touch, offline, saveProfile]);
+  }, [learner, myClasses, classes, lessonIds, lessons, sections, progress, progressList, classIds, pendingIds, join, saveProgress, touch, offline, saveProfile, watching, stopWatching]);
 
   return <LearnerContext.Provider value={value}>{children}</LearnerContext.Provider>;
 }

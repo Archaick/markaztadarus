@@ -692,17 +692,20 @@ service cloud.firestore {
       allow delete: if hasFeature("belajar") && marked("belajar_invites~" + email);
     }
 
-    // the classes a learner may add in this write: the code's class and their invites
+    // what a learner may add in this write: classes only from their email invites (an
+    // admin chose them); a code only asks to join (pendingIds), and an admin accepts it
     function learnerAdds(uid) {
       let before = resource == null ? [] : resource.data.get("classIds", []);
       let added = request.resource.data.classIds.removeAll(before);
+      let pendingBefore = resource == null ? [] : resource.data.get("pendingIds", []);
+      let pendingAdded = request.resource.data.get("pendingIds", []).removeAll(pendingBefore);
       let code = request.resource.data.get("joinCode", "none");
       let codePath = /databases/$(database)/documents/belajar_codes/$(code);
       let viaCode = (code is string && code.size() > 0 && code.size() <= 12 && exists(codePath) && get(codePath).data.active == true)
         ? [get(codePath).data.classId] : [];
       let invitePath = /databases/$(database)/documents/belajar_invites/$(signedInEmail());
       let viaInvite = exists(invitePath) ? get(invitePath).data.classIds : [];
-      return added.hasOnly(viaCode.concat(viaInvite));
+      return added.hasOnly(viaInvite) && pendingAdded.hasOnly(viaCode);
     }
 
     // Tadarus Global: where each teacher is (a country, and a province inside Indonesia), counted
@@ -725,15 +728,16 @@ service cloud.firestore {
     match /belajar_learners/{uid} {
       allow read: if (isSignedIn() && request.auth.uid == uid) || hasFeature("belajar");
       allow create, update: if hasVerifiedEmail() && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly(["uid", "email", "name", "photoURL", "classIds", "joinCode", "joinedAt", "lastSeenAt", "country", "province", "city", "auditId", "updatedAt"])
+        && request.resource.data.keys().hasOnly(["uid", "email", "name", "photoURL", "classIds", "pendingIds", "requestedAt", "joinCode", "joinedAt", "lastSeenAt", "country", "province", "city", "auditId", "updatedAt"])
         && request.resource.data.uid == uid
         && request.resource.data.email == signedInEmail()
         && request.resource.data.classIds is list && request.resource.data.classIds.size() <= 50
+        && request.resource.data.get("pendingIds", []) is list && request.resource.data.get("pendingIds", []).size() <= 10
         && (resource == null || request.resource.data.get("auditId", "") == resource.data.get("auditId", ""))
         && learnerAdds(uid);
-      // an admin takes someone out of a class
+      // an admin accepts or declines a request to join, or takes someone out of a class
       allow update: if hasFeature("belajar") && audited()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["classIds", "auditId", "updatedAt"]);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["classIds", "pendingIds", "auditId", "updatedAt"]);
       // a deleted teacher put back from the recycle bin
       allow create: if hasFeature("belajar") && audited()
         && request.resource.data.uid == uid && request.resource.data.classIds is list;
