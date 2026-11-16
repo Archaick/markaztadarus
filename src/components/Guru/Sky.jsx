@@ -67,6 +67,13 @@ const SHAPES = {
     const drop = narrow ? 70 : H * 0.14;
     return { cx, hz, scale: narrow ? 0.58 : 0.8, words: narrow ? 10.5 : 11, at: STAR_X.map((f, i) => [cx + (f - 0.5) * span, top + [1, 0.45, 0, 0.45, 1][i] * drop]) };
   },
+  // the teacher's own sky (/guru): the quiz's whole screen, and a surah's card
+  full: (W) => {
+    const span = Math.min(W * 0.9, 860);
+    const scale = W < 600 ? 0.72 : 1;
+    return { scale, words: W < 600 ? 10 : 11.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * span, [96, 86, 80, 86, 96][i]]) };
+  },
+  card: (W, H) => ({ scale: 0.72, words: 10.5, at: STAR_X.map((f, i) => [W / 2 + (f - 0.5) * Math.min(W * 0.92, 420), H * [0.5, 0.36, 0.28, 0.36, 0.5][i]]) }),
   thumb: (W, H) => ({ scale: 0.2, words: 0, at: STAR_X.map((f, i) => [W * f, H * [0.62, 0.42, 0.3, 0.42, 0.62][i]]) }),
 };
 
