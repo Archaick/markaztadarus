@@ -15,16 +15,23 @@ import styles from "./Belajar.module.css";
  * own `{ n, text }`. `audioOption` offers "+ suara" (sets `q.audio`);
  * `tooLong(ayah)` greys out ayat that do not fit (with a note).
  */
-export default function AyahPicker({ surah, onPick, label, audioOption = true, audioDefault = false, tooLong }) {
+export default function AyahPicker({ surah, onPick, label, audioOption = true, audioDefault = false, tooLong, compact = false }) {
   const { t } = useTranslation(NS);
   const [open, setOpen] = useState(false);
   const n = Number(surah) || 0;
   if (!n) return null;
   return (
     <>
-      <Button size="compact-xs" variant="light" color="#003366" leftSection={<IconBook2 size={14} />} onClick={() => setOpen(true)} data-ayah-picker>
-        {label || t("ayah.insert")}
-      </Button>
+      {compact ? (
+        // beside one answer field (matching rows, options): an icon only
+        <ActionIcon size="lg" variant="light" color="#003366" onClick={() => setOpen(true)} title={label || t("ayah.insert")} aria-label={label || t("ayah.insert")} data-ayah-picker>
+          <IconBook2 size={16} />
+        </ActionIcon>
+      ) : (
+        <Button size="compact-xs" variant="light" color="#003366" leftSection={<IconBook2 size={14} />} onClick={() => setOpen(true)} data-ayah-picker>
+          {label || t("ayah.insert")}
+        </Button>
+      )}
       <Modal opened={open} onClose={() => setOpen(false)} title={t("ayah.title")} size="lg">
         {open && (
           <AyahList

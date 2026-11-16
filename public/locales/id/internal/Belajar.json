@@ -158,7 +158,8 @@
     "option": "Pilihan {{l}}",
     "collapse": "Ciutkan",
     "expand": "Buka soal ini",
-    "keySet": "Kunci jawaban sudah diisi"
+    "keySet": "Kunci jawaban sudah diisi",
+    "matchAyahNumber": "Pasangkan ayat ↔ nomornya"
   },
   "cards": {
     "start": "Mulai menjawab",

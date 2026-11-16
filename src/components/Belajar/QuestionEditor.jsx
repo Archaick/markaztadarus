@@ -5,6 +5,7 @@ import { AYAH_TYPES, NS, QUESTION_TYPES, STEM_OPTIONAL, audioRef, blankQuestion,
 import { CircleEditor, FillBlankEditor, OrderEditor } from "./WordEditors";
 import { ListenEditor, WhichEditor } from "./ListenEditor";
 import AyahPicker, { AudioTag, useAyahInsert } from "./AyahPicker";
+import { wrapRtl } from "./ayahTools";
 import { ICON } from "./questionTypeList";
 import styles from "./Belajar.module.css";
 
@@ -132,7 +133,8 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
           </Text>
           {q.left.map((left, k) => (
             <Group key={k} mb={8} wrap="nowrap" align="flex-start">
-              <TextInput style={{ flex: 1 }} value={left} data-opt onKeyDown={nextOnEnter} placeholder={t("question.left")} onChange={(e) => set({ left: q.left.map((x, j) => (j === k ? e.currentTarget.value : x)) })} />
+              <TextInput style={{ flex: 1 }} value={left} data-opt dir="auto" onKeyDown={nextOnEnter} placeholder={t("question.left")} onChange={(e) => set({ left: q.left.map((x, j) => (j === k ? e.currentTarget.value : x)) })} />
+              <AyahPicker compact surah={surah} audioOption={false} onPick={(a) => set({ left: q.left.map((x, j) => (j === k ? wrapRtl(a.text) : x)) })} />
               <Select
                 style={{ flex: 1.4 }}
                 placeholder={t("question.pick")}
@@ -150,12 +152,32 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
               <Text w={20} fw={700}>
                 {String.fromCharCode(65 + j)}
               </Text>
-              <TextInput style={{ flex: 1 }} value={r} data-opt onKeyDown={nextOnEnter} onChange={(e) => set({ right: q.right.map((x, i) => (i === j ? e.currentTarget.value : x)) })} />
+              <TextInput style={{ flex: 1 }} value={r} data-opt dir="auto" onKeyDown={nextOnEnter} onChange={(e) => set({ right: q.right.map((x, i) => (i === j ? e.currentTarget.value : x)) })} />
+              <AyahPicker compact surah={surah} audioOption={false} onPick={(a) => set({ right: q.right.map((x, i) => (i === j ? wrapRtl(a.text) : x)) })} />
             </Group>
           ))}
-          <Button size="xs" variant="subtle" leftSection={<IconPlus size={14} />} onClick={() => set({ left: [...q.left, ""], right: [...q.right, ""], answer: [...q.answer, null] })}>
-            {t("question.addPair")}
-          </Button>
+          <Group gap="xs" mt={4}>
+            <Button size="xs" variant="subtle" leftSection={<IconPlus size={14} />} onClick={() => set({ left: [...q.left, ""], right: [...q.right, ""], answer: [...q.answer, null] })}>
+              {t("question.addPair")}
+            </Button>
+            {/* the usual Tilawah match: each chosen ayah's text on the left, its number on the right */}
+            <AyahPicker
+              surah={surah}
+              audioOption={false}
+              label={t("question.matchAyahNumber")}
+              onPick={(a) => {
+                const filled = q.left.findIndex((x, j) => !(x || "").trim() && !(q.right[j] || "").trim());
+                const at = filled >= 0 ? filled : q.left.length;
+                const left = [...q.left];
+                const right = [...q.right];
+                const answer = [...q.answer];
+                left[at] = wrapRtl(a.text);
+                right[at] = `Ayat ${a.n}`;
+                answer[at] = at;
+                set({ left, right, answer });
+              }}
+            />
+          </Group>
         </>
       ) : (
         <>
@@ -174,6 +196,7 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
                   dir="auto"
                   onChange={(e) => set({ options: q.options.map((x, j) => (j === k ? e.currentTarget.value : x)) })}
                 />
+                {q.type !== "truefalse" && <AyahPicker compact surah={surah} audioOption={false} onPick={(a) => set({ options: q.options.map((x, j) => (j === k ? wrapRtl(a.text) : x)) })} />}
                 {q.type !== "truefalse" && q.options.length > 2 && (
                   <ActionIcon
                     variant="subtle"
