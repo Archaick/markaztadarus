@@ -72,7 +72,7 @@ const Hero = () => {
     <div id="home" className={`${styles.hero} ${styles.heroWide} ${sample === "dawn" ? styles.heroDawn : ""} ${sample === "center" ? styles.heroCenter : ""}`}>
       {/* the /guru sign-in sky behind the whole hero: the five stars over the mushaf, beside the words */}
       <div className={styles.wideSky} dir={rtl ? "rtl" : "ltr"} aria-hidden="true">
-        <Sky mode={sample === "center" ? "hero" : "wide"} className={styles.dawnCanvas} shares={shares} progress={sample === "dawn" ? 0.88 : 0.16 + active * 0.16} names={fiveNames(tGuru)} />
+        <Sky mode={sample === "center" ? "hero" : "wide"} className={styles.dawnCanvas} shares={shares} progress={sample === "dawn" ? 0.88 : 0.16 + active * 0.16} glintKey={active + 1} glintT={FIVE[active]} names={fiveNames(tGuru)} />
       </div>
 
       <div className={styles.inner} dir={rtl ? "rtl" : "ltr"}>

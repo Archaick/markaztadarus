@@ -286,7 +286,33 @@ function paint(c, W, H, mode, state, names, t, now) {
     const f = state.shares[k] || 0;
     const swell = state.bursts.filter((b) => b.i === i).reduce((m, b) => Math.max(m, 1 - (now - b.t) / 700), 0);
     const size = (f > 0.004 ? 0.42 + 0.58 * f + clamp(swell) * 0.7 : 0.1) * shape.scale;
-    star(c, shape.at[i][0], shape.at[i][1], size, TINT[i], 0.86 + 0.14 * Math.sin(t * 2.1 + i * 1.3));
+    let twinkle = 0.86 + 0.14 * Math.sin(t * 2.1 + i * 1.3);
+    let grow = 1;
+    let alpha = 1;
+    // the home page (owner, 16 Nov 2026): when the step changes, its star dims for a moment
+    // as if a thin cloud passed, then gives one soft twinkle (about 1.6 s, once)
+    let turn = 0;
+    const glint = state.glints.find((g) => g.i === i && now - g.t < 1600);
+    if (glint) {
+      const ph = (now - glint.t) / 1600;
+      if (ph < 0.45) alpha = 1 - 0.55 * Math.sin((Math.PI * ph) / 0.45);
+      else {
+        const k = Math.sin((Math.PI * (ph - 0.45)) / 0.55);
+        twinkle *= 1 + 0.45 * k;
+        grow = 1 + 0.1 * k;
+        turn = 0.22 * k;
+      }
+    }
+    const [sx, sy] = shape.at[i];
+    c.save();
+    c.globalAlpha = alpha;
+    if (turn) {
+      c.translate(sx, sy);
+      c.rotate(turn);
+      c.translate(-sx, -sy);
+    }
+    star(c, sx, sy, size * grow, TINT[i], twinkle);
+    c.restore();
   });
   c.globalCompositeOperation = "source-over";
 
@@ -311,9 +337,9 @@ function paint(c, W, H, mode, state, names, t, now) {
  * light across the whole page. `shares` is how far each T has come, `progress`
  * the whole surah, 0 to 1. `mode`: full (the whole screen), card or thumb.
  */
-export default function Sky({ shares, progress, fireKey, fireT, names, celebrate, mode = "full", className, label }) {
+export default function Sky({ shares, progress, fireKey, fireT, glintKey, glintT, names, celebrate, mode = "full", className, label }) {
   const canvas = useRef(null);
-  const state = useRef({ shares: { ...shares }, progress, bursts: [] });
+  const state = useRef({ shares: { ...shares }, progress, bursts: [], glints: [] });
   const latest = useRef(null);
   latest.current = { shares, progress, names };
 
@@ -321,6 +347,12 @@ export default function Sky({ shares, progress, fireKey, fireT, names, celebrate
     const i = FIVE.indexOf(fireT);
     if (fireKey && i >= 0) state.current.bursts.push({ t: performance.now(), i });
   }, [fireKey, fireT]);
+
+  // a gentle shimmer on one star (the home page's steps), never a flash
+  useEffect(() => {
+    const i = FIVE.indexOf(glintT);
+    if (glintKey && i >= 0) state.current.glints = [{ t: performance.now(), i }];
+  }, [glintKey, glintT]);
 
   useEffect(() => {
     if (!celebrate) return;
