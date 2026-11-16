@@ -285,17 +285,20 @@ function paint(c, W, H, mode, state, names, t, now) {
   FIVE.forEach((k, i) => {
     const f = state.shares[k] || 0;
     const swell = state.bursts.filter((b) => b.i === i).reduce((m, b) => Math.max(m, 1 - (now - b.t) / 700), 0);
-    const size = (f > 0.004 ? 0.42 + 0.58 * f + clamp(swell) * 0.7 : 0.1) * shape.scale;
+    // a star not lit yet still shows, small and faint, waiting for its T (owner, 16 Nov 2026:
+    // a teacher at the start of a surah saw an empty sky)
+    const lit = f > 0.004;
+    const size = (lit ? 0.42 + 0.58 * f + clamp(swell) * 0.7 : 0.3) * shape.scale;
     let twinkle = 0.86 + 0.14 * Math.sin(t * 2.1 + i * 1.3);
     let grow = 1;
-    let alpha = 1;
+    let alpha = lit ? 1 : 0.45;
     // the home page (owner, 16 Nov 2026): when the step changes, its star dims for a moment
     // as if a thin cloud passed, then gives one soft twinkle (about 1.6 s, once)
     let turn = 0;
     const glint = state.glints.find((g) => g.i === i && now - g.t < 1600);
     if (glint) {
       const ph = (now - glint.t) / 1600;
-      if (ph < 0.45) alpha = 1 - 0.55 * Math.sin((Math.PI * ph) / 0.45);
+      if (ph < 0.45) alpha *= 1 - 0.55 * Math.sin((Math.PI * ph) / 0.45);
       else {
         const k = Math.sin((Math.PI * (ph - 0.45)) / 0.55);
         twinkle *= 1 + 0.45 * k;
