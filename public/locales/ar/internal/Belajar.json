@@ -159,7 +159,9 @@
     "collapse": "طيّ",
     "expand": "افتح هذا السؤال",
     "keySet": "مفتاح الإجابة محدَّد",
-    "matchAyahNumber": "اقرن آية برقمها"
+    "matchAyahNumber": "اقرن آية برقمها",
+    "removePair": "احذف هذا الزوج",
+    "removeOption": "احذف هذا الخيار"
   },
   "cards": {
     "start": "ابدأ الإجابة",

@@ -142,6 +142,11 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
                 value={q.answer[k] === null || q.answer[k] === undefined ? null : String(q.answer[k])}
                 onChange={(v) => set({ answer: q.answer.map((x, j) => (j === k ? (v === null ? null : Number(v)) : x)) })}
               />
+              {q.left.length > 2 && (
+                <ActionIcon variant="subtle" color="red" mt={6} aria-label={t("question.removePair")} title={t("question.removePair")} onClick={() => set({ left: q.left.filter((_, j) => j !== k), answer: q.answer.filter((_, j) => j !== k) })}>
+                  <IconTrash size={14} />
+                </ActionIcon>
+              )}
             </Group>
           ))}
           <Text size="xs" fw={700} mt="sm" mb={6}>
@@ -154,6 +159,18 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
               </Text>
               <TextInput style={{ flex: 1 }} value={r} data-opt dir="auto" onKeyDown={nextOnEnter} onChange={(e) => set({ right: q.right.map((x, i) => (i === j ? e.currentTarget.value : x)) })} />
               <AyahPicker compact surah={surah} audioOption={false} onPick={(a) => set({ right: q.right.map((x, i) => (i === j ? wrapRtl(a.text) : x)) })} />
+              {q.right.length > 2 && (
+                <ActionIcon
+                  variant="subtle"
+                  color="red"
+                  aria-label={t("question.removeOption")}
+                  title={t("question.removeOption")}
+                  // rows that pointed at it lose their answer; the later letters move up one
+                  onClick={() => set({ right: q.right.filter((_, i) => i !== j), answer: q.answer.map((x) => (x === j ? null : x !== null && x !== undefined && x > j ? x - 1 : x)) })}
+                >
+                  <IconTrash size={14} />
+                </ActionIcon>
+              )}
             </Group>
           ))}
           <Group gap="xs" mt={4}>

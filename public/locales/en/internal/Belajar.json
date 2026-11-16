@@ -166,7 +166,9 @@
     "collapse": "Collapse",
     "expand": "Open this question",
     "keySet": "Answer key set",
-    "matchAyahNumber": "Pair an ayah ↔ its number"
+    "matchAyahNumber": "Pair an ayah ↔ its number",
+    "removePair": "Remove this pair",
+    "removeOption": "Remove this option"
   },
   "cards": {
     "start": "Start answering",

@@ -159,7 +159,9 @@
     "collapse": "Ciutkan",
     "expand": "Buka soal ini",
     "keySet": "Kunci jawaban sudah diisi",
-    "matchAyahNumber": "Pasangkan ayat ↔ nomornya"
+    "matchAyahNumber": "Pasangkan ayat ↔ nomornya",
+    "removePair": "Hapus pasangan ini",
+    "removeOption": "Hapus pilihan ini"
   },
   "cards": {
     "start": "Mulai menjawab",
