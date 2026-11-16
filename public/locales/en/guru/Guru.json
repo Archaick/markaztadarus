@@ -74,7 +74,9 @@
     "task": "Written task",
     "fillblank": "Fill in the blanks",
     "order": "Put the words in order",
-    "circle": "Circle the right word"
+    "circle": "Circle the right word",
+    "listen": "Listen & choose",
+    "which": "Which ayah?"
   },
   "player": {
     "preview": "Admin preview",
@@ -110,7 +112,9 @@
       "fillblank": "Complete the sentence with the right words.",
       "order": "Put the words in the right order.",
       "circle": "Circle the right word in each row.",
-      "circleLine": "Underline the right word in each row."
+      "circleLine": "Underline the right word in each row.",
+      "listen": "Listen to the ayah, then choose its text.",
+      "which": "Which ayah of the surah is this?"
     },
     "bank": "Word bank",
     "wordUndo": "Picked the wrong one? Tap the word to send it back.",
@@ -173,5 +177,32 @@
     "loading": "Loading the PDF…",
     "failed": "The PDF could not be shown. Try reloading the page.",
     "page": "Page {{n}} of {{total}}"
+  },
+  "recite": {
+    "title": "Murattal recitation",
+    "reciterLabel": "Reciter",
+    "reciter": {
+      "husary": "Mahmoud Khalil al-Husary",
+      "alafasy": "Mishary Rashid Alafasy",
+      "sudais": "Abdurrahman as-Sudais",
+      "minshawi": "Mohammad Siddiq al-Minshawi",
+      "husaryMuallim": "Mahmoud Khalil al-Husary (Mu’allim, for learning)"
+    },
+    "playAll": "Play all",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "repeat": "Repeat ayah",
+    "speed": "Speed",
+    "playAyah": "Play ayah {{n}}",
+    "playBasmala": "Play the basmala",
+    "ayahNo": "Ayah {{n}}",
+    "credit": "Reciter: {{name}}",
+    "loading": "Loading the ayat…",
+    "errorTitle": "The recitation could not load",
+    "errorBody": "Check your internet connection, then try again.",
+    "retry": "Try again",
+    "listenPlay": "Play the ayah",
+    "listening": "Listening…"
   }
 }

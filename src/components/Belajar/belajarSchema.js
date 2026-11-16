@@ -66,6 +66,9 @@ export const kindOf = (section) => section?.kind || sectionType(section?.key)?.k
 /** The 5T step a section belongs to, or "" for none. */
 export const fiveTOf = (section) => (section && "fiveT" in section ? section.fiveT || "" : sectionType(section?.key)?.t || "");
 
+/** A Tilawah item: its surah is read aloud to the teacher (and its default reciter set by the admin). */
+export const isTilawah = (section) => fiveTOf(section) === "tilawah" || section?.key === "tilawah";
+
 const templateRank = (s) => {
   const i = SECTION_TYPES.findIndex((x) => x.key === s.key);
   return i < 0 ? 99 : i;
@@ -83,7 +86,22 @@ export const FIVE_T = ["tamhid", "tilawah", "tafsir", "tadabbur", "tazkiyah"];
 // fillblank: a sentence with gaps, filled from a bank of words;
 // order: words put back in the order of the sentence; circle: rows of a
 // sentence and its words, the right one circled (or underlined), as in the book.
-export const QUESTION_TYPES = ["single", "truefalse", "multi", "match", "fillblank", "order", "circle"];
+// listen: an ayah of the surah is played; the teacher picks its text among a few ayat
+// which: an ayah is shown and/or played; the teacher picks its number
+export const QUESTION_TYPES = ["single", "truefalse", "multi", "match", "fillblank", "order", "circle", "listen", "which"];
+
+/** The two types whose options are ayah numbers of the question's own surah. */
+export const AYAH_TYPES = ["listen", "which"];
+
+/**
+ * The ayah any other question may carry to be played (`q.audio = { surah, ayah }`,
+ * set with "+ suara"), or null. In "which", `audio` is only a yes/no.
+ */
+export const audioRef = (q) => {
+  const a = q?.audio;
+  if (!a || typeof a !== "object" || AYAH_TYPES.includes(q.type)) return null;
+  return Number(a.surah) > 0 && Number(a.ayah) > 0 ? { surah: Number(a.surah), ayah: Number(a.ayah) } : null;
+};
 
 // limits mirrored in firestore.rules (the per-question ones are kept by the editor)
 export const LIMITS = { title: 200, text: 4000, parts: 10, questions: 60, tasks: 30, reading: 80, ayat: 300, blanks: 10, words: 20, decoys: 10, rows: 12, rowWords: 4 };
@@ -124,12 +142,14 @@ export const blankQuestion = (type = "single") => {
   if (type === "match") return { ...base, left: ["", ""], right: ["", ""], answer: [null, null] };
   if (type === "fillblank") return { ...base, sentence: "", answers: [], decoys: [] };
   if (type === "order") return { ...base, words: ["", "", ""], decoys: [], dir: "rtl" };
+  if (type === "listen") return { ...base, surah: null, ayah: null, options: [], answer: null };
+  if (type === "which") return { ...base, surah: null, ayah: null, options: [], answer: null, showText: true, audio: true };
   if (type === "circle") return { ...base, mode: "circle", rows: [{ sentence: "", options: ["", ""], correct: null }] };
   return { ...base, options: ["", "", "", ""], correct: [] };
 };
 
 /** The three word types say what to do on their own, so their question line may stay empty. */
-export const STEM_OPTIONAL = ["fillblank", "order", "circle"];
+export const STEM_OPTIONAL = ["fillblank", "order", "circle", "listen", "which"];
 
 export const blankAyah = (no = 1) => ({ no, arabic: "", tema: "", tafsir: [], tadabbur: [], tazkiyah: [] });
 
@@ -159,6 +179,16 @@ export function questionIssues(q) {
     if (rows.some((r) => !(r.sentence || "").trim())) issues.push("noSentence");
     if (rows.some((r) => (r.options || []).length < 2 || (r.options || []).some((x) => !(x || "").trim()))) issues.push("emptyOption");
     if (rows.some((r) => r.correct === null || r.correct === undefined || !(r.options || [])[r.correct])) issues.push("noAnswer");
+    return issues;
+  }
+  if (AYAH_TYPES.includes(q.type)) {
+    const options = (q.options || []).filter((n) => Number(n) > 0);
+    if (!(Number(q.ayah) > 0)) issues.push("noAyah");
+    if (options.length < 2) issues.push("fewOptions");
+    if (!(Number(q.answer) > 0) || !options.includes(q.answer) || (Number(q.ayah) > 0 && q.answer !== q.ayah)) issues.push("noAnswer");
+    if (!(Number(q.surah) > 0)) issues.push("noSurah");
+    // "which": the teacher must be shown the ayah or hear it
+    if (q.type === "which" && q.showText === false && !q.audio) issues.push("noPrompt");
     return issues;
   }
   if (q.type === "match") {

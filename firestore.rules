@@ -608,7 +608,9 @@ service cloud.firestore {
         && request.resource.data.get("parts", []) is list && request.resource.data.get("parts", []).size() <= 10
         && request.resource.data.get("tasks", []) is list && request.resource.data.get("tasks", []).size() <= 30
         && request.resource.data.get("reading", []) is list && request.resource.data.get("reading", []).size() <= 80
-        && (request.resource.data.get("pdf", null) == null || request.resource.data.pdf is map);
+        && (request.resource.data.get("pdf", null) == null || request.resource.data.pdf is map)
+        // a Tilawah item's default reciter: an AlQuran.cloud audio edition id ("" = al-Husary)
+        && request.resource.data.get("reciter", "") is string && request.resource.data.get("reciter", "").size() <= 60;
       allow delete: if isSuperAdmin() && marked("belajar_sections~" + sectionId); // whole items: the super admin only
     }
 

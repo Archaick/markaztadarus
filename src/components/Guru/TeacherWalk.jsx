@@ -56,6 +56,7 @@ export default function TeacherWalk({ lesson, sections, onClose }) {
             key={section.id}
             section={section}
             surahTitle={lesson.title}
+            surahNo={lesson.surah}
             back={
               <button type="button" className={`${styles.back} ${styles.walkBack}`} onClick={onClose}>
                 <IconArrowLeft size={18} className={styles.flip} /> {lesson.title}

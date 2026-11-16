@@ -74,7 +74,9 @@
     "task": "Tugas tertulis",
     "fillblank": "Lengkapi kalimat",
     "order": "Susun kata",
-    "circle": "Lingkari kata yang benar"
+    "circle": "Lingkari kata yang benar",
+    "listen": "Dengarkan & pilih",
+    "which": "Ayat ke-berapa?"
   },
   "player": {
     "preview": "Pratinjau admin",
@@ -110,7 +112,9 @@
       "fillblank": "Lengkapi kalimat berikut dengan kata yang tepat.",
       "order": "Susun kata-kata berikut menjadi kalimat yang benar.",
       "circle": "Lingkari kata yang benar di setiap baris.",
-      "circleLine": "Garis bawahi kata yang benar di setiap baris."
+      "circleLine": "Garis bawahi kata yang benar di setiap baris.",
+      "listen": "Dengarkan ayat ini, lalu pilih teksnya.",
+      "which": "Ayat ini ayat ke-berapa dalam surat ini?"
     },
     "bank": "Pilihan kata",
     "wordUndo": "Salah pilih? Ketuk katanya untuk mengembalikan.",
@@ -173,5 +177,32 @@
     "loading": "Memuat PDF…",
     "failed": "PDF tidak bisa ditampilkan. Coba muat ulang halaman.",
     "page": "Halaman {{n}} dari {{total}}"
+  },
+  "recite": {
+    "title": "Bacaan Murattal",
+    "reciterLabel": "Qari",
+    "reciter": {
+      "husary": "Mahmud Khalil al-Hushari",
+      "alafasy": "Misyari Rasyid al-Afasi",
+      "sudais": "Abdurrahman as-Sudais",
+      "minshawi": "Muhammad Shiddiq al-Minsyawi",
+      "husaryMuallim": "Mahmud Khalil al-Hushari (Mu’allim, untuk belajar)"
+    },
+    "playAll": "Putar semua",
+    "pause": "Jeda",
+    "resume": "Lanjutkan",
+    "stop": "Berhenti",
+    "repeat": "Ulangi ayat",
+    "speed": "Kecepatan",
+    "playAyah": "Putar ayat {{n}}",
+    "playBasmala": "Putar basmalah",
+    "ayahNo": "Ayat {{n}}",
+    "credit": "Qari: {{name}}",
+    "loading": "Memuat ayat…",
+    "errorTitle": "Bacaan belum bisa dimuat",
+    "errorBody": "Periksa koneksi internet, lalu coba lagi.",
+    "retry": "Coba lagi",
+    "listenPlay": "Putar ayat",
+    "listening": "Mendengarkan…"
   }
 }

@@ -55,7 +55,9 @@
     "match": "Mencocokkan",
     "fillblank": "Lengkapi kalimat",
     "order": "Susun kata",
-    "circle": "Lingkari kata"
+    "circle": "Lingkari kata",
+    "listen": "Dengarkan & pilih",
+    "which": "Ayat ke-berapa?"
   },
   "block": {
     "heading": "Judul",
@@ -73,7 +75,11 @@
     "noBlanks": "Belum ada kotak (__)",
     "fewWords": "Minimal 2 kata",
     "noRows": "Belum ada baris",
-    "tooManyBlanks": "Terlalu banyak kotak (maks. 10)"
+    "tooManyBlanks": "Terlalu banyak kotak (maks. 10)",
+    "noAyah": "Ayat belum dipilih",
+    "fewOptions": "Minimal 2 pilihan",
+    "noSurah": "Nomor surat belum diisi",
+    "noPrompt": "Teks dan suara ayat sama-sama dimatikan"
   },
   "lessons": {
     "title": "Buku Guru",
@@ -364,6 +370,16 @@
         "name": "Lingkari kata",
         "desc": "Baris-baris kalimat; guru melingkari kata yang benar di tiap baris, seperti di buku.",
         "ex": "هٰذَا …… صَغِيرٌ   بَيْتٌ · مَدْرَسَةٌ"
+      },
+      "listen": {
+        "name": "Dengarkan & pilih",
+        "desc": "Satu ayat diperdengarkan; guru memilih teks ayat yang sesuai.",
+        "ex": "▶ Ayat 2 → pilih teksnya di antara 4 ayat"
+      },
+      "which": {
+        "name": "Ayat ke-berapa?",
+        "desc": "Satu ayat ditampilkan dan/atau diperdengarkan; guru memilih nomor ayatnya.",
+        "ex": "▶ (ayat tanpa nomor) → ٢ · ٣ · ٤ · ٥"
       }
     },
     "pickNamed": "Jenis soal"
@@ -481,5 +497,47 @@
     "addChoice": "Kata",
     "markRight": "Tandai sebagai jawaban benar",
     "choicePh": "Kata…"
+  },
+  "listen": {
+    "noSurah": "Surat ini belum punya nomor surat. Buka kartu surat, tekan ikon pensil (Edit surat), lalu isi Nomor surat.",
+    "ayah": "Ayat yang diperdengarkan",
+    "ayahHint": "Teks dan bacaannya diambil dari AlQuran.cloud.",
+    "pickAyah": "Pilih ayat",
+    "others": "Pilihan pengecoh",
+    "othersHint": "Ayat lain dari surat yang sama, maksimal {{count}}.",
+    "pickOthers": "Pilih ayat lain",
+    "auto": "Pilih otomatis",
+    "choices": "Pilihan yang dilihat guru",
+    "shuffled": "Urutan pilihan diacak untuk guru.",
+    "folded": "Ayat {{n}}"
+  },
+  "recite": {
+    "heading": "Bacaan (Murattal)",
+    "reciter": "Qari bawaan untuk item ini",
+    "reciterHint": "Guru bisa memilih qari lain di perangkatnya; pilihannya yang dipakai.",
+    "note": "Guru melihat bacaan lengkap: semua ayat dalam rasm Utsmani, masing-masing dengan tombol putar, di atas PDF.",
+    "noSurah": "Surat ini belum punya nomor surat, jadi bacaannya belum bisa ditampilkan. Tekan ikon pensil (Edit surat) di kartu surat, lalu isi Nomor surat.",
+    "openSurah": "Buka kartu surat"
+  },
+  "ayah": {
+    "insert": "Ambil ayat",
+    "fromAyah": "Dari ayat…",
+    "title": "Pilih ayat",
+    "search": "Nomor ayat",
+    "withAudio": "+ suara (guru bisa memutar ayat ini)",
+    "source": "Teks ayat diambil dari AlQuran.cloud (rasm Utsmani) dan disisipkan apa adanya.",
+    "tooLong": "{{count}} kata, terlalu panjang (maks. {{max}})",
+    "audioOn": "Suara: ayat {{n}}",
+    "audioRemove": "Hapus suara",
+    "fillFrom": "Kata-kata ayat {{n}}",
+    "fillTap": "Ketuk kata untuk menjadikannya kotak kosong; ketuk lagi untuk mengembalikannya. Maksimal {{max}} kotak.",
+    "orderFilled": "Kata-kata diisi dari ayat {{n}}. Anda masih bisa mengubah atau menghapus kata dan menambah kata pengecoh."
+  },
+  "which": {
+    "ayah": "Ayat yang ditanyakan",
+    "showText": "Tampilkan teks ayat",
+    "audio": "Putar bacaannya",
+    "others": "Nomor pengecoh",
+    "othersHint": "Nomor ayat lain dari surat yang sama, maksimal {{count}}."
   }
 }

@@ -1,10 +1,11 @@
 import { useCallback, useState } from "react";
 import { IconBook2, IconCheck, IconMessageCircle, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { isArabic, kindOf, questionsOf, sectionTitle, textDir } from "../Belajar/belajarSchema";
+import { isArabic, isTilawah, kindOf, questionsOf, sectionTitle, textDir } from "../Belajar/belajarSchema";
 import ArabicText from "./ArabicText";
 import ReadingTable from "./ReadingTable";
 import PdfView from "./PdfView";
+import RecitationPanel from "./Recitation";
 import styles from "./Guru.module.css";
 import dock from "./SectionDock.module.css";
 
@@ -14,8 +15,10 @@ const NS = "guru/Guru";
  * What a teacher sees on opening one section: its reading, then the button to
  * start the questions, confirm the reading, or the written tasks. The admin's
  * "try as a teacher" shows this same screen, so the two cannot drift apart.
+ * A Tilawah item also has the surah (`surahNo`, the lesson's number) read
+ * aloud, above its PDF; listening is offered, never required.
  */
-export default function SectionScreen({ section, surahTitle, back, mine, onStart, onRead, onWritten }) {
+export default function SectionScreen({ section, surahTitle, surahNo, back, mine, onStart, onRead, onWritten }) {
   const { t } = useTranslation(NS);
   const kind = kindOf(section);
   const questions = questionsOf(section);
@@ -34,6 +37,8 @@ export default function SectionScreen({ section, surahTitle, back, mine, onStart
       {back}
       <span className={styles.helloSmall}>{surahTitle}</span>
       <h1 className={styles.helloTitle}>{sectionTitle(section, t)}</h1>
+
+      {isTilawah(section) && Number(surahNo) > 0 && <RecitationPanel surah={Number(surahNo)} itemReciter={section.reciter} />}
 
       {section.pdf?.url ? <PdfView pdf={section.pdf} onProgress={onProgress} /> : (section.reading || []).length > 0 && <Reading blocks={section.reading} />}
 

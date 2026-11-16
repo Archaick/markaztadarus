@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Alert, Button, Group, Loader, Modal, Text, Textarea, Tooltip } from "@mantine/core";
-import { IconAlertTriangle, IconArrowLeft, IconChevronsDown, IconChevronsUp, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
+import { ActionIcon, Alert, Button, Group, Loader, Modal, Select, Text, Textarea, Tooltip } from "@mantine/core";
+import { IconAlertTriangle, IconArrowLeft, IconHeadphones, IconChevronsDown, IconChevronsUp, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
 import { deleteSection, saveSectionContent } from "./actions";
-import { BASE, NS, blankQuestion, cleanReading, fiveTOf, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
+import { BASE, NS, blankQuestion, cleanReading, fiveTOf, isTilawah, kindOf, newId, questionIssues, sectionTitle } from "./belajarSchema";
 import PageEditor from "./PageEditor";
 import PdfSlot from "./PdfSlot";
 import { bare } from "./bareInput";
 import Player from "../Guru/Player";
+import RecitationPanel from "../Guru/Recitation";
+import { DEFAULT_RECITER, RECITERS, knownReciter } from "../Guru/quranApi";
 import guru from "../Guru/Guru.module.css";
 import QuestionEditor from "./QuestionEditor";
 import { TypeCards } from "./QuestionTypes";
@@ -72,12 +74,17 @@ export default function SectionPage() {
   const set = (patch) => setDraft({ ...value, ...patch });
   const bad = (value.parts || []).flatMap((p) => p.questions).filter((q) => questionIssues(q).length).length;
   const questionCount = (value.parts || []).reduce((n, p) => n + (p.questions || []).length, 0);
+  const tilawah = isTilawah(section);
+  const surahNo = Number(lesson.surah) || 0;
+  const reciter = knownReciter(value.reciter) || DEFAULT_RECITER;
 
   const save = async () => {
     setBusy(true);
     try {
       const { reading, parts, tasks, instructions } = value;
       await saveSectionContent(user, lesson, section, {
+        // a Tilawah item's default reciter (a teacher's own choice on their device wins over it)
+        ...(tilawah && "reciter" in value && { reciter: knownReciter(value.reciter) || "" }),
         instructions,
         reading: cleanReading(reading),
         parts,
@@ -139,6 +146,38 @@ export default function SectionPage() {
             <>
               <p className={styles.canvasLabel}>{t("pdf.oldText")}</p>
               <PageEditor value={value.reading} onChange={(reading) => set({ reading })} />
+            </>
+          )}
+
+          {/* Tilawah: the surah read aloud; teachers see every ayah with its own play button */}
+          {tilawah && (
+            <>
+              <h3 className={styles.canvasQuestions}>
+                <IconHeadphones size={18} style={{ verticalAlign: "-3px" }} /> {t("recite.heading")}
+              </h3>
+              {surahNo ? (
+                <div className={styles.panel}>
+                  <Select
+                    label={t("recite.reciter")}
+                    description={t("recite.reciterHint")}
+                    allowDeselect={false}
+                    maw={360}
+                    data={RECITERS.map((r) => ({ value: r.id, label: tg(`recite.reciter.${r.key}`) }))}
+                    value={reciter}
+                    onChange={(v) => set({ reciter: v })}
+                    mb="sm"
+                  />
+                  <RecitationPanel key={reciter} surah={surahNo} reciter={reciter} compact />
+                  <Text size="sm" c="dimmed" mt="sm">
+                    {t("recite.note")}
+                  </Text>
+                </div>
+              ) : (
+                <Alert color="orange" icon={<IconAlertTriangle size={18} />} mb="md">
+                  {t("recite.noSurah")}{" "}
+                  <Link to={`${BASE}/surat/${lesson.id}`}>{t("recite.openSurah")}</Link>
+                </Alert>
+              )}
             </>
           )}
 
@@ -204,6 +243,7 @@ export default function SectionPage() {
                       key={q.id}
                       n={i + 1}
                       q={q}
+                      surah={surahNo}
                       collapsed={folded.has(q.id)}
                       onToggle={() =>
                         setFolded((f) => {

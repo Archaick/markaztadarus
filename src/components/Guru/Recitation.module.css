@@ -1,0 +1,419 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400;700&display=swap");
+
+/* The recitation panel: the surah in large Uthmani script, ayah by ayah,
+   read aloud. Same frosted card as the rest of /guru, navy and gold. */
+
+.panel {
+  --rec-navy: #12305e;
+  --rec-gold: #c9a227;
+  --rec-ink: #10213a;
+  --rec-muted: #5b6b80;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 24px 50px -32px rgba(16, 33, 65, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  color: var(--rec-ink);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+.headText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rec-navy);
+}
+.surahName {
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: var(--rec-navy);
+}
+
+.reciterPick {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--rec-muted);
+  min-width: 0;
+  max-width: 100%;
+}
+.select {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--rec-ink);
+  padding: 9px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(18, 48, 94, 0.18);
+  background: #fff;
+  max-width: 100%;
+  min-height: 42px;
+}
+
+/* the controls stay at the top while a long surah scrolls */
+.controls {
+  position: sticky;
+  top: var(--rec-top, 72px);
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  margin: 0 -6px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(18, 48, 94, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.compact .controls {
+  position: static;
+}
+.playAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--rec-navy);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.playAll:disabled {
+  background: #9aa8bb;
+  cursor: not-allowed;
+}
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(18, 48, 94, 0.16);
+  background: #fff;
+  color: var(--rec-navy);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.toolOn {
+  background: #fbf3d8;
+  border-color: var(--rec-gold);
+  color: #7a5c00;
+}
+.rates {
+  display: inline-flex;
+  margin-inline-start: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(18, 48, 94, 0.16);
+  background: #fff;
+  overflow: hidden;
+}
+.rate {
+  min-height: 42px;
+  min-width: 46px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--rec-muted);
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.rateOn {
+  background: var(--rec-navy);
+  color: #fff;
+}
+
+.ayahs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ayah {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  border: 1px solid transparent;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  scroll-margin: 140px 0 120px;
+}
+.ayahOn {
+  background: #fbf3d8;
+  border-color: rgba(201, 162, 39, 0.55);
+}
+.text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: clamp(1.55rem, 5.6vw, 2.05rem);
+  line-height: 2.25;
+  text-align: right;
+  color: var(--rec-ink);
+  overflow-wrap: anywhere;
+}
+.basmala {
+  justify-content: center;
+}
+.basmala .text {
+  text-align: center;
+  color: var(--rec-navy);
+}
+
+/* ۝ with the ayah's number set inside it (by the font) */
+.mark {
+  display: inline-block;
+  white-space: nowrap;
+  font-family: "Amiri Quran", "Amiri", "Scheherazade New", serif;
+  color: #8a6d12;
+  line-height: 1;
+}
+
+.one {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-top: 0.7rem;
+  border-radius: 50%;
+  border: 1px solid rgba(18, 48, 94, 0.18);
+  background: #fff;
+  color: var(--rec-navy);
+  cursor: pointer;
+}
+.oneOn {
+  background: var(--rec-navy);
+  color: #fff;
+  border-color: var(--rec-navy);
+}
+
+.credit {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--rec-muted);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 6px;
+  color: var(--rec-muted);
+  font-weight: 600;
+}
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid rgba(18, 48, 94, 0.15);
+  border-top-color: var(--rec-navy);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #fff4f4;
+  border: 1px solid rgba(229, 72, 77, 0.3);
+  color: #8c1d22;
+}
+.error > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 180px;
+}
+.error span {
+  font-size: 0.85rem;
+  color: #6b3a3d;
+}
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 0;
+  background: var(--rec-navy, #12305e);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* "Listen & choose": one big play button above the choices */
+.listen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+.listenBtn {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 0;
+  background: #12305e;
+  color: #fff;
+  box-shadow: 0 14px 30px -14px rgba(18, 48, 94, 0.7);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.listenBtn:active {
+  transform: scale(0.96);
+}
+.listenBtn:disabled {
+  background: #9aa8bb;
+  cursor: not-allowed;
+}
+.listenOn {
+  background: #c9a227;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  50% { box-shadow: 0 0 0 10px rgba(201, 162, 39, 0.18); }
+}
+.listenLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #5b6b80;
+}
+/* the small play button of a question that carries an ayah ("+ suara") */
+.small {
+  display: flex;
+  justify-content: center;
+  margin: 2px 0 12px;
+}
+.smallBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 48, 94, 0.22);
+  background: #fff;
+  color: #12305e;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.smallBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.smallOn {
+  background: #12305e;
+  color: #fff;
+  border-color: #12305e;
+}
+/* "Which ayah?": the ayah shown, without its number */
+.whichText {
+  margin: 0 0 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: clamp(1.45rem, 5.2vw, 1.9rem);
+  line-height: 2.2;
+  text-align: center;
+  color: #10213a;
+}
+.numAr {
+  font-family: "Amiri", "Scheherazade New", serif;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.numLat {
+  margin-inline-start: 10px;
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+/* the ayah texts to choose from */
+.choiceText {
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: 1.35rem;
+  line-height: 2.1;
+}
+
+@media (max-width: 420px) {
+  .panel {
+    padding: 12px;
+    border-radius: 22px;
+  }
+  .toolText {
+    display: none;
+  }
+  .controls {
+    gap: 6px;
+  }
+  .playAll {
+    padding: 10px 12px;
+  }
+  .ayah {
+    padding: 8px 6px;
+    gap: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner,
+  .listenOn {
+    animation: none;
+  }
+  .ayah {
+    transition: none;
+  }
+}

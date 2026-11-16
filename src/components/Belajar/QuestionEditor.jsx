@@ -1,8 +1,10 @@
 import { ActionIcon, Badge, Button, Checkbox, Group, Radio, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconCheck, IconChevronDown, IconChevronUp, IconCircleDot, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { NS, QUESTION_TYPES, STEM_OPTIONAL, blankQuestion, questionIssues } from "./belajarSchema";
+import { AYAH_TYPES, NS, QUESTION_TYPES, STEM_OPTIONAL, audioRef, blankQuestion, questionIssues } from "./belajarSchema";
 import { CircleEditor, FillBlankEditor, OrderEditor } from "./WordEditors";
+import { ListenEditor, WhichEditor } from "./ListenEditor";
+import AyahPicker, { AudioTag, useAyahInsert } from "./AyahPicker";
 import { ICON } from "./questionTypeList";
 import styles from "./Belajar.module.css";
 
@@ -16,18 +18,22 @@ const nextOnEnter = (e) => {
 };
 
 // the first words of a question, for its folded one-line view
-const firstWords = (q) => {
-  const text = q.stem || (q.type === "fillblank" ? q.sentence : q.type === "order" ? (q.words || []).join(" ") : q.type === "circle" ? q.rows?.[0]?.sentence : "") || "";
+const firstWords = (q, t) => {
+  const text = q.stem || (AYAH_TYPES.includes(q.type) && q.ayah ? t("listen.folded", { n: q.ayah }) : "") || (q.type === "fillblank" ? q.sentence : q.type === "order" ? (q.words || []).join(" ") : q.type === "circle" ? q.rows?.[0]?.sentence : "") || "";
   const words = text.replace(/\*/g, "").trim().split(/\s+/);
   return words.length > 12 ? `${words.slice(0, 12).join(" ")}…` : words.join(" ");
 };
 // the issues that mean the answer key is not set yet
-const NO_KEY = ["noAnswer", "fewWords", "noBlanks", "noRows"];
+const NO_KEY = ["noAnswer", "fewWords", "noBlanks", "noRows", "noAyah"];
 
-export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoFocus, bare, collapsed, onToggle }) {
+// `surah`: the lesson's surah number, for "Listen & choose", "Which ayah?" and "Ambil ayat"
+export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoFocus, bare, collapsed, onToggle, surah }) {
   const { t } = useTranslation(NS);
   const issues = questionIssues(q);
   const set = (patch) => onChange({ ...q, ...patch });
+  const [stemCaret, insertInStem] = useAyahInsert(q.stem);
+  // "+ suara": the question also plays the ayah it quotes
+  const withAudio = (a, opts) => (opts?.withAudio ? { audio: { surah: Number(surah), ayah: a.n } } : {});
   const toggle = (k) => {
     const on = (q.correct || []).includes(k);
     if (q.type === "multi") set({ correct: on ? q.correct.filter((x) => x !== k) : [...q.correct, k].sort() });
@@ -36,7 +42,9 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
   const changeType = (type) => {
     if (type === q.type) return;
     const own = (x) => x === "match" || STEM_OPTIONAL.includes(x);
-    if (own(type) || own(q.type) || type === "truefalse") return onChange({ ...blankQuestion(type), id: q.id, stem: q.stem, explanation: q.explanation });
+    // the ayah it plays stays with it (not in the two ayah types, whose `audio` is their own)
+    const keep = audioRef(q) && !AYAH_TYPES.includes(type) ? { audio: q.audio } : {};
+    if (own(type) || own(q.type) || type === "truefalse") return onChange({ ...blankQuestion(type), id: q.id, stem: q.stem, explanation: q.explanation, ...keep });
     set({ type, correct: type === "single" ? (q.correct || []).slice(0, 1) : q.correct });
   };
 
@@ -54,7 +62,7 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
             <TypeIcon size={14} /> {t(`qtype.${q.type}`)}
           </span>
           <span className={styles.foldText} dir="auto">
-            {firstWords(q) || <i>{t("issue.noStem")}</i>}
+            {firstWords(q, t) || <i>{t("issue.noStem")}</i>}
           </span>
           {keySet ? <IconCheck size={16} className={styles.foldKey} aria-label={t("question.keySet")} /> : <span className={styles.foldNoKey}>{t("issue.noAnswer")}</span>}
           <IconChevronDown size={16} />
@@ -97,15 +105,26 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
         </Group>}
       </Group>
       {!STEM_OPTIONAL.includes(q.type) && (
-        <Textarea autosize minRows={bare ? 2 : 1} data-autofocus={autoFocus || undefined} size={bare ? "md" : "sm"} placeholder={t("question.stem")} value={q.stem} onChange={(e) => set({ stem: e.currentTarget.value })} mb="sm" />
+        <>
+          {Number(surah) > 0 && (
+            <Group justify="flex-end" mb={4}>
+              <AyahPicker surah={surah} onPick={(a, opts) => set({ stem: insertInStem(a), ...withAudio(a, opts) })} />
+            </Group>
+          )}
+          <Textarea autosize minRows={bare ? 2 : 1} data-autofocus={autoFocus || undefined} size={bare ? "md" : "sm"} placeholder={t("question.stem")} value={q.stem} onChange={(e) => set({ stem: e.currentTarget.value })} mb="sm" {...stemCaret} />
+        </>
       )}
 
-      {q.type === "fillblank" ? (
-        <FillBlankEditor q={q} set={set} autoFocus={autoFocus} />
+      {q.type === "listen" ? (
+        <ListenEditor q={q} set={set} surah={surah} autoFocus={autoFocus} />
+      ) : q.type === "which" ? (
+        <WhichEditor q={q} set={set} surah={surah} autoFocus={autoFocus} />
+      ) : q.type === "fillblank" ? (
+        <FillBlankEditor q={q} set={set} surah={surah} autoFocus={autoFocus} />
       ) : q.type === "order" ? (
-        <OrderEditor q={q} set={set} autoFocus={autoFocus} />
+        <OrderEditor q={q} set={set} surah={surah} autoFocus={autoFocus} />
       ) : q.type === "circle" ? (
-        <CircleEditor q={q} set={set} autoFocus={autoFocus} />
+        <CircleEditor q={q} set={set} surah={surah} autoFocus={autoFocus} />
       ) : q.type === "match" ? (
         <>
           <Text size="xs" c="dimmed" mb={6}>
@@ -174,6 +193,7 @@ export default function QuestionEditor({ n, q, onChange, onMove, onRemove, autoF
           )}
         </>
       )}
+      <AudioTag q={q} set={set} />
       <Textarea
         mt="sm"
         size="xs"

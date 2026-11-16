@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconCheck, IconClock, IconRefresh, IconStarFilled, IconTarget, IconVolume, IconVolumeOff, IconX } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import { STEM_OPTIONAL, isArabic, keyOf, questionsOf, stripMarks, textDir } from "../Belajar/belajarSchema";
+import { AYAH_TYPES, STEM_OPTIONAL, audioRef, isArabic, keyOf, questionsOf, stripMarks, textDir } from "../Belajar/belajarSchema";
 import { play, setSoundOn, soundOn } from "./sounds";
 import { useScrollLock } from "./scrollLock";
 import Sky, { FIVE_COLOR, fiveNames, quizShares, sharesOf } from "./Sky";
 import ArabicText from "./ArabicText";
 import { CircleRows, WordBank } from "./WordQuestions";
 import { rowsRight, shuffle, wordsAnswer, wordsRight } from "./wordLogic";
+import { arabicDigits, useReciter, useSurah } from "./quranApi";
+import { AyahPlayButton, ListenButton } from "./Recitation";
+import rec from "./Recitation.module.css";
 import styles from "./Guru.module.css";
 
 const NS = "guru/Guru";
@@ -20,6 +23,19 @@ const WORD_TYPES = ["fillblank", "order"];
 const CHECKED = ["multi", "match", "fillblank", "order", "circle"];
 
 const sameSet = (a, b) => a.length === b.length && a.every((x) => b.includes(x));
+// the options that are right: "Listen & choose" and "Which ayah?" keep the ayah's number, the others their places
+const correctOf = (q) => (AYAH_TYPES.includes(q?.type) ? [(q.options || []).indexOf(q.answer)].filter((k) => k >= 0) : q?.correct || []);
+// "Which ayah?": the numbers in ascending order (an index into q.options each)
+const ascending = (options) => options.map((_, k) => k).sort((a, b) => Number(options[a]) - Number(options[b]));
+/** An ayah number as the teacher reads it: ٣ with 3 beside it. */
+const AyahNo = ({ n }) => (
+  <>
+    <span className={rec.numAr} lang="ar">
+      {arabicDigits(n)}
+    </span>
+    <span className={rec.numLat}>{n}</span>
+  </>
+);
 
 /**
  * The practice player: full screen, one question at a time, marked the
@@ -64,7 +80,15 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
           : q.type === "circle"
             ? (q.rows || []).every((_, i) => rowPicks[i] !== undefined)
             : false;
-  const order = useMemo(() => (q?.type === "match" ? shuffle(q.right.length, q.id) : []), [q]);
+  const order = useMemo(
+    () => (q?.type === "match" ? shuffle(q.right.length, q.id) : q?.type === "listen" ? shuffle((q.options || []).length, q.id) : q?.type === "which" ? ascending(q.options || []) : []),
+    [q]
+  );
+  // the surah's text and recitation, in the teacher's reciter (else the item's): for
+  // "Listen & choose", "Which ayah?", and any question that plays an ayah (`q.audio`)
+  const [reciter] = useReciter(section?.reciter);
+  const plays = audioRef(q);
+  const heard = useSurah(AYAH_TYPES.includes(q?.type) ? q.surah : plays ? plays.surah : 0, reciter);
   const praises = t("player.praise", { returnObjects: true });
 
   const reset = () => {
@@ -114,7 +138,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
     if (q.type === "multi") setPicked((p) => (p.includes(k) ? p.filter((x) => x !== k) : [...p, k]));
     else {
       setPicked([k]);
-      mark(sameSet([k], q.correct || []));
+      mark(sameSet([k], correctOf(q)));
     }
   };
 
@@ -170,7 +194,10 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
         else if (q && CHECKED.includes(q.type) && ready) checkNow();
       }
       const n = Number(e.key);
-      if (!verdict && n >= 1 && n <= 6 && q?.options && q.type !== "match" && q.type !== "task" && n <= q.options.length) tap(n - 1);
+      if (!verdict && n >= 1 && n <= 6 && q?.options && q.type !== "match" && q.type !== "task" && n <= q.options.length) {
+        if (!AYAH_TYPES.includes(q.type)) tap(n - 1);
+        else if (heard.data || q.type === "which") tap(order[n - 1]);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -264,17 +291,25 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
 
   const optionClass = (k) => {
     const c = [styles.option];
-    if (isArabic(q.options[k])) c.push(styles.optionArabic);
+    if (!AYAH_TYPES.includes(q.type) && isArabic(q.options[k])) c.push(styles.optionArabic);
     if (!verdict) {
       if (picked.includes(k)) c.push(styles.optionPicked);
-      else if (preview && (q.correct || []).includes(k)) c.push(styles.optionKey);
-    } else if ((q.correct || []).includes(k)) c.push(styles.optionRight);
+      else if (preview && correctOf(q).includes(k)) c.push(styles.optionKey);
+    } else if (correctOf(q).includes(k)) c.push(styles.optionRight);
     else if (picked.includes(k)) c.push(styles.optionWrong);
     else c.push(styles.optionDim);
     return c.join(" ");
   };
+  const ayahText = (no) => heard.data?.ayahs.find((a) => a.n === no)?.text || "";
+  const heardAyah = AYAH_TYPES.includes(q.type) ? heard.data?.ayahs.find((a) => a.n === q.ayah) : null;
+  // the ayah this question plays with its small button ("+ suara")
+  const playsAyah = plays ? heard.data?.ayahs.find((a) => a.n === plays.ayah) : null;
   const rightText =
-    q.type === "match" ? q.left.map((l, k) => `${l} → ${q.right[q.answer[k]] ?? "?"}`).join("\n") : q.options ? (q.correct || []).map((k) => q.options[k]).join("\n") : stripMarks(wordsAnswer(q));
+    q.type === "listen"
+      ? ayahText(q.answer)
+      : q.type === "which"
+        ? `${arabicDigits(q.answer)} (${q.answer})`
+      : q.type === "match" ? q.left.map((l, k) => `${l} → ${q.right[q.answer[k]] ?? "?"}`).join("\n") : q.options ? (q.correct || []).map((k) => q.options[k]).join("\n") : stripMarks(wordsAnswer(q));
 
   return (
     <div className={`${styles.player} ${styles.skyOn}`}>
@@ -317,6 +352,7 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
         <p className={`${styles.stem} ${isArabic(q.stem) ? styles.arabic : ""}`} dir={textDir(q.stem)}>
           <ArabicText text={q.stem || (STEM_OPTIONAL.includes(q.type) ? t(`player.do.${q.type}${q.type === "circle" && q.mode === "underline" ? "Line" : ""}`) : "")} />
         </p>
+        {plays && <AyahPlayButton key={`${qi}-${playsAyah?.audio || ""}`} ayah={plays.ayah} audio={playsAyah?.audio} fallback={playsAyah?.fallback} t={t} disabled={!playsAyah} />}
 
         {q.type === "task" ? (
           <textarea className={styles.taskBox} rows={Math.max(3, q.lines || 3)} placeholder={t("player.writeHere")} dir="auto" />
@@ -338,6 +374,73 @@ export default function Player({ section, title, guide, onFinish, onExit, previe
                 <em className={styles.keyTag}>{t("player.key")}</em> <ArabicText text={rightText} />
               </p>
             )}
+          </>
+        ) : q.type === "listen" ? (
+          <>
+            <ListenButton key={`${qi}-${heardAyah?.audio || ""}`} ayah={q.ayah} audio={heardAyah?.audio} fallback={heardAyah?.fallback} t={t} disabled={!heardAyah} />
+            {heard.error ? (
+              <div className={rec.error} role="alert">
+                <div>
+                  <b>{t("recite.errorTitle")}</b>
+                  <span>{t("recite.errorBody")}</span>
+                </div>
+                <button type="button" className={rec.retry} onClick={heard.retry}>
+                  <IconRefresh size={16} /> {t("recite.retry")}
+                </button>
+              </div>
+            ) : (
+              <div className={styles.options}>
+                {order.map((k, shown) => (
+                  <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} disabled={!heard.data} dir="rtl">
+                    <span className={styles.letter}>{shown + 1}</span>
+                    <span>
+                      <span className={rec.choiceText} lang="ar">
+                        {heard.data ? ayahText(q.options[k]) : "…"}
+                      </span>
+                      {preview && !verdict && correctOf(q).includes(k) && (
+                        <em className={styles.keyTag} dir="auto">
+                          {t("player.key")}
+                        </em>
+                      )}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
+        ) : q.type === "which" ? (
+          <>
+            {heard.error && (q.showText !== false || q.audio) ? (
+              <div className={rec.error} role="alert">
+                <div>
+                  <b>{t("recite.errorTitle")}</b>
+                  <span>{t("recite.errorBody")}</span>
+                </div>
+                <button type="button" className={rec.retry} onClick={heard.retry}>
+                  <IconRefresh size={16} /> {t("recite.retry")}
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* the ayah without its number: that is what the teacher names */}
+                {q.showText !== false && (
+                  <p className={rec.whichText} dir="rtl" lang="ar" data-which-shown>
+                    {heardAyah ? heardAyah.text : "…"}
+                  </p>
+                )}
+                {q.audio && <ListenButton key={`${qi}-${heardAyah?.audio || ""}`} ayah={q.ayah} audio={heardAyah?.audio} fallback={heardAyah?.fallback} t={t} disabled={!heardAyah} />}
+              </>
+            )}
+            <div className={styles.options}>
+              {order.map((k) => (
+                <button key={k} type="button" className={optionClass(k)} onClick={() => tap(k)} data-option={q.options[k]}>
+                  <span>
+                    <AyahNo n={q.options[k]} />
+                    {preview && !verdict && correctOf(q).includes(k) && <em className={styles.keyTag}>{t("player.key")}</em>}
+                  </span>
+                </button>
+              ))}
+            </div>
           </>
         ) : q.type === "circle" ? (
           <CircleRows q={q} picks={rowPicks} onPick={(row, k) => setRowPicks((p) => ({ ...p, [row]: p[row] === k ? undefined : k }))} verdict={verdict} preview={preview} t={t} />

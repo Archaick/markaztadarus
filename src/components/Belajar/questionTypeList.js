@@ -1,6 +1,6 @@
-import { IconArrowsSort, IconChecklist, IconCircleCheck, IconCircleDashed, IconCircleDot, IconCursorText, IconLink, IconPencil } from "@tabler/icons-react";
+import { IconArrowsSort, IconChecklist, IconCircleCheck, IconCircleDashed, IconCircleDot, IconCursorText, IconHeadphones, IconLink, IconListNumbers, IconPencil } from "@tabler/icons-react";
 
-// the cards in "Pilih jenis soal": seven with an answer key, one written task.
+// the cards in "Pilih jenis soal": nine with an answer key, one written task.
 // `ar`: the name every Arabic-reading admin knows it by, shown with the UI's own.
 export const TYPES = [
   { type: "single", icon: IconCircleDot, group: "quiz", ar: "اختيار من متعدد" },
@@ -10,6 +10,8 @@ export const TYPES = [
   { type: "fillblank", icon: IconCursorText, group: "quiz", ar: "املأ الفراغ" },
   { type: "order", icon: IconArrowsSort, group: "quiz", ar: "ترتيب الكلمات" },
   { type: "circle", icon: IconCircleDashed, group: "quiz", ar: "ضع دائرة" },
+  { type: "listen", icon: IconHeadphones, group: "quiz", ar: "استمع واختر" },
+  { type: "which", icon: IconListNumbers, group: "quiz", ar: "الآية رقم كم؟" },
   { type: "task", icon: IconPencil, group: "written", ar: "مهمة كتابية" },
 ];
 export const ICON = Object.fromEntries(TYPES.map((x) => [x.type, x.icon]));

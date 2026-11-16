@@ -10,6 +10,7 @@ import {
   IconPlayerPlayFilled,
   IconPlus,
   IconSettings,
+  IconVolume,
 } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
@@ -17,7 +18,7 @@ import Player from "../Guru/Player";
 import TeacherWalk from "../Guru/TeacherWalk";
 import guru from "../Guru/Guru.module.css";
 import { saveSectionContent } from "./actions";
-import { BASE, NS, blankCount, blankQuestion, fiveTOf, kindOf, learnerSections, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
+import { AYAH_TYPES, BASE, NS, STEM_OPTIONAL, audioRef, blankCount, blankQuestion, fiveTOf, kindOf, learnerSections, newId, questionIssues, questionsOf, sectionTitle } from "./belajarSchema";
 import QuestionEditor from "./QuestionEditor";
 import { TypeCards } from "./QuestionTypes";
 import { ICON } from "./questionTypeList";
@@ -253,6 +254,7 @@ export default function QuestionsBoard({ lesson, sections }) {
             targets={targets}
             busy={busy}
             failed={failed}
+            surah={lesson.surah}
             onCancel={() => setEditing(null)}
             onSave={async (sectionId, item, more) => {
               const s = sectionById(sectionId);
@@ -344,10 +346,27 @@ function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
         </div>
       </div>
       <p className={styles.qstem} dir="auto">
-        {q.stem || (["fillblank", "order", "circle"].includes(q.type) ? <i className={styles.qempty}>{t(`board.types.${q.type}.name`)}</i> : <i className={styles.qempty}>{t("issue.noStem")}</i>)}
+        {q.stem || (STEM_OPTIONAL.includes(q.type) ? <i className={styles.qempty}>{t(`board.types.${q.type}.name`)}</i> : <i className={styles.qempty}>{t("issue.noStem")}</i>)}
       </p>
       <div className={styles.qopts}>
-        {q.type === "fillblank" ? (
+        {audioRef(q) && (
+          <span className={styles.qopt}>
+            <IconVolume size={13} /> {t("ayah.audioOn", { n: audioRef(q).ayah })}
+          </span>
+        )}
+        {q.type === "which" && (
+          <span className={styles.qopt}>
+            {[q.showText !== false && t("which.showText"), q.audio && t("which.audio")].filter(Boolean).join(" · ") || "…"}
+          </span>
+        )}
+        {AYAH_TYPES.includes(q.type) ? (
+          (q.options || []).map((no) => (
+            <span key={no} className={`${styles.qopt} ${no === q.answer ? styles.qoptRight : ""}`}>
+              {no === q.answer && "✓ "}
+              {t("listen.folded", { n: no })}
+            </span>
+          ))
+        ) : q.type === "fillblank" ? (
           <>
             <span className={styles.qopt} dir="auto">
               {q.sentence || "…"}
@@ -427,7 +446,7 @@ function TypePicker({ targets, sectionId, onSection, onPick }) {
 }
 
 /** The window where one question (or written task) is typed in. */
-function EditForm({ editing, targets, busy, failed, onCancel, onSave }) {
+function EditForm({ editing, targets, busy, failed, onCancel, onSave, surah }) {
   const { t } = useTranslation(NS);
   const [item, setItem] = useState(editing.item);
   const [sectionId, setSectionId] = useState(editing.sectionId);
@@ -456,7 +475,7 @@ function EditForm({ editing, targets, busy, failed, onCancel, onSave }) {
           <NumberInput mt="sm" w={200} label={t("sectionPage.lines")} min={1} max={20} value={item.lines} onChange={(v) => setItem({ ...item, lines: Number(v) || 3 })} />
         </>
       ) : (
-        <QuestionEditor q={item} onChange={setItem} autoFocus bare />
+        <QuestionEditor q={item} onChange={setItem} autoFocus bare surah={surah} />
       )}
       {failed && (
         <Text c="red" size="sm" mt="sm">

@@ -50,6 +50,7 @@ export default function SectionView() {
         <SectionScreen
           section={section}
           surahTitle={surah.lesson.title}
+          surahNo={surah.lesson.surah}
           mine={mine}
           back={
             <Link to={backTo} className={styles.back}>

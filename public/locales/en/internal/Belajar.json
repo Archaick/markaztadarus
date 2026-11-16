@@ -57,7 +57,9 @@
     "match": "Matching",
     "fillblank": "Fill in the blanks",
     "order": "Word ordering",
-    "circle": "Circle the word"
+    "circle": "Circle the word",
+    "listen": "Listen & choose",
+    "which": "Which ayah?"
   },
   "block": {
     "heading": "Heading",
@@ -75,7 +77,11 @@
     "noBlanks": "No blanks (__) yet",
     "fewWords": "At least 2 words",
     "noRows": "No rows yet",
-    "tooManyBlanks": "Too many blanks (max. 10)"
+    "tooManyBlanks": "Too many blanks (max. 10)",
+    "noAyah": "No ayah chosen",
+    "fewOptions": "At least 2 choices",
+    "noSurah": "No surah number",
+    "noPrompt": "Both the ayah's text and its audio are off"
   },
   "lessons": {
     "title": "Teacher's Book",
@@ -376,6 +382,16 @@
         "name": "Circle the word",
         "desc": "Rows of sentences; the teacher circles the right word in each row, as in the book.",
         "ex": "هٰذَا …… صَغِيرٌ   بَيْتٌ · مَدْرَسَةٌ"
+      },
+      "listen": {
+        "name": "Listen & choose",
+        "desc": "An ayah is played; the teacher picks its text.",
+        "ex": "▶ Ayah 2 → pick its text among 4 ayat"
+      },
+      "which": {
+        "name": "Which ayah?",
+        "desc": "An ayah is shown and/or played; the teacher picks its number.",
+        "ex": "▶ (the ayah, unnumbered) → 2 · 3 · 4 · 5"
       }
     },
     "pickNamed": "Question type"
@@ -497,5 +513,47 @@
     "addChoice": "Word",
     "markRight": "Mark as the right word",
     "choicePh": "Word…"
+  },
+  "listen": {
+    "noSurah": "This surah has no surah number yet. Open the surah card, press the pencil (Edit surah) and fill in the Surah number.",
+    "ayah": "Ayah to play",
+    "ayahHint": "Its text and recitation come from AlQuran.cloud.",
+    "pickAyah": "Choose an ayah",
+    "others": "Other choices",
+    "othersHint": "Other ayat of the same surah, up to {{count}}.",
+    "pickOthers": "Choose other ayat",
+    "auto": "Auto pick",
+    "choices": "Choices the teacher sees",
+    "shuffled": "Teachers see the choices shuffled.",
+    "folded": "Ayah {{n}}"
+  },
+  "recite": {
+    "heading": "Recitation (Murattal)",
+    "reciter": "Default reciter for this item",
+    "reciterHint": "Teachers may pick another reciter on their own device; their choice is used.",
+    "note": "Teachers see the full recitation: every ayah in Uthmani script, each with its own play button, above the PDF.",
+    "noSurah": "This surah has no surah number, so its recitation cannot be shown yet. Press the pencil (Edit surah) on the surah card and fill in the Surah number.",
+    "openSurah": "Open the surah card"
+  },
+  "ayah": {
+    "insert": "Insert an ayah",
+    "fromAyah": "From an ayah…",
+    "title": "Choose an ayah",
+    "search": "Ayah number",
+    "withAudio": "+ audio (teachers can play this ayah)",
+    "source": "The ayah's text comes from AlQuran.cloud (Uthmani script) and is inserted exactly as it is.",
+    "tooLong": "{{count}} words, too long (max. {{max}})",
+    "audioOn": "Audio: ayah {{n}}",
+    "audioRemove": "Remove the audio",
+    "fillFrom": "The words of ayah {{n}}",
+    "fillTap": "Tap a word to make it a blank; tap it again to bring it back. Up to {{max}} blanks.",
+    "orderFilled": "The words come from ayah {{n}}. You can still change or remove words and add decoys."
+  },
+  "which": {
+    "ayah": "The ayah asked about",
+    "showText": "Show the ayah's text",
+    "audio": "Play its recitation",
+    "others": "Other numbers to choose from",
+    "othersHint": "Other ayah numbers of the same surah, up to {{count}}."
   }
 }

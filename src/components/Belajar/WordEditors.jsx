@@ -1,7 +1,10 @@
 import { ActionIcon, Button, Group, SegmentedControl, Text, TextInput, Textarea } from "@mantine/core";
 import { IconArrowDown, IconArrowUp, IconBulb, IconCheck, IconPlus, IconTrash } from "@tabler/icons-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BLANK_RE, LIMITS, NS, bankOf, blankCount, isArabic, keyOf } from "./belajarSchema";
+import { ayahTokens, ayahWords, blanksOf, fillFrom, isMarkOnly } from "./ayahTools";
+import AyahPicker, { useAyahInsert } from "./AyahPicker";
 import { CircleRows } from "../Guru/WordQuestions";
 import styles from "./Belajar.module.css";
 
@@ -35,19 +38,34 @@ function HowTo({ steps, example, exampleDir = "rtl" }) {
   );
 }
 
-/** The question's own line: optional for these types, which say what to do by themselves. */
-function StemField({ q, set, fallback, autoFocus }) {
+/** "+ suara": the question also plays the ayah it was made from. */
+const audioPatch = (surah, a, opts) => (opts?.withAudio ? { audio: { surah: Number(surah), ayah: a.n } } : {});
+
+/**
+ * The question's own line: optional for these types, which say what to do by
+ * themselves. With the lesson's surah, "Ambil ayat" puts an ayah in it.
+ */
+export function StemField({ q, set, fallback, autoFocus, surah, audioOption = true }) {
   const { t } = useTranslation(NS);
+  const [caret, insert] = useAyahInsert(q.stem);
   return (
-    <TextInput
-      mb="sm"
-      label={t("words.stem")}
-      description={t("words.stemHint", { fallback })}
-      data-autofocus={autoFocus || undefined}
-      value={q.stem || ""}
-      dir="auto"
-      onChange={(e) => set({ stem: e.currentTarget.value })}
-    />
+    <div style={{ marginBottom: "var(--mantine-spacing-sm)" }}>
+      <div className={styles.fieldHead}>
+        <Text size="sm" fw={500}>
+          {t("words.stem")}
+        </Text>
+        <AyahPicker surah={surah} audioOption={audioOption} onPick={(a, opts) => set({ stem: insert(a), ...audioPatch(surah, a, opts) })} />
+      </div>
+      <TextInput
+        description={t("words.stemHint", { fallback })}
+        aria-label={t("words.stem")}
+        data-autofocus={autoFocus || undefined}
+        value={q.stem || ""}
+        dir="auto"
+        onChange={(e) => set({ stem: e.currentTarget.value })}
+        {...caret}
+      />
+    </div>
   );
 }
 
@@ -89,20 +107,89 @@ function Decoys({ q, set }) {
   );
 }
 
+/**
+ * "Dari ayat…" in Fill in the Blanks: the ayah's words as chips; a tapped word
+ * becomes a blank (__ in the sentence, the word in the answers, in reading
+ * order), tapped again it comes back. A pause mark standing alone is not a word.
+ */
+function AyahBlanks({ ayah, q, set }) {
+  const { t } = useTranslation(NS);
+  const tokens = ayahTokens(ayah.text);
+  const blanks = blanksOf(q.sentence, tokens) || [];
+  const full = blanks.length >= LIMITS.blanks;
+  const toggle = (i) => {
+    const on = blanks.includes(i);
+    if (!on && full) return;
+    const next = on ? blanks.filter((x) => x !== i) : [...blanks, i].sort((a, b) => a - b);
+    set(fillFrom(tokens, next));
+  };
+  return (
+    <div className={styles.wordBlock} data-ayah-blanks={ayah.n}>
+      <Text size="sm" fw={700}>
+        {t("ayah.fillFrom", { n: ayah.n })}
+      </Text>
+      <Text size="xs" c="dimmed" mb={6}>
+        {t("ayah.fillTap", { max: LIMITS.blanks })}
+      </Text>
+      <div className={styles.tapWords} dir="rtl" lang="ar">
+        {tokens.map((tok, i) => {
+          const on = blanks.includes(i);
+          return (
+            <button key={i} type="button" className={`${styles.tapWord} ${on ? styles.tapWordOn : ""}`} disabled={isMarkOnly(tok) || (!on && full)} aria-pressed={on} onClick={() => toggle(i)} data-word={i}>
+              {tok}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /** Fill in the Blanks: the sentence with __ for each gap, then the answers in that order. */
-export function FillBlankEditor({ q, set, autoFocus }) {
+export function FillBlankEditor({ q, set, autoFocus, surah }) {
   const { t } = useTranslation(NS);
   const { t: tg } = useTranslation("guru/Guru");
+  const [source, setSource] = useState(null); // the ayah chosen with "Dari ayat…"
+  const [caret, insert] = useAyahInsert(q.sentence);
   const n = blankCount(q.sentence);
   const answers = q.answers || [];
   const sized = (len) => Array.from({ length: Math.min(len, LIMITS.blanks) }, (_, i) => answers[i] ?? "");
   const parts = (q.sentence || "").split(BLANK_RE);
+  // the chips stay while the sentence is still that ayah's (typing in it by hand lets them go)
+  const fromAyah = source && blanksOf(q.sentence, ayahTokens(source.text)) ? source : null;
   return (
     <>
       <StemField q={q} set={set} fallback={tg("player.do.fillblank")} autoFocus={autoFocus} />
       <HowTo steps={[t("words.fillHow1"), t("words.fillHow2"), t("words.fillHow3")]} example="لا __ إلا __" />
+      <div className={styles.fieldHead}>
+        <Text size="sm" fw={500}>
+          {t("words.fillSentence")}
+        </Text>
+        <Group gap={6}>
+          <AyahPicker
+            surah={surah}
+            label={t("ayah.fromAyah")}
+            onPick={(a, opts) => {
+              setSource(a);
+              // the same ayah again keeps its blanks; another one starts with none
+              const tokens = ayahTokens(a.text);
+              set({ ...fillFrom(tokens, blanksOf(q.sentence, tokens) || []), ...audioPatch(surah, a, opts) });
+            }}
+          />
+          <AyahPicker
+            surah={surah}
+            onPick={(a, opts) => {
+              const sentence = insert(a);
+              set({ sentence, answers: sized(blankCount(sentence)), ...audioPatch(surah, a, opts) });
+            }}
+          />
+        </Group>
+      </div>
+      {fromAyah && <AyahBlanks ayah={fromAyah} q={q} set={set} />}
       <Textarea
-        label={t("words.fillSentence")}
+        aria-label={t("words.fillSentence")}
+        mt={fromAyah ? "sm" : 0}
+        {...caret}
         autosize
         minRows={2}
         placeholder="لا __ إلا __"
@@ -158,9 +245,10 @@ export function FillBlankEditor({ q, set, autoFocus }) {
 }
 
 /** Word Ordering: one word per row in the right order; the teacher sees them shuffled. */
-export function OrderEditor({ q, set, autoFocus }) {
+export function OrderEditor({ q, set, autoFocus, surah }) {
   const { t } = useTranslation(NS);
   const { t: tg } = useTranslation("guru/Guru");
+  const [source, setSource] = useState(null); // the ayah the words came from
   const words = q.words || [];
   const dir = q.dir === "ltr" ? "ltr" : "rtl";
   const setWord = (i, v) => set({ words: words.map((x, j) => (j === i ? v : x)) });
@@ -183,8 +271,30 @@ export function OrderEditor({ q, set, autoFocus }) {
   };
   return (
     <>
-      <StemField q={q} set={set} fallback={tg("player.do.order")} autoFocus={autoFocus} />
+      <StemField q={q} set={set} fallback={tg("player.do.order")} autoFocus={autoFocus} surah={surah} />
       <HowTo steps={[t("words.orderHow1"), t("words.orderHow2"), t("words.orderHow3")]} example="بِسْمِ ↵ اللَّهِ ↵ الرَّحْمَٰنِ ↵ الرَّحِيمِ" />
+      {Number(surah) > 0 && (
+        <Group gap="xs" mb="sm" align="center">
+          <AyahPicker
+            surah={surah}
+            label={t("ayah.fromAyah")}
+            tooLong={(a) => {
+              const count = ayahWords(a.text).length;
+              return count > LIMITS.words ? t("ayah.tooLong", { count, max: LIMITS.words }) : "";
+            }}
+            onPick={(a, opts) => {
+              setSource(a.n);
+              // the words are the ayah's own, in order; the decoys stay
+              set({ words: ayahWords(a.text), dir: "rtl", ...audioPatch(surah, a, opts) });
+            }}
+          />
+          {source && (
+            <Text size="xs" c="dimmed" data-order-filled>
+              {t("ayah.orderFilled", { n: source })}
+            </Text>
+          )}
+        </Group>
+      )}
       <Text size="sm" fw={700} mb={4}>
         {t("words.orderDir")}
       </Text>
@@ -239,7 +349,7 @@ export function OrderEditor({ q, set, autoFocus }) {
 }
 
 /** Circle the Word: rows of a sentence and its words; tap the circle to mark the right one. */
-export function CircleEditor({ q, set, autoFocus }) {
+export function CircleEditor({ q, set, autoFocus, surah }) {
   const { t } = useTranslation(NS);
   const { t: tg } = useTranslation("guru/Guru");
   const rows = q.rows || [];
@@ -257,7 +367,7 @@ export function CircleEditor({ q, set, autoFocus }) {
   ];
   return (
     <>
-      <StemField q={q} set={set} fallback={tg(mode === "underline" ? "player.do.circleLine" : "player.do.circle")} autoFocus={autoFocus} />
+      <StemField q={q} set={set} fallback={tg(mode === "underline" ? "player.do.circleLine" : "player.do.circle")} autoFocus={autoFocus} surah={surah} />
       <div className={styles.modeCards}>
         {modes.map((m) => (
           <button key={m.v} type="button" className={`${styles.modeCard} ${mode === m.v ? styles.modeCardOn : ""}`} onClick={() => set({ mode: m.v })} aria-pressed={mode === m.v}>

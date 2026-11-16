@@ -1573,3 +1573,119 @@ a.row:hover {
 .schoolPlace:hover {
   background: #e0f5ec;
 }
+
+/* "Ambil ayat": the surah's ayat to choose from, and the words of one ayah */
+.ayahList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ayahRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(26, 73, 112, 0.18);
+  border-radius: 12px;
+  background: #fff;
+  text-align: start;
+  font: inherit;
+  cursor: pointer;
+}
+.ayahRow:hover:not(:disabled) {
+  border-color: #003366;
+  background: #f4f8fc;
+}
+.ayahRow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ayahRowNo {
+  flex: none;
+  min-width: 34px;
+  margin-top: 6px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: #e8eef5;
+  color: #003366;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.ayahRowText {
+  flex: 1;
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: 1.3rem;
+  line-height: 2.1;
+  color: #10213a;
+}
+.ayahRowNote {
+  display: block;
+  font-size: 0.72rem;
+  color: #b45309;
+}
+.audioTag {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #f4f8fc;
+}
+.audioTag > div {
+  margin: 0;
+}
+.fieldHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.tapWords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  border: 1px dashed rgba(26, 73, 112, 0.3);
+  border-radius: 12px;
+  background: #fcfaf7;
+}
+.tapWord {
+  padding: 2px 10px;
+  border: 1px solid rgba(26, 73, 112, 0.25);
+  border-radius: 10px;
+  background: #fff;
+  font-family: "Amiri Quran", "Scheherazade New", "Amiri", serif;
+  font-size: 1.35rem;
+  line-height: 1.9;
+  color: #10213a;
+  cursor: pointer;
+}
+.tapWord:disabled {
+  border-color: transparent;
+  background: transparent;
+  cursor: default;
+}
+.tapWordOn {
+  border-color: var(--ok, #10b981);
+  background: #ecfdf5;
+  color: #065f46;
+  text-decoration: underline dashed;
+}
+.whichOpt {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 12px;
+  border: 1px solid rgba(26, 73, 112, 0.2);
+  border-radius: 10px;
+  background: #fff;
+}
+.whichOptRight {
+  border-color: var(--ok, #10b981);
+  background: #ecfdf5;
+}
