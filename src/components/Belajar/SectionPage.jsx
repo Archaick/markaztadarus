@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ActionIcon, Alert, Button, Group, Loader, Modal, SegmentedControl, Select, Text, Textarea, Tooltip } from "@mantine/core";
-import { IconAlertTriangle, IconArrowLeft, IconHeadphones, IconChevronsDown, IconChevronsUp, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconAlertTriangle, IconArrowLeft, IconCheck, IconChevronsUp, IconEye, IconHeadphones, IconPlayerPlayFilled, IconPlus, IconTrash } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { useAccess } from "../Internal/accessContext";
 import { useBelajar } from "./BelajarData";
@@ -15,6 +15,7 @@ import RecitationPanel from "../Guru/Recitation";
 import { DEFAULT_RECITER, RECITERS, knownReciter } from "../Guru/quranApi";
 import guru from "../Guru/Guru.module.css";
 import QuestionEditor from "./QuestionEditor";
+import { QuestionCard } from "./QuestionsBoard";
 import { TypeCards } from "./QuestionTypes";
 import styles from "./Belajar.module.css";
 
@@ -43,7 +44,17 @@ export default function SectionPage() {
   const [playing, setPlaying] = useState(false);
   const [reciteView, setReciteView] = useState("editor");
   const [adding, setAdding] = useState(null); // { part, at: "top" | "end" }: where a new question goes, while its type is picked
-  const [folded, setFolded] = useState(() => new Set()); // questions shown as one line
+  // questions open in their editor; the others show as a card with the answer key, as on the questions board
+  const [open, setOpen] = useState(() => new Set());
+  const [single, setSingle] = useState(null); // one question played as the teacher sees it
+  const [dropping, setDropping] = useState(null); // { part, i }: a question about to be deleted
+  const toggleOpen = (id, on) =>
+    setOpen((o) => {
+      const next = new Set(o);
+      if (on ?? !next.has(id)) next.add(id);
+      else next.delete(id);
+      return next;
+    });
   const [fresh, setFresh] = useState(null); // the question just added: brought into view and focused
 
   // a new question: scroll to it and put the cursor in its first field
@@ -235,16 +246,11 @@ export default function SectionPage() {
               <div className={styles.qHead}>
                 <h3 className={styles.canvasQuestions}>{t("lesson.tabQuestions", { count: questionCount })}</h3>
                 <Group gap={6} wrap="wrap" justify="flex-end">
-                  {questionCount > 1 &&
-                    (value.parts.some((x) => x.questions.some((q) => !folded.has(q.id))) ? (
-                      <Button variant="subtle" color="gray" size="xs" leftSection={<IconChevronsUp size={14} />} onClick={() => setFolded(new Set(value.parts.flatMap((x) => x.questions.map((q) => q.id))))}>
-                        {t("sectionPage.collapseAll")}
-                      </Button>
-                    ) : (
-                      <Button variant="subtle" color="gray" size="xs" leftSection={<IconChevronsDown size={14} />} onClick={() => setFolded(new Set())}>
-                        {t("sectionPage.expandAll")}
-                      </Button>
-                    ))}
+                  {open.size > 1 && (
+                    <Button variant="subtle" color="gray" size="xs" leftSection={<IconChevronsUp size={14} />} onClick={() => setOpen(new Set())}>
+                      {t("sectionPage.collapseAll")}
+                    </Button>
+                  )}
                   <Button color="#003366" size="xs" leftSection={<IconPlus size={14} />} onClick={() => setAdding({ part: 0, at: "top" })}>
                     {t("board.add")}
                   </Button>
@@ -257,26 +263,45 @@ export default function SectionPage() {
               </div>
               {value.parts.map((part, p) => (
                 <div key={p} className={styles.panel}>
-                  {part.questions.map((q, i) => (
-                    <QuestionEditor
-                      key={q.id}
-                      n={i + 1}
-                      q={q}
-                      surah={surahNo}
-                      collapsed={folded.has(q.id)}
-                      onToggle={() =>
-                        setFolded((f) => {
-                          const next = new Set(f);
-                          if (next.has(q.id)) next.delete(q.id);
-                          else next.add(q.id);
-                          return next;
-                        })
-                      }
-                      onChange={(nq) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.map((y, k) => (k === i ? nq : y)) } : x)) })}
-                      onMove={(d) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: move(x.questions, i, d) } : x)) })}
-                      onRemove={() => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.filter((_, k) => k !== i) } : x)) })}
-                    />
-                  ))}
+                  <div className={styles.qList}>
+                  {part.questions.map((q, i) => {
+                    const moveIt = (d) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: move(x.questions, i, d) } : x)) });
+                    return open.has(q.id) ? (
+                      <div key={q.id} data-qid={q.id} className={styles.qEditing}>
+                        <QuestionEditor
+                          n={i + 1}
+                          q={q}
+                          surah={surahNo}
+                          onToggle={() => toggleOpen(q.id, false)}
+                          onChange={(nq) => set({ parts: value.parts.map((x, j) => (j === p ? { ...x, questions: x.questions.map((y, k) => (k === i ? nq : y)) } : x)) })}
+                          onMove={moveIt}
+                          onRemove={() => setDropping({ part: p, i })}
+                        />
+                        <Group justify="flex-end" mt="sm" gap="xs">
+                          <Button size="xs" variant="subtle" color="violet" leftSection={<IconEye size={14} />} disabled={questionIssues(q).length > 0} onClick={() => setSingle(q)}>
+                            {t("board.view")}
+                          </Button>
+                          <Button size="xs" color="#003366" leftSection={<IconCheck size={14} />} onClick={() => toggleOpen(q.id, false)}>
+                            {t("sectionPage.doneEditing")}
+                          </Button>
+                        </Group>
+                      </div>
+                    ) : (
+                      <div key={q.id} data-qid={q.id}>
+                        <QuestionCard
+                          n={i + 1}
+                          q={q}
+                          first={i === 0}
+                          last={i === part.questions.length - 1}
+                          onMove={moveIt}
+                          onView={() => setSingle(q)}
+                          onEdit={() => toggleOpen(q.id, true)}
+                          onRemove={() => setDropping({ part: p, i })}
+                        />
+                      </div>
+                    );
+                  })}
+                  </div>
                   <Group mt="md" gap="xs">
                     <Button size="xs" variant="light" color="#003366" leftSection={<IconPlus size={14} />} onClick={() => setAdding({ part: p, at: "end" })}>
                       {t("board.add")}
@@ -287,6 +312,33 @@ export default function SectionPage() {
             </>
           )}
         </>
+
+      {/* one question, played as the teacher plays it */}
+      {single && (
+        <div className={guru.app} style={{ display: "contents" }}>
+          <Player section={{ kind: "quiz", parts: [{ heading: "", instructions: "", questions: [single] }] }} title={`${lesson.title} · ${name}`} onFinish={() => {}} onExit={() => setSingle(null)} preview />
+        </div>
+      )}
+
+      {/* deleting a question: it goes when the section is saved (Cancel brings it back) */}
+      <Modal opened={dropping !== null} onClose={() => setDropping(null)} title={t("board.removeTitle")} centered>
+        <Text mb="md">{t("sectionPage.removeQuestionBody")}</Text>
+        <Group justify="flex-end">
+          <Button variant="default" onClick={() => setDropping(null)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            color="red"
+            onClick={() => {
+              const { part: dp, i: di } = dropping;
+              set({ parts: value.parts.map((x, j) => (j === dp ? { ...x, questions: x.questions.filter((_, k) => k !== di) } : x)) });
+              setDropping(null);
+            }}
+          >
+            {t("board.remove")}
+          </Button>
+        </Group>
+      </Modal>
 
       {/* the questions, played as the teacher plays them, with the answer key marked for the admin */}
       {playing && (
@@ -313,6 +365,7 @@ export default function SectionPage() {
             const nq = blankQuestion(qt);
             set({ parts: value.parts.map((x, j) => (j === adding.part ? { ...x, questions: adding.at === "top" ? [nq, ...x.questions] : [...x.questions, nq] } : x)) });
             setAdding(null);
+            toggleOpen(nq.id, true);
             setFresh(nq.id);
           }}
         />

@@ -396,6 +396,9 @@
     "responses": "Responses",
     "average": "Average score",
     "latest": "Latest response",
-    "generated": "Made {{date}} · Markaz Tadarus Indonesia"
+    "generated": "Made {{date}} · Markaz Tadarus Indonesia",
+    "dataTitle": "Responses",
+    "no": "No.",
+    "chartsTitle": "At a glance"
   }
 }

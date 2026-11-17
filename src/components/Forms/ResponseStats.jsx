@@ -255,7 +255,7 @@ export default function ResponseStats({ stats, report = false }) {
 }
 
 /** The statistics on the Markaz Tadarus letterhead, for the PDF report (A4, 794px wide). */
-export function StatsReport({ form, stats, sheetRef }) {
+export function StatsReport({ form, stats, sheetRef, rows }) {
   const { t } = useTranslation(NS);
   return (
     <div ref={sheetRef} className={c.sheet} dir={form.language === "ar" ? "rtl" : "ltr"}>
@@ -286,8 +286,76 @@ export function StatsReport({ form, stats, sheetRef }) {
           <span>{t("stats.latest")}</span>
         </div>
       </div>
+      {rows?.length > 1 && <ResponsesData rows={rows} title={t("stats.dataTitle")} no={t("stats.no")} />}
+      <h2 className={c.reportSection}>{t("stats.chartsTitle")}</h2>
       <ResponseStats stats={stats} report />
       <p className={c.generated}>{t("stats.generated", { date: formatDateTime(new Date()) })}</p>
     </div>
+  );
+}
+
+// a table fits A4 up to this many columns (No., the time and four answers); more become cards
+const TABLE_MAX = 6;
+
+/**
+ * The responses themselves, oldest first and numbered: a tidy version of the
+ * Excel file. Few questions: a table. Many: one card per response, each
+ * question with its answer. Cells take their own direction (Arabic names).
+ */
+function ResponsesData({ rows, title, no }) {
+  const [header, ...body] = rows;
+  const list = [...body].reverse();
+  const asTable = header.length <= TABLE_MAX;
+  return (
+    <>
+      <h2 className={c.reportSection}>
+        {title} <small>({list.length})</small>
+      </h2>
+      {asTable ? (
+        <table className={c.dataTable}>
+          <thead>
+            <tr>
+              <th className={c.dataNo}>{no}</th>
+              {header.map((h, k) => (
+                <th key={k} dir="auto">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((row, i) => (
+              <tr key={i}>
+                <td className={c.dataNo}>{i + 1}</td>
+                {row.map((v, k) => (
+                  <td key={k} dir="auto" className={k === 0 ? c.dataTime : undefined}>
+                    {v || "—"}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div className={c.dataCards}>
+          {list.map((row, i) => (
+            <section key={i} className={c.dataCard}>
+              <header>
+                <b>#{i + 1}</b>
+                <span>{row[0]}</span>
+              </header>
+              <dl>
+                {header.slice(1).map((h, k) => (
+                  <div key={k}>
+                    <dt dir="auto">{h}</dt>
+                    <dd dir="auto">{row[k + 1] || "—"}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

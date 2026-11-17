@@ -356,3 +356,100 @@
     align-self: center;
   }
 }
+
+/* the report's own section headings */
+.reportSection {
+  margin: 26px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #c9a227;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1a4970;
+}
+.reportSection small {
+  font-size: 12px;
+  font-weight: 700;
+  color: #5d6b7d;
+}
+
+/* the responses as a table: navy head, soft zebra rows */
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.dataTable th {
+  padding: 8px 9px;
+  background: #1a4970;
+  color: #fff;
+  font-weight: 700;
+  text-align: start;
+  vertical-align: bottom;
+}
+.dataTable td {
+  padding: 7px 9px;
+  border-bottom: 1px solid #e3e8ee;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.dataTable tbody tr:nth-child(even) td {
+  background: #f5f7f9;
+}
+.dataNo {
+  width: 34px;
+  text-align: center !important;
+  color: #5d6b7d;
+  font-weight: 700;
+}
+.dataTime {
+  white-space: nowrap;
+  color: #5d6b7d;
+}
+
+/* many questions: one card per response */
+.dataCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dataCard {
+  border: 1px solid #e3e8ee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.dataCard header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 12px;
+  background: #eef3f8;
+  font-size: 12px;
+  color: #5d6b7d;
+}
+.dataCard header b {
+  color: #1a4970;
+  font-size: 13px;
+}
+.dataCard dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.dataCard dl div {
+  padding: 7px 12px;
+  border-top: 1px solid #f0f3f6;
+  min-width: 0;
+}
+.dataCard dt {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #5d6b7d;
+}
+.dataCard dd {
+  margin: 1px 0 0;
+  font-size: 12px;
+  color: #0f1f33;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

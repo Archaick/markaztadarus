@@ -660,7 +660,7 @@ a.row:hover {
   border: 1px solid var(--line, #e2e8f0);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.7);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 .qoptRight {
   border-color: #6ee7b7;
@@ -1986,4 +1986,40 @@ a.row:hover {
   border-radius: 22px;
   background: linear-gradient(170deg, #f7f9fc 0%, #eef3f8 45%, #e5ecf5 100%);
   --rec-top: 0px;
+}
+
+/* a section's questions: cards, and the one being edited lifted out with a navy edge */
+.qList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.qList .qcard + .qcard {
+  margin-top: 0;
+}
+.qEditing {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: #fff;
+  border: 2px solid #003366;
+  box-shadow: 0 12px 30px -16px rgba(0, 51, 102, 0.45);
+}
+
+/* answer chips: Arabic in a Qur'an-friendly face, large enough to read */
+.qopt {
+  font-family: "Outfit", "Inter", "Amiri", "Scheherazade New", sans-serif;
+}
+.qopt:lang(ar),
+.qopt bdi {
+  unicode-bidi: isolate;
+}
+.qwords {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.qwords small {
+  font-size: 0.7rem;
+  font-weight: 800;
+  opacity: 0.7;
 }

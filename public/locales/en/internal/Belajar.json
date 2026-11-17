@@ -150,7 +150,9 @@
     "modePreview": "Teacher view",
     "previewNote": "This is how teachers will see this section. Unsaved changes are shown too.",
     "collapseAll": "Collapse all",
-    "expandAll": "Expand all"
+    "expandAll": "Expand all",
+    "doneEditing": "Done",
+    "removeQuestionBody": "The question is taken out of this section when you save. Until then, Cancel at the bottom brings it back."
   },
   "question": {
     "stem": "Write the question…",

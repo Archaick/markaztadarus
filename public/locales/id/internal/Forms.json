@@ -394,6 +394,9 @@
     "responses": "Jawaban",
     "average": "Rata-rata nilai",
     "latest": "Jawaban terakhir",
-    "generated": "Dibuat {{date}} · Markaz Tadarus Indonesia"
+    "generated": "Dibuat {{date}} · Markaz Tadarus Indonesia",
+    "dataTitle": "Data jawaban",
+    "no": "No.",
+    "chartsTitle": "Ringkasan"
   }
 }

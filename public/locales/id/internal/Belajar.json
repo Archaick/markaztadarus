@@ -143,7 +143,9 @@
     "modePreview": "Tampilan guru",
     "previewNote": "Beginilah guru akan melihat bagian ini. Perubahan yang belum disimpan juga ikut tampil.",
     "collapseAll": "Ciutkan semua",
-    "expandAll": "Buka semua"
+    "expandAll": "Buka semua",
+    "doneEditing": "Selesai",
+    "removeQuestionBody": "Soal dikeluarkan dari bagian ini saat Anda menyimpan. Sebelum itu, tombol Batal di bawah mengembalikannya."
   },
   "question": {
     "stem": "Tulis soalnya…",

@@ -311,7 +311,7 @@ export default function QuestionsBoard({ lesson, sections }) {
 }
 
 /** One question as the admin reads it: type, text, the options with the key ticked. */
-function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
+export function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
   const { t } = useTranslation(NS);
   const issues = questionIssues(q);
   const Icon = ICON[q.type] || IconCircleDot;
@@ -384,8 +384,13 @@ function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
           </>
         ) : q.type === "order" ? (
           <>
-            <span className={`${styles.qopt} ${styles.qoptRight}`} dir={q.dir === "ltr" ? "ltr" : "rtl"}>
-              ✓ {(q.words || []).filter((x) => (x || "").trim()).join(" ") || "…"}
+            {/* the right order, word by word */}
+            <span className={styles.qwords} dir={q.dir === "ltr" ? "ltr" : "rtl"}>
+              {(q.words || []).filter((x) => (x || "").trim()).map((w, k) => (
+                <span key={k} className={`${styles.qopt} ${styles.qoptRight}`}>
+                  <small>{k + 1}</small> {w}
+                </span>
+              ))}
             </span>
             {(q.decoys || []).filter((x) => (x || "").trim()).map((d, k) => (
               <span key={k} className={styles.qopt} dir="auto">
@@ -401,8 +406,8 @@ function QuestionCard({ n, q, first, last, onView, onEdit, onRemove, onMove }) {
           ))
         ) : q.type === "match"
           ? (q.left || []).map((l, k) => (
-              <span key={k} className={styles.qopt} dir="auto">
-                {l || "…"} <b>→</b> {q.right?.[q.answer?.[k]] ?? "?"}
+              <span key={k} className={styles.qopt}>
+                <bdi>{l || "…"}</bdi> <b>→</b> <bdi>{q.right?.[q.answer?.[k]] ?? "?"}</bdi>
               </span>
             ))
           : (q.options || []).map((o, k) => {

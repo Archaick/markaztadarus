@@ -311,7 +311,7 @@ export default function ResponsesPanel({ form, quizKey }) {
       {responses.length > 0 &&
         createPortal(
           <div className={hostClass}>
-            <StatsReport form={form} stats={stats} sheetRef={reportRef} />
+            <StatsReport form={form} stats={stats} sheetRef={reportRef} rows={responsesToRows(fields, responses, formatDateTime, exportLabels())} />
           </div>,
           document.body
         )}
